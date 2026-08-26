@@ -1,0 +1,200 @@
+[05Dec2024 22:05:08.663] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, /Users/bransonboggia/.gradle/caches/forge_gradle/assets, --gameDir, ., --fml.forgeVersion, 47.3.0, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412, --mod, villagerguardgunners, --all, --output, /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/src/generated/resources, --existing, /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/src/main/resources, --mixin.config, mixins.villagerguardgunners.json]
+[05Dec2024 22:05:08.667] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.12 by Oracle Corporation; OS Mac OS X arch aarch64 version 15.2
+[05Dec2024 22:05:08.726] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatauserdev
+[05Dec2024 22:05:08.755] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/Users/bransonboggia/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23122!/ Service=ModLauncher Env=CLIENT
+[05Dec2024 22:05:08.944] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file /Users/bransonboggia/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.3.0/d7ebc62120f202109e300e084ca1a31a7b946a62/javafmllanguage-1.20.1-47.3.0.jar is missing mods.toml file
+[05Dec2024 22:05:08.945] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file /Users/bransonboggia/.gradle/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.3.0/1bf3e845ea0ce750096da8c71c8364b188ab74d4/lowcodelanguage-1.20.1-47.3.0.jar is missing mods.toml file
+[05Dec2024 22:05:08.945] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file /Users/bransonboggia/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.3.0/6093682e943ddccbabf70539319d7f2fe64db2e7/mclanguage-1.20.1-47.3.0.jar is missing mods.toml file
+[05Dec2024 22:05:08.946] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file /Users/bransonboggia/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.3.0/3b6be96aba3e323f3c918e8ef6a96312d82d76ad/fmlcore-1.20.1-47.3.0.jar is missing mods.toml file
+[05Dec2024 22:05:09.151] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: Found 6 dependencies adding them to mods collection
+[05Dec2024 22:05:09.960] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
+[05Dec2024 22:05:09.985] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, /Users/bransonboggia/.gradle/caches/forge_gradle/assets, --assetIndex, 5, --mod, villagerguardgunners, --all, --output, /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/src/generated/resources, --existing, /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/src/main/resources]
+[05Dec2024 22:05:10.002] [main/WARN] [mixin/]: Reference map 'villagerguardgunners.refmap.json' for mixins.villagerguardgunners.json could not be read. If this is a development environment you can ignore this message
+[05Dec2024 22:05:10.144] [main/INFO] [mixin/]: Remapping refMap emi-xplat-refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.145] [main/INFO] [mixin/]: Remapping refMap betterdungeons.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.146] [main/INFO] [mixin/]: Remapping refMap betterdungeons.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.146] [main/INFO] [mixin/]: Remapping refMap kuma_api.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.146] [main/INFO] [mixin/]: Remapping refMap kuma_api.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.147] [main/INFO] [mixin/]: Remapping refMap lithostitched.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.147] [main/INFO] [mixin/]: Remapping refMap lithostitched.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.148] [main/INFO] [mixin/]: Remapping refMap tacz.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.149] [main/INFO] [mixin/]: Remapping refMap yungsapi.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.149] [main/INFO] [mixin/]: Remapping refMap yungsapi.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.186] [main/INFO] [mixin/]: Remapping refMap guardvillagers.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.187] [main/INFO] [mixin/]: Remapping refMap betterdeserttemples.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.187] [main/INFO] [mixin/]: Remapping refMap betterdeserttemples.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.188] [main/INFO] [mixin/]: Remapping refMap balm.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.188] [main/INFO] [mixin/]: Remapping refMap asynclocator.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.189] [main/INFO] [mixin/]: Remapping refMap inventoryessentials.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.194] [main/INFO] [mixin/]: Remapping refMap packetfixer-common-common-refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.195] [main/WARN] [mixin/]: Reference map 'packetfixer-forge-forge-refmap.json' for packetfixer-forge.mixins.json could not be read. If this is a development environment you can ignore this message
+[05Dec2024 22:05:10.196] [main/INFO] [mixin/]: Remapping refMap bettermineshafts.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.196] [main/INFO] [mixin/]: Remapping refMap bettermineshafts.refmap.json using /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/build/createSrgToMcp/output.srg
+[05Dec2024 22:05:10.196] [main/WARN] [mixin/]: Reference map 'LesRaisinsAddon_1201.refmap.json' for lradd.mixins.json could not be read. If this is a development environment you can ignore this message
+[05Dec2024 22:05:10.238] [main/WARN] [mixin/]: Error loading class: mezz/jei/library/load/PluginCaller (java.lang.ClassNotFoundException: mezz.jei.library.load.PluginCaller)
+[05Dec2024 22:05:10.652] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [villagerguardgunners]
+[05Dec2024 22:05:10.658] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.3.6).
+[05Dec2024 22:05:12.181] [main/WARN] [mixin/]: @Final field attackTargeting:Lnet/minecraft/world/entity/ai/targeting/TargetingConditions; in guardvillagers.mixins.json:DefendVillageGoalGolemMixin should be final
+[05Dec2024 22:05:12.932] [modloading-worker-0/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: HELLO FROM VILLAGER GUARD GUNNERS INITIALIZATION
+[05Dec2024 22:05:12.937] [modloading-worker-0/INFO] [betterdeserttemples/]: Creating directory for additional Better Desert Temples configuration at /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/run-data/config/betterdeserttemples/forge-1_20
+[05Dec2024 22:05:13.018] [modloading-worker-0/INFO] [dev.tonimatas.packetfixer.PacketFixer/]: Packet Fixer has been initialized successfully
+[05Dec2024 22:05:13.043] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 47.3.0, for MC 1.20.1 with MCP 20230612.114412
+[05Dec2024 22:05:13.089] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.3.0 Initialized
+[05Dec2024 22:05:13.104] [modloading-worker-0/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: 
+
+Loaded GUNSMITH trade items
+
+
+[05Dec2024 22:05:13.108] [modloading-worker-0/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: 
+
+Loaded all Villager Guard Gunner trade items!
+
+
+[05Dec2024 22:05:13.566] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/Users/bransonboggia/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.3.0_mapped_official_1.20.1/forge-1.20.1-47.3.0_mapped_official_1.20.1-recomp.jar%23184!/assets/.mcassetsroot' uses unexpected schema
+[05Dec2024 22:05:13.566] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/Users/bransonboggia/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.3.0_mapped_official_1.20.1/forge-1.20.1-47.3.0_mapped_official_1.20.1-recomp.jar%23184!/data/.mcassetsroot' uses unexpected schema
+[05Dec2024 22:05:13.571] [main/WARN] [net.minecraft.server.packs.PathPackResources/]: Ignored non-lowercase namespace: .DS_Store in /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/src/main/resources
+[05Dec2024 22:05:13.579] [main/WARN] [net.minecraft.server.packs.PathPackResources/]: Ignored non-lowercase namespace: .DS_Store in /Users/bransonboggia/Documents/Personal Documents/minecraft_stuff/custom_mods/[TaCZ]GuardVillagerGunners/src/main/resources
+[05Dec2024 22:05:13.582] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Creating global loot modifiers
+[05Dec2024 22:05:13.631] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Global Loot Modifiers : villagerguardgunners
+[05Dec2024 22:05:13.632] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!CREATING GLOBAL LOOT MODIFIERS!!!
+[05Dec2024 22:05:13.633] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_lists/easy.json
+[05Dec2024 22:05:13.634] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_lists/medium.json
+[05Dec2024 22:05:13.635] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_lists/hard.json
+[05Dec2024 22:05:13.635] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_lists/village.json
+[05Dec2024 22:05:13.635] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_lists/nether.json
+[05Dec2024 22:05:13.635] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_lists/water.json
+[05Dec2024 22:05:13.636] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_items/easy.json
+[05Dec2024 22:05:13.636] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_items/medium.json
+[05Dec2024 22:05:13.637] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_items/hard.json
+[05Dec2024 22:05:13.637] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_items/village.json
+[05Dec2024 22:05:13.637] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_items/nether.json
+[05Dec2024 22:05:13.637] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Loading loot table list: /data/villagerguardgunners/blueprints/loot_table_items/water.json
+[05Dec2024 22:05:13.639] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: classicr:minigun
+[05Dec2024 22:05:13.639] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading minecraft blueprint spawn rates
+[05Dec2024 22:05:13.647] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: awesomedungeonnether
+[05Dec2024 22:05:13.647] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading betterdungeons blueprint spawn rates
+[05Dec2024 22:05:13.647] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betterfortresses
+[05Dec2024 22:05:13.647] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: bygonenether
+[05Dec2024 22:05:13.647] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: cataclysm
+[05Dec2024 22:05:13.647] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading dungeons_arise blueprint spawn rates
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_plus
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: formationsnether
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: idas
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: infernalexp
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: integrated_stronghold
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: nova_structures
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: philipsruins
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: totw_additions
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: ccrp:aug_hbar
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: lradd:bam4
+[05Dec2024 22:05:13.648] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: cib:m4
+[05Dec2024 22:05:13.649] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: ccrp:keltec_p50
+[05Dec2024 22:05:13.649] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading minecraft blueprint spawn rates
+[05Dec2024 22:05:13.654] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading betterdeserttemples blueprint spawn rates
+[05Dec2024 22:05:13.656] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading betterdungeons blueprint spawn rates
+[05Dec2024 22:05:13.657] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betterjungletemples
+[05Dec2024 22:05:13.657] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betterstrongholds
+[05Dec2024 22:05:13.657] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: cataclysm
+[05Dec2024 22:05:13.657] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeoncrawl
+[05Dec2024 22:05:13.657] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading dungeons_arise blueprint spawn rates
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_arise_seven_seas
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_enhanced
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_plus
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: endrem
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: formationsoverworld
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: graveyard
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: idas
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: illagers_plus
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: integrated_stronghold
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: mostructures
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: nova_structures
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: philipsruins
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: underground_bunker
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: unstructured
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: valhelsia_structures
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: classicr:minigun
+[05Dec2024 22:05:13.667] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading minecraft blueprint spawn rates
+[05Dec2024 22:05:13.668] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: awesomedungeonend
+[05Dec2024 22:05:13.668] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: cataclysm
+[05Dec2024 22:05:13.668] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading dungeons_arise blueprint spawn rates
+[05Dec2024 22:05:13.669] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: endrem
+[05Dec2024 22:05:13.669] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: nova_structures
+[05Dec2024 22:05:13.669] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: totw_additions
+[05Dec2024 22:05:13.669] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading minecraft blueprint spawn rates
+[05Dec2024 22:05:13.669] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading betterdeserttemples blueprint spawn rates
+[05Dec2024 22:05:13.670] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betterstrongholds
+[05Dec2024 22:05:13.670] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betterwitchhuts
+[05Dec2024 22:05:13.670] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading ctov blueprint spawn rates
+[05Dec2024 22:05:13.671] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading dungeons_arise blueprint spawn rates
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_arise_seven_seas
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_enhanced
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_plus
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: formationsoverworld
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: graveyard
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: idas
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: imst
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: integrated_villages
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: monobank
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: mostructures
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: nova_structures
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: stoneholm
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: towers_of_the_wild
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: underground_bunker
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: valhelsia_structures
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: wares
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: wythers
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: yeehaw_towns
+[05Dec2024 22:05:13.676] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: yungsextras
+[05Dec2024 22:05:13.677] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: ccrp:keltec_p50
+[05Dec2024 22:05:13.677] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: tacz:deagle_golden
+[05Dec2024 22:05:13.677] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: tacz:ump45
+[05Dec2024 22:05:13.677] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading minecraft blueprint spawn rates
+[05Dec2024 22:05:13.678] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading betterdeserttemples blueprint spawn rates
+[05Dec2024 22:05:13.678] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading betterdungeons blueprint spawn rates
+[05Dec2024 22:05:13.679] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betterfortresses
+[05Dec2024 22:05:13.679] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betterjungletemples
+[05Dec2024 22:05:13.679] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betterstrongholds
+[05Dec2024 22:05:13.679] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: cataclysm
+[05Dec2024 22:05:13.679] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading ctov blueprint spawn rates
+[05Dec2024 22:05:13.681] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeoncrawl
+[05Dec2024 22:05:13.681] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading dungeons_arise blueprint spawn rates
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_arise_seven_seas
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_enhanced
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_plus
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: endrem
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: formationsoverworld
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: goodending
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: graveyard
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: idas
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: illagers_plus
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: imst
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: integrated_stronghold
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: integrated_villages
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: kaisyn
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: mostructures
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: nova_structures
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: philipsruins
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: stoneholm
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: takesapillage
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: tlc
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: underground_bunker
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: unstructured
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: valhelsia_structures
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: wythers
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: yeehaw_towns
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Skipping blueprint spawn rate: ccrp:keltec_p50
+[05Dec2024 22:05:13.691] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading minecraft blueprint spawn rates
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: betteroceanmonuments
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: cataclysm
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: !!!Loading dungeons_arise blueprint spawn rates
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_arise_seven_seas
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_enhanced
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: dungeons_plus
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: formationsoverworld
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: idas
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: mostructures
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: nova_structures
+[05Dec2024 22:05:13.692] [main/INFO] [com.gamergaming.villagerguardgunners.VillagerGuardGunners/]: Mod not loaded: philipsruins
+[05Dec2024 22:05:13.774] [main/INFO] [net.minecraft.data.DataGenerator/]: Global Loot Modifiers : villagerguardgunners finished after 142 ms
+[05Dec2024 22:05:13.774] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 143 ms
+[05Dec2024 22:05:13.778] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 182, old count: 158, new count: 183, removed stale: 0, written: 25

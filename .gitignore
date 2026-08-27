@@ -18,8 +18,15 @@ build
 .gradle
 
 # other
+.DS_Store
 eclipse
 run
+run-gametest
+run-phase8-performance
+run-data
+libs
+/logs/
+tempCodeRunnerFile.*
 
 # Files from Forge MDK
 forge*changelog.txt

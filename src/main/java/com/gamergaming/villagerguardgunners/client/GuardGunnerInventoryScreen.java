@@ -25,14 +25,13 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
 
     private static final ResourceLocation GUARD_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(VillagerGuardGunners.MODID, "textures/gui/gunner_inventory.png");
 
-    // private static final ResourceLocation GUARD_GUI_TEXTURES = new ResourceLocation(GuardVillagers.MODID, "textures/container/inventory.png");
     private static final ResourceLocation GUARD_FOLLOWING_ICON = ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, "textures/container/following_icons.png");
     private static final ResourceLocation GUARD_NOT_FOLLOWING_ICON = ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, "textures/container/not_following_icons.png");
     private static final ResourceLocation PATROL_ICON = ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, "textures/container/patrollingui.png");
     private static final ResourceLocation NOT_PATROLLING_ICON = ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, "textures/container/notpatrollingui.png");
     
     private final Guard guard;
-    private Player player;
+    private final Player player;
     private float mousePosX;
     private float mousePosY;
     private boolean buttonPressed;
@@ -50,17 +49,15 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         super.init();
         int buttonWidth = 20;
         int buttonHeight = 18;
-        int buttonX = this.leftPos + this.imageWidth - 25 - buttonWidth;
         int buttonY = this.topPos + 5;
 
-        if (GuardConfig.followHero && player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE) || !GuardConfig.followHero) {
-            
-            this.addRenderableWidget(new GuardGuiButton(buttonX, buttonY, buttonWidth, buttonHeight, 0, 0, 19, GUARD_FOLLOWING_ICON, GUARD_NOT_FOLLOWING_ICON, true, (p_214086_1_) -> {
+        if ((GuardConfig.followHero && player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) || !GuardConfig.followHero) {
+            this.addRenderableWidget(new GuardGuiButton(this.leftPos + 136, buttonY, buttonWidth, buttonHeight, 0, 0, 19, GUARD_FOLLOWING_ICON, GUARD_NOT_FOLLOWING_ICON, true, (button) -> {
                 GuardPacketHandler.INSTANCE.sendToServer(new GuardFollowPacket(guard.getId()));
             }));
         }
-        if (GuardConfig.setGuardPatrolHotv && player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE) || !GuardConfig.setGuardPatrolHotv) {
-            this.addRenderableWidget(new GuardGuiButton(buttonX, buttonY, buttonWidth, buttonHeight, 0, 0, 19, PATROL_ICON, NOT_PATROLLING_ICON, false, (p_214086_1_) -> {
+        if ((GuardConfig.setGuardPatrolHotv && player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) || !GuardConfig.setGuardPatrolHotv) {
+            this.addRenderableWidget(new GuardGuiButton(this.leftPos + 156, buttonY, buttonWidth, buttonHeight, 0, 0, 19, PATROL_ICON, NOT_PATROLLING_ICON, false, (button) -> {
                 buttonPressed = !buttonPressed;
                 GuardPacketHandler.INSTANCE.sendToServer(new GuardSetPatrolPosPacket(guard.getId(), buttonPressed));
             }));
@@ -87,6 +84,8 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         Component guardArmorText = Component.translatable("guardinventory.armor", armor);
         graphics.drawString(font, guardHealthText, 80, 20, 4210752, false);
         graphics.drawString(font, guardArmorText, 80, 30, 4210752, false);
+        Component ammoLabel = Component.translatable("container.villagerguardgunners.ammo");
+        graphics.drawString(font, ammoLabel, this.imageWidth - 6 - font.width(ammoLabel), 35, 4210752, false);
     }
 
     @Override

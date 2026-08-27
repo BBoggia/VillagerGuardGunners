@@ -1,26 +1,24 @@
 package com.gamergaming.villagerguardgunners.init;
 
-import java.util.function.Supplier;
-
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
-import com.gamergaming.villagerguardgunners.compat.fzzy_config.GeneralConfig;
-import com.gamergaming.villagerguardgunners.compat.fzzy_config.GuardGunnerConfig;
+import com.gamergaming.villagerguardgunners.config.LegacyConfigNotice;
+import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
-import me.fzzyhmstrs.fzzy_config.config.Config;
 
-public class ModConfigs {
+public final class ModConfigs {
 
-    public static final String BASE_KEY = "config." + VillagerGuardGunners.MODID + ".";
+    public static final String BASE_TRANSLATION_KEY = "config." + VillagerGuardGunners.MODID + ".";
 
-    public static final GeneralConfig GENERAL = register(GeneralConfig::new);
-    public static final GuardGunnerConfig GUARD_GUNNER = register(GuardGunnerConfig::new);
+    public static final VillagerGuardGunnersConfig GUARD_GUNNERS =
+            ConfigApiJava.registerAndLoadConfig(VillagerGuardGunnersConfig::new, RegisterType.BOTH);
 
-    public static void init() {
+    private ModConfigs() {
     }
 
-    private static <T extends Config> T register(Supplier<T> supplier) {
-        return ConfigApiJava.registerAndLoadConfig(supplier, RegisterType.BOTH);
+    public static void init() {
+        // Loading this class registers and loads the config before gameplay systems use it.
+        LegacyConfigNotice.warnIfPresent();
     }
 }

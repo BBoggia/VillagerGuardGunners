@@ -5,10 +5,12 @@
   "package": "com.gamergaming.villagerguardgunners.mixin",
   "refmap": "villagerguardgunners.refmap.json",
   "mixins": [
-    "GuardMixin"
+    "GuardMixin",
+    "RaiseShieldGoalMixin"
   ],
   "client": [
-    "GuardRendererMixin"
+    "client.GuardModelMixin",
+    "client.GuardSteveModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

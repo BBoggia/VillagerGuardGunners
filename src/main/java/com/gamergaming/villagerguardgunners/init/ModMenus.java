@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.init;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
+import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
@@ -12,7 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import tallestegg.guardvillagers.entities.Guard;
 
-public class ModMenus {
+public final class ModMenus {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, VillagerGuardGunners.MODID);
 
     public static final RegistryObject<MenuType<GuardGunnerContainer>> GUARD_GUNNER_CONTAINER = MENUS.register("guard_gunner_container", () ->
@@ -21,13 +22,20 @@ public class ModMenus {
             Level level = inv.player.level();
             Entity entity = level.getEntity(entityId);
             if (entity instanceof Guard guard) {
-                return new GuardGunnerContainer(windowId, inv, guard.guardInventory, guard);
+                return new GuardGunnerContainer(
+                        windowId,
+                        inv,
+                        guard.guardInventory,
+                        GuardAmmoAccess.getAmmoHandler(guard),
+                        guard);
             }
-            return null;
+            throw new IllegalStateException("Guard gunner menu opened for missing guard entity " + entityId);
         })
     );
 
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);
     }
+
+    private ModMenus() {}
 }

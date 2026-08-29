@@ -12,7 +12,7 @@ rebalance are not part of the current implementation.
 
 ## Supported versions
 
-The 1.0.0 branch is deliberately locked to this reviewed combination:
+The 1.1 branch is deliberately locked to this reviewed combination:
 
 | Component | Version |
 | --- | --- |

@@ -1006,7 +1006,7 @@ tasks.register('verifyManualReleaseChecklist') {
 
 tasks.register('prepareCurseForgeRelease', Sync) {
     group = 'distribution'
-    description = 'Builds the verified CurseForge 1.0 release handoff directory.'
+    description = 'Builds the verified CurseForge release handoff directory.'
     dependsOn tasks.named('verifyAmmunitionReleaseCandidate'),
             tasks.named('verifyManualReleaseChecklist')
 
@@ -1015,10 +1015,10 @@ tasks.register('prepareCurseForgeRelease', Sync) {
     from('docs/curseforge-description.md') {
         rename { 'DESCRIPTION.md' }
     }
-    from('docs/curseforge-release-notes-1.0.0.md') {
-        rename { 'CHANGELOG-1.0.0.md' }
+    from("docs/curseforge-release-notes-${mod_version}.md") {
+        rename { "CHANGELOG-${mod_version}.md" }
     }
-    from('docs/curseforge-upload-1.0.0.md') {
+    from("docs/curseforge-upload-${mod_version}.md") {
         rename { 'UPLOAD-CHECKLIST.md' }
     }
     from('LICENSE.txt')

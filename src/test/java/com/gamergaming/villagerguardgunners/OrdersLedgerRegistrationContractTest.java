@@ -87,9 +87,9 @@ final class OrdersLedgerRegistrationContractTest {
         String readme = read("README.md");
         String changelog = read("CHANGELOG.md");
         String curseForgeDescription = read("docs/curseforge-description.md");
-        String releaseNotes = read("docs/curseforge-release-notes-1.0.0.md");
+        String releaseNotes = read("docs/curseforge-release-notes-1.1.md");
         String checklist = read("docs/release-checklist.md");
-        String uploadGuide = read("docs/curseforge-upload-1.0.0.md");
+        String uploadGuide = read("docs/curseforge-upload-1.1.md");
 
         assertAll(
                 () -> assertTrue(guide.contains("Book and Quill")),
@@ -107,9 +107,9 @@ final class OrdersLedgerRegistrationContractTest {
                 () -> assertTrue(checklist.contains("ORDER-LEDGER-04")),
                 () -> assertTrue(uploadGuide.contains("docs/curseforge-description.md")),
                 () -> assertTrue(uploadGuide.contains(
-                        "docs/curseforge-release-notes-1.0.0.md")),
+                        "docs/curseforge-release-notes-1.1.md")),
                 () -> assertFalse(uploadGuide.contains("`DESCRIPTION.md`")),
-                () -> assertFalse(uploadGuide.contains("`CHANGELOG-1.0.0.md`")));
+                () -> assertFalse(uploadGuide.contains("`CHANGELOG-1.1.md`")));
     }
 
     private static String read(String relativePath) throws IOException {

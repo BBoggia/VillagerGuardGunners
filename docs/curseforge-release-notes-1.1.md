@@ -1,57 +1,60 @@
-# Villager Guard Gunners 1.0.0
+# Villager Guard Gunners 1.1
 
-Initial public release for Minecraft 1.20.1 Forge.
+Feature update for Minecraft 1.20.1 Forge.
 
-## Features
+## Added in 1.1
 
 <ul>
   <li>
-    <strong>Native TaCZ firearm handling</strong><br>
-    Guards use TaCZ's own aiming, firing, projectile, reload, manual-action,
-    heat, charge, attachment, sound, and synchronization systems.
+    <strong>Guard-inventory combat status</strong><br>
+    A color-coded, hoverable status explains aiming, visibility, range,
+    friendly-lane, movement, reload, action, cooldown, and dry-ammunition
+    states.<br><br>
+  </li>
+  <li>
+    <strong>Per-guard orders</strong><br>
+    Individual guards can override engagement policy, tactical profile,
+    explosive permission, ammunition logistics, combat movement, and maximum
+    firing range without bypassing server safety limits.<br><br>
+  </li>
+  <li>
+    <strong>Orders Ledger</strong><br>
+    A reusable Orders Ledger safely copies all seven behavior orders between
+    guards without transferring equipment, ammunition, ownership, or patrol
+    state.<br><br>
   </li>
   <li>
     <strong>Difficulty-scaled natural guard loadouts</strong><br>
-    Eligible guards can spawn with a loaded gun and one full compatible ammunition stack.
-    Built-in Easy, Normal, and Hard pools can be replaced by datapacks, and
-    persistent local caps remain accurate across unloaded chunks.
+    Eligible guards can receive a loaded TaCZ gun and one full compatible ammunition stack.
+    Easy, Normal, and Hard use conservative built-in pools, while datapacks can
+    replace the weighted gun pools for modpacks.<br><br>
   </li>
   <li>
-    <strong>Weapon-specific tactics</strong><br>
-    Configurable profiles control preferred distance, retreat behavior, firing
-    limits, aim precision, and visibility requirements without changing TaCZ
-    weapon statistics.
+    <strong>Natural-loadout controls and diagnostics</strong><br>
+    Configure eligible spawn sources, difficulty chances, nearby caps,
+    crossbow replacement, explosives, and datapack pool IDs. Issued guard/gun
+    provenance and selection results are available through
+    <code>/vgg inspect &lt;guard&gt;</code>.<br><br>
+  </li>
+</ul>
+
+<br>
+
+## Improved in 1.1
+
+<ul>
+  <li>
+    Natural-gunner caps now remain accurate across unloaded chunks without a
+    recurring entity scan.<br><br>
   </li>
   <li>
-    <strong>Ammunition quality-of-life</strong><br>
-    Guards receive three persistent ammunition slots and support authorized
-    quick deposit, bounded dropped-ammo pickup, emergency sharing, and depleted
-    finite ammo-box preservation.
+    Runtime gun scripts that enable or alter explosions now receive the same
+    explosive-order, blast-standoff, and shot-safety handling as guns with a
+    base explosion definition.<br><br>
   </li>
   <li>
-    <strong>Ally and explosive protection</strong><br>
-    Guards avoid unsafe firing lanes and protect guards, villagers, golems,
-    owners, owned entities, scoreboard allies, and modpack-defined allies.
-    Launchers use blast-aware standoff and optional terrain preservation,
-    including when runtime scripts enable or alter explosions.
-  </li>
-  <li>
-    <strong>Rules and per-guard orders</strong><br>
-    Configure rules of engagement, retaliation, ammunition logistics, combat
-    movement, maximum range, and explosive permission globally or per guard.
-    A reusable Orders Ledger safely copies behavior settings without copying
-    equipment or ownership.
-  </li>
-  <li>
-    <strong>Modpack and operator support</strong><br>
-    Includes server-authoritative Fzzy Config settings, reloadable datapack
-    pools and entity tags, compatibility hooks, and
-    <code>/vgg inspect &lt;guard&gt;</code> diagnostics.
-  </li>
-  <li>
-    <strong>Performance-conscious implementation</strong><br>
-    Combat, navigation, pickup, sharing, metadata, and population work use
-    bounded, cached, staggered, or event-driven paths.
+    Unavailable TaCZ gun IDs selected from datapack loadout pools now produce a
+    deduplicated actionable warning after each reload.<br><br>
   </li>
 </ul>
 

@@ -49,8 +49,8 @@ final class NaturalGuardLoadoutReleaseReadinessContractTest {
     @Test
     void curseForgeHandoffDescribesTheShippedNaturalLoadoutContract() throws IOException {
         String description = read("docs/curseforge-description.md");
-        String releaseNotes = read("docs/curseforge-release-notes-1.0.0.md");
-        String upload = read("docs/curseforge-upload-1.0.0.md");
+        String releaseNotes = read("docs/curseforge-release-notes-1.1.md");
+        String upload = read("docs/curseforge-upload-1.1.md");
 
         assertAll(
                 () -> assertTrue(description.contains(

@@ -2,7 +2,34 @@
 
 All notable Villager Guard Gunners changes are recorded here.
 
-## 1.0.0 - Unreleased
+## 1.1 - 2026-08-29
+
+### Added
+
+- A color-coded, hoverable guard-inventory combat status for quickly diagnosing
+  aiming, range, friendly-lane, movement, reload, action, cooldown, and dry-
+  ammunition states.
+- Persistent per-guard orders for engagement policy, tactical profile,
+  explosive permission, ammunition logistics, combat movement, and maximum
+  firing range.
+- A reusable Orders Ledger that safely copies all seven behavior orders without
+  transferring equipment, ammunition, ownership, or patrol state.
+- Difficulty-scaled natural guard loadouts with one full compatible ammunition
+  stack, reloadable datapack pools, configurable spawn sources and caps, and
+  authenticated guard/gun provenance.
+
+### Changed
+
+- Made nearby natural-gunner caps remain accurate across unloaded chunks
+  without adding a recurring entity scan.
+- Matched TaCZ runtime script-only explosion behavior for loadout filtering,
+  per-guard orders, blast standoff, and shot-time safety.
+- Added deduplicated warnings for unavailable TaCZ gun IDs selected from
+  datapack loadout pools.
+- Expanded `/vgg inspect <guard>` with per-guard orders, combat status, and
+  natural-loadout selection and provenance details.
+
+## 1.0.0
 
 ### Added
 

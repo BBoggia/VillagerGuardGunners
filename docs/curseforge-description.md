@@ -120,7 +120,7 @@ are carrying without replacing TaCZ's projectiles or weapon behavior.
 
 ## Requirements
 
-Villager Guard Gunners `1.0.0` requires:
+Villager Guard Gunners `1.1` requires:
 
 <ul>
   <li><strong>Minecraft 1.20.1</strong></li>
@@ -132,7 +132,7 @@ Villager Guard Gunners `1.0.0` requires:
 </ul>
 
 Install the mod and all required dependencies on both the client and server.
-The initial release is deliberately locked to this reviewed version set.
+This release is deliberately locked to this reviewed version set.
 
 <br>
 

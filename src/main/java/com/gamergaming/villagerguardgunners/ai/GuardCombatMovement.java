@@ -17,20 +17,20 @@ final class GuardCombatMovement {
             int unseenSamples,
             int unseenSamplesBeforeApproach,
             double distanceSquared,
-            double closeRangeSquared,
-            double effectiveRangeSquared,
+            double retreatRangeSquared,
+            double preferredApproachRangeSquared,
             boolean friendlyBlockingShot) {
-        if (patrolling) {
-            return State.HOLD;
-        }
-        if (distanceSquared <= Math.max(0.0D, closeRangeSquared)) {
+        if (distanceSquared <= Math.max(0.0D, retreatRangeSquared)) {
             return State.RETREAT;
         }
         if (canSeeTarget && friendlyBlockingShot) {
             return State.REPOSITION;
         }
+        if (patrolling) {
+            return State.HOLD;
+        }
         if (unseenSamples >= unseenSamplesBeforeApproach
-                || distanceSquared > effectiveRangeSquared) {
+                || distanceSquared > preferredApproachRangeSquared) {
             return State.APPROACH;
         }
         return State.HOLD;

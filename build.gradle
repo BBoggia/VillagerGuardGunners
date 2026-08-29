@@ -29,20 +29,53 @@ def phase8PerformanceEnabled = providers.gradleProperty('phase8Performance')
         .map { it.toBoolean() }
         .orElse(false)
 def phase8PerformanceReportDirectory = layout.buildDirectory.dir('reports/phase8-performance')
+def releaseCandidateEvidenceDirectory = layout.buildDirectory.dir('reports/release-candidate')
+def curseForgeReleaseDirectory = layout.buildDirectory.dir(
+        "distributions/curseforge/${mod_version}")
+def generatedGameTestArenaDirectory = layout.buildDirectory.dir('generated/gametest-arena')
+def phase8ArtifactSha256Property = 'villagerguardgunners.phase8ProductionArtifactSha256'
+def sha256OfFile = { File file ->
+    java.security.MessageDigest.getInstance('SHA-256')
+            .digest(file.bytes)
+            .collect { String.format('%02x', it & 0xff) }
+            .join()
+}
 
 sourceSets {
     gameTest {
         java.srcDir 'src/gametest/java'
         resources.srcDir 'src/gametest/resources'
+        resources.srcDir generatedGameTestArenaDirectory
         compileClasspath += sourceSets.main.output
         runtimeClasspath += output + compileClasspath
     }
     performanceGameTest {
         java.srcDir 'src/perftest/java'
         resources.srcDir 'src/perftest/resources'
+        resources.srcDir generatedGameTestArenaDirectory
         compileClasspath += sourceSets.main.output
         runtimeClasspath += output + compileClasspath
     }
+}
+
+tasks.register('generateIsolatedGameTestArena') {
+    description = 'Generates the padded development-only structure used to isolate GameTest fixtures.'
+    File arena = generatedGameTestArenaDirectory.get().file(
+            'data/minecraft/structures/villagerguardgunners/gametest_arena.nbt').asFile
+    outputs.file arena
+    doLast {
+        arena.parentFile.mkdirs()
+        arena.bytes = Base64.decoder.decode(
+                'H4sIAAAAAAAC/2WPzU4DMQyEB7Y/2VQV3JB4gj4DZ86IE9eVd+sWl2y8SixV8Aa8NYkK7KGW5jC2xprPAy0WWb64AVC1K3qsauE4mphwRp0Wqz7o8JF9MTceTezNYXlSiQaXNATqAztsDhIpdNnIGNtRIg+JDvZEkhwWkUbGw7wdte8GjcWa1vukGnA333mc7NPhVva4n7cnOWY6O6yM0pHtKlDKNpPmP6b/abC89LoArScKbMa/RP416cSpEhcMTVL4yUQj/F7PsYua7B2l5EuFuKpTvm+eyeiNU64hbL/xA1qm2jdgAQAA')
+    }
+}
+
+tasks.named('processGameTestResources').configure {
+    dependsOn tasks.named('generateIsolatedGameTestArena')
+}
+
+tasks.named('processPerformanceGameTestResources').configure {
+    dependsOn tasks.named('generateIsolatedGameTestArena')
 }
 
 configurations {
@@ -144,6 +177,20 @@ dependencies {
 tasks.named('test', Test).configure {
     useJUnitPlatform()
     systemProperty 'villagerguardgunners.projectDir', project.layout.projectDirectory.asFile.absolutePath
+    // Several contracts intentionally inspect production/test sources and
+    // release documentation as text. Declare those external reads so Gradle
+    // cannot reuse a stale green test result after one of them changes.
+    inputs.files(
+            fileTree('src/main'),
+            fileTree('src/gametest'),
+            fileTree('src/perftest'),
+            fileTree('docs'),
+            files(
+                    'build.gradle',
+                    'gradle.properties',
+                    'README.md',
+                    'CHANGELOG.md',
+                    '.github/workflows/ci.yml'))
 }
 
 tasks.named('check').configure {
@@ -218,14 +265,53 @@ tasks.register('verifyReleaseArtifact') {
                     'mixins.villagerguardgunners.json',
                     'villagerguardgunners.refmap.json',
                     'assets/villagerguardgunners/textures/gui/gunner_inventory.png',
+                    'assets/villagerguardgunners/lang/en_us.json',
+                    'assets/villagerguardgunners/models/item/orders_ledger.json',
+                    'data/villagerguardgunners/recipes/orders_ledger.json',
+                    'data/villagerguardgunners/natural_guard_loadouts/easy.json',
+                    'data/villagerguardgunners/natural_guard_loadouts/normal.json',
+                    'data/villagerguardgunners/natural_guard_loadouts/hard.json',
+                    'data/villagerguardgunners/tags/entity_types/guard_allies.json',
+                    'data/villagerguardgunners/tags/entity_types/always_engage.json',
+                    'data/villagerguardgunners/tags/entity_types/never_engage.json',
                     'com/gamergaming/villagerguardgunners/VillagerGuardGunners.class',
+                    'com/gamergaming/villagerguardgunners/ammunition/AmmoCompatibility.class',
+                    'com/gamergaming/villagerguardgunners/ammunition/GuardDroppedAmmoPickup.class',
+                    'com/gamergaming/villagerguardgunners/ammunition/GuardAmmoMaintenance.class',
+                    'com/gamergaming/villagerguardgunners/ammunition/GuardAmmoSharing.class',
+                    'com/gamergaming/villagerguardgunners/ammunition/GuardAmmoSummary.class',
+                    'com/gamergaming/villagerguardgunners/ammunition/GuardAmmoTransactions.class',
                     'com/gamergaming/villagerguardgunners/config/VillagerGuardGunnersConfig.class',
                     'com/gamergaming/villagerguardgunners/init/ModConfigs.class',
+                    'com/gamergaming/villagerguardgunners/init/ModItems.class',
+                    'com/gamergaming/villagerguardgunners/item/OrdersLedgerItem.class',
+                    'com/gamergaming/villagerguardgunners/api/GuardNaturalLoadoutAccess.class',
+                    'com/gamergaming/villagerguardgunners/orders/GuardOrderPermissions.class',
+                    'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplate.class',
+                    'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplateInteractions.class',
+                    'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplateService.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutPool.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutPools.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutDiagnostics.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutIssuance.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutProvenance.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutProvenanceCodec.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutSelector.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardSpawnIntegration.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardSpawnRules.class',
                     'com/gamergaming/villagerguardgunners/ai/GuardGunCombatGoal.class',
+                    'com/gamergaming/villagerguardgunners/api/GuardAllyProtection.class',
                     'com/gamergaming/villagerguardgunners/command/GuardGunnerCommands.class',
                     'com/gamergaming/villagerguardgunners/combat/NativeGunController.class',
+                    'com/gamergaming/villagerguardgunners/combat/engagement/EngagementMode.class',
+                    'com/gamergaming/villagerguardgunners/combat/engagement/GuardRulesOfEngagement.class',
+                    'com/gamergaming/villagerguardgunners/combat/tactics/TacticalEnvelope.class',
+                    'com/gamergaming/villagerguardgunners/combat/tactics/TacticalProfile.class',
+                    'com/gamergaming/villagerguardgunners/combat/tactics/WeaponTacticalResolver.class',
                     'com/gamergaming/villagerguardgunners/mixin/GuardMixin.class',
-                    'com/gamergaming/villagerguardgunners/mixin/RaiseShieldGoalMixin.class'
+                    'com/gamergaming/villagerguardgunners/mixin/ItemEntityMixin.class',
+                    'com/gamergaming/villagerguardgunners/mixin/RaiseShieldGoalMixin.class',
+                    'com/gamergaming/villagerguardgunners/mixin/VillagerToGuardMixin.class'
             ]
             List<String> missing = requiredEntries.findAll { !entries.contains(it) }
             if (!missing.isEmpty()) {
@@ -280,8 +366,45 @@ tasks.register('verifyReleaseArtifact') {
             String refmap = readEntry('villagerguardgunners.refmap.json')
             if (refmap.trim().isEmpty()
                     || !refmap.contains('mixin/GuardMixin')
-                    || !refmap.contains('mixin/RaiseShieldGoalMixin')) {
+                    || !refmap.contains('mixin/ItemEntityMixin')
+                    || !refmap.contains('mixin/RaiseShieldGoalMixin')
+                    || !refmap.contains('mixin/VillagerToGuardMixin')) {
                 throw new GradleException('Release mixin refmap is empty or missing common-server mappings')
+            }
+
+            Object mixinMetadata = new groovy.json.JsonSlurper().parseText(
+                    readEntry('mixins.villagerguardgunners.json'))
+            if (mixinMetadata.mixins != [
+                        'GuardMixin',
+                        'ItemEntityMixin',
+                        'RaiseShieldGoalMixin',
+                        'VillagerToGuardMixin'
+                    ]
+                    || mixinMetadata.client != [
+                        'client.GuardModelMixin',
+                        'client.GuardSteveModelMixin'
+                    ]) {
+                throw new GradleException(
+                        'Release mixin metadata no longer isolates client-only model mixins')
+            }
+
+            String productionPackage = 'com/gamergaming/villagerguardgunners/'
+            List<String> clientOnlyPrefixes = [
+                    "${productionPackage}client/",
+                    "${productionPackage}mixin/client/"
+            ]
+            Set<String> commonClassesWithClientReferences = entries.findAll { entry ->
+                entry.startsWith(productionPackage)
+                        && entry.endsWith('.class')
+                        && !clientOnlyPrefixes.any { prefix -> entry.startsWith(prefix) }
+                        && new String(
+                                zip.getInputStream(zip.getEntry(entry)).readAllBytes(),
+                                java.nio.charset.StandardCharsets.ISO_8859_1)
+                                .contains('net/minecraft/client/')
+            }
+            if (!commonClassesWithClientReferences.isEmpty()) {
+                throw new GradleException(
+                        "Common-server classes contain client-only references: ${commonClassesWithClientReferences}")
             }
         } finally {
             zip.close()
@@ -294,8 +417,16 @@ tasks.named('check').configure {
 }
 
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    if (phase8PerformanceEnabled.get()) {
+        dependsOn tasks.named('reobfJar')
+    }
     doFirst {
         if (phase8PerformanceEnabled.get()) {
+            File archive = tasks.named('jar', Jar).get().archiveFile.get().asFile
+            if (!archive.isFile()) {
+                throw new GradleException("Performance run production artifact is missing: ${archive}")
+            }
+            systemProperty phase8ArtifactSha256Property, sha256OfFile(archive)
             delete phase8PerformanceReportDirectory
             delete layout.projectDirectory.dir('run-phase8-performance/world')
             delete layout.projectDirectory.file(
@@ -303,6 +434,8 @@ tasks.matching { it.name == 'runGameTestServer' }.configureEach {
             phase8PerformanceReportDirectory.get().asFile.mkdirs()
         } else {
             delete layout.projectDirectory.dir('run-gametest/world')
+            delete layout.projectDirectory.file(
+                    'run-gametest/config/villagerguardgunners/guard_gunners.toml')
         }
     }
 }
@@ -310,25 +443,58 @@ tasks.matching { it.name == 'runGameTestServer' }.configureEach {
 tasks.register('verifyPhase8PerformanceReports') {
     group = 'verification'
     description = 'Validates the complete output from the opt-in Phase 8 performance GameTest matrix.'
+    dependsOn tasks.named('verifyReleaseArtifact')
 
     doLast {
         File reportDirectory = phase8PerformanceReportDirectory.get().asFile
-        Map<String, Integer> requiredScenarios = [
-                'unarmed-idle-baseline-100': 0,
-                'idle-armed-100'           : 0,
-                'semi-10'                  : 1,
-                'semi-25'                  : 1,
-                'semi-50'                  : 1,
-                'automatic-10'             : 1,
-                'automatic-25'             : 1,
-                'automatic-50'             : 1,
-                'automatic-shotgun-10'     : 1,
-                'explosive-10'             : 20,
-                'obstacle-navigation-25'   : 0,
-                'protected-crossing-25'    : 1
+        Map<String, Map<String, Object>> requiredScenarios = [
+                'unarmed-idle-baseline-100': [guards: 100, weapon: 'none',
+                                               workload: 'idle', minimumShotEvidence: 0],
+                'idle-armed-100'           : [guards: 100, weapon: 'tacz:glock_17',
+                                               workload: 'idle', minimumShotEvidence: 0],
+                'semi-10'                  : [guards: 10, weapon: 'tacz:glock_17',
+                                               workload: 'clear_lanes', minimumShotEvidence: 10],
+                'semi-25'                  : [guards: 25, weapon: 'tacz:glock_17',
+                                               workload: 'clear_lanes', minimumShotEvidence: 25],
+                'semi-50'                  : [guards: 50, weapon: 'tacz:glock_17',
+                                               workload: 'clear_lanes', minimumShotEvidence: 50],
+                'automatic-10'             : [guards: 10, weapon: 'tacz:ak47',
+                                               workload: 'clear_lanes', minimumShotEvidence: 10],
+                'automatic-25'             : [guards: 25, weapon: 'tacz:ak47',
+                                               workload: 'clear_lanes', minimumShotEvidence: 25],
+                'automatic-50'             : [guards: 50, weapon: 'tacz:ak47',
+                                               workload: 'clear_lanes', minimumShotEvidence: 50],
+                'automatic-shotgun-10'     : [guards: 10, weapon: 'tacz:aa12',
+                                               workload: 'clear_lanes', minimumShotEvidence: 10],
+                'explosive-10'             : [guards: 10, weapon: 'tacz:rpg7',
+                                               workload: 'clear_lanes', minimumShotEvidence: 20],
+                'obstacle-navigation-25'   : [guards: 25, weapon: 'tacz:glock_17',
+                                               workload: 'obstacles', minimumShotEvidence: 0],
+                'protected-crossing-25'    : [guards: 25, weapon: 'tacz:ak47',
+                                               workload: 'protected_lanes', minimumShotEvidence: 25],
+                'dropped-ammo-pressure-100': [guards: 100, weapon: 'tacz:glock_17',
+                                               workload: 'dropped_ammo_pressure', minimumShotEvidence: 0,
+                                               minimumPersistentDroppedAmmo: 100],
+                'dry-sharing-pressure-50'  : [guards: 50, weapon: 'tacz:glock_17',
+                                               workload: 'dry_sharing_pressure', minimumShotEvidence: 0,
+                                               minimumAmmoSharingAttempts: 50]
         ]
         Map<String, Object> expectedConfig = [
                 'enabled'                                      : true,
+                'naturalLoadouts.enabled'                      : true,
+                'naturalLoadouts.enabledSpawnSources'          : ['STRUCTURE'],
+                'naturalLoadouts.replaceCrossbowsOnly'         : true,
+                'naturalLoadouts.nearbyCapRadius'              : 64.0D,
+                'naturalLoadouts.allowExplosiveWeapons'        : false,
+                'naturalLoadouts.easy.upgradeChance'           : 0.35D,
+                'naturalLoadouts.easy.maximumNearby'           : 1,
+                'naturalLoadouts.easy.poolId'                  : 'villagerguardgunners:easy',
+                'naturalLoadouts.normal.upgradeChance'         : 0.5D,
+                'naturalLoadouts.normal.maximumNearby'         : 2,
+                'naturalLoadouts.normal.poolId'                : 'villagerguardgunners:normal',
+                'naturalLoadouts.hard.upgradeChance'           : 0.65D,
+                'naturalLoadouts.hard.maximumNearby'           : 2,
+                'naturalLoadouts.hard.poolId'                  : 'villagerguardgunners:hard',
                 'combat.requiredVisibleTicks'                  : 5,
                 'combat.maximumEngagementRange'                : 32.0D,
                 'combat.closeRangeDistance'                    : 4.0D,
@@ -337,7 +503,68 @@ tasks.register('verifyPhase8PerformanceReports') {
                 'movement.retreatSpeed'                        : 0.75D,
                 'movement.repositionSpeed'                     : 0.75D,
                 'movement.friendlyRepositionTicks'             : 20,
+                'tactics.typeProfiles.pistol'                  : 'SKIRMISHER',
+                'tactics.typeProfiles.smg'                     : 'SKIRMISHER',
+                'tactics.typeProfiles.rifle'                   : 'GENERALIST',
+                'tactics.typeProfiles.sniper'                  : 'MARKSMAN',
+                'tactics.typeProfiles.shotgun'                 : 'BREACHER',
+                'tactics.typeProfiles.mg'                      : 'SUPPORT',
+                'tactics.typeProfiles.rpg'                     : 'DEMOLITIONS',
+                'tactics.gunOverrides'                         : [:],
+                'tactics.generalist.preferredRangeMultiplier' : 1.0D,
+                'tactics.generalist.retreatDistanceMultiplier': 1.0D,
+                'tactics.generalist.visibleTicksAdjustment'   : 0,
+                'tactics.generalist.aimToleranceMultiplier'   : 1.0D,
+                'tactics.generalist.limitFiringToEffectiveRange': false,
+                'tactics.generalist.maximumFiringRangeMultiplier': 1.0D,
+                'tactics.skirmisher.preferredRangeMultiplier' : 0.75D,
+                'tactics.skirmisher.retreatDistanceMultiplier': 1.0D,
+                'tactics.skirmisher.visibleTicksAdjustment'   : -1,
+                'tactics.skirmisher.aimToleranceMultiplier'   : 1.0D,
+                'tactics.skirmisher.limitFiringToEffectiveRange': true,
+                'tactics.skirmisher.maximumFiringRangeMultiplier': 1.25D,
+                'tactics.breacher.preferredRangeMultiplier'   : 0.65D,
+                'tactics.breacher.retreatDistanceMultiplier'  : 1.0D,
+                'tactics.breacher.visibleTicksAdjustment'     : 0,
+                'tactics.breacher.aimToleranceMultiplier'     : 1.0D,
+                'tactics.breacher.limitFiringToEffectiveRange': true,
+                'tactics.breacher.maximumFiringRangeMultiplier': 1.1D,
+                'tactics.marksman.preferredRangeMultiplier'   : 1.0D,
+                'tactics.marksman.retreatDistanceMultiplier'  : 2.0D,
+                'tactics.marksman.visibleTicksAdjustment'     : 3,
+                'tactics.marksman.aimToleranceMultiplier'     : 0.65D,
+                'tactics.marksman.limitFiringToEffectiveRange': false,
+                'tactics.marksman.maximumFiringRangeMultiplier': 1.0D,
+                'tactics.support.preferredRangeMultiplier'    : 0.9D,
+                'tactics.support.retreatDistanceMultiplier'   : 1.5D,
+                'tactics.support.visibleTicksAdjustment'      : 1,
+                'tactics.support.aimToleranceMultiplier'      : 0.8D,
+                'tactics.support.limitFiringToEffectiveRange' : false,
+                'tactics.support.maximumFiringRangeMultiplier': 1.0D,
+                'tactics.demolitions.preferredRangeMultiplier': 1.0D,
+                'tactics.demolitions.retreatDistanceMultiplier': 1.0D,
+                'tactics.demolitions.visibleTicksAdjustment'  : 3,
+                'tactics.demolitions.aimToleranceMultiplier'  : 0.65D,
+                'tactics.demolitions.limitFiringToEffectiveRange': false,
+                'tactics.demolitions.maximumFiringRangeMultiplier': 1.0D,
+                'engagement.mode'                              : 'GUARD_TARGETS',
+                'engagement.defensiveMemoryTicks'              : 200,
+                'engagement.additionalTargets'                 : [],
+                'engagement.excludedEntities'                  : [],
                 'safety.baseClearance'                         : 0.75D,
+                'safety.preserveBlocksFromGuardExplosions'     : true,
+                'safety.explosiveStandoffRadiusMultiplier'    : 2.0D,
+                'safety.explosiveStandoffAdditionalBlocks'    : 4.0D,
+                'safety.allies.protectOwnedEntities'          : true,
+                'safety.allies.protectAlliedEntities'         : true,
+                'safety.allies.additionalProtectedEntities'   : [],
+                'safety.allies.excludedEntities'              : [],
+                'ammunition.pickupDroppedAmmo'                : true,
+                'ammunition.droppedAmmoPickupRadius'          : 1.5D,
+                'ammunition.shareAmmoBetweenGuards'           : true,
+                'ammunition.ammoSharingRadius'                : 8.0D,
+                'ammunition.donorReserveMagazines'            : 1,
+                'ammunition.requireMatchingOwnerForSharing'   : true,
                 'performance.visibilitySampleIntervalTicks'    : 2,
                 'performance.movementDecisionIntervalTicks'    : 5,
                 'performance.pathRecalculationIntervalTicks'   : 20,
@@ -345,27 +572,119 @@ tasks.register('verifyPhase8PerformanceReports') {
                 'performance.unsafeShotCacheTicks'             : 2,
                 'performance.repositionProgressCheckTicks'     : 10
         ]
+        Map<String, Map<String, Double>> relativeTimingBudgets = [
+                'idle-armed-100'        : [p95Multiplier: 2.0D, p95Allowance: 2.0D,
+                                           p99Multiplier: 3.0D, p99Allowance: 3.0D],
+                'semi-10'               : [p95Multiplier: 2.0D, p95Allowance: 2.0D,
+                                           p99Multiplier: 3.0D, p99Allowance: 3.0D],
+                'semi-25'               : [p95Multiplier: 2.5D, p95Allowance: 2.0D,
+                                           p99Multiplier: 3.5D, p99Allowance: 3.0D],
+                'semi-50'               : [p95Multiplier: 3.0D, p95Allowance: 3.0D,
+                                           p99Multiplier: 4.0D, p99Allowance: 4.0D],
+                'automatic-10'          : [p95Multiplier: 2.0D, p95Allowance: 2.0D,
+                                           p99Multiplier: 3.0D, p99Allowance: 3.0D],
+                'automatic-25'          : [p95Multiplier: 2.5D, p95Allowance: 2.0D,
+                                           p99Multiplier: 3.5D, p99Allowance: 3.0D],
+                'automatic-50'          : [p95Multiplier: 3.0D, p95Allowance: 3.0D,
+                                           p99Multiplier: 4.0D, p99Allowance: 4.0D],
+                'automatic-shotgun-10'  : [p95Multiplier: 2.5D, p95Allowance: 2.0D,
+                                           p99Multiplier: 3.5D, p99Allowance: 3.0D],
+                'explosive-10'          : [p95Multiplier: 3.0D, p95Allowance: 2.0D,
+                                           p99Multiplier: 6.0D, p99Allowance: 4.0D],
+                // Forge does not guarantee batch order. Navigation may be the
+                // first profiled workload and must absorb one-time pathfinding
+                // and JIT warmup without making the release gate flaky.
+                'obstacle-navigation-25': [p95Multiplier: 6.0D, p95Allowance: 5.0D,
+                                           p99Multiplier: 18.0D, p99Allowance: 10.0D],
+                'protected-crossing-25' : [p95Multiplier: 2.5D, p95Allowance: 2.0D,
+                                           p99Multiplier: 4.0D, p99Allowance: 3.0D],
+                'dropped-ammo-pressure-100': [p95Multiplier: 3.0D, p95Allowance: 3.0D,
+                                           p99Multiplier: 5.0D, p99Allowance: 5.0D],
+                'dry-sharing-pressure-50': [p95Multiplier: 4.0D, p95Allowance: 4.0D,
+                                           p99Multiplier: 7.0D, p99Allowance: 6.0D]
+        ]
         if (!reportDirectory.isDirectory()) {
             throw new GradleException(
                     'Phase 8 performance reports are missing; run ./gradlew runGameTestServer -Pphase8Performance=true')
         }
+        File archive = tasks.named('jar', Jar).get().archiveFile.get().asFile
+        String productionArtifactSha256 = sha256OfFile(archive)
+        Map<String, Object> parsedReports = [:]
 
-        requiredScenarios.each { scenario, minimumAcceptedShotEvidence ->
+        Set<String> jsonScenarios = reportDirectory.listFiles()
+                .findAll { it.isFile() && it.name.endsWith('.json') }
+                .collect { it.name.substring(0, it.name.length() - '.json'.length()) } as Set
+        Set<String> jfrScenarios = reportDirectory.listFiles()
+                .findAll { it.isFile() && it.name.endsWith('.jfr') }
+                .collect { it.name.substring(0, it.name.length() - '.jfr'.length()) } as Set
+        if (jsonScenarios != requiredScenarios.keySet() || jfrScenarios != requiredScenarios.keySet()) {
+            throw new GradleException(
+                    "Phase 8 reports contain a missing or unexpected scenario; "
+                            + "JSON=${jsonScenarios.sort()}, JFR=${jfrScenarios.sort()}")
+        }
+
+        requiredScenarios.each { scenario, expectedScenario ->
             File reportFile = new File(reportDirectory, "${scenario}.json")
             File profileFile = new File(reportDirectory, "${scenario}.jfr")
             if (!reportFile.isFile() || !profileFile.isFile() || profileFile.length() == 0L) {
                 throw new GradleException("Phase 8 scenario ${scenario} is missing its JSON report or JFR profile")
             }
 
+            long jfrEventCount = 0L
+            long executionSampleCount = 0L
+            jdk.jfr.consumer.RecordingFile recordingFile = null
+            try {
+                recordingFile = new jdk.jfr.consumer.RecordingFile(profileFile.toPath())
+                while (recordingFile.hasMoreEvents()) {
+                    def event = recordingFile.readEvent()
+                    jfrEventCount++
+                    if (event.eventType.name == 'jdk.ExecutionSample') {
+                        executionSampleCount++
+                    }
+                }
+            } catch (Exception exception) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has an unreadable JFR profile",
+                        exception)
+            } finally {
+                recordingFile?.close()
+            }
+            if (jfrEventCount == 0L || executionSampleCount == 0L) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} JFR has no events or execution samples")
+            }
+
             Object report = new groovy.json.JsonSlurper().parse(reportFile)
+            parsedReports[scenario] = report
+            int minimumAcceptedShotEvidence = (int) expectedScenario.minimumShotEvidence
+            boolean firingWorkload = expectedScenario.workload == 'clear_lanes'
+                    || expectedScenario.workload == 'protected_lanes'
+            int minimumAcceptedFiringGuards = firingWorkload
+                    ? Math.max(1, (((int) expectedScenario.guards) * 4 + 4).intdiv(5))
+                    : 0
+            int minimumAcceptedPerActiveGuardShotEvidence = firingWorkload ? 1 : 0
+            int minimumAmmoSharingAttempts =
+                    (int) expectedScenario.getOrDefault('minimumAmmoSharingAttempts', 0)
+            int minimumPersistentDroppedAmmo =
+                    (int) expectedScenario.getOrDefault('minimumPersistentDroppedAmmo', 0)
             if (report.scenario != scenario
+                    || report.guards != expectedScenario.guards
+                    || report.weapon != expectedScenario.weapon
+                    || report.workload != expectedScenario.workload
                     || report.warmupTicks != 100
                     || report.sampleTicks != 1000
-                    || report.configProfile != 'default-v1'
-                    || report.configVersion != 1
+                    || report.configProfile != 'default-v7'
+                    || report.configVersion != 7
                     || report.jfrProfile != "${scenario}.jfr"
                     || report.minimumAcceptedShotEvidence != minimumAcceptedShotEvidence
-                    || report.absoluteTimingGateApplied != false) {
+                    || report.minimumAcceptedFiringGuards != minimumAcceptedFiringGuards
+                    || report.minimumAcceptedPerActiveGuardShotEvidence
+                            != minimumAcceptedPerActiveGuardShotEvidence
+                    || report.minimumAmmoSharingAttempts != minimumAmmoSharingAttempts
+                    || report.minimumPersistentDroppedAmmo != minimumPersistentDroppedAmmo
+                    || report.absoluteTimingGateApplied != false
+                    || report.relativeTimingGateApplied != true
+                    || report.productionArtifactSha256 != productionArtifactSha256) {
                 throw new GradleException("Phase 8 scenario ${scenario} has invalid run metadata")
             }
 
@@ -382,7 +701,7 @@ tasks.register('verifyPhase8PerformanceReports') {
                 if (!matches) {
                     throw new GradleException(
                             "Phase 8 scenario ${scenario} used ${path}=${actualValue}; "
-                                    + "the default-v1 profile requires ${expectedValue}")
+                                    + "the default-v7 profile requires ${expectedValue}")
                 }
             }
 
@@ -401,6 +720,33 @@ tasks.register('verifyPhase8PerformanceReports') {
                 throw new GradleException("Phase 8 scenario ${scenario} has unordered timing percentiles")
             }
 
+            List<String> nonNegativeEvidenceFields = [
+                    'nativeTaCZShootCount',
+                    'nativeAmmoConsumed',
+                    'liveTaCZBulletsAtEnd',
+                    'garbageCollectionsDuringSample',
+                    'ammoSharingAttemptsObserved',
+                    'persistentDroppedAmmoEntities'
+            ]
+            nonNegativeEvidenceFields.each { field ->
+                Object value = report[field]
+                if (!(value instanceof Number) || ((Number) value).longValue() < 0L) {
+                    throw new GradleException("Phase 8 scenario ${scenario} has invalid ${field}")
+                }
+            }
+            if (!(report.usedHeapDeltaBytes instanceof Number)) {
+                throw new GradleException("Phase 8 scenario ${scenario} has invalid usedHeapDeltaBytes")
+            }
+            if (((Number) report.ammoSharingAttemptsObserved).intValue()
+                            < minimumAmmoSharingAttempts
+                    || ((Number) report.persistentDroppedAmmoEntities).intValue()
+                            < minimumPersistentDroppedAmmo) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} lacks ammunition workload evidence: "
+                                + "sharing=${report.ammoSharingAttemptsObserved}/${minimumAmmoSharingAttempts}, "
+                                + "drops=${report.persistentDroppedAmmoEntities}/${minimumPersistentDroppedAmmo}")
+            }
+
             int acceptedShotEvidence = Math.max(
                     ((Number) report.nativeTaCZShootCount).intValue(),
                     ((Number) report.nativeAmmoConsumed).intValue())
@@ -409,6 +755,285 @@ tasks.register('verifyPhase8PerformanceReports') {
                         "Phase 8 scenario ${scenario} has ${acceptedShotEvidence} native shots; "
                                 + "at least ${minimumAcceptedShotEvidence} are required")
             }
+
+            if (!(report.perGuardAcceptedShotEvidence instanceof List)
+                    || report.perGuardAcceptedShotEvidence.size() != expectedScenario.guards
+                    || report.perGuardAcceptedShotEvidence.any {
+                        !(it instanceof Number) || ((Number) it).intValue() < 0
+                    }) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has invalid per-guard shot evidence")
+            }
+            int activeFiringGuards = report.perGuardAcceptedShotEvidence.count {
+                ((Number) it).intValue() > 0
+            }
+            int minimumPerGuardShotEvidence = report.perGuardAcceptedShotEvidence.collect {
+                ((Number) it).intValue()
+            }.min() as int
+            List<Integer> activePerGuardEvidence = report.perGuardAcceptedShotEvidence.collect {
+                ((Number) it).intValue()
+            }.findAll { it > 0 }
+            int minimumPerActiveGuardShotEvidence = activePerGuardEvidence.isEmpty()
+                    ? 0
+                    : activePerGuardEvidence.min() as int
+            if (report.activeFiringGuards != activeFiringGuards
+                    || report.minimumPerGuardShotEvidence != minimumPerGuardShotEvidence
+                    || report.minimumPerActiveGuardShotEvidence
+                            != minimumPerActiveGuardShotEvidence
+                    || activeFiringGuards < minimumAcceptedFiringGuards
+                    || minimumPerActiveGuardShotEvidence
+                            < minimumAcceptedPerActiveGuardShotEvidence) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} did not exercise enough independent guards: "
+                                + "active=${activeFiringGuards}/${minimumAcceptedFiringGuards}, "
+                                + "minimumPerActiveGuard=${minimumPerActiveGuardShotEvidence}/"
+                                + "${minimumAcceptedPerActiveGuardShotEvidence}")
+            }
         }
+
+        Object baseline = parsedReports['unarmed-idle-baseline-100']
+        relativeTimingBudgets.each { scenario, budget ->
+            Object report = parsedReports[scenario]
+            double p95Limit = ((Number) baseline.p95Mspt).doubleValue()
+                    * budget.p95Multiplier + budget.p95Allowance
+            double p99Limit = ((Number) baseline.p99Mspt).doubleValue()
+                    * budget.p99Multiplier + budget.p99Allowance
+            if (((Number) report.p95Mspt).doubleValue() > p95Limit
+                    || ((Number) report.p99Mspt).doubleValue() > p99Limit) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} exceeded its same-run baseline budget: "
+                                + "p95=${report.p95Mspt}/${p95Limit}, "
+                                + "p99=${report.p99Mspt}/${p99Limit}")
+            }
+        }
+    }
+}
+
+tasks.register('assembleReleaseCandidateEvidence') {
+    group = 'build'
+    description = 'Creates a deterministic manifest and checksum for the verified release JAR and performance evidence.'
+    dependsOn tasks.named('verifyReleaseArtifact'), tasks.named('verifyPhase8PerformanceReports')
+    outputs.dir releaseCandidateEvidenceDirectory
+    outputs.upToDateWhen { false }
+
+    doFirst {
+        delete releaseCandidateEvidenceDirectory
+    }
+
+    doLast {
+        File archive = tasks.named('jar', Jar).get().archiveFile.get().asFile
+        File performanceDirectory = phase8PerformanceReportDirectory.get().asFile
+        File evidenceDirectory = releaseCandidateEvidenceDirectory.get().asFile
+        evidenceDirectory.mkdirs()
+
+        String sha256 = sha256OfFile(archive)
+        List<File> performanceEvidenceFiles = performanceDirectory.listFiles()
+                .findAll { file ->
+                    file.isFile() && (file.name.endsWith('.json') || file.name.endsWith('.jfr'))
+                }
+                .sort { left, right -> left.name <=> right.name }
+        int jsonReportCount = performanceDirectory.listFiles()
+                .count { it.isFile() && it.name.endsWith('.json') }
+        int jfrProfileCount = performanceDirectory.listFiles()
+                .count { it.isFile() && it.name.endsWith('.jfr') }
+
+        Map<String, Object> manifest = [
+                schemaVersion  : 3,
+                mod            : [
+                        id     : mod_id,
+                        name   : mod_name,
+                        version: mod_version
+                ],
+                runtime        : [
+                        minecraft    : minecraft_version,
+                        forge        : forge_version,
+                        guardVillagers: guard_villager_version,
+                        tacz         : tacz_version,
+                        fzzyConfig   : fzzy_config_version,
+                        kotlinForForge: kotlin_for_forge_version
+                ],
+                artifact       : [
+                        file  : archive.name,
+                        bytes : archive.length(),
+                        sha256: sha256
+                ],
+                verifiedEvidence: [
+                        releaseArtifactGate   : 'passed',
+                        performanceReportGate: 'passed',
+                        performanceJsonReports: jsonReportCount,
+                        performanceJfrProfiles: jfrProfileCount
+                ],
+                performanceEvidence: performanceEvidenceFiles.collect { file ->
+                    [
+                            file  : file.name,
+                            bytes : file.length(),
+                            sha256: sha256OfFile(file)
+                    ]
+                },
+                separateEvidence: [
+                        correctnessGameTests: './gradlew runGameTestServer',
+                        manualCompatibility : 'docs/release-checklist.md',
+                        ammunitionGuide     : 'docs/ammunition-quality-of-life.md',
+                        naturalLoadoutGuide : 'docs/natural-guard-loadouts.md',
+                        automatedAmmunitionGate:
+                                './gradlew verifyAmmunitionReleaseCandidate'
+                ]
+        ]
+        String json = groovy.json.JsonOutput.prettyPrint(
+                groovy.json.JsonOutput.toJson(manifest)) + System.lineSeparator()
+        java.nio.file.Files.writeString(
+                evidenceDirectory.toPath().resolve('release-candidate.json'),
+                json,
+                java.nio.charset.StandardCharsets.UTF_8)
+        java.nio.file.Files.writeString(
+                evidenceDirectory.toPath().resolve("${archive.name}.sha256"),
+                "${sha256}  ${archive.name}${System.lineSeparator()}",
+                java.nio.charset.StandardCharsets.UTF_8)
+    }
+}
+
+tasks.register('verifyAmmunitionReleaseCandidate') {
+    group = 'verification'
+    description = 'Runs the complete automated release gate for ammunition and natural loadouts against fresh performance evidence.'
+
+    if (phase8PerformanceEnabled.get()) {
+        doFirst {
+            throw new GradleException(
+                    'Run verifyAmmunitionReleaseCandidate without -Pphase8Performance; '
+                            + 'generate the performance matrix in its required separate invocation first.')
+        }
+    } else {
+        dependsOn tasks.named('runGameTestServer'),
+                tasks.named('assembleReleaseCandidateEvidence')
+    }
+
+    doLast {
+        File archive = tasks.named('jar', Jar).get().archiveFile.get().asFile
+        File manifestFile = releaseCandidateEvidenceDirectory.get()
+                .file('release-candidate.json').asFile
+        File manualMatrix = layout.projectDirectory
+                .file('docs/release-checklist.md').asFile
+        File ammunitionGuide = layout.projectDirectory
+                .file('docs/ammunition-quality-of-life.md').asFile
+        File naturalLoadoutGuide = layout.projectDirectory
+                .file('docs/natural-guard-loadouts.md').asFile
+        if (!manifestFile.isFile() || !manualMatrix.isFile()
+                || !ammunitionGuide.isFile() || !naturalLoadoutGuide.isFile()) {
+            throw new GradleException(
+                    'Release evidence or a required manual validation document is missing')
+        }
+
+        Object manifest = new groovy.json.JsonSlurper().parse(manifestFile)
+        if (manifest.schemaVersion != 3
+                || manifest.artifact.sha256 != sha256OfFile(archive)
+                || manifest.verifiedEvidence.releaseArtifactGate != 'passed'
+                || manifest.verifiedEvidence.performanceReportGate != 'passed'
+                || manifest.verifiedEvidence.performanceJsonReports != 14
+                || manifest.verifiedEvidence.performanceJfrProfiles != 14
+                || manifest.separateEvidence.correctnessGameTests
+                        != './gradlew runGameTestServer'
+                || manifest.separateEvidence.manualCompatibility
+                        != 'docs/release-checklist.md'
+                || manifest.separateEvidence.ammunitionGuide
+                        != 'docs/ammunition-quality-of-life.md'
+                || manifest.separateEvidence.naturalLoadoutGuide
+                        != 'docs/natural-guard-loadouts.md'
+                || manifest.separateEvidence.automatedAmmunitionGate
+                        != './gradlew verifyAmmunitionReleaseCandidate') {
+            throw new GradleException(
+                    'Release manifest does not bind the complete verified evidence set')
+        }
+
+        String checklist = manualMatrix.getText('UTF-8')
+        String guide = ammunitionGuide.getText('UTF-8')
+        String naturalGuide = naturalLoadoutGuide.getText('UTF-8')
+        List<String> requiredManualCases = [
+                'AMMO-ENV-01',
+                'AMMO-ENV-02',
+                'AMMO-OWN-01',
+                'AMMO-FEED-01',
+                'AMMO-PICK-01',
+                'AMMO-SHARE-01',
+                'AMMO-LIFE-01',
+                'AMMO-CFG-01'
+        ]
+        List<String> requiredNaturalLoadoutCases = [
+                'NATURAL-LIFE-01',
+                'NATURAL-LIFE-02',
+                'NATURAL-DROP-01',
+                'NATURAL-DIFF-01',
+                'NATURAL-POOL-01',
+                'NATURAL-SOURCE-01',
+                'NATURAL-AMMO-01',
+                'NATURAL-EXPLOSIVE-01',
+                'NATURAL-CAP-01'
+        ]
+        if (requiredManualCases.any { id -> !checklist.contains(id) }
+                || requiredNaturalLoadoutCases.any { id -> !checklist.contains(id) }
+                || !guide.contains('Intentionally deferred')
+                || !guide.contains('pickupDroppedAmmo')
+                || !guide.contains('shareAmmoBetweenGuards')
+                || !naturalGuide.contains('Step 8 balance and release guidance')
+                || !naturalGuide.contains('naturalLoadouts.enabled = false')
+                || !naturalGuide.contains('/vgg inspect <guard>')) {
+            throw new GradleException(
+                    'Release documentation lost a required manual case or rollback control')
+        }
+    }
+}
+
+tasks.register('verifyManualReleaseChecklist') {
+    group = 'verification'
+    description = 'Refuses a public release package until every recorded manual validation item has passed.'
+    inputs.file(layout.projectDirectory.file('docs/release-checklist.md'))
+
+    doLast {
+        File checklistFile = layout.projectDirectory.file('docs/release-checklist.md').asFile
+        List<String> lines = checklistFile.readLines('UTF-8')
+        List<String> pendingRows = lines.findAll { line ->
+            line.startsWith('|') && (line.contains('| Not run |') || line.contains('| Failed |'))
+        }
+        List<String> uncheckedItems = lines.findAll { line -> line.startsWith('- [ ]') }
+        if (!pendingRows.isEmpty() || !uncheckedItems.isEmpty()) {
+            throw new GradleException(
+                    'Manual release validation is incomplete: '
+                            + "${pendingRows.size()} table row(s) are Not run/Failed and "
+                            + "${uncheckedItems.size()} checklist item(s) remain unchecked. "
+                            + 'Complete docs/release-checklist.md against the exact release JAR first.')
+        }
+    }
+}
+
+tasks.register('prepareCurseForgeRelease', Sync) {
+    group = 'distribution'
+    description = 'Builds the verified CurseForge 1.0 release handoff directory.'
+    dependsOn tasks.named('verifyAmmunitionReleaseCandidate'),
+            tasks.named('verifyManualReleaseChecklist')
+
+    into curseForgeReleaseDirectory
+    from(tasks.named('jar', Jar).flatMap { it.archiveFile })
+    from('docs/curseforge-description.md') {
+        rename { 'DESCRIPTION.md' }
+    }
+    from('docs/curseforge-release-notes-1.0.0.md') {
+        rename { 'CHANGELOG-1.0.0.md' }
+    }
+    from('docs/curseforge-upload-1.0.0.md') {
+        rename { 'UPLOAD-CHECKLIST.md' }
+    }
+    from('LICENSE.txt')
+    from('CREDITS.md')
+
+    doLast {
+        File archive = destinationDir.toPath()
+                .resolve(tasks.named('jar', Jar).get().archiveFileName.get())
+                .toFile()
+        if (!archive.isFile()) {
+            throw new GradleException("CurseForge handoff is missing its mod JAR: ${archive}")
+        }
+        java.nio.file.Files.writeString(
+                destinationDir.toPath().resolve("${archive.name}.sha256"),
+                "${sha256OfFile(archive)}  ${archive.name}${System.lineSeparator()}",
+                java.nio.charset.StandardCharsets.UTF_8)
     }
 }

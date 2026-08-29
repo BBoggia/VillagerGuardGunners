@@ -48,6 +48,80 @@ final class GuardFriendlyFireSafetyTest {
     }
 
     @Test
+    void explosiveEnvelopeAllowsProtectedOwnerBehindAndBesideShooter() {
+        Vec3 start = new Vec3(0.0D, 1.5D, 0.0D);
+        Vec3 end = new Vec3(0.0D, 1.75D, -16.0D);
+        AABB ownerBounds = AABB.ofSize(
+                new Vec3(2.625D, 0.9D, 2.138D),
+                0.6D,
+                1.8D,
+                0.6D);
+
+        assertTrue(GuardFriendlyFireSafety.intersectsInflatedBounds(
+                ownerBounds,
+                start,
+                end,
+                6.231621F), "The previous uniform blast corridor should reproduce the reported block");
+        assertFalse(GuardFriendlyFireSafety.intersectsSafetyEnvelope(
+                ownerBounds,
+                start,
+                end,
+                0.75F,
+                3.231621F,
+                6.231621F), "Spread and blast padding should widen only after leaving the guard");
+    }
+
+    @Test
+    void widenedEnvelopeDoesNotWrapSidewaysAroundShooter() {
+        Vec3 start = new Vec3(0.0D, 1.5D, 0.0D);
+        Vec3 end = new Vec3(0.0D, 1.75D, -16.0D);
+        AABB ownerBounds = AABB.ofSize(
+                new Vec3(3.4D, 0.9D, 0.0D),
+                0.6D,
+                1.8D,
+                0.6D);
+
+        assertFalse(GuardFriendlyFireSafety.intersectsSafetyEnvelope(
+                ownerBounds,
+                start,
+                end,
+                0.75F,
+                3.231621F,
+                6.231621F), "Forward envelope end caps should not recreate a wide muzzle bubble");
+    }
+
+    @Test
+    void explosiveEnvelopeStillProtectsDirectLaneAndForwardBlastCorridor() {
+        Vec3 start = new Vec3(0.0D, 1.5D, 0.0D);
+        Vec3 end = new Vec3(0.0D, 1.75D, -16.0D);
+        AABB directlyBehind = AABB.ofSize(
+                new Vec3(0.0D, 0.9D, 1.0D),
+                0.6D,
+                1.8D,
+                0.6D);
+        AABB besideForwardPath = AABB.ofSize(
+                new Vec3(4.0D, 0.9D, -10.0D),
+                0.6D,
+                1.8D,
+                0.6D);
+
+        assertTrue(GuardFriendlyFireSafety.intersectsSafetyEnvelope(
+                directlyBehind,
+                start,
+                end,
+                0.75F,
+                3.231621F,
+                6.231621F), "Direct projectile clearance must still protect the muzzle line");
+        assertTrue(GuardFriendlyFireSafety.intersectsSafetyEnvelope(
+                besideForwardPath,
+                start,
+                end,
+                0.75F,
+                3.231621F,
+                6.231621F), "Full blast clearance must remain active along the forward path");
+    }
+
+    @Test
     void convertsTaCZComponentInaccuracyIntoAConservativeDistanceAwareClearance() {
         double componentError = 0.0172275D * 5.0D;
         double vectorError = Math.sqrt(3.0D) * componentError;

@@ -2,9 +2,18 @@ package com.gamergaming.villagerguardgunners.command;
 
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
+import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
+import com.gamergaming.villagerguardgunners.combat.tactics.TacticalEnvelope;
+import com.gamergaming.villagerguardgunners.orders.GuardOrders;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDiagnostics;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutProvenance;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.ChatFormatting;
@@ -58,7 +67,12 @@ public final class GuardGunnerCommands {
 
         GuardGunCombatGoal.Diagnostics snapshot = gunGoal.captureDiagnostics();
         NativeGunController.Diagnostics nativeState = snapshot.nativeState();
+        GuardAmmoSummary.Snapshot ammunition = GuardAmmoSummary.capture(
+                guard.getMainHandItem(),
+                GuardAmmoAccess.getTaCZInventoryHandler(guard));
         GuardFriendlyFireSafety.DiagnosticResult safety = snapshot.safety();
+        NaturalGuardLoadoutDiagnostics.Snapshot naturalLoadout =
+                NaturalGuardLoadoutDiagnostics.capture(guard);
         ChatFormatting decisionColor = snapshot.decision() == GuardGunCombatGoal.FireDecision.READY_TO_FIRE
                 ? ChatFormatting.GREEN
                 : ChatFormatting.YELLOW;
@@ -74,6 +88,33 @@ public final class GuardGunnerCommands {
                 (snapshot.goalActive() ? "active" : "inactive")
                         + ", movement=" + snapshot.movementState(),
                 ChatFormatting.GRAY));
+        send(source, line(
+                "Rules of engagement",
+                "mode=" + snapshot.engagementMode()
+                        + ", reason=" + snapshot.engagementReason(),
+                snapshot.engagementReason().mayEngage()
+                        ? ChatFormatting.GREEN
+                        : ChatFormatting.RED));
+        GuardOrders orders = GuardOrdersAccess.getOrders(guard);
+        send(source, line(
+                "Per-guard orders",
+                "engagement=" + orders.engagement()
+                        + " (effective=" + snapshot.engagementMode() + ")"
+                        + ", tactics=" + orders.tactics()
+                        + ", explosives=" + orders.explosives()
+                        + ", ammoPickup=" + orders.ammoPickup()
+                        + ", ammoSharing=" + orders.ammoSharing()
+                        + ", movement=" + orders.movement()
+                        + ", maximumRange=" + orders.maximumRange(),
+                ChatFormatting.GRAY));
+        send(source, line(
+                "Natural loadout",
+                naturalLoadoutDetails(naturalLoadout),
+                switch (naturalLoadout.authentication()) {
+                    case ACTIVE -> ChatFormatting.GREEN;
+                    case GUN_MISMATCH -> ChatFormatting.RED;
+                    case NO_RECORD -> ChatFormatting.GRAY;
+                }));
 
         if (snapshot.target() == null) {
             send(source, line("Target", "none", ChatFormatting.GRAY));
@@ -88,8 +129,12 @@ public final class GuardGunnerCommands {
 
         send(source, line(
                 "Range",
-                "preferred=" + decimal(snapshot.preferredRange())
+                "minimum=" + decimal(snapshot.minimumRange())
+                        + ", retreat=" + decimal(snapshot.retreatDistance())
+                        + ", preferred=" + decimal(snapshot.preferredRange())
                         + ", maximum=" + decimal(snapshot.maximumRange())
+                        + ", validWindow=" + snapshot.validFiringWindow()
+                        + ", withinWindow=" + snapshot.withinFiringWindow()
                         + ", withinMaximum=" + snapshot.withinMaximumRange(),
                 ChatFormatting.GRAY));
         send(source, line(
@@ -106,9 +151,17 @@ public final class GuardGunnerCommands {
                 ? ""
                 : ", blocker=" + safety.blocker().getDisplayName().getString()
                         + " (#" + safety.blocker().getId() + ")";
+        String protectionReason = safety.protectionReason() == null
+                ? ""
+                : ", allyReason=" + safety.protectionReason();
         send(source, line(
                 "Safety",
-                safety.status().name() + ", padding=" + decimal(snapshot.safetyPadding()) + blocker,
+                safety.status().name()
+                        + ", muzzlePadding=" + decimal(snapshot.muzzleSafetyPadding())
+                        + ", projectilePadding=" + decimal(snapshot.projectileSafetyPadding())
+                        + ", blastPadding=" + decimal(snapshot.blastSafetyPadding())
+                        + blocker
+                        + protectionReason,
                 safety.clear() ? ChatFormatting.GREEN : ChatFormatting.RED));
 
         String gunId = nativeState.gunId() == null ? "none" : nativeState.gunId().toString();
@@ -120,15 +173,34 @@ public final class GuardGunnerCommands {
                         + ", dataReady=" + nativeState.weaponDataReady()
                         + ", suspended=" + nativeState.suspended(),
                 ChatFormatting.GRAY));
+        NativeGunController.CachedTacticalState tactical = nativeState.tacticalState();
+        TacticalEnvelope envelope = tactical.envelope();
+        send(source, line(
+                "Cached tactics",
+                "gun=" + (tactical.gunId() == null ? "none" : tactical.gunId())
+                        + ", profile=" + tactical.resolution().profile()
+                        + ", source=" + tactical.resolution().source()
+                        + ", type=" + stringOrUnavailable(
+                                tactical.resolution().normalizedGunType())
+                        + ", metadataReady=" + tactical.metadataReadable()
+                        + ", explosive=" + tactical.traits().explosive()
+                        + ", projectiles=" + tactical.traits().projectileCount()
+                        + ", blastRadius=" + decimal(tactical.traits().explosionRadius()),
+                tactical.metadataReadable() ? ChatFormatting.GRAY : ChatFormatting.YELLOW));
+        send(source, line(
+                "Cached envelope",
+                "minimum=" + decimal(envelope.minimumFiringDistance())
+                        + ", retreat=" + decimal(envelope.retreatDistance())
+                        + ", preferred=" + decimal(envelope.preferredApproachDistance())
+                        + ", maximum=" + decimal(envelope.maximumFiringDistance())
+                        + ", visibleTicks=" + envelope.requiredVisibleTicks()
+                        + ", aimTolerance=" + degrees(envelope.aimToleranceDegrees())
+                        + ", validWindow=" + envelope.validFiringWindow(),
+                envelope.validFiringWindow() ? ChatFormatting.GRAY : ChatFormatting.YELLOW));
         send(source, line(
                 "Ammo",
-                "loaded=" + integerOrUnavailable(nativeState.loadedAmmo())
-                        + ", chambered=" + nativeState.chambered()
-                        + ", inventoryFed=" + nativeState.inventoryFed()
-                        + ", reserveItems=" + nativeState.reserveItems()
-                        + " in " + nativeState.occupiedReserveSlots() + " slot(s)"
-                        + ", dryRetryTicks=" + nativeState.dryRetryTicks(),
-                ChatFormatting.GRAY));
+                ammunitionDetails(ammunition, nativeState),
+                ammunitionColor(ammunition)));
         send(source, line(
                 "TaCZ",
                 "aiming=" + nativeState.aiming()
@@ -167,7 +239,75 @@ public final class GuardGunnerCommands {
         return Double.isFinite(value) ? decimal(value) + "deg" : "n/a";
     }
 
-    private static String integerOrUnavailable(int value) {
-        return value >= 0 ? Integer.toString(value) : "n/a";
+    private static String stringOrUnavailable(String value) {
+        return value == null || value.isBlank() ? "n/a" : value;
+    }
+
+    private static String naturalLoadoutDetails(
+            NaturalGuardLoadoutDiagnostics.Snapshot snapshot) {
+        String base = "state=" + snapshot.authentication()
+                + ", attempted=" + snapshot.selectionAttempted()
+                + ", decision=" + nullableName(snapshot.lastDecision())
+                + ", issuance=" + nullableName(snapshot.lastIssuance());
+        NaturalGuardLoadoutProvenance provenance = snapshot.provenance();
+        if (provenance == null) {
+            return base;
+        }
+        return base
+                + ", schema=" + provenance.schemaVersion()
+                + ", pool=" + provenance.poolId()
+                + ", gun=" + provenance.gunId()
+                + ", difficulty=" + provenance.difficulty()
+                + ", source=" + provenance.spawnSource()
+                + ", id=" + provenance.issuanceId();
+    }
+
+    private static String nullableName(@Nullable Enum<?> value) {
+        return value == null ? "none" : value.name();
+    }
+
+    private static String ammunitionDetails(
+            GuardAmmoSummary.Snapshot ammunition,
+            NativeGunController.Diagnostics nativeState) {
+        if (!ammunition.isReady()) {
+            return "status=" + ammunition.status()
+                    + ", gun=" + (ammunition.gunId() == null ? "none" : ammunition.gunId())
+                    + ", dryRetryTicks=" + nativeState.dryRetryTicks()
+                    + ", lastShare=" + nativeState.lastAmmoSharingStatus()
+                    + "(" + nativeState.lastAmmoSharedItems() + ")";
+        }
+        String reserve = ammunition.infiniteReserve()
+                ? "infinite"
+                : Long.toString(ammunition.reserveUnits());
+        return "status=" + ammunition.status()
+                + ", feed=" + ammunition.feedType()
+                + ", inventoryFed=" + nativeState.inventoryFed()
+                + ", magazine=" + ammunition.loadedAmmo()
+                + "/" + ammunition.magazineCapacity()
+                + ", chamberSupported=" + ammunition.supportsChamber()
+                + ", chambered=" + ammunition.chambered()
+                + ", reserve=" + reserve
+                + " (" + ammunition.reserveSource() + ")"
+                + ", compatibleStacks=" + ammunition.compatibleStacks()
+                + ", incompatibleStacks=" + ammunition.incompatibleAmmoStacks()
+                + ", unknownStacks=" + ammunition.unknownAmmoStacks()
+                + ", scanComplete=" + ammunition.reserveScanComplete()
+                + ", dryRetryTicks=" + nativeState.dryRetryTicks()
+                + ", lastShare=" + nativeState.lastAmmoSharingStatus()
+                + "(" + nativeState.lastAmmoSharedItems() + ")";
+    }
+
+    private static ChatFormatting ammunitionColor(GuardAmmoSummary.Snapshot ammunition) {
+        if (!ammunition.isReady()
+                || ammunition.unknownAmmoStacks() > 0
+                || !ammunition.reserveScanComplete()) {
+            return ChatFormatting.YELLOW;
+        }
+        if (ammunition.hasCompatibleReserve()) {
+            return ChatFormatting.GREEN;
+        }
+        return ammunition.displayedLoadedAmmo() > 0
+                ? ChatFormatting.GOLD
+                : ChatFormatting.RED;
     }
 }

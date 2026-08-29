@@ -2,6 +2,7 @@ package com.gamergaming.villagerguardgunners.combat;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
+import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
 import com.tacz.guns.api.event.common.GunFireEvent;
 import com.tacz.guns.util.block.ProjectileExplosion;
@@ -44,12 +45,19 @@ public final class GuardFriendlyFireEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
-        if (!(event.getExplosion() instanceof ProjectileExplosion)
+        if (event.getLevel().isClientSide
+                || !(event.getExplosion() instanceof ProjectileExplosion)
                 || !(event.getExplosion().getIndirectSourceEntity() instanceof Guard shooter)) {
             return;
         }
 
         event.getAffectedEntities().removeIf(entity -> GuardFriendlyFireSafety.isProtected(shooter, entity));
+        if (ModConfigs.GUARD_GUNNERS.safety.preserveBlocksFromGuardExplosions.get()) {
+            // Forge exposes TaCZ's already-computed mutable block list here.
+            // Clearing it retains the native explosion, hostile entity effects,
+            // particles, sound, and knockback without an extra world query.
+            event.getAffectedBlocks().clear();
+        }
     }
 
     private static Guard resolveGuardShooter(Entity attacker, Entity bullet) {

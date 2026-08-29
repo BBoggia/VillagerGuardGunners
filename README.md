@@ -21,7 +21,7 @@ The 1.0.0 branch is deliberately locked to this reviewed combination:
 | Guard Villagers | 1.20.1-1.6.19 |
 | Timeless and Classics Zero | 1.1.8-hotfix |
 | Fzzy Config | 0.7.6+1.20.1 |
-| Kotlin for Forge | 4.11.0 |
+| Kotlin for Forge | 4.12.0 |
 | Java | 17 |
 
 All four mods listed after Forge are required on the client and server. Exact
@@ -39,20 +39,104 @@ unreviewed upgrade is intentionally rejected by the source and artifact tests.
    behavior. The guard will aim, approach or retreat as needed, find a safer
    firing lane, and delegate firing and reloads to TaCZ.
 
+The inventory's **Guard Orders** panel can specialize that individual guard's
+rules of engagement, tactical profile, explosive permission, ammunition
+pickup and sharing, combat movement, and maximum firing range. Every order
+defaults to inheriting the server configuration, and the server's safety and
+performance limits remain authoritative.
+
+Newly generated structure guards can also receive a difficulty-scaled TaCZ
+loadout automatically. The default pools favor pistols on Easy, add SMGs on
+Normal, and allow occasional rifles on Hard. Each successful guard receives a
+loaded native TaCZ gun plus one complete stack of its own compatible loose
+ammunition. Spawn sources, chance, nearby population caps, crossbow-only
+replacement, explosive opt-in, and datapack pool IDs are all controlled by the
+server configuration. Invalid or unsupported definitions fail without changing
+the guard, and custom pools can be supplied by datapacks. Successful natural
+issuance is authenticated across chunk unloads and server restarts so nearby
+population caps remain accurate; manually replacing or moving the issued gun
+does not leave a stale guard counted against the cap.
+
+Craft an **Orders Ledger** shapelessly from a Book and Quill and an Emerald to
+reuse a setup across guards. Use a blank ledger on a guard to capture its seven
+orders, use the written ledger on another guard to apply them, or sneak-use it
+to overwrite the stored template. It copies behavior parameters only—never
+equipment, ammunition, ownership, patrol positions, or other guard data—and
+all operations recheck Guard Villagers permissions and distance on the server.
+
+Once a guard has a TaCZ gun equipped, an authorized player may crouch-right-
+click it while holding compatible loose ammunition or an ammo box. Quick
+deposit fills only the three dedicated ammo slots, accepts partial stacks when
+space is limited, and leaves rejected ammunition in the player's hand. Normal
+right-click still opens the inventory for equipment changes and pre-stocking.
+Quick deposit follows Guard Villagers' separate **give guard stuff** permission:
+with its default `giveGuardStuffHOTV=false`, a player may supply ammunition even
+when the player lacks the reputation or ownership needed to open and take from
+the inventory. It never grants inventory access. Guards with disabled AI and
+guns using TaCZ dummy or native-infinite reserves reject physical handoffs.
+
+Active armed guards also collect compatible TaCZ ammunition that comes within
+the configured passive-pickup radius. This does not make guards search or
+pathfind for drops. The dropped ammunition performs a staggered, twice-per-
+second bounded check, respects vanilla pickup delays and player-targeted
+items as well as the `mobGriefing` game rule, and leaves any capacity-limited
+remainder in the world. Empty finite ammo boxes do not trigger pickup checks.
+
+TaCZ's reusable finite boxes remain real items after their ammunition reaches
+zero. On the next reload or restocking action, the guard drops each depleted
+box intact beside itself to free the dedicated slot; this is event-driven and
+does not add a guard tick scan.
+
+When TaCZ proves an armed guard cannot reload from its own reserves, that dry
+guard can make one bounded emergency request to nearby guards. By default the
+nearest guard with the same owner supplies up to one recipient magazine of
+loose ammunition while retaining one attachment-adjusted magazine for itself;
+two unowned guards may also share. The request does not move either guard,
+transfer ammo boxes, or continuously balance inventories.
+
 The inventory keeps Guard Villagers' armor, follow, patrol, ownership, and
 reputation behavior. Ammunition persists with the guard and is exposed through
-Forge's item-handler capability for modded inventory automation.
+Forge's item-handler capability for modded inventory automation. The Ammo
+heading is color-coded and shows a detailed TaCZ-native status tooltip when
+hovered, including feed type, magazine, chamber, compatible reserve, and
+incompatible or unreadable ammunition. A second color-coded status line explains
+the guard's current combat state, including weapon-order restrictions, aiming,
+range, line-of-sight,
+friendly-lane, reload, action-cycle, charge, cooldown, and dry-ammunition
+conditions. Hover it for a plain-language explanation. Quick deposit uses the
+same TaCZ-native compatibility result as the ammunition display.
 
 ## Safety and behavior
 
-- Guards do not fire through guards, villagers, iron golems, their owner, or
-  entities Minecraft considers allied to them.
+- Guards do not fire through guards, villagers, iron golems, their owner,
+  owned/tamed entities, entities Minecraft considers allied, or entity types
+  supplied by the modpack ally tag, config, or compatibility API.
 - The same protection is enforced again for direct TaCZ hits and explosions.
+- Guard-owned TaCZ explosions preserve blocks by default while retaining native
+  effects against hostile entities. Server operators can disable this behavior.
 - Unsafe native burst rounds are canceled individually.
+- Server rules of engagement can preserve Guard Villagers' normal targets,
+  restrict proactive fire to hostile mobs, require recent aggression against a
+  guard or protected ally, or hold fire. Config and datapack type overrides
+  use deterministic deny-before-allow precedence.
 - TaCZ's effective range is the guard's preferred movement distance. The
-  configurable maximum engagement range is the hard firing limit.
+  selected tactical profile can adjust that approach distance and the guard's
+  retreat threshold, continuous-visibility requirement, and acceptable aim
+  error without changing TaCZ weapon statistics. Profiles may also impose a
+  narrower firing cap, while explosive weapons enforce a blast-aware minimum
+  standoff. The configurable maximum engagement range remains the global cap.
 - Visibility, movement, path recalculation, unsafe-shot caching, and TaCZ data
   refresh work are bounded and staggered between guards.
+- The inventory combat status is derived from cached goal decisions and TaCZ's
+  synchronized action fields. Its single integer menu value is evaluated only
+  while that inventory is open and transmitted only when it changes.
+- Per-guard orders use the existing container-button protocol and seven small
+  change-detected values only while the inventory is open. The combat path
+  performs constant-time enum reads and refreshes existing cached TaCZ data
+  only when an order revision changes.
+- Orders Ledgers are interaction-driven and perform no idle scan or tick work.
+  Their strict versioned template is decoded only when used or displayed and
+  applies all seven orders atomically or not at all.
 - A permanently dry gun temporarily yields to Guard Villagers' normal melee
   goal instead of retrying every tick.
 
@@ -64,10 +148,33 @@ Fzzy Config provides the server-authoritative file and synchronized UI:
 config/villagerguardgunners/guard_gunners.toml
 ```
 
-Combat, movement, safety-clearance, and advanced scheduling settings are
-documented in [docs/configuration.md](docs/configuration.md). TaCZ weapon damage,
-reload speed, accuracy, recoil, fire rate, and other balance values are not
-overridden by this add-on.
+Combat, movement, weapon-specific tactics, rules of engagement, safety,
+ammunition quality-of-life, explosion preservation, and advanced scheduling settings are documented in
+[docs/configuration.md](docs/configuration.md). TaCZ weapon damage, reload speed,
+accuracy, recoil, fire rate, and other balance values are not overridden by
+this add-on.
+
+Datapack authors and compatibility mods can extend the shared friendly-fire
+predicate without patching the add-on. See
+[docs/modpack-ally-protection.md](docs/modpack-ally-protection.md) for the entity
+tag, config precedence, provider API, and performance contract.
+
+Target firing policy, restricted-mode overrides, and defensive retaliation are
+documented in [docs/rules-of-engagement.md](docs/rules-of-engagement.md).
+
+Ammunition handoff, passive pickup, emergency sharing, ownership rules,
+supported reserve types, rollback controls, troubleshooting, and deliberately
+deferred features are documented in
+[docs/ammunition-quality-of-life.md](docs/ammunition-quality-of-life.md).
+
+Individual guard policy, override precedence, authorization, persistence, and
+performance behavior are documented in
+[docs/per-guard-orders.md](docs/per-guard-orders.md).
+
+Natural spawn eligibility, difficulty progression, datapack pool format,
+atomic gun/ammunition issuance, versioned save identity, lifecycle behavior,
+world-generation handoff, and bounded population-cap behavior are documented
+in [docs/natural-guard-loadouts.md](docs/natural-guard-loadouts.md).
 
 ## Diagnosing a guard
 
@@ -84,11 +191,20 @@ Example selector for the nearest guard:
 ```
 
 The report separates the current AI decision from TaCZ's native state. It
-includes target distance, preferred and maximum range, cached line of sight,
-visible ticks, aim error, movement, friendly-fire blockers, gun ID, fire mode,
-loaded and reserve ammunition, reload/bolt/cooldown/charge state, and the last
-TaCZ shoot result. The command registers no recurring tick handler or overlay;
-its descriptive entity query runs only when an administrator invokes it.
+includes the guard's orders and effective policy, target distance, minimum,
+preferred, and maximum range, firing-window validity, cached line of sight,
+active visible-tick and aim requirements, movement, the ROE mode and decision
+reason, progressive muzzle/projectile/blast safety padding, friendly-fire blockers and their ally-classification reason, gun ID, fire mode,
+magazine and chamber state, actual compatible reserve units, reserve source,
+compatibility scan results, reload/bolt/cooldown/charge state, and the last
+TaCZ shoot result. It also shows the cached TaCZ gun type, tactical profile and
+selection source, projectile/explosion traits, and the cached tactical
+envelope. The command registers no recurring tick handler or overlay; its
+descriptive entity query runs only when an administrator invokes it.
+
+The report also identifies a guard's natural-loadout record as absent, active,
+or mismatched and includes its last selection/issuance result and persisted
+pool, gun, difficulty, source, schema, and issuance identity when available.
 
 ## Building and testing
 
@@ -110,12 +226,34 @@ machine:
 ```bash
 ./gradlew runGameTestServer -Pphase8Performance=true
 ./gradlew verifyPhase8PerformanceReports
+./gradlew assembleReleaseCandidateEvidence
+./gradlew verifyAmmunitionReleaseCandidate
 ```
 
 See [docs/phase-8-validation-and-performance.md](docs/phase-8-validation-and-performance.md)
 for the reference measurements and interpretation. Headless tests cannot prove
 client animation or observer synchronization, so a release candidate must also
 complete [docs/release-checklist.md](docs/release-checklist.md).
+
+The final command verifies the release JAR and exact 14-report/14-JFR set, parses
+each JFR, enforces same-run baseline-relative p95/p99 budgets, and requires every
+JSON report to name the SHA-256 of that exact production JAR. It then writes a
+deterministic artifact manifest containing the byte size and SHA-256 of the JAR
+and every performance evidence file, plus a conventional JAR checksum under
+`build/reports/release-candidate`. It deliberately records the separate
+correctness and manual-validation boundaries instead of claiming they ran as
+part of the bundle task.
+
+The final aggregate task must be run without `-Pphase8Performance`. It consumes
+the separately generated performance reports, runs the normal 44-case
+correctness GameTest server, and verifies the complete ammunition release
+evidence boundary. It does not replace the recordable multiplayer rows in the
+release checklist.
+
+`./gradlew prepareCurseForgeRelease` additionally runs
+`verifyManualReleaseChecklist` and intentionally refuses to create a public
+release handoff while any manual row is `Not run`/`Failed` or any checklist item
+remains unchecked.
 
 ## Development layout
 

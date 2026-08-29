@@ -1,14 +1,23 @@
 package com.gamergaming.villagerguardgunners.entity;
 
+import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoMaintenance;
+import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.combat.GuardCombatStatus;
 import com.gamergaming.villagerguardgunners.init.ModMenus;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
+import com.gamergaming.villagerguardgunners.orders.GuardOrders;
+import com.gamergaming.villagerguardgunners.orders.GuardOrders.OrderField;
+import com.gamergaming.villagerguardgunners.orders.GuardOrderPermissions;
 import com.mojang.datafixers.util.Pair;
+import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +37,10 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
     private final Container guardInventory;
     private final GuardAmmoHandler ammoHandler;
     private final Guard guard;
+    @Nullable
+    private final GuardGunCombatGoal statusGoal;
+    private int synchronizedCombatStatusId = GuardCombatStatus.UNKNOWN.networkId();
+    private GuardOrders synchronizedOrders = GuardOrders.DEFAULT;
 
     public GuardGunnerContainer(
             int id,
@@ -39,7 +52,41 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
         this.guardInventory = guardInventory;
         this.ammoHandler = ammoHandler;
         this.guard = guard;
+        this.statusGoal = guard.level().isClientSide ? null : findGunGoal(guard);
         guardInventory.startOpen(playerInventory.player);
+
+        addDataSlot(new DataSlot() {
+            @Override
+            public int get() {
+                if (!guard.level().isClientSide) {
+                    GuardCombatStatus status = statusGoal == null
+                            ? GuardCombatStatus.UNKNOWN
+                            : statusGoal.getPlayerFacingStatus();
+                    return status.networkId();
+                }
+                return synchronizedCombatStatusId;
+            }
+
+            @Override
+            public void set(int value) {
+                synchronizedCombatStatusId = value;
+            }
+        });
+        for (OrderField field : OrderField.values()) {
+            addDataSlot(new DataSlot() {
+                @Override
+                public int get() {
+                    return guard.level().isClientSide
+                            ? synchronizedOrders.networkValue(field)
+                            : GuardOrdersAccess.getOrders(guard).networkValue(field);
+                }
+
+                @Override
+                public void set(int value) {
+                    synchronizedOrders = synchronizedOrders.withNetworkValue(field, value);
+                }
+            });
+        }
 
         addArmorSlot(playerInventory, 0, 8, 8, EquipmentSlot.HEAD, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET);
         addArmorSlot(playerInventory, 1, 8, 26, EquipmentSlot.CHEST, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE);
@@ -160,9 +207,47 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
         return ammoHandler;
     }
 
+    public GuardCombatStatus getCombatStatus() {
+        return GuardCombatStatus.fromNetworkId(synchronizedCombatStatusId);
+    }
+
+    public GuardOrders getOrders() {
+        return guard.level().isClientSide
+                ? synchronizedOrders
+                : GuardOrdersAccess.getOrders(guard);
+    }
+
+    @Nullable
+    private static GuardGunCombatGoal findGunGoal(Guard guard) {
+        return guard.goalSelector.getAvailableGoals().stream()
+                .map(wrappedGoal -> wrappedGoal.getGoal())
+                .filter(GuardGunCombatGoal.class::isInstance)
+                .map(GuardGunCombatGoal.class::cast)
+                .findFirst()
+                .orElse(null);
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return guardInventory.stillValid(player) && guard.isAlive() && guard.distanceTo(player) < 8.0F;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int buttonId) {
+        OrderField field = OrderField.fromButtonId(buttonId);
+        if (field == null
+                || player.level().isClientSide
+                || !stillValid(player)
+                || !GuardOrderPermissions.mayManage(player, guard)) {
+            return false;
+        }
+
+        GuardOrders current = GuardOrdersAccess.getOrders(guard);
+        if (!GuardOrdersAccess.setOrders(guard, current.cycle(field))) {
+            return false;
+        }
+        broadcastChanges();
+        return true;
     }
 
     @Override
@@ -180,7 +265,7 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
         ItemStack originalStack = sourceStack.copy();
         boolean moved = index < ADDON_SLOT_COUNT
                 ? moveItemStackTo(sourceStack, PLAYER_INVENTORY_START, PLAYER_SLOT_END, true)
-                : moveFromPlayerInventory(sourceStack, index);
+                : moveFromPlayerInventory(player, sourceStack, index);
 
         if (!moved) {
             return ItemStack.EMPTY;
@@ -200,9 +285,12 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
         return originalStack;
     }
 
-    private boolean moveFromPlayerInventory(ItemStack stack, int sourceIndex) {
-        if (GuardAmmoHandler.isAmmo(stack) && moveItemStackTo(stack, GUARD_SLOT_COUNT, ADDON_SLOT_COUNT, false)) {
-            return true;
+    private boolean moveFromPlayerInventory(Player player, ItemStack stack, int sourceIndex) {
+        if (GuardAmmoHandler.isAmmo(stack) && mayEditGuard(player)) {
+            GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard);
+            if (moveItemStackTo(stack, GUARD_SLOT_COUNT, ADDON_SLOT_COUNT, false)) {
+                return true;
+            }
         }
 
         for (int armorSlot = 0; armorSlot < 4; armorSlot++) {

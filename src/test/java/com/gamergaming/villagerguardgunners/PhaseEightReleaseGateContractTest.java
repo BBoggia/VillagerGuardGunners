@@ -43,13 +43,64 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(build.contains("performanceGameTest {")),
                 () -> assertTrue(build.contains("gradleProperty('phase8Performance')")),
                 () -> assertTrue(build.contains("sourceSets.performanceGameTest")),
+                () -> assertTrue(build.contains("generateIsolatedGameTestArena")),
+                () -> assertTrue(build.contains("generatedGameTestArenaDirectory")),
                 () -> assertTrue(build.contains("${mod_id}_performance,minecraft")),
                 () -> assertTrue(build.contains("run-gametest/world")),
                 () -> assertTrue(build.contains("run-phase8-performance/world")),
                 () -> assertTrue(build.contains(
                         "run-phase8-performance/config/villagerguardgunners/guard_gunners.toml")),
                 () -> assertTrue(build.contains("reports/phase8-performance")),
-                () -> assertTrue(build.contains("tasks.register('verifyPhase8PerformanceReports')")));
+                () -> assertTrue(build.contains("tasks.register('verifyPhase8PerformanceReports')")),
+                () -> assertTrue(build.contains("report.guards != expectedScenario.guards")),
+                () -> assertTrue(build.contains("report.weapon != expectedScenario.weapon")),
+                () -> assertTrue(build.contains("report.workload != expectedScenario.workload")),
+                () -> assertTrue(build.contains("nonNegativeEvidenceFields")),
+                () -> assertTrue(build.contains("jsonScenarios != requiredScenarios.keySet()")),
+                () -> assertTrue(build.contains("jfrScenarios != requiredScenarios.keySet()")),
+                () -> assertTrue(build.contains("jdk.jfr.consumer.RecordingFile")),
+                () -> assertTrue(build.contains("executionSampleCount == 0L")),
+                () -> assertTrue(build.contains("report.productionArtifactSha256")),
+                () -> assertTrue(build.contains("relativeTimingBudgets")),
+                () -> assertTrue(build.contains("baseline.p95Mspt")),
+                () -> assertTrue(build.contains("baseline.p99Mspt")));
+
+        String performanceHarness = read(
+                "src/perftest/java/com/gamergaming/villagerguardgunners/gametest/"
+                        + "PhaseEightPerformanceGameTests.java");
+        assertAll(
+                () -> assertTrue(performanceHarness.contains(
+                        "protectedFriendlyOffset(testTick, index)")),
+                () -> assertTrue(performanceHarness.contains("phase < 30L")),
+                () -> assertTrue(performanceHarness.contains("phase < 90L")),
+                () -> assertTrue(performanceHarness.contains("return -4.0D")),
+                () -> assertTrue(performanceHarness.contains("return 4.0D")));
+    }
+
+    @Test
+    void releaseCandidateEvidenceBindsTheArtifactAndPerformanceMatrix() throws IOException {
+        String build = read("build.gradle");
+        String evidenceTask = build.substring(
+                build.indexOf("tasks.register('assembleReleaseCandidateEvidence')"));
+
+        assertAll(
+                () -> assertTrue(evidenceTask.contains("verifyReleaseArtifact")),
+                () -> assertTrue(evidenceTask.contains("verifyPhase8PerformanceReports")),
+                () -> assertTrue(build.contains("MessageDigest.getInstance('SHA-256')")),
+                () -> assertTrue(evidenceTask.contains("release-candidate.json")),
+                () -> assertTrue(evidenceTask.contains("performanceJsonReports")),
+                () -> assertTrue(evidenceTask.contains("performanceJfrProfiles")),
+                () -> assertTrue(evidenceTask.contains("performanceEvidenceFiles")),
+                () -> assertTrue(evidenceTask.contains("performanceEvidence:")),
+                () -> assertTrue(evidenceTask.contains("sha256OfFile(file)")),
+                () -> assertTrue(evidenceTask.contains("schemaVersion  : 3")),
+                () -> assertTrue(evidenceTask.contains("correctnessGameTests")),
+                () -> assertTrue(evidenceTask.contains("manualCompatibility")),
+                () -> assertTrue(evidenceTask.contains("ammunitionGuide")),
+                () -> assertTrue(evidenceTask.contains("naturalLoadoutGuide")),
+                () -> assertTrue(evidenceTask.contains("automatedAmmunitionGate")),
+                () -> assertFalse(evidenceTask.contains("generatedAt")),
+                () -> assertFalse(evidenceTask.contains("Instant.now")));
     }
 
     @Test
@@ -67,8 +118,20 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(gate.contains("'Implementation-Timestamp'")),
                 () -> assertTrue(gate.contains("metadata.count('[[dependencies.villagerguardgunners]]')")),
                 () -> assertTrue(gate.contains("command/GuardGunnerCommands.class")),
+                () -> assertTrue(gate.contains("ammunition/GuardAmmoSharing.class")),
+                () -> assertTrue(gate.contains("ammunition/GuardDroppedAmmoPickup.class")),
                 () -> assertTrue(gate.contains("mixin/GuardMixin")),
+                () -> assertTrue(gate.contains("mixin/ItemEntityMixin")),
                 () -> assertTrue(gate.contains("mixin/RaiseShieldGoalMixin")),
+                () -> assertTrue(gate.contains("mixin/VillagerToGuardMixin")),
+                () -> assertTrue(gate.contains("spawn/NaturalGuardSpawnIntegration.class")),
+                () -> assertTrue(gate.contains("api/GuardNaturalLoadoutAccess.class")),
+                () -> assertTrue(gate.contains("spawn/NaturalGuardLoadoutIssuance.class")),
+                () -> assertTrue(gate.contains("spawn/NaturalGuardLoadoutProvenanceCodec.class")),
+                () -> assertTrue(gate.contains("spawn/NaturalGuardLoadoutDiagnostics.class")),
+                () -> assertTrue(gate.contains("commonClassesWithClientReferences")),
+                () -> assertTrue(gate.contains("net/minecraft/client/")),
+                () -> assertTrue(gate.contains("mixinMetadata.client")),
                 () -> assertTrue(build.contains("dependsOn tasks.named('verifyReleaseArtifact')")));
     }
 
@@ -120,18 +183,46 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(harness.contains("explosive-10")),
                 () -> assertTrue(harness.contains("obstacle-navigation-25")),
                 () -> assertTrue(harness.contains("protected-crossing-25")),
+                () -> assertTrue(harness.contains("dropped-ammo-pressure-100")),
+                () -> assertTrue(harness.contains("dry-sharing-pressure-50")),
                 () -> assertTrue(harness.contains("moveProtectedFriendlies(")),
+                () -> assertTrue(harness.contains("maintainScenarioTargets(")),
+                () -> assertTrue(harness.contains("scenarioZOffset(name)")),
+                () -> assertTrue(harness.contains("scenarioIndex * 512.0D")),
                 () -> assertTrue(harness.contains("nativeTaCZShootCount")),
                 () -> assertTrue(harness.contains("nativeAmmoConsumed")),
                 () -> assertTrue(harness.contains("ammoRemainingAtStart")),
                 () -> assertTrue(harness.contains("tacz:rpg_rocket")),
                 () -> assertTrue(harness.contains("return guardCount * 2")),
+                () -> assertTrue(harness.contains("return guardCount")),
                 () -> assertTrue(harness.contains("minimumAcceptedShotEvidence")),
+                () -> assertTrue(harness.contains("minimumAcceptedPerActiveGuardShotEvidence")),
+                () -> assertTrue(harness.contains("perGuardAcceptedShotEvidence")),
+                () -> assertTrue(harness.contains("ammoSharingAttemptsObserved")),
+                () -> assertTrue(harness.contains("persistentDroppedAmmoEntities")),
+                () -> assertTrue(harness.contains("minimumAmmoSharingAttempts(")),
+                () -> assertTrue(harness.contains("minimumPersistentDroppedAmmo(")),
+                () -> assertTrue(harness.contains("discardScenarioBullets(")),
+                () -> assertTrue(harness.contains("bullet.discard()")),
                 () -> assertTrue(harness.contains("workload == Workload.PROTECTED_LANES")),
                 () -> assertTrue(harness.contains("absoluteTimingGateApplied")),
+                () -> assertTrue(harness.contains("relativeTimingGateApplied")),
+                () -> assertTrue(harness.contains("productionArtifactSha256")),
                 () -> assertTrue(harness.contains("configProfile")),
+                () -> assertTrue(harness.contains("default-v7")),
                 () -> assertTrue(harness.contains("guardGunnerConfig")),
                 () -> assertTrue(harness.contains("configSnapshot()")),
+                () -> assertTrue(harness.contains("profileSnapshot(")),
+                () -> assertTrue(harness.contains("config.tactics.typeProfiles.get()")),
+                () -> assertTrue(harness.contains("config.tactics.gunOverrides.get()")),
+                () -> assertTrue(harness.contains("config.engagement.mode.get()")),
+                () -> assertTrue(harness.contains("config.engagement.additionalTargets.get()")),
+                () -> assertTrue(harness.contains("config.ammunition.pickupDroppedAmmo.get()")),
+                () -> assertTrue(harness.contains("config.ammunition.shareAmmoBetweenGuards.get()")),
+                () -> assertTrue(harness.contains("config.naturalLoadouts.enabled.get()")),
+                () -> assertTrue(harness.contains("config.naturalLoadouts.enabledSpawnSources.get()")),
+                () -> assertTrue(harness.contains("naturalDifficultySnapshot(")),
+                () -> assertTrue(harness.contains("explosiveStandoffRadiusMultiplier")),
                 () -> assertTrue(harness.contains("recording.dump(")));
     }
 

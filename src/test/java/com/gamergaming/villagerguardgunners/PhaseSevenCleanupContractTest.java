@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 final class PhaseSevenCleanupContractTest {
     private static Path projectDirectory;
     private static String productionSource;
+    private static String productionSourceWithoutNaturalConversionBridge;
 
     @BeforeAll
     static void loadProductionSource() throws IOException {
@@ -30,6 +31,9 @@ final class PhaseSevenCleanupContractTest {
                     .map(PhaseSevenCleanupContractTest::readUnchecked)
                     .collect(Collectors.joining("\n"));
         }
+        productionSourceWithoutNaturalConversionBridge = productionSource.replace(
+                read("src/main/java/com/gamergaming/villagerguardgunners/mixin/VillagerToGuardMixin.java"),
+                "");
     }
 
     @Test
@@ -131,7 +135,7 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardMixin\",\"RaiseShieldGoalMixin\"]")),
+                        "\"mixins\":[\"GuardMixin\",\"ItemEntityMixin\",\"RaiseShieldGoalMixin\",\"VillagerToGuardMixin\"]")),
                 () -> assertTrue(mixins.contains(
                         "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));
@@ -159,7 +163,7 @@ final class PhaseSevenCleanupContractTest {
 
         assertAll(prohibitedRuntimeMarkers.stream()
                 .map(marker -> () -> assertFalse(
-                        productionSource.contains(marker),
+                        productionSourceWithoutNaturalConversionBridge.contains(marker),
                         () -> "Custom firearm/rebalance marker returned: " + marker)));
     }
 
@@ -167,7 +171,11 @@ final class PhaseSevenCleanupContractTest {
     void productionCodeContainsNoPerShotOrDebugLogging() throws IOException {
         String legacyNotice = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/config/LegacyConfigNotice.java");
-        String performanceSensitiveSource = productionSource.replace(legacyNotice, "");
+        String naturalLoadoutReload = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutPools.java");
+        String performanceSensitiveSource = productionSource
+                .replace(legacyNotice, "")
+                .replace(naturalLoadoutReload, "");
 
         assertAll(
                 () -> assertFalse(performanceSensitiveSource.contains("LogUtils")),
@@ -180,7 +188,12 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(performanceSensitiveSource.contains("printStackTrace(")),
                 () -> assertTrue(legacyNotice.contains("LOGGER.warn(")),
                 () -> assertFalse(legacyNotice.contains("LOGGER.info(")),
-                () -> assertFalse(legacyNotice.contains("LOGGER.debug(")));
+                () -> assertFalse(legacyNotice.contains("LOGGER.debug(")),
+                () -> assertTrue(naturalLoadoutReload.contains("LOGGER.error(")),
+                () -> assertTrue(naturalLoadoutReload.contains("LOGGER.info(")),
+                () -> assertFalse(naturalLoadoutReload.contains("LOGGER.debug(")),
+                () -> assertFalse(naturalLoadoutReload.contains("tick(")),
+                () -> assertFalse(naturalLoadoutReload.contains("getEntitiesOfClass(")));
     }
 
     private static String read(String relativePath) throws IOException {

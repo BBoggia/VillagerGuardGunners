@@ -49,7 +49,7 @@ final class ProjectCompatibilityContractTest {
                 () -> assertEquals("1.6.19", property("guard_villager_version")),
                 () -> assertEquals("1.1.8-hotfix", property("tacz_version")),
                 () -> assertEquals("0.7.6+1.20.1", property("fzzy_config_version")),
-                () -> assertEquals("4.11.0", property("kotlin_for_forge_version")));
+                () -> assertEquals("4.12.0", property("kotlin_for_forge_version")));
     }
 
     @Test

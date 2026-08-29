@@ -14,25 +14,48 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoDeposits;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
+import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
+import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoMigration;
+import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplateInteractions;
+import com.gamergaming.villagerguardgunners.orders.GuardOrders;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutCandidate;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutIssuance;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutProvenance;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutProvenanceCodec;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardPopulationIndex;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutSelector;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnIntegration;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
 import com.tacz.guns.api.entity.IGunOperator;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -44,12 +67,20 @@ import tallestegg.guardvillagers.configuration.GuardConfig;
 import tallestegg.guardvillagers.entities.Guard;
 
 @Mixin(Guard.class)
-public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBurstSafetyAccess {
+public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBurstSafetyAccess,
+        GuardNaturalLoadoutAccess, GuardOrdersAccess {
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_AMMO_TAG = "villagerguardgunners:ammo_inventory";
 
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG = "villagerguardgunners:ammo_overflow";
+
+    @Unique
+    private static final String VILLAGER_GUARD_GUNNERS_ORDERS_TAG = "villagerguardgunners:orders";
+
+    @Unique
+    private static final String VILLAGER_GUARD_GUNNERS_PENDING_NATURAL_SPAWN_TAG =
+            "villagerguardgunners:pending_natural_loadout_spawn";
 
     @Unique
     private GuardAmmoHandler villagerGuardGunners$ammoHandler;
@@ -70,6 +101,37 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     @Unique
     private List<ItemStack> villagerGuardGunners$pendingMigrationDrops = new ArrayList<>();
 
+    @Unique
+    private GuardOrders villagerGuardGunners$orders = GuardOrders.DEFAULT;
+
+    @Unique
+    private int villagerGuardGunners$ordersRevision;
+
+    @Unique
+    @Nullable
+    private volatile NaturalGuardSpawnSource villagerGuardGunners$pendingNaturalLoadoutSpawnSource;
+
+    @Unique
+    private volatile boolean villagerGuardGunners$naturalLoadoutSelectionAttempted;
+
+    @Unique
+    @Nullable
+    private NaturalGuardLoadoutCandidate villagerGuardGunners$naturalLoadoutCandidate;
+
+    @Unique
+    @Nullable
+    private NaturalGuardLoadoutProvenance villagerGuardGunners$naturalLoadoutProvenance;
+
+    @Unique
+    @Nullable
+    private volatile NaturalGuardLoadoutSelector.DecisionStatus
+            villagerGuardGunners$naturalLoadoutDecisionStatus;
+
+    @Unique
+    @Nullable
+    private volatile NaturalGuardLoadoutIssuance.IssuanceStatus
+            villagerGuardGunners$naturalLoadoutIssuanceStatus;
+
     protected GuardMixin(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
     }
@@ -82,11 +144,94 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
         }
     }
 
+    @Inject(method = "finalizeSpawn", at = @At("RETURN"))
+    private void markNaturalLoadoutSpawnSource(
+            ServerLevelAccessor level,
+            DifficultyInstance difficulty,
+            MobSpawnType spawnType,
+            @Nullable SpawnGroupData spawnData,
+            @Nullable CompoundTag spawnTag,
+            CallbackInfoReturnable<SpawnGroupData> cir) {
+        NaturalGuardSpawnIntegration.markInitialSpawn((Guard) (Object) this, spawnType);
+    }
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void flushMigrationOverflow(CallbackInfo ci) {
         if (!level().isClientSide && !villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             villagerGuardGunners$dropPendingMigrationItems();
         }
+    }
+
+    @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
+    private void handleAddonHeldItemInteraction(
+            Player player,
+            InteractionHand hand,
+            CallbackInfoReturnable<InteractionResult> cir) {
+        InteractionHand ledgerHand =
+                GuardOrderTemplateInteractions.findLedgerHand(player, hand);
+        if (ledgerHand != null) {
+            cir.setReturnValue(GuardOrderTemplateInteractions.interact(
+                    player,
+                    (Guard) (Object) this,
+                    ledgerHand));
+            return;
+        }
+
+        ItemStack heldStack = player.getItemInHand(hand);
+        if (!player.isSecondaryUseActive() || !GuardAmmoHandler.isAmmo(heldStack)) {
+            return;
+        }
+        if (level().isClientSide) {
+            cir.setReturnValue(InteractionResult.SUCCESS);
+            return;
+        }
+
+        Guard guard = (Guard) (Object) this;
+        GuardAmmoDeposits.DepositResult result =
+                GuardAmmoDeposits.deposit(player, guard, hand);
+        if (result.deposited()) {
+            guard.playSound(SoundEvents.ITEM_PICKUP, 0.2F, 1.0F);
+        }
+        player.displayClientMessage(villagerGuardGunners$depositMessage(result), true);
+        cir.setReturnValue(InteractionResult.CONSUME);
+    }
+
+    @Unique
+    private static Component villagerGuardGunners$depositMessage(
+            GuardAmmoDeposits.DepositResult result) {
+        return switch (result.status()) {
+            case DEPOSITED -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.success",
+                    result.inserted())
+                    .withStyle(ChatFormatting.GREEN);
+            case UNAUTHORIZED -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.unauthorized")
+                    .withStyle(ChatFormatting.RED);
+            case INACTIVE_GUARD -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.inactive_guard")
+                    .withStyle(ChatFormatting.YELLOW);
+            case NO_GUN -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.no_gun")
+                    .withStyle(ChatFormatting.YELLOW);
+            case UNREADABLE_GUN -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.unreadable_gun")
+                    .withStyle(ChatFormatting.YELLOW);
+            case GUN_DOES_NOT_USE_PHYSICAL_AMMO -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.physical_ammo_unused")
+                    .withStyle(ChatFormatting.YELLOW);
+            case INCOMPATIBLE_AMMUNITION -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.incompatible")
+                    .withStyle(ChatFormatting.YELLOW);
+            case UNREADABLE_AMMUNITION -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.unreadable")
+                    .withStyle(ChatFormatting.YELLOW);
+            case INVENTORY_FULL -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.full")
+                    .withStyle(ChatFormatting.YELLOW);
+            case TRANSACTION_FAILED, INVALID_REQUEST, NOT_AMMUNITION -> Component.translatable(
+                    "message.villagerguardgunners.ammo_deposit.failed")
+                    .withStyle(ChatFormatting.RED);
+        };
     }
 
     @Inject(method = "registerGoals", at = @At("RETURN"))
@@ -97,6 +242,12 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     @Inject(method = "readAdditionalSaveData", at = @At("HEAD"))
     private void readAmmoStorage(CompoundTag compound, CallbackInfo ci) {
         villagerGuardGunners$ensureAmmoStorage();
+        villagerGuardGunners$readPendingNaturalLoadoutSpawn(compound);
+        villagerGuardGunners$setOrders(compound.contains(
+                VILLAGER_GUARD_GUNNERS_ORDERS_TAG,
+                Tag.TAG_COMPOUND)
+                ? GuardOrders.load(compound.getCompound(VILLAGER_GUARD_GUNNERS_ORDERS_TAG))
+                : GuardOrders.DEFAULT);
         villagerGuardGunners$pendingMigrationDrops.clear();
 
         List<CompoundTag> legacyAmmo = GuardAmmoMigration.extractLegacyAmmoSlots(compound);
@@ -128,10 +279,43 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
         }
     }
 
+    @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
+    private void authenticateNaturalLoadoutAfterRead(CompoundTag compound, CallbackInfo ci) {
+        // Vanilla equipment is not available at HEAD. Authenticate only after
+        // Guard Villagers has restored the main-hand item.
+        villagerGuardGunners$reconcileNaturalLoadoutProvenance();
+    }
+
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void saveAmmoStorage(CompoundTag compound, CallbackInfo ci) {
         villagerGuardGunners$ensureAmmoStorage();
         compound.put(VILLAGER_GUARD_GUNNERS_AMMO_TAG, villagerGuardGunners$ammoHandler.serializeNBT());
+
+        // Do not preserve a stale identity after a player or another mod has
+        // removed/replaced the naturally issued main-hand gun.
+        villagerGuardGunners$reconcileNaturalLoadoutProvenance();
+        NaturalGuardLoadoutProvenanceCodec.writeGuardRecord(
+                compound,
+                villagerGuardGunners$naturalLoadoutProvenance);
+        NaturalGuardPopulationIndex.synchronize((Guard) (Object) this);
+
+        NaturalGuardSpawnSource pendingSpawnSource =
+                villagerGuardGunners$pendingNaturalLoadoutSpawnSource;
+        if (!villagerGuardGunners$naturalLoadoutSelectionAttempted
+                && pendingSpawnSource != null) {
+            compound.putString(
+                    VILLAGER_GUARD_GUNNERS_PENDING_NATURAL_SPAWN_TAG,
+                    pendingSpawnSource.name());
+        } else {
+            compound.remove(VILLAGER_GUARD_GUNNERS_PENDING_NATURAL_SPAWN_TAG);
+        }
+
+        GuardOrders orders = villagerGuardGunners$getOrders();
+        if (orders.equals(GuardOrders.DEFAULT)) {
+            compound.remove(VILLAGER_GUARD_GUNNERS_ORDERS_TAG);
+        } else {
+            compound.put(VILLAGER_GUARD_GUNNERS_ORDERS_TAG, orders.save());
+        }
 
         if (villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             compound.remove(VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG);
@@ -244,6 +428,157 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     public GuardAmmoHandler villagerGuardGunners$getAmmoHandler() {
         villagerGuardGunners$ensureAmmoStorage();
         return villagerGuardGunners$ammoHandler;
+    }
+
+    @Override
+    public GuardOrders villagerGuardGunners$getOrders() {
+        if (villagerGuardGunners$orders == null) {
+            villagerGuardGunners$orders = GuardOrders.DEFAULT;
+        }
+        return villagerGuardGunners$orders;
+    }
+
+    @Override
+    public void villagerGuardGunners$setOrders(GuardOrders orders) {
+        GuardOrders normalized = orders == null ? GuardOrders.DEFAULT : orders;
+        if (!normalized.equals(villagerGuardGunners$getOrders())) {
+            villagerGuardGunners$orders = normalized;
+            villagerGuardGunners$ordersRevision++;
+        }
+    }
+
+    @Override
+    public int villagerGuardGunners$getOrdersRevision() {
+        return villagerGuardGunners$ordersRevision;
+    }
+
+    @Override
+    public synchronized void villagerGuardGunners$markNaturalLoadoutSpawnSource(
+            NaturalGuardSpawnSource source) {
+        if (!villagerGuardGunners$naturalLoadoutSelectionAttempted
+                && villagerGuardGunners$pendingNaturalLoadoutSpawnSource == null) {
+            villagerGuardGunners$pendingNaturalLoadoutSpawnSource = source;
+        }
+    }
+
+    @Override
+    @Nullable
+    public synchronized NaturalGuardSpawnSource
+            villagerGuardGunners$claimNaturalLoadoutSpawnSource() {
+        if (villagerGuardGunners$naturalLoadoutSelectionAttempted
+                || villagerGuardGunners$pendingNaturalLoadoutSpawnSource == null) {
+            return null;
+        }
+        NaturalGuardSpawnSource source = villagerGuardGunners$pendingNaturalLoadoutSpawnSource;
+        villagerGuardGunners$pendingNaturalLoadoutSpawnSource = null;
+        villagerGuardGunners$naturalLoadoutSelectionAttempted = true;
+        return source;
+    }
+
+    @Override
+    public boolean villagerGuardGunners$hasNaturalLoadoutSelectionAttempted() {
+        return villagerGuardGunners$naturalLoadoutSelectionAttempted;
+    }
+
+    @Override
+    @Nullable
+    public NaturalGuardLoadoutSelector.DecisionStatus
+            villagerGuardGunners$getNaturalLoadoutDecisionStatus() {
+        return villagerGuardGunners$naturalLoadoutDecisionStatus;
+    }
+
+    @Override
+    public void villagerGuardGunners$setNaturalLoadoutDecisionStatus(
+            NaturalGuardLoadoutSelector.DecisionStatus status) {
+        villagerGuardGunners$naturalLoadoutDecisionStatus = status;
+    }
+
+    @Override
+    @Nullable
+    public NaturalGuardLoadoutCandidate villagerGuardGunners$getNaturalLoadoutCandidate() {
+        return villagerGuardGunners$naturalLoadoutCandidate;
+    }
+
+    @Override
+    public void villagerGuardGunners$setNaturalLoadoutCandidate(
+            @Nullable NaturalGuardLoadoutCandidate candidate) {
+        villagerGuardGunners$naturalLoadoutCandidate = candidate;
+    }
+
+    @Override
+    @Nullable
+    public NaturalGuardLoadoutProvenance villagerGuardGunners$getNaturalLoadoutProvenance() {
+        return villagerGuardGunners$naturalLoadoutProvenance;
+    }
+
+    @Override
+    public void villagerGuardGunners$setNaturalLoadoutProvenance(
+            @Nullable NaturalGuardLoadoutProvenance provenance) {
+        villagerGuardGunners$naturalLoadoutProvenance = provenance;
+        if (provenance != null) {
+            villagerGuardGunners$naturalLoadoutSelectionAttempted = true;
+        } else {
+            villagerGuardGunners$naturalLoadoutCandidate = null;
+            NaturalGuardPopulationIndex.remove((Guard) (Object) this);
+        }
+    }
+
+    @Override
+    @Nullable
+    public NaturalGuardLoadoutIssuance.IssuanceStatus
+            villagerGuardGunners$getNaturalLoadoutIssuanceStatus() {
+        return villagerGuardGunners$naturalLoadoutIssuanceStatus;
+    }
+
+    @Override
+    public void villagerGuardGunners$setNaturalLoadoutIssuanceStatus(
+            NaturalGuardLoadoutIssuance.IssuanceStatus status) {
+        villagerGuardGunners$naturalLoadoutIssuanceStatus = status;
+    }
+
+    @Unique
+    private void villagerGuardGunners$readPendingNaturalLoadoutSpawn(CompoundTag compound) {
+        villagerGuardGunners$pendingNaturalLoadoutSpawnSource = null;
+        villagerGuardGunners$naturalLoadoutSelectionAttempted = false;
+        villagerGuardGunners$naturalLoadoutCandidate = null;
+        villagerGuardGunners$naturalLoadoutProvenance =
+                NaturalGuardLoadoutProvenanceCodec.readGuardRecord(compound);
+        villagerGuardGunners$naturalLoadoutDecisionStatus = null;
+        villagerGuardGunners$naturalLoadoutIssuanceStatus = null;
+        if (!compound.contains(
+                VILLAGER_GUARD_GUNNERS_PENDING_NATURAL_SPAWN_TAG,
+                Tag.TAG_STRING)) {
+            return;
+        }
+        try {
+            villagerGuardGunners$pendingNaturalLoadoutSpawnSource =
+                    NaturalGuardSpawnSource.valueOf(compound.getString(
+                            VILLAGER_GUARD_GUNNERS_PENDING_NATURAL_SPAWN_TAG));
+        } catch (IllegalArgumentException ignored) {
+            // Unknown/future source values are not eligible for automatic equipment.
+        }
+    }
+
+    @Unique
+    private void villagerGuardGunners$reconcileNaturalLoadoutProvenance() {
+        NaturalGuardLoadoutProvenance provenance =
+                villagerGuardGunners$naturalLoadoutProvenance;
+        Guard guard = (Guard) (Object) this;
+        if (NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                guard.getMainHandItem(),
+                provenance)) {
+            villagerGuardGunners$naturalLoadoutSelectionAttempted = true;
+            villagerGuardGunners$naturalLoadoutCandidate =
+                    new NaturalGuardLoadoutCandidate(
+                            provenance.poolId(),
+                            provenance.gunId(),
+                            provenance.difficulty(),
+                            provenance.spawnSource());
+            return;
+        }
+        villagerGuardGunners$naturalLoadoutProvenance = null;
+        villagerGuardGunners$naturalLoadoutCandidate = null;
+        NaturalGuardPopulationIndex.remove(guard);
     }
 
     @Override

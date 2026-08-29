@@ -6,7 +6,9 @@
   "refmap": "villagerguardgunners.refmap.json",
   "mixins": [
     "GuardMixin",
-    "RaiseShieldGoalMixin"
+    "ItemEntityMixin",
+    "RaiseShieldGoalMixin",
+    "VillagerToGuardMixin"
   ],
   "client": [
     "client.GuardModelMixin",

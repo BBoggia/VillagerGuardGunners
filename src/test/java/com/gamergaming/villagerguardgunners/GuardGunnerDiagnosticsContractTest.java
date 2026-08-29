@@ -32,6 +32,31 @@ final class GuardGunnerDiagnosticsContractTest {
                 () -> assertTrue(command.contains("source.hasPermission(REQUIRED_PERMISSION_LEVEL)")),
                 () -> assertTrue(command.contains("EntityArgument.entity()")),
                 () -> assertTrue(command.contains("gunGoal.captureDiagnostics()")),
+                () -> assertTrue(command.contains("\"Cached tactics\"")),
+                () -> assertTrue(command.contains("\"Cached envelope\"")),
+                () -> assertTrue(command.contains("tactical.metadataReadable()")),
+                () -> assertTrue(command.contains("snapshot.retreatDistance()")),
+                () -> assertTrue(command.contains("snapshot.minimumRange()")),
+                () -> assertTrue(command.contains("snapshot.validFiringWindow()")),
+                () -> assertTrue(command.contains("snapshot.withinFiringWindow()")),
+                () -> assertTrue(command.contains("snapshot.requiredVisibleTicks()")),
+                () -> assertTrue(command.contains("snapshot.aimToleranceDegrees()")),
+                () -> assertTrue(command.contains("\"Rules of engagement\"")),
+                () -> assertTrue(command.contains("snapshot.engagementMode()")),
+                () -> assertTrue(command.contains("snapshot.engagementReason()")),
+                () -> assertTrue(command.contains("allyReason=")),
+                () -> assertTrue(command.contains("safety.protectionReason()")),
+                () -> assertTrue(command.contains("GuardAmmoSummary.capture(")),
+                () -> assertTrue(command.contains("GuardAmmoAccess.getTaCZInventoryHandler")),
+                () -> assertTrue(command.contains("ammunition.reserveUnits()")),
+                () -> assertTrue(command.contains("ammunition.incompatibleAmmoStacks()")),
+                () -> assertTrue(command.contains("ammunition.unknownAmmoStacks()")),
+                () -> assertTrue(command.contains("ammunition.reserveScanComplete()")),
+                () -> assertTrue(command.contains("nativeState.lastAmmoSharingStatus()")),
+                () -> assertTrue(command.contains("nativeState.lastAmmoSharedItems()")),
+                () -> assertTrue(command.contains("\"Natural loadout\"")),
+                () -> assertTrue(command.contains("NaturalGuardLoadoutDiagnostics.capture(guard)")),
+                () -> assertTrue(command.contains("naturalLoadoutDetails(")),
                 () -> assertFalse(command.contains("TickEvent")),
                 () -> assertFalse(command.contains("addListener")),
                 () -> assertFalse(command.contains("schedule")));
@@ -53,12 +78,12 @@ final class GuardGunnerDiagnosticsContractTest {
                 () -> assertTrue(controller.contains("lastShootResult = result")),
                 () -> assertFalse(controller.substring(
                         controller.indexOf("private void tickSafely("),
-                        controller.indexOf("public float getSafetyPadding"))
+                        controller.indexOf("public float getProjectileSafetyPadding"))
                         .contains("captureDiagnostics")));
     }
 
     @Test
-    void correctnessSuiteCoversThePreferredVersusMaximumRangeBoundary() throws IOException {
+    void correctnessSuiteCoversEveryLiveTacticalRangeBoundary() throws IOException {
         String gameTests = read(
                 "src/gametest/java/com/gamergaming/villagerguardgunners/gametest/GuardGunnerGameTests.java");
 
@@ -67,6 +92,12 @@ final class GuardGunnerDiagnosticsContractTest {
                         "guardGoalFiresBeyondPreferredRangeWithinConfiguredMaximum")),
                 () -> assertTrue(gameTests.contains("initial.distance() > initial.preferredRange()")),
                 () -> assertTrue(gameTests.contains("initial.distance() <= initial.maximumRange()")),
+                () -> assertTrue(gameTests.contains(
+                        "profileMaximumFiringRangeControlsLiveGoal")),
+                () -> assertTrue(gameTests.contains(
+                        "explosiveMinimumFiringDistanceControlsLiveGoal")),
+                () -> assertTrue(gameTests.contains("FireDecision.TOO_CLOSE")),
+                () -> assertTrue(gameTests.contains("FireDecision.OUT_OF_RANGE")),
                 () -> assertTrue(gameTests.contains("goal.tick()")),
                 () -> assertTrue(gameTests.contains("shootTimestamp >= 0L")));
     }

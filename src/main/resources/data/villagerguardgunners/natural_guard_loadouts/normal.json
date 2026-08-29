@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "entries": [
+    {
+      "gun": "tacz:glock_17",
+      "weight": 3
+    },
+    {
+      "gun": "tacz:m1911",
+      "weight": 2
+    },
+    {
+      "gun": "tacz:uzi",
+      "weight": 2
+    },
+    {
+      "gun": "tacz:hk_mp5a5",
+      "weight": 1
+    }
+  ]
+}

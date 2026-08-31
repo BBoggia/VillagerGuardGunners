@@ -4,6 +4,80 @@ All notable Villager Guard Gunners changes are recorded here.
 
 ## Unreleased
 
+## 1.3-beta1 - 2026-08-31
+
+### Added
+
+- Added automatic Village Armory resupply. Low-ammunition guards can locate a
+  compatible loaded Armory, reserve its supply, travel to it, and withdraw
+  ammunition through the same transactional TaCZ-native inventory rules used
+  by the existing ammunition systems.
+- Added a transient loaded-Armory index with deterministic, distance-ordered,
+  hard-capped searches that never scan blocks, force chunks, or tick Armory
+  block entities.
+- Added expiring per-source reservations so multiple guards cannot claim the
+  same ammunition. Every transaction revalidates the guard, weapon, active
+  primary or sidearm role, Armory access, source item, distance, configuration,
+  and current ammunition need immediately before moving an item.
+- Added bounded and interruptible logistics movement with eight maximum path
+  approaches, progress checks, native-action pauses, cancellation on combat or
+  higher-priority orders, and retry backoff for missing or unreachable supply.
+- Added synchronized Fzzy Config controls for Armory resupply thresholds,
+  target reserves, search limits, movement, request lifetimes, reservations,
+  cooldowns, and retry timing.
+- Expanded `/vgg inspect <guard>` with the current Armory-resupply gate, need,
+  runtime state, selected source, work counters, transfer result, and next
+  action without causing an Armory query or path request.
+- Added reloadable datapack-defined guard roles that provide reusable defaults
+  for all seven per-guard orders without granting or moving equipment.
+- Added five optional built-in role definitions: Rifleman, Marksman, Support,
+  Breacher, and Demolitions. Existing guards remain unassigned and unchanged.
+- Added natural-loadout format 4 role assignment, Orders Ledger format 2 role
+  copying, and permission-level-2 `/vgg roles list`, `inspect`, `assign`, and
+  `clear` commands. Formats 1 through 3 and version-1 ledgers retain their
+  previous behavior.
+
+### Improved
+
+- Role inheritance is validated and resolved once per datapack reload, then
+  served through constant-time lookups and revision-cached effective orders.
+- Armory resupply remains below combat, squad commands, following, hold and
+  patrol restrictions, sidearm recovery, and TaCZ native weapon actions.
+- Resupply understands the currently active primary or sidearm, physical loose
+  ammunition and finite ammo boxes, attachment-adjusted magazine capacity,
+  squad-locked Armories, and partial destination space.
+- Added automated coverage for Armory indexing, reservation contention,
+  transactional withdrawal, lifecycle cleanup, path interruption, schema-9
+  migration, diagnostics, role parsing/inheritance, assignment, migration, and
+  item-neutral behavior.
+- Expanded the opt-in scalability matrix to 20 workloads, including 100 idle
+  Armories, 100 adequately supplied armed guards, and 50 simultaneous scarce
+  or unreachable resupply requests.
+
+### Fixed
+
+- Prevented stale loaded-Armory index entries from removing a newer block
+  entity registered at the same position.
+- Made the role inheritance ceiling deterministic and limited to 16 total
+  definitions including the assigned role, independent of datapack order or
+  earlier cache population.
+- Hardened role publication against malformed documents, missing parents,
+  cycles, conflicting inherited values, future formats, excessive parents,
+  excessive depth, and oversized reload sets while retaining the last known
+  good generation.
+- Prevented satisfied or blocked guards from performing Armory candidate,
+  inventory-slot, reservation, or path work.
+- Expanded the release artifact gate to require the complete role runtime and
+  built-in datapack resources while continuing to exclude all GameTest and
+  performance-only code from the distributable JAR.
+
+### Beta notes
+
+- This is a beta build. Automated unit, source, compilation, and packaged-JAR
+  gates are required before distribution, but the complete manual client,
+  dedicated-server, multiplayer, third-party gun-pack, and Armory integration
+  matrix is still required before the final 1.3 release.
+
 ## 1.2 - 2026-08-30
 
 ### Added

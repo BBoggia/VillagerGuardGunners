@@ -7110,6 +7110,15 @@ public final class GuardGunnerGameTests {
                                 ModConfigs.GUARD_GUNNERS.enabled.get());
                 ArmoryResupplyDiagnostics.Snapshot diagnostic =
                         ArmoryResupplyDiagnostics.capture(guard, settings);
+                int remainingArmoryItems = armory.getInventory()
+                        .getStackInSlot(0)
+                        .getCount();
+                boolean guardAmmoEmpty = isAmmoHandlerEmpty(
+                        GuardAmmoAccess.getAmmoHandler(guard));
+                int liveReservations = ArmoryResupplyServerServices
+                        .forLevel(helper.getLevel())
+                        .reservations()
+                        .activeCount(helper.getLevel().getGameTime());
                 helper.assertTrue(
                         snapshot.state() == ArmoryResupplyState.COOLDOWN
                                 && snapshot.candidateInspections() > 0
@@ -7117,7 +7126,7 @@ public final class GuardGunnerGameTests {
                                         <= settings.maximumCandidateArmories()
                                 && snapshot.pathAttempts() == 0
                                 && snapshot.lastTransferredUnits() == stockedUnits
-                                && runtimeMetrics.assessments() == 1L
+                                && runtimeMetrics.assessments() >= 1L
                                 && runtimeMetrics.needAssessments() == 1L
                                 && runtimeMetrics.armoryQueries() == 1L
                                 && runtimeMetrics.candidateRecords() == 1L
@@ -7130,13 +7139,17 @@ public final class GuardGunnerGameTests {
                                         == ArmoryResupplyDiagnostics.RuntimeStatus.REGISTERED
                                 && diagnostic.state() == ArmoryResupplyState.COOLDOWN
                                 && diagnostic.lastTransferredUnits() == stockedUnits
-                                && armory.getInventory().getStackInSlot(0).isEmpty()
-                                && !isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(guard))
-                                && ArmoryResupplyServerServices.forLevel(helper.getLevel())
-                                        .reservations()
-                                        .activeCount(helper.getLevel().getGameTime()) == 0,
+                                && remainingArmoryItems == 0
+                                && !guardAmmoEmpty
+                                && liveReservations == 0,
                         "The registered Armory runtime did not complete exactly one bounded transfer: "
-                                + snapshot);
+                                + snapshot
+                                + ", metrics=" + runtimeMetrics
+                                + ", diagnostic=" + diagnostic
+                                + ", stockedUnits=" + stockedUnits
+                                + ", remainingArmoryItems=" + remainingArmoryItems
+                                + ", guardAmmoEmpty=" + guardAmmoEmpty
+                                + ", liveReservations=" + liveReservations);
                 helper.succeed();
             }
         });

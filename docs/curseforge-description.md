@@ -84,8 +84,10 @@ are carrying without replacing TaCZ's projectiles or weapon behavior.
     Store TaCZ loose ammunition and ammo boxes in a craftable nine-slot
     ammunition-only container. Village Armories support hoppers, Forge item
     pipes, comparator output, persistent contents, and optional Squad Command
-    Ledger association. Automatic guard travel and withdrawal are not part of
-    version 1.2.<br><br>
+    Ledger association. Low-ammunition guards can automatically locate a
+    compatible loaded Armory, reserve its supply, travel to it, and withdraw
+    ammunition through bounded, transactional, interruption-safe logistics
+    that never force chunks.<br><br>
   </li>
   <li>
     <strong>Reusable ammo-box preservation</strong><br>
@@ -112,6 +114,13 @@ are carrying without replacing TaCZ's projectiles or weapon behavior.
     maximum firing range while preserving server safety limits. Craft a
     reusable Orders Ledger to copy those behavior settings between guards
     without copying their equipment, ammunition, ownership, or patrol data.<br><br>
+  </li>
+  <li>
+    <strong>Datapack-defined guard roles</strong><br>
+    Create reusable Rifleman, Marksman, Support, Breacher, Demolitions, or
+    modpack-specific behavior profiles that supply defaults beneath a guard's
+    explicit orders. Roles can be assigned by natural loadouts, Orders
+    Ledgers, or operator commands, but never grant or move equipment.<br><br>
   </li>
   <li>
     <strong>Squads and temporary field commands</strong><br>
@@ -160,7 +169,7 @@ are carrying without replacing TaCZ's projectiles or weapon behavior.
 
 ## Requirements
 
-Villager Guard Gunners `1.2` requires:
+Villager Guard Gunners `1.3-beta1` requires:
 
 <ul>
   <li><strong>Minecraft 1.20.1</strong></li>
@@ -193,6 +202,8 @@ The server-authoritative Fzzy Config screen includes controls for:
   <li>Bounded performance scheduling</li>
   <li>Persistent per-guard combat and logistics orders</li>
   <li>Squad-command range, duration, radius, and affected-guard limits</li>
+  <li>Automatic Armory-resupply thresholds, search bounds, target reserves,
+      movement, reservations, cooldowns, and retry timing</li>
   <li>Natural-loadout spawn sources, difficulty chances, local caps, pool IDs,
       unloaded-chunk accounting, crossbow replacement, and explosive
       eligibility</li>
@@ -225,6 +236,10 @@ datapack pools without issuing equipment.
 `/vgg squads list [page]` and `/vgg squads unregister <squad>` provide
 permission-gated maintenance for the persistent squad registry.
 
+`/vgg roles list [page]`, `/vgg roles inspect <role>`,
+`/vgg roles assign <guard> <role>`, and `/vgg roles clear <guard>` provide
+permission-gated inspection and assignment of datapack-defined roles.
+
 <br>
 
 ## Installation
@@ -248,9 +263,10 @@ permission-gated maintenance for the persistent squad registry.
 
 ## Documentation and Support
 
-Configuration, sidearms, squads, Village Armories, natural-loadout datapack
-pools, rules-of-engagement behavior, ammunition logistics, and operator
-guidance are documented with the project source.
+Configuration, sidearms, squads, Village Armories, automatic Armory resupply,
+guard roles, natural-loadout datapack pools, rules-of-engagement behavior,
+ammunition logistics, and operator guidance are documented with the project
+source.
 
 Please report reproducible problems through the CurseForge project page. Include
 the Minecraft, Forge, Guard Villagers, TaCZ, Fzzy Config, Kotlin for Forge, and

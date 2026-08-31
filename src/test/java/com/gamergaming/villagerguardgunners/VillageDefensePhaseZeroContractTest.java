@@ -27,14 +27,14 @@ final class VillageDefensePhaseZeroContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void developmentArtifactCannotBeMistakenForReleaseTwelve() throws IOException {
+    void betaArtifactCannotBeMistakenForReleaseTwelve() throws IOException {
         Properties properties = new Properties();
         try (Reader reader = Files.newBufferedReader(
                 PROJECT_DIRECTORY.resolve("gradle.properties"), StandardCharsets.UTF_8)) {
             properties.load(reader);
         }
 
-        assertEquals("1.3-dev", properties.getProperty("mod_version"));
+        assertEquals("1.3-beta1", properties.getProperty("mod_version"));
     }
 
     @Test

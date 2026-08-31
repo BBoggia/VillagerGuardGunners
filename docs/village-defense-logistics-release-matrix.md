@@ -13,12 +13,12 @@ evidence against the candidate JAR.
 
 ## Candidate identity
 
-- Development version: `1.3-dev`
+- Candidate version: `1.3-beta1`
 - Baseline tag: `v1.2`
 - Baseline commit: `ee4a63ee596992e880f50da8463761438739e0e7`
 - Baseline JAR SHA-256: `9809fdaf10a7d34369d108383a6f41a3eba5a2fb7e60861a67f26c0373936c6a`
 - Candidate commit: record before validation
-- Candidate JAR SHA-256: `98cd60ef18e118428cfda3ce23387168463e940e786ac6542bf5e2c5bd811813`
+- Candidate JAR SHA-256: `d498dabe6e87de95034a70befc92997a6a9d8b931211362471606242cf480417`
 - Tested TaCZ content packs: record names and exact versions
 
 ## Armory index and access

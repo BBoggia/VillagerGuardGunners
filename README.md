@@ -12,7 +12,7 @@ rebalance are not part of the current implementation.
 
 ## Supported versions
 
-The 1.2 branch is deliberately locked to this reviewed combination:
+The 1.3 beta is deliberately locked to this reviewed combination:
 
 | Component | Version |
 | --- | --- |
@@ -321,11 +321,11 @@ Version numbers, immutable annotated tags, GitHub Actions artifacts, and the
 GitHub/CurseForge publishing sequence are documented in
 [docs/github-release-process.md](docs/github-release-process.md).
 
-The post-1.2 Village Defense Logistics development line begins with the
+The 1.3 Village Defense Logistics line begins with the
 [Phase 0 baseline and compatibility contract](docs/village-defense-logistics-phase-0.md).
 Its feature-specific validation cases are recorded separately in the
 [Village Defense Logistics release matrix](docs/village-defense-logistics-release-matrix.md)
-until they are promoted into the main release checklist for a 1.3 candidate.
+alongside the main release checklist for the final 1.3 candidate.
 The first implementation boundary—the inactive state, need, request,
 precedence, expiry, and retry contracts—is documented in
 [Armory resupply contracts](docs/armory-resupply-contracts.md).

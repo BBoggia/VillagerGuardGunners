@@ -6,7 +6,7 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: `1.3-dev`
+- Version: `1.3-beta1`
 - Minecraft: `1.20.1`
 - Forge: `47.4.23`
 - Guard Villagers: `1.20.1-1.6.19`
@@ -14,7 +14,7 @@ the relevant manual rows pass against the exact files being distributed.
 - Fzzy Config: `0.7.6+1.20.1`
 - Kotlin for Forge: `4.12.0`
 - Gun pack(s): record exact names and versions in the release notes
-- Current development JAR SHA-256: `98cd60ef18e118428cfda3ce23387168463e940e786ac6542bf5e2c5bd811813`
+- Current beta JAR SHA-256: `d498dabe6e87de95034a70befc92997a6a9d8b931211362471606242cf480417`
 
 ## Automated gates
 

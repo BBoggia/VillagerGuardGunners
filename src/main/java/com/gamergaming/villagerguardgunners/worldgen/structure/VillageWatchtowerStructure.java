@@ -3,17 +3,15 @@ package com.gamergaming.villagerguardgunners.worldgen.structure;
 import com.gamergaming.villagerguardgunners.init.ModStructures;
 import com.mojang.serialization.Codec;
 import java.util.Optional;
+import java.util.OptionalInt;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 
 /**
- * Dormant Step 10 structure codec and registry boundary.
- *
- * <p>The built-in biome tag is intentionally empty and this generation point
- * remains empty until Step 11 supplies the reviewed template and terrain
- * contract. Keeping both gates closed prevents an incomplete structure from
- * appearing even if a modpack accidentally adds this structure to another
- * structure set during the skeleton phase.</p>
+ * Places one compact watchtower after bounded dry-ground and slope checks.
  */
 public final class VillageWatchtowerStructure extends Structure {
     public static final Codec<VillageWatchtowerStructure> CODEC =
@@ -25,7 +23,26 @@ public final class VillageWatchtowerStructure extends Structure {
 
     @Override
     protected Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
-        return Optional.empty();
+        ChunkPos chunk = context.chunkPos();
+        int originX = chunk.getMiddleBlockX() - WatchtowerPlacement.FOOTPRINT_RADIUS;
+        int originZ = chunk.getMiddleBlockZ() - WatchtowerPlacement.FOOTPRINT_RADIUS;
+        OptionalInt groundY = WatchtowerPlacement.findGroundY(context, originX, originZ);
+        if (groundY.isEmpty()) {
+            return Optional.empty();
+        }
+
+        BlockPos templateOrigin = new BlockPos(originX, groundY.getAsInt(), originZ);
+        BlockPos biomeCheckPosition = templateOrigin.offset(
+                WatchtowerPlacement.FOOTPRINT_RADIUS,
+                0,
+                WatchtowerPlacement.FOOTPRINT_RADIUS);
+        Rotation rotation = Rotation.getRandom(context.random());
+        return Optional.of(new GenerationStub(
+                biomeCheckPosition,
+                pieces -> pieces.addPiece(new VillageWatchtowerPiece(
+                        context.structureTemplateManager(),
+                        templateOrigin,
+                        rotation))));
     }
 
     @Override

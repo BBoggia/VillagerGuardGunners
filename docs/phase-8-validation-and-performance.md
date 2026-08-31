@@ -81,7 +81,7 @@ scenario names, stale captures from another artifact, and malformed JFRs so
 unrelated evidence cannot be silently bundled with a release candidate.
 
 The final aggregate task is run without `-Pphase8Performance`. It consumes the
-separately generated performance evidence, executes the normal 87-case
+separately generated performance evidence, executes the normal 88-case
 correctness GameTest server, rebuilds the deterministic manifest, verifies that
 pickup and sharing still have independent rollback controls, and confirms that
 common production bytecode has no Minecraft client-class references. The

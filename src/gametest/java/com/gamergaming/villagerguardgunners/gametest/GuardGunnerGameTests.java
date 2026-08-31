@@ -89,6 +89,8 @@ import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmTransitionStatus;
 import com.gamergaming.villagerguardgunners.squad.SquadMembership;
 import com.gamergaming.villagerguardgunners.squad.SquadMembershipCodec;
+import com.gamergaming.villagerguardgunners.worldgen.structure.VillageWatchtowerPiece;
+import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerPlacement;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBindingCodec;
 import com.gamergaming.villagerguardgunners.squad.SquadRegistrySavedData;
@@ -119,10 +121,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -155,6 +159,12 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -192,6 +202,105 @@ public final class GuardGunnerGameTests {
     private static final String MIGRATION_OVERFLOW_TAG = "villagerguardgunners:ammo_overflow";
 
     private GuardGunnerGameTests() {
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void watchtowerTemplateLoadsWithRotationSafeBounds(GameTestHelper helper) {
+        var templateManager = helper.getLevel().getStructureManager();
+        var template = templateManager.getOrCreate(VillageWatchtowerPiece.TEMPLATE_LOCATION);
+
+        helper.assertTrue(
+                template.getSize().getX() == WatchtowerPlacement.FOOTPRINT_SIZE
+                        && template.getSize().getY() == WatchtowerPlacement.TEMPLATE_HEIGHT
+                        && template.getSize().getZ() == WatchtowerPlacement.FOOTPRINT_SIZE,
+                "The generated watchtower NBT did not load with its reviewed dimensions");
+
+        for (Rotation rotation : Rotation.values()) {
+            VillageWatchtowerPiece piece = new VillageWatchtowerPiece(
+                    templateManager,
+                    new BlockPos(0, 1, 0),
+                    rotation);
+            BoundingBox bounds = piece.getBoundingBox();
+            helper.assertTrue(
+                    piece.getRotation() == rotation
+                            && bounds.getXSpan() == WatchtowerPlacement.FOOTPRINT_SIZE
+                            && bounds.getYSpan() == WatchtowerPlacement.TEMPLATE_HEIGHT
+                            && bounds.getZSpan() == WatchtowerPlacement.FOOTPRINT_SIZE,
+                    "Watchtower bounds or saved rotation pivot changed for " + rotation);
+        }
+
+        var level = helper.getLevel();
+        var chunkSource = level.getChunkSource();
+        var generator = chunkSource.getGenerator();
+        var structure = level.registryAccess()
+                .registryOrThrow(Registries.STRUCTURE)
+                .get(VillageWatchtowerPiece.TEMPLATE_LOCATION);
+        helper.assertTrue(structure != null,
+                "The watchtower dynamic structure entry was not available");
+        var serializationContext = StructurePieceSerializationContext.fromLevel(level);
+        var serializationChunk = new net.minecraft.world.level.ChunkPos(0, 0);
+        for (Rotation rotation : Rotation.values()) {
+            VillageWatchtowerPiece piece = new VillageWatchtowerPiece(
+                    templateManager,
+                    new BlockPos(0, 1, 0),
+                    rotation);
+            StructureStart savedStart = new StructureStart(
+                    structure,
+                    serializationChunk,
+                    0,
+                    new PiecesContainer(List.of(piece)));
+            StructureStart restoredStart = StructureStart.loadStaticStart(
+                    serializationContext,
+                    savedStart.createTag(serializationContext, serializationChunk),
+                    level.getSeed());
+            helper.assertTrue(restoredStart != null
+                            && restoredStart.isValid()
+                            && restoredStart.getPieces().size() == 1
+                            && restoredStart.getPieces().get(0)
+                                    instanceof VillageWatchtowerPiece restoredPiece
+                            && restoredPiece.getRotation() == rotation,
+                    "Watchtower rotation did not survive structure-start persistence: "
+                            + rotation);
+        }
+        var candidateChunk = new net.minecraft.world.level.ChunkPos(
+                helper.absolutePos(BlockPos.ZERO));
+        Structure.GenerationContext generationContext = new Structure.GenerationContext(
+                level.registryAccess(),
+                generator,
+                generator.getBiomeSource(),
+                chunkSource.randomState(),
+                templateManager,
+                level.getSeed(),
+                candidateChunk,
+                level,
+                ignored -> true);
+        int originX = candidateChunk.getMiddleBlockX()
+                - WatchtowerPlacement.FOOTPRINT_RADIUS;
+        int originZ = candidateChunk.getMiddleBlockZ()
+                - WatchtowerPlacement.FOOTPRINT_RADIUS;
+        OptionalInt acceptedGround = WatchtowerPlacement.findGroundY(
+                generationContext,
+                originX,
+                originZ);
+        var start = structure.generate(
+                level.registryAccess(),
+                generator,
+                generator.getBiomeSource(),
+                chunkSource.randomState(),
+                templateManager,
+                level.getSeed(),
+                candidateChunk,
+                0,
+                level,
+                ignored -> true);
+        helper.assertTrue(start.isValid() == acceptedGround.isPresent(),
+                "The runtime structure start disagreed with its bounded terrain decision");
+        if (start.isValid()) {
+            helper.assertTrue(start.getPieces().size() == 1
+                            && start.getPieces().get(0) instanceof VillageWatchtowerPiece,
+                    "Accepted terrain did not produce exactly one watchtower template piece");
+        }
+        helper.succeed();
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)

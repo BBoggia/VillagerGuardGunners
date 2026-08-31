@@ -295,7 +295,7 @@ correctness and manual-validation boundaries instead of claiming they ran as
 part of the bundle task.
 
 The final aggregate task must be run without `-Pphase8Performance`. It consumes
-the separately generated performance reports, runs the normal 87-case
+the separately generated performance reports, runs the normal 88-case
 correctness GameTest server, and verifies the complete ammunition release
 evidence boundary. It does not replace the recordable multiplayer rows in the
 release checklist.
@@ -335,10 +335,14 @@ The 1.4 Village Watchtowers line begins with the
 structure placement, guard-group, loadout, lifecycle, compatibility, and
 performance cases are tracked in the
 [Village Watchtowers validation matrix](docs/village-watchtowers-release-matrix.md)
-before production world-generation registration begins.
+throughout the incremental world-generation implementation.
 The [Step 10 registry skeleton](docs/village-watchtowers-step-10.md) registers
 the codec and validates the built-in structure data while an empty biome tag
 and empty generation point keep incomplete towers from generating.
+The [Step 11 template and bounded placement](docs/village-watchtowers-step-11.md)
+adds the first 9 x 14 x 9 tower, centered persisted rotations, nine-point dry
+terrain validation, and village-compatible Overworld biome activation while
+leaving all guard, Armory, marker, and loot work disabled for later steps.
 
 ## License
 

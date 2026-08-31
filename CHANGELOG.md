@@ -11,6 +11,16 @@ All notable Villager Guard Gunners changes are recorded here.
   structure set, and empty biome tag now validate as a complete packaged unit,
   while an empty generation point independently prevents unfinished towers from
   appearing before the template and terrain phase.
+- Added the first physical Village Watchtower: a generated 9 x 14 x 9 native
+  structure template with a stone foundation, lower room, ladder, observation
+  deck, railings, and roof.
+- Activated rare deterministic watchtower placement in vanilla
+  village-compatible Overworld biomes with four persisted rotations, a
+  nine-point two-block slope ceiling, dry and frozen-support checks, and strict
+  build-height rejection.
+- Kept Step 11 limited to structure placement. Towers do not yet create guards,
+  Armories, loot, marker actions, retro-generation work, chunk tickets, scans,
+  or recurring tasks.
 
 ## 1.3-beta1 - 2026-08-31
 

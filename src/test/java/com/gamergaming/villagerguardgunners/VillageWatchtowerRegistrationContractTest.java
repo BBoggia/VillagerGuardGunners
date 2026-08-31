@@ -20,7 +20,7 @@ final class VillageWatchtowerRegistrationContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void customStructureTypeIsRegisteredExactlyOnce() throws IOException {
+    void customStructureAndPieceTypesAreRegisteredExactlyOnce() throws IOException {
         String bootstrap = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/"
                         + "VillagerGuardGunners.java");
@@ -38,18 +38,22 @@ final class VillageWatchtowerRegistrationContractTest {
                         "ModStructures.register(modEventBus)")),
                 () -> assertTrue(registry.contains(
                         "DeferredRegister.create(\n                    Registries.STRUCTURE_TYPE")),
+                () -> assertTrue(registry.contains("Registries.STRUCTURE_PIECE")),
                 () -> assertTrue(registry.contains("\"watchtower\"")),
                 () -> assertTrue(registry.contains("VillageWatchtowerStructure.CODEC")),
+                () -> assertTrue(registry.contains("VillageWatchtowerPiece::new")),
                 () -> assertTrue(structure.contains(
                         "simpleCodec(VillageWatchtowerStructure::new)")),
-                () -> assertTrue(structure.contains("return Optional.empty()")),
+                () -> assertTrue(structure.contains("WatchtowerPlacement.findGroundY")),
+                () -> assertTrue(structure.contains("Rotation.getRandom(context.random())")),
+                () -> assertTrue(structure.contains("new VillageWatchtowerPiece(")),
                 () -> assertFalse(structure.contains("StructureTemplate")),
                 () -> assertFalse(structure.contains("WorldGenLevel")),
                 () -> assertFalse(structure.contains("Entity")));
     }
 
     @Test
-    void builtInStructureSettingsUseTheCanonicalDormantBiomeTag() throws IOException {
+    void builtInStructureSettingsUseVillageCompatibleOverworldBiomes() throws IOException {
         JsonObject structure = json(
                 "src/main/resources/data/villagerguardgunners/worldgen/structure/"
                         + "watchtower.json");
@@ -83,8 +87,15 @@ final class VillageWatchtowerRegistrationContractTest {
                         + "has_structure/watchtower.json");
         assertEquals(Set.of("replace", "values"), biomeTag.keySet());
         assertFalse(biomeTag.get("replace").getAsBoolean());
-        assertTrue(biomeTag.getAsJsonArray("values").isEmpty(),
-                "Step 10 must remain dormant until Step 11 activates reviewed biomes");
+        assertEquals(Set.of(
+                        "#minecraft:has_structure/village_desert",
+                        "#minecraft:has_structure/village_plains",
+                        "#minecraft:has_structure/village_savanna",
+                        "#minecraft:has_structure/village_snowy",
+                        "#minecraft:has_structure/village_taiga"),
+                biomeTag.getAsJsonArray("values").asList().stream()
+                        .map(element -> element.getAsString())
+                        .collect(java.util.stream.Collectors.toSet()));
     }
 
     @Test
@@ -121,7 +132,7 @@ final class VillageWatchtowerRegistrationContractTest {
     }
 
     @Test
-    void releaseArtifactRequiresTheCompleteStepTenSurface() throws IOException {
+    void releaseArtifactRequiresTheCompleteStepElevenSurface() throws IOException {
         String build = read("build.gradle");
 
         assertAll(
@@ -133,7 +144,15 @@ final class VillageWatchtowerRegistrationContractTest {
                         "data/villagerguardgunners/tags/worldgen/biome/has_structure/"
                                 + "watchtower.json")),
                 () -> assertTrue(build.contains(
+                        "data/villagerguardgunners/structures/watchtower.nbt")),
+                () -> assertTrue(build.contains(
                         "com/gamergaming/villagerguardgunners/init/ModStructures.class")),
+                () -> assertTrue(build.contains(
+                        "com/gamergaming/villagerguardgunners/worldgen/structure/"
+                                + "VillageWatchtowerPiece.class")),
+                () -> assertTrue(build.contains(
+                        "com/gamergaming/villagerguardgunners/worldgen/structure/"
+                                + "WatchtowerPlacement.class")),
                 () -> assertTrue(build.contains(
                         "com/gamergaming/villagerguardgunners/worldgen/structure/"
                                 + "VillageWatchtowerStructure.class")));

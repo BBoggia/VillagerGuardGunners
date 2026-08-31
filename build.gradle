@@ -33,6 +33,10 @@ def releaseCandidateEvidenceDirectory = layout.buildDirectory.dir('reports/relea
 def curseForgeReleaseDirectory = layout.buildDirectory.dir(
         "distributions/curseforge/${mod_version}")
 def generatedGameTestArenaDirectory = layout.buildDirectory.dir('generated/gametest-arena')
+def generatedWatchtowerTemplateDirectory = layout.buildDirectory.dir(
+        'generated/watchtower-template')
+def watchtowerTemplateBlueprint = layout.projectDirectory.file(
+        'src/main/templates/villagerguardgunners/watchtower.json')
 def phase8ArtifactSha256Property = 'villagerguardgunners.phase8ProductionArtifactSha256'
 def naturalLoadoutAuthoringPaths = [
         'docs/guard-roles.md',
@@ -56,6 +60,9 @@ def sha256OfFile = { File file ->
 }
 
 sourceSets {
+    main {
+        resources.srcDir generatedWatchtowerTemplateDirectory
+    }
     gameTest {
         java.srcDir 'src/gametest/java'
         resources.setSrcDirs(['src/gametest/resources', generatedGameTestArenaDirectory])
@@ -68,6 +75,125 @@ sourceSets {
         resources.srcDir generatedGameTestArenaDirectory
         compileClasspath += sourceSets.main.output
         runtimeClasspath += output + compileClasspath
+    }
+}
+
+tasks.register('generateWatchtowerTemplate') {
+    description = 'Compiles the reviewable watchtower layer blueprint into a Minecraft structure NBT.'
+    File blueprint = watchtowerTemplateBlueprint.asFile
+    File template = generatedWatchtowerTemplateDirectory.get().file(
+            'data/villagerguardgunners/structures/watchtower.nbt').asFile
+    inputs.file blueprint
+    outputs.file template
+
+    doLast {
+        Map<String, Object> root = new groovy.json.JsonSlurper().parse(blueprint) as Map
+        List<Integer> size = root.size as List<Integer>
+        List<Map<String, Object>> palette = root.palette as List<Map<String, Object>>
+        List<List<String>> layers = root.layers as List<List<String>>
+
+        if (size.size() != 3 || size.any { it <= 0 }) {
+            throw new GradleException('Watchtower size must contain three positive dimensions')
+        }
+        int width = size[0]
+        int height = size[1]
+        int depth = size[2]
+        if (layers.size() != height
+                || layers.any { it.size() != depth }
+                || layers.flatten().any { it.length() != width }) {
+            throw new GradleException(
+                    "Watchtower layers must exactly match ${width}x${height}x${depth}")
+        }
+
+        Map<String, Integer> states = [:]
+        palette.eachWithIndex { entry, index ->
+            String symbol = entry.symbol as String
+            if (symbol.length() != 1 || states.put(symbol, index) != null) {
+                throw new GradleException(
+                        "Watchtower palette symbol must be unique and one character: ${symbol}")
+            }
+        }
+        Set<String> unknownSymbols = layers.flatten()
+                .collectMany { it.toList() }
+                .findAll { !states.containsKey(it) } as Set<String>
+        if (!unknownSymbols.isEmpty()) {
+            throw new GradleException(
+                    "Watchtower layers use unknown symbols: ${unknownSymbols.sort()}")
+        }
+
+        template.parentFile.mkdirs()
+        template.withOutputStream { fileStream ->
+            new java.util.zip.GZIPOutputStream(fileStream).withCloseable { gzipStream ->
+                new DataOutputStream(gzipStream).withCloseable { output ->
+                    Closure<Void> namedTag = { int type, String name, Closure<Void> payload ->
+                        output.writeByte(type)
+                        output.writeUTF(name)
+                        payload.call()
+                        null
+                    }
+                    Closure<Void> stringTag = { String name, String value ->
+                        namedTag(8, name) { output.writeUTF(value) }
+                        null
+                    }
+                    Closure<Void> intTag = { String name, int value ->
+                        namedTag(3, name) { output.writeInt(value) }
+                        null
+                    }
+                    Closure<Void> intListTag = { String name, List<Integer> values ->
+                        namedTag(9, name) {
+                            output.writeByte(3)
+                            output.writeInt(values.size())
+                            values.each { output.writeInt(it) }
+                        }
+                        null
+                    }
+
+                    output.writeByte(10)
+                    output.writeUTF('')
+                    intTag('DataVersion', root.dataVersion as int)
+                    intListTag('size', size)
+
+                    namedTag(9, 'palette') {
+                        output.writeByte(10)
+                        output.writeInt(palette.size())
+                        palette.each { entry ->
+                            stringTag('Name', entry.name as String)
+                            Map<String, String> properties =
+                                    (entry.properties ?: [:]) as Map<String, String>
+                            if (!properties.isEmpty()) {
+                                namedTag(10, 'Properties') {
+                                    properties.keySet().sort().each { property ->
+                                        stringTag(property, properties[property])
+                                    }
+                                    output.writeByte(0)
+                                }
+                            }
+                            output.writeByte(0)
+                        }
+                    }
+
+                    namedTag(9, 'blocks') {
+                        output.writeByte(10)
+                        output.writeInt(width * height * depth)
+                        layers.eachWithIndex { layer, y ->
+                            layer.eachWithIndex { row, z ->
+                                row.toList().eachWithIndex { symbol, x ->
+                                    intListTag('pos', [x, y, z])
+                                    intTag('state', states[symbol])
+                                    output.writeByte(0)
+                                }
+                            }
+                        }
+                    }
+
+                    namedTag(9, 'entities') {
+                        output.writeByte(10)
+                        output.writeInt(0)
+                    }
+                    output.writeByte(0)
+                }
+            }
+        }
     }
 }
 
@@ -211,6 +337,7 @@ tasks.named('check').configure {
 }
 
 tasks.named('processResources', ProcessResources).configure {
+    dependsOn tasks.named('generateWatchtowerTemplate')
     def replaceProperties = [
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
@@ -301,6 +428,7 @@ tasks.register('verifyReleaseArtifact') {
                     'data/villagerguardgunners/tags/entity_types/always_engage.json',
                     'data/villagerguardgunners/tags/entity_types/never_engage.json',
                     'data/villagerguardgunners/tags/worldgen/biome/has_structure/watchtower.json',
+                    'data/villagerguardgunners/structures/watchtower.nbt',
                     'data/villagerguardgunners/worldgen/structure/watchtower.json',
                     'data/villagerguardgunners/worldgen/structure_set/watchtowers.json',
                     'com/gamergaming/villagerguardgunners/VillagerGuardGunners.class',
@@ -382,7 +510,9 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutSelector.class',
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardSpawnIntegration.class',
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardSpawnRules.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/structure/VillageWatchtowerPiece.class',
                     'com/gamergaming/villagerguardgunners/worldgen/structure/VillageWatchtowerStructure.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/structure/WatchtowerPlacement.class',
                     'com/gamergaming/villagerguardgunners/ai/GuardGunCombatGoal.class',
                     'com/gamergaming/villagerguardgunners/api/GuardAllyProtection.class',
                     'com/gamergaming/villagerguardgunners/command/GuardGunnerCommands.class',

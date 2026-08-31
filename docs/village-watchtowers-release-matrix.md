@@ -14,6 +14,7 @@ uses the exact candidate JAR and world seed named by that evidence.
 - Candidate commit: record before validation
 - Step 9 development JAR SHA-256: `3f5777605a7b788885c5512f1e92f6af9944eb97d3a2c787b4639cfc3c0e657d`
 - Step 10 development JAR SHA-256: `f4d01c87387d637262537051b8155e1e289859c55c32bed94efe700b3b84268b`
+- Step 11 development JAR SHA-256: `53dc78cf6107dc7f15d8019218d560e813153e15d4baad94408505438bd9b953`
 - Test seeds: record fixed positive, negative, and random seeds
 - Tested worldgen/village mods: record exact names and versions
 - Tested TaCZ content packs: record exact names and versions
@@ -22,7 +23,7 @@ uses the exact candidate JAR and world seed named by that evidence.
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| TOWER-DATA-01 | Start with the built-in structure, structure set, biome tag, template, processors, and loot data enabled. | Every referenced registry key resolves during server datapack load and `/locate structure` can resolve the watchtower key. | Partial | Step 10 registers the custom codec and packages a structure, structure set, and deliberately empty biome tag. All 393 unit/source/artifact tests and the 87-case Forge server pass prove their exact identities, dormant gates, packaged surface, and dynamic-registry binding; template, processors, loot, activation, and locate evidence remain. |
+| TOWER-DATA-01 | Start with the built-in structure, structure set, biome tag, template, processors, and loot data enabled. | Every referenced registry key resolves during server datapack load and `/locate structure` can resolve the watchtower key. | Partial | Step 11 packages and loads the generated template, registers its persisted piece type, and activates the five village-compatible biome tags. The 400-test static/artifact gate and 88-case Forge server validate dynamic structure lookup and NBT loading; loot data and retained `/locate` evidence remain. |
 | TOWER-DATA-02 | Override the built-in biome tag, structure settings, placement, template, and loot table through a datapack. | Standard datapack priority selects the replacement without Java-side hardcoded copies or duplicate registration. | Not implemented | |
 | TOWER-DATA-03 | Remove or disable the structure set after towers already exist. | Existing chunks and saved guards/Armories load normally; no new tower generates and no repair scan starts. | Not implemented | |
 | TOWER-DATA-04 | Load missing, malformed, future-format, oversized, cyclic, or conflicting guard-post group documents. | Invalid publication fails closed within hard bounds and retains the last known good generation; unrelated datapack data continues loading. | Not implemented | |
@@ -31,10 +32,10 @@ uses the exact candidate JAR and world seed named by that evidence.
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| TOWER-PLACE-01 | Generate each permitted Overworld biome and representative flat, sloped, snowy, sandy, forested, river-edge, and coastal terrain. | The tower uses valid terrain, rotation, foundation, and bounding boxes without floating, burying, clipping critically, or generating in an excluded biome or dimension. | Not implemented | |
-| TOWER-PLACE-02 | Generate many candidate regions with fixed positive and negative seeds. | Random-spread spacing and separation are deterministic, respect their hard relation, and do not require a nearby village lookup. | Not implemented | |
+| TOWER-PLACE-01 | Generate each permitted Overworld biome and representative flat, sloped, snowy, sandy, forested, river-edge, and coastal terrain. | The tower uses valid terrain, rotation, foundation, and bounding boxes without floating, burying, clipping critically, or generating in an excluded biome or dimension. | Partial | Unit tests cover dry, wet/frozen-support, slope, sample-count, and build-height decisions; the Forge test loads all four 9 x 14 x 9 rotation bounds. Retained visual generation across the full biome and terrain matrix remains. |
+| TOWER-PLACE-02 | Generate many candidate regions with fixed positive and negative seeds. | Random-spread spacing and separation are deterministic, respect their hard relation, and do not require a nearby village lookup. | Partial | The exact spacing 40, separation 12, salt 17290527, worldgen-random rotation, and absence of village lookup are source/artifact locked. Multi-seed generation evidence remains. |
 | TOWER-PLACE-03 | Generate near vanilla and modded villages, outposts, strongholds, roads, and another watchtower. | Minecraft's normal structure exclusion/placement rules prevent invalid overlap; the add-on does not mutate village template pools. | Not implemented | |
-| TOWER-PLACE-04 | Reopen a world across restart, chunk unload, and generation-version changes. | A completed start is not placed again and existing blocks are never retroactively rewritten. | Not implemented | |
+| TOWER-PLACE-04 | Reopen a world across restart, chunk unload, and generation-version changes. | A completed start is not placed again and existing blocks are never retroactively rewritten. | Partial | The registered piece persists its template position and rotation through Minecraft's normal structure-start format, and no retro-generation or repair path exists. Restart and version-transition evidence remains. |
 
 ## Template markers and identity
 
@@ -78,11 +79,11 @@ uses the exact candidate JAR and world seed named by that evidence.
 | --- | --- | --- | --- | --- |
 | TOWER-COMPAT-01 | Generate with representative village, terrain, biome, structure, and optimization mods. | Datapack/registry composition remains deterministic, failures are attributable, and no order-sensitive vanilla village-pool mutation occurs. | Not implemented | |
 | TOWER-COMPAT-02 | Run a dedicated server with clients that join before, during, and after watchtower chunk generation. | Server owns placement and spawning; clients agree on blocks, guards, roles, equipment, Armory state, and squad identity without client-only loading errors. | Not implemented | |
-| TOWER-PERF-01 | Generate 100 accepted and rejected candidate starts across retained seeds. | Candidate work and marker handling stay within declared bounds; no world/entity scan, recursive structure lookup, or forced chunk occurs. | Not implemented | |
+| TOWER-PERF-01 | Generate 100 accepted and rejected candidate starts across retained seeds. | Candidate work and marker handling stay within declared bounds; no world/entity scan, recursive structure lookup, or forced chunk occurs. | Partial | Step 11 caps a candidate at 18 height samples plus nine base-column checks only after preliminary acceptance, then creates one template piece. Source contracts exclude chunk acquisition and scans; the retained 100-start timing run remains. |
 | TOWER-PERF-02 | Keep 100 generated towers loaded with no combat or resupply request. | Watchtower generation contributes zero recurring tasks, entity scans, block scans, paths, chunk tickets, and block-entity ticks after placement. | Not implemented | |
 | TOWER-PERF-03 | Simultaneously activate the maximum default occupants at many loaded towers. | Runtime work remains attributable to existing bounded combat, squad, ammunition, and Armory systems rather than a new tower manager or cohort scan. | Not implemented | |
 
-## Step 9 status
+## Implementation status
 
 - [x] Exact 1.3 beta baseline identity recorded.
 - [x] `1.4-dev` development identity reserved.
@@ -92,7 +93,7 @@ uses the exact candidate JAR and world seed named by that evidence.
 - [x] Placement, group, integration, lifecycle, compatibility, and performance
   cases defined before implementation.
 - [x] Production structure registry and dormant datapack skeleton implemented.
-- [ ] Tower template and placement implemented.
+- [x] Tower template and bounded placement implemented.
 - [ ] Guard-post composition and spawning implemented.
 - [ ] Integration and lifecycle matrix completed.
 - [ ] Exact candidate identity and all release evidence recorded.

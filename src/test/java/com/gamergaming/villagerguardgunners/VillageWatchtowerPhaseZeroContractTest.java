@@ -55,11 +55,13 @@ final class VillageWatchtowerPhaseZeroContractTest {
                 () -> assertTrue(matrix.contains("TOWER-PERF-01")),
                 () -> assertTrue(readme.contains("docs/village-watchtowers-phase-0.md")),
                 () -> assertTrue(readme.contains(
-                        "docs/village-watchtowers-release-matrix.md")));
+                        "docs/village-watchtowers-release-matrix.md")),
+                () -> assertTrue(readme.contains(
+                        "docs/village-watchtowers-step-11.md")));
     }
 
     @Test
-    void stepTenAddsOnlyTheDormantRegistryAndDataSkeleton() throws IOException {
+    void stepElevenActivatesOnlyTemplatePlacement() throws IOException {
         Path resources = PROJECT_DIRECTORY.resolve("src/main/resources/data/villagerguardgunners");
         Path sources = PROJECT_DIRECTORY.resolve(
                 "src/main/java/com/gamergaming/villagerguardgunners");
@@ -67,6 +69,13 @@ final class VillageWatchtowerPhaseZeroContractTest {
         String structure = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/worldgen/structure/"
                         + "VillageWatchtowerStructure.java");
+        String placement = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/structure/"
+                        + "WatchtowerPlacement.java");
+        String piece = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/structure/"
+                        + "VillageWatchtowerPiece.java");
+        String stepEleven = read("docs/village-watchtowers-step-11.md");
 
         assertAll(
                 () -> assertTrue(Files.isRegularFile(
@@ -76,15 +85,31 @@ final class VillageWatchtowerPhaseZeroContractTest {
                 () -> assertTrue(Files.isRegularFile(resources.resolve(
                         "tags/worldgen/biome/has_structure/watchtower.json"))),
                 () -> assertFalse(Files.exists(resources.resolve("worldgen/template_pool"))),
-                () -> assertFalse(Files.exists(resources.resolve("structures/watchtower.nbt"))),
+                () -> assertTrue(Files.isRegularFile(PROJECT_DIRECTORY.resolve(
+                        "src/main/templates/villagerguardgunners/watchtower.json"))),
                 () -> assertFalse(Files.exists(resources.resolve("loot_tables/chests/watchtower.json"))),
                 () -> assertTrue(Files.isRegularFile(sources.resolve(
                         "worldgen/structure/VillageWatchtowerStructure.java"))),
-                () -> assertTrue(structure.contains("return Optional.empty()")),
+                () -> assertTrue(Files.isRegularFile(sources.resolve(
+                        "worldgen/structure/VillageWatchtowerPiece.java"))),
+                () -> assertTrue(Files.isRegularFile(sources.resolve(
+                        "worldgen/structure/WatchtowerPlacement.java"))),
+                () -> assertTrue(structure.contains("WatchtowerPlacement.findGroundY")),
                 () -> assertFalse(structure.contains("afterPlace(")),
                 () -> assertFalse(structure.contains("getChunk(")),
                 () -> assertFalse(structure.contains("addFreshEntity")),
-                () -> assertFalse(build.contains("watchtower.nbt")));
+                () -> assertTrue(placement.contains("SAMPLE_COUNT = 9")),
+                () -> assertTrue(placement.contains("MAX_SURFACE_VARIANCE = 2")),
+                () -> assertTrue(placement.contains("getBaseColumn(")),
+                () -> assertFalse(placement.contains("getChunk(")),
+                () -> assertTrue(piece.contains("Blocks.STRUCTURE_VOID")),
+                () -> assertFalse(piece.contains("addFreshEntity")),
+                () -> assertTrue(build.contains("generateWatchtowerTemplate")),
+                () -> assertTrue(build.contains("watchtower.nbt")),
+                () -> assertTrue(stepEleven.contains("400 plain JUnit")),
+                () -> assertTrue(stepEleven.contains("88 required Forge")),
+                () -> assertTrue(stepEleven.contains(
+                        "53dc78cf6107dc7f15d8019218d560e813153e15d4baad94408505438bd9b953")));
     }
 
     private static String read(String relativePath) throws IOException {

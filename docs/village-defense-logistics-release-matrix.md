@@ -5,6 +5,11 @@ the expected Phase 0 state. A row may become `Pass` only when its automated or
 manual evidence is retained against the exact candidate JAR. These cases will
 be promoted into `docs/release-checklist.md` before the `v1.3` release tag.
 
+Step 1's inactive state, request, precedence, and timing contracts are defined
+in [Armory resupply contracts](armory-resupply-contracts.md). Matrix rows
+remain `Not implemented` until the later runtime phases supply the behavior
+and retained evidence each row requires.
+
 ## Candidate identity
 
 - Development version: `1.3-dev`
@@ -78,7 +83,7 @@ be promoted into `docs/release-checklist.md` before the `v1.3` release tag.
 - [x] Compatibility inputs recorded.
 - [x] Non-goals and performance invariants recorded.
 - [x] Feature validation cases defined before implementation.
-- [ ] Production implementation started.
+- [x] Production implementation started with the inactive Step 1 contracts.
 - [ ] Candidate identity recorded.
 - [ ] All automated rows passed.
 - [ ] All manual rows passed.

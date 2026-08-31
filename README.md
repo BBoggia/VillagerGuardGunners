@@ -315,6 +315,9 @@ The post-1.2 Village Defense Logistics development line begins with the
 Its feature-specific validation cases are recorded separately in the
 [Village Defense Logistics release matrix](docs/village-defense-logistics-release-matrix.md)
 until they are promoted into the main release checklist for a 1.3 candidate.
+The first implementation boundary—the inactive state, need, request,
+precedence, expiry, and retry contracts—is documented in
+[Armory resupply contracts](docs/armory-resupply-contracts.md).
 
 ## License
 

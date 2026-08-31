@@ -1,9 +1,9 @@
 # Village Armories
 
 The Village Armory is a physical, persistent ammunition store for the bounded
-guard-resupply system. Step 5 establishes the block and its inventory; the
-guard search, travel, claim, and withdrawal controller is implemented
-separately in Step 6.
+guard-resupply system. Version 1.2 establishes the block and its inventory.
+The 1.3 Village Defense Logistics phases add the request, loaded-chunk index,
+reservation, travel, and withdrawal layers separately.
 
 ## Crafting and storage
 
@@ -59,11 +59,13 @@ bound ledger. The unreadable record is preserved through subsequent inventory
 changes and saves, so it cannot silently turn into a public armory after a
 restart.
 
-## Current Step 5 boundary
+## Version 1.2 storage boundary
 
 At this stage the armory is a complete player- and automation-facing storage
-block, but guards do not search for or withdraw from it yet. Step 6 adds that
-behavior using a loaded-chunk runtime index, event-driven requests, staggered
-checks, path and claim limits, unreachable-target backoff, and transactional
-ammunition transfer. Keeping those concerns separate makes it possible to test
-storage and item safety without introducing background AI work prematurely.
+block, but guards do not search for or withdraw from it yet. Village Defense
+Logistics Step 1 defines the inactive request and state contracts without
+wiring them into a guard tick. Later steps add the loaded-chunk runtime index,
+event-driven requests, staggered checks, path and claim limits,
+unreachable-target backoff, and transactional ammunition transfer. Keeping
+those concerns separate makes it possible to test storage and item safety
+without introducing background AI work prematurely.

@@ -15,11 +15,9 @@ import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
 import com.gamergaming.villagerguardgunners.squad.SquadMembership;
 import com.gamergaming.villagerguardgunners.squad.SquadMetadata;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Properties;
 import org.junit.jupiter.api.Test;
 
 final class VillageDefensePhaseZeroContractTest {
@@ -27,14 +25,9 @@ final class VillageDefensePhaseZeroContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void betaArtifactCannotBeMistakenForReleaseTwelve() throws IOException {
-        Properties properties = new Properties();
-        try (Reader reader = Files.newBufferedReader(
-                PROJECT_DIRECTORY.resolve("gradle.properties"), StandardCharsets.UTF_8)) {
-            properties.load(reader);
-        }
-
-        assertEquals("1.3-beta1", properties.getProperty("mod_version"));
+    void phaseZeroRecordsItsOriginalDevelopmentIdentity() throws IOException {
+        assertTrue(read("docs/village-defense-logistics-phase-0.md")
+                .contains("development artifacts use `1.3-dev`"));
     }
 
     @Test

@@ -12,7 +12,7 @@ rebalance are not part of the current implementation.
 
 ## Supported versions
 
-The 1.3 beta is deliberately locked to this reviewed combination:
+The 1.4 development branch is deliberately locked to this reviewed combination:
 
 | Component | Version |
 | --- | --- |
@@ -329,6 +329,13 @@ alongside the main release checklist for the final 1.3 candidate.
 The first implementation boundary—the inactive state, need, request,
 precedence, expiry, and retry contracts—is documented in
 [Armory resupply contracts](docs/armory-resupply-contracts.md).
+
+The 1.4 Village Watchtowers line begins with the
+[Step 9 world-generation baseline](docs/village-watchtowers-phase-0.md). Its
+structure placement, guard-group, loadout, lifecycle, compatibility, and
+performance cases are tracked in the
+[Village Watchtowers validation matrix](docs/village-watchtowers-release-matrix.md)
+before production world-generation registration begins.
 
 ## License
 

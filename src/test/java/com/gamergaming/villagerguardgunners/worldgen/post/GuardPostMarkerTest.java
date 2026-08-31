@@ -19,6 +19,21 @@ final class GuardPostMarkerTest {
                 ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "watchtower"),
                 parsed.orElseThrow().groupId());
 
+        GuardPostMarker lockedLoot = GuardPostMarker.parse(
+                "armory:squad:villagerguardgunners:chests/watchtower_armory")
+                .orElseThrow();
+        assertEquals(GuardPostMarker.Action.ARMORY, lockedLoot.action());
+        assertEquals(GuardPostMarker.ArmoryAccess.SQUAD_LOCKED, lockedLoot.armoryAccess());
+        assertEquals(
+                ResourceLocation.fromNamespaceAndPath(
+                        "villagerguardgunners", "chests/watchtower_armory"),
+                lockedLoot.lootTableId());
+
+        GuardPostMarker publicEmpty = GuardPostMarker.parse("armory:public:empty")
+                .orElseThrow();
+        assertEquals(GuardPostMarker.ArmoryAccess.PUBLIC, publicEmpty.armoryAccess());
+        assertEquals(null, publicEmpty.lootTableId());
+
         for (String invalid : new String[] {
                 "",
                 "guard_post:",
@@ -27,6 +42,10 @@ final class GuardPostMarkerTest {
                 " guard_post:villagerguardgunners:watchtower",
                 "guard_post:villagerguardgunners:watchtower ",
                 "armory:villagerguardgunners:watchtower",
+                "armory:locked:empty",
+                "armory:squad:",
+                "armory:public:Watchtower:loot",
+                "armory:public:minecraft:loot run say hi",
                 "guard_post:villagerguardgunners:watchtower{Items:[]}",
                 "guard_post:villagerguardgunners:watchtower run say hi"
         }) {

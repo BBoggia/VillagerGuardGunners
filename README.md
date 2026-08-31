@@ -358,8 +358,13 @@ and equipment issuance are reserved for later steps.
 The [Step 13 marker spawning and post identity](docs/village-watchtowers-step-13.md)
 adds one closed central template marker, deterministic one-shot Guard Villager
 creation, strict piece and guard provenance, Peaceful completion semantics, and
-duplicate prevention across piece revisits and persistence. Member-specific
-roles, loadouts, squads, Armories, and loot remain isolated for Step 14.
+duplicate prevention across piece revisits and persistence.
+The [Step 14 post integration](docs/village-watchtowers-step-14.md) adds the
+server-thread member handoff to existing natural-loadout and role transactions,
+one deterministic shared squad, and a rotation-safe locked Village Armory whose
+declared ammo-only loot is evaluated and committed once. Public/locked and
+empty/loot-stocked marker forms remain closed and bounded, and the completed
+tower adds no manager, scan, retry task, block-entity ticker, or chunk ticket.
 
 ## License
 

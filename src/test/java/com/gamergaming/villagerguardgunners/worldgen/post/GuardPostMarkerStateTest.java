@@ -25,9 +25,11 @@ final class GuardPostMarkerStateTest {
 
         assertEquals(GuardPostMarkerState.ClaimResult.CLAIMED,
                 state.claim(new BlockPos(0, 1, 0), action));
+        assertEquals(GuardPostMarkerState.ClaimResult.CLAIMED,
+                state.claim(new BlockPos(0, 1, 1), GuardPostMarker.Action.ARMORY));
         assertEquals(GuardPostMarkerState.ClaimResult.ALREADY_CLAIMED,
                 state.claim(new BlockPos(0, 1, 0), action));
-        for (int index = 1; index < GuardPostMarkerState.MAXIMUM_RECOGNIZED_MARKERS; index++) {
+        for (int index = 2; index < GuardPostMarkerState.MAXIMUM_RECOGNIZED_MARKERS; index++) {
             assertEquals(GuardPostMarkerState.ClaimResult.DUPLICATE_ACTION,
                     state.claim(new BlockPos(index, 1, 0), action));
         }
@@ -72,7 +74,7 @@ final class GuardPostMarkerStateTest {
         assertDisabled(GuardPostMarkerState.load(null));
 
         CompoundTag future = GuardPostMarkerState.fresh(1L).save();
-        future.putInt("Version", 2);
+        future.putInt("Version", GuardPostMarkerState.CURRENT_SCHEMA_VERSION + 1);
         assertDisabled(GuardPostMarkerState.load(future));
 
         CompoundTag extra = GuardPostMarkerState.fresh(1L).save();

@@ -21,7 +21,7 @@ final class VillageWatchtowerTemplateContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void blueprintIsExactBoundedAndContainsOneClosedGuardPostMarker() throws IOException {
+    void blueprintIsExactBoundedAndContainsOneGuardAndOneArmoryMarker() throws IOException {
         JsonObject blueprint = JsonParser.parseString(Files.readString(
                 PROJECT_DIRECTORY.resolve(
                         "src/main/templates/villagerguardgunners/watchtower.json"),
@@ -32,6 +32,7 @@ final class VillageWatchtowerTemplateContractTest {
         Set<Character> symbols = new HashSet<>();
         Set<String> blockNames = new HashSet<>();
         JsonObject guardMarker = null;
+        JsonObject armoryMarker = null;
 
         for (var element : palette) {
             JsonObject state = element.getAsJsonObject();
@@ -39,9 +40,12 @@ final class VillageWatchtowerTemplateContractTest {
             blockNames.add(state.get("name").getAsString());
             if ("G".equals(state.get("symbol").getAsString())) {
                 guardMarker = state;
+            } else if ("A".equals(state.get("symbol").getAsString())) {
+                armoryMarker = state;
             }
         }
         JsonObject exactGuardMarker = guardMarker;
+        JsonObject exactArmoryMarker = armoryMarker;
 
         assertAll(
                 () -> assertEquals(3465, blueprint.get("dataVersion").getAsInt()),
@@ -66,9 +70,14 @@ final class VillageWatchtowerTemplateContractTest {
                 () -> assertEquals("guard_post:villagerguardgunners:watchtower",
                         exactGuardMarker.getAsJsonObject("nbt")
                                 .get("metadata").getAsString()),
+                () -> assertTrue(exactArmoryMarker != null),
+                () -> assertEquals("armory:squad:villagerguardgunners:chests/watchtower_armory",
+                        exactArmoryMarker.getAsJsonObject("nbt")
+                                .get("metadata").getAsString()),
                 () -> assertFalse(blueprint.has("entities")));
 
-        int markerCount = 0;
+        int guardMarkerCount = 0;
+        int armoryMarkerCount = 0;
         for (var layer : layers) {
             JsonArray rows = layer.getAsJsonArray();
             assertEquals(9, rows.size());
@@ -78,12 +87,16 @@ final class VillageWatchtowerTemplateContractTest {
                 for (char symbol : row.toCharArray()) {
                     assertTrue(symbols.contains(symbol));
                     if (symbol == 'G') {
-                        markerCount++;
+                        guardMarkerCount++;
+                    } else if (symbol == 'A') {
+                        armoryMarkerCount++;
                     }
                 }
             }
         }
-        assertEquals(1, markerCount);
+        assertEquals(1, guardMarkerCount);
+        assertEquals(1, armoryMarkerCount);
+        assertEquals(".S..A..S.", layers.get(1).getAsJsonArray().get(2).getAsString());
         assertEquals(".S..G..S.", layers.get(1).getAsJsonArray().get(4).getAsString());
     }
 

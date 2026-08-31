@@ -1,13 +1,25 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
+import com.gamergaming.villagerguardgunners.api.GuardPostAccess;
+import com.gamergaming.villagerguardgunners.api.GuardPostAssignmentAccess;
+import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
+import com.gamergaming.villagerguardgunners.role.GuardRoles;
+import com.gamergaming.villagerguardgunners.squad.SquadMembership;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignment;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIds;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSquads;
 
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Items;
@@ -72,6 +84,20 @@ public final class NaturalGuardSpawnIntegration {
 
     private static void queueSelection(ServerLevel level, Guard guard) {
         GuardNaturalLoadoutAccess access = (GuardNaturalLoadoutAccess) guard;
+        GuardPostIdentity postIdentity = GuardPostAccess.getIdentity(guard);
+        if (postIdentity != null) {
+            GuardPostAssignment assignment = GuardPostAssignmentAccess.claim(guard);
+            NaturalGuardSpawnSource source = access.villagerGuardGunners$claimNaturalLoadoutSpawnSource();
+            if (assignment != null && source == NaturalGuardSpawnSource.STRUCTURE) {
+                level.getServer().tell(new TickTask(
+                        level.getServer().getTickCount(),
+                        () -> selectPostAfterJoin(level, guard, postIdentity, assignment)));
+            }
+            // Generated-post guards never fall through to the generic
+            // difficulty pool. Missing or malformed assignment data therefore
+            // leaves Guard Villagers' normal equipment unchanged.
+            return;
+        }
         NaturalGuardSpawnSource source =
                 access.villagerGuardGunners$claimNaturalLoadoutSpawnSource();
         if (source == null) {
@@ -86,6 +112,88 @@ public final class NaturalGuardSpawnIntegration {
         level.getServer().tell(new TickTask(
                 level.getServer().getTickCount(),
                 () -> selectAfterJoin(level, guard, source)));
+    }
+
+    private static void selectPostAfterJoin(
+            ServerLevel level,
+            Guard guard,
+            GuardPostIdentity identity,
+            GuardPostAssignment assignment) {
+        if (!isLiveIn(level, guard)) {
+            return;
+        }
+
+        UUID squadId = GuardPostSquads.squadId(identity.postId());
+        GuardPostSquads.ensureRegistered(
+                level.getServer(),
+                identity.postId(),
+                level.getGameTime());
+        GuardSquadAccess.setMembership(guard, SquadMembership.assigned(squadId));
+
+        if (assignment.roleId() != null) {
+            if (GuardRoles.get(assignment.roleId()) == null
+                    || !GuardRoleAccess.setRoleId(guard, assignment.roleId())) {
+                ((GuardNaturalLoadoutAccess) guard)
+                        .villagerGuardGunners$setNaturalLoadoutIssuanceStatus(
+                                NaturalGuardLoadoutIssuance.IssuanceStatus
+                                        .ROLE_DEFINITION_UNAVAILABLE);
+                return;
+            }
+        }
+
+        VillagerGuardGunnersConfig config = ModConfigs.GUARD_GUNNERS;
+        NaturalGuardSpawnRules rules = config.naturalLoadouts.spawnRules();
+        NaturalGuardDifficulty difficultyKey = mapDifficulty(level.getDifficulty());
+        NaturalGuardDifficultySettings configured =
+                config.naturalLoadouts.settingsFor(difficultyKey);
+        NaturalGuardDifficultySettings effective = new NaturalGuardDifficultySettings(
+                configured.upgradeChance(),
+                configured.maximumNearby(),
+                assignment.loadoutPool());
+        NaturalGuardLoadoutPool pool = NaturalGuardLoadoutPools.get(assignment.loadoutPool());
+        GuardNaturalLoadoutAccess access = (GuardNaturalLoadoutAccess) guard;
+        NaturalGuardLoadoutProvenance existingProvenance =
+                access.villagerGuardGunners$getNaturalLoadoutProvenance();
+        boolean alreadyIssued = NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                guard,
+                existingProvenance);
+
+        RandomSource deterministic = RandomSource.create(
+                GuardPostIds.memberLoadoutSeed(identity.postId(), identity.memberIndex()));
+        NaturalGuardLoadoutSelector.Decision decision = NaturalGuardLoadoutSelector.select(
+                new NaturalGuardLoadoutSelector.Context(
+                        true,
+                        config.enabled.get() && config.naturalLoadouts.enabled.get(),
+                        true,
+                        NaturalGuardSpawnSource.STRUCTURE,
+                        guard.getMainHandItem().is(Items.CROSSBOW),
+                        alreadyIssued),
+                rules,
+                difficultyKey,
+                effective,
+                () -> NaturalGuardLoadoutContextCapture.capture(
+                        level,
+                        guard,
+                        pool,
+                        difficultyKey,
+                        NaturalGuardSpawnSource.STRUCTURE),
+                deterministic::nextDouble,
+                () -> countNearbyCandidates(level, guard, rules.nearbyCapRadius()),
+                pool,
+                deterministic::nextInt);
+        access.villagerGuardGunners$setNaturalLoadoutDecisionStatus(decision.status());
+        if (!decision.selected()) {
+            return;
+        }
+
+        NaturalGuardLoadoutCandidate candidate = new NaturalGuardLoadoutCandidate(
+                assignment.loadoutPool(),
+                decision.entry().gunId(),
+                decision.entry().sidearmId(),
+                assignment.roleId() == null ? decision.entry().roleId() : null,
+                difficultyKey,
+                NaturalGuardSpawnSource.STRUCTURE);
+        issueSelected(guard, access, candidate, rules.allowExplosiveWeapons());
     }
 
     static NaturalGuardSpawnSource mapSpawnType(MobSpawnType spawnType) {
@@ -119,9 +227,7 @@ public final class NaturalGuardSpawnIntegration {
             ServerLevel level,
             Guard guard,
             NaturalGuardSpawnSource source) {
-        if (guard.isRemoved()
-                || !guard.isAddedToWorld()
-                || guard.level() != level) {
+        if (!isLiveIn(level, guard)) {
             return;
         }
 
@@ -174,37 +280,47 @@ public final class NaturalGuardSpawnIntegration {
                     decision.entry().roleId(),
                     difficultyKey,
                     source);
-            access.villagerGuardGunners$setNaturalLoadoutCandidate(candidate);
-            NaturalGuardLoadoutIssuance.Result issuance =
-                    NaturalGuardLoadoutIssuance.issue(
-                            guard,
-                            candidate,
-                            rules.allowExplosiveWeapons());
-            access.villagerGuardGunners$setNaturalLoadoutIssuanceStatus(issuance.status());
-            if (issuance.issued()) {
-                NaturalGuardPopulationIndex.synchronize(guard);
-            } else {
-                if (issuance.status()
-                        == NaturalGuardLoadoutIssuance.IssuanceStatus.GUN_DEFINITION_UNAVAILABLE) {
-                    NaturalGuardLoadoutPools.reportUnavailableGun(candidate);
-                }
-                if (issuance.status()
-                        == NaturalGuardLoadoutIssuance.IssuanceStatus
-                                .SIDEARM_DEFINITION_UNAVAILABLE) {
-                    NaturalGuardLoadoutPools.reportUnavailableSidearm(candidate);
-                }
-                if (issuance.status()
-                        == NaturalGuardLoadoutIssuance.IssuanceStatus
-                                .ROLE_DEFINITION_UNAVAILABLE) {
-                    NaturalGuardLoadoutPools.reportUnavailableRole(candidate);
-                }
-                // Only fully issued gunner guards reserve a nearby population
-                // slot. A rejected or rolled-back candidate remains a
-                // one-time attempt and is never retried.
-                access.villagerGuardGunners$setNaturalLoadoutCandidate(null);
-                access.villagerGuardGunners$setNaturalLoadoutProvenance(null);
-            }
+            issueSelected(guard, access, candidate, rules.allowExplosiveWeapons());
         }
+    }
+
+    private static boolean isLiveIn(ServerLevel level, Guard guard) {
+        return !guard.isRemoved()
+                && guard.isAddedToWorld()
+                && guard.level() == level;
+    }
+
+    private static void issueSelected(
+            Guard guard,
+            GuardNaturalLoadoutAccess access,
+            NaturalGuardLoadoutCandidate candidate,
+            boolean allowExplosiveWeapons) {
+        access.villagerGuardGunners$setNaturalLoadoutCandidate(candidate);
+        NaturalGuardLoadoutIssuance.Result issuance =
+                NaturalGuardLoadoutIssuance.issue(
+                        guard,
+                        candidate,
+                        allowExplosiveWeapons);
+        access.villagerGuardGunners$setNaturalLoadoutIssuanceStatus(issuance.status());
+        if (issuance.issued()) {
+            NaturalGuardPopulationIndex.synchronize(guard);
+            return;
+        }
+        if (issuance.status()
+                == NaturalGuardLoadoutIssuance.IssuanceStatus.GUN_DEFINITION_UNAVAILABLE) {
+            NaturalGuardLoadoutPools.reportUnavailableGun(candidate);
+        }
+        if (issuance.status()
+                == NaturalGuardLoadoutIssuance.IssuanceStatus.SIDEARM_DEFINITION_UNAVAILABLE) {
+            NaturalGuardLoadoutPools.reportUnavailableSidearm(candidate);
+        }
+        if (issuance.status()
+                == NaturalGuardLoadoutIssuance.IssuanceStatus.ROLE_DEFINITION_UNAVAILABLE) {
+            NaturalGuardLoadoutPools.reportUnavailableRole(candidate);
+        }
+        // A rejected or rolled-back candidate remains a one-time attempt.
+        access.villagerGuardGunners$setNaturalLoadoutCandidate(null);
+        access.villagerGuardGunners$setNaturalLoadoutProvenance(null);
     }
 
     private static int countNearbyCandidates(ServerLevel level, Guard origin, double radius) {

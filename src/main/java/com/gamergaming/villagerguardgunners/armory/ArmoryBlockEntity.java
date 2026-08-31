@@ -5,6 +5,8 @@ import com.gamergaming.villagerguardgunners.armory.ArmorySquadLockCodec.DecodeSt
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyServerServices;
 import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
 import com.gamergaming.villagerguardgunners.menu.ArmoryMenu;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryIdentity;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryIdentityCodec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -77,6 +80,8 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     private Tag unreadableLockTag;
     private int unreadableLockVersion = -1;
     private int lastComparatorOutput;
+    @Nullable
+    private GuardPostArmoryIdentity generatedIdentity;
 
     public ArmoryBlockEntity(BlockPos position, BlockState state) {
         super(ModBlockEntities.ARMORY.get(), position, state);
@@ -84,6 +89,55 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
 
     public ArmoryItemHandler getInventory() {
         return inventory;
+    }
+
+    public @Nullable GuardPostArmoryIdentity getGeneratedIdentity() {
+        return generatedIdentity;
+    }
+
+    public boolean isGeneratedFor(UUID postId) {
+        return generatedIdentity != null && generatedIdentity.postId().equals(postId);
+    }
+
+    /**
+     * Commits a pre-evaluated loot result only when every stack fits the empty,
+     * ammo-only inventory. Identity is written last and makes retries a no-op.
+     */
+    public boolean initializeGenerated(
+            UUID postId,
+            @Nullable ResourceLocation lootTableId,
+            @Nullable ArmorySquadLock lock,
+            List<ItemStack> generatedLoot) {
+        if (postId == null || generatedLoot == null || generatedIdentity != null) {
+            return generatedIdentity != null && generatedIdentity.postId().equals(postId);
+        }
+        for (int slot = 0; slot < inventory.getSlots(); slot++) {
+            if (!inventory.getStackInSlot(slot).isEmpty()) {
+                return false;
+            }
+        }
+
+        ArmoryItemHandler planned = new ArmoryItemHandler(() -> { });
+        for (ItemStack generated : generatedLoot) {
+            if (generated == null || generated.isEmpty()) {
+                continue;
+            }
+            ItemStack remainder = generated.copy();
+            for (int slot = 0; slot < planned.getSlots() && !remainder.isEmpty(); slot++) {
+                remainder = planned.insertItem(slot, remainder, false);
+            }
+            if (!remainder.isEmpty()) {
+                return false;
+            }
+        }
+
+        for (int slot = 0; slot < planned.getSlots(); slot++) {
+            inventory.setStackInSlot(slot, planned.getStackInSlot(slot).copy());
+        }
+        setSquadLock(lock);
+        generatedIdentity = GuardPostArmoryIdentity.initialized(postId, lootTableId);
+        setChanged();
+        return true;
     }
 
     @Nullable
@@ -168,6 +222,7 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
         super.saveAdditional(tag);
         tag.put(INVENTORY_TAG, inventory.serializeNBT());
         writePersistentLock(tag);
+        GuardPostArmoryIdentityCodec.write(tag, generatedIdentity);
     }
 
     @Override
@@ -182,6 +237,7 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
         }
         lastComparatorOutput = inventory.comparatorOutput();
         applyDecodedLock(tag);
+        generatedIdentity = GuardPostArmoryIdentityCodec.read(tag);
     }
 
     @Override

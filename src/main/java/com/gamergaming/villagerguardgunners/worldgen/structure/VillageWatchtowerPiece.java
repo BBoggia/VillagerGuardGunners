@@ -5,6 +5,7 @@ import com.gamergaming.villagerguardgunners.init.ModStructures;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupPool;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupSelection;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroups;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryPlacer;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostMarker;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostMarkerState;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSpawner;
@@ -118,17 +119,21 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
         if (!bounds.isInside(position)) {
             return;
         }
-        // Structure blocks are processor-ignored, but an explicit air write
-        // also consumes markers when replacing a custom template over terrain.
-        level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
-
         Optional<GuardPostMarker> parsed = GuardPostMarker.parse(metadata);
         if (parsed.isEmpty()) {
+            level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
             return;
         }
         GuardPostMarker marker = parsed.get();
-        if (markerState.claim(position, marker.action())
-                != GuardPostMarkerState.ClaimResult.CLAIMED) {
+        GuardPostMarkerState.ClaimResult claim = markerState.claim(position, marker.action());
+        if (claim == GuardPostMarkerState.ClaimResult.ALREADY_CLAIMED) {
+            // A completed marker revisit is a strict no-op. In particular, do
+            // not replace a generated Armory that was later broken, corrupted,
+            // or deliberately replaced by a player/modpack.
+            return;
+        }
+        if (claim != GuardPostMarkerState.ClaimResult.CLAIMED) {
+            level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
             return;
         }
 
@@ -136,6 +141,19 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                 level.getLevel().getSeed(),
                 level.getLevel().dimension().location(),
                 templatePosition);
+        if (marker.action() == GuardPostMarker.Action.ARMORY) {
+            GuardPostArmoryPlacer.place(
+                    level,
+                    position,
+                    placeSettings.getRotation(),
+                    postId,
+                    marker);
+            return;
+        }
+
+        // Guard markers create entities at and around their cell, so the
+        // marker itself must become air before spawn-cell validation.
+        level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
         GuardPostGroupPool group = GuardPostGroups.get(marker.groupId());
         if (group == null) {
             return;
@@ -157,7 +175,8 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                     postId,
                     selection.groupId(),
                     selection.variantName(),
-                    memberIndex)) {
+                    memberIndex,
+                    selection.members().get(memberIndex))) {
                 markerState.recordSpawnedGuard();
             }
         }

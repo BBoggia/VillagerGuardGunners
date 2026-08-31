@@ -41,6 +41,21 @@ final class GuardPostIdsTest {
                 () -> GuardPostIds.guardId(post, GuardPostGroupFormat.MAXIMUM_MEMBERS_PER_VARIANT));
     }
 
+    @Test
+    void derivedSquadLoadoutAndLootIdentitiesAreStableAndDomainSeparated() {
+        UUID post = GuardPostIds.postId(91L, OVERWORLD, BlockPos.ZERO);
+        UUID squad = GuardPostIds.squadId(post);
+        long firstLoadout = GuardPostIds.memberLoadoutSeed(post, 0);
+
+        assertEquals(squad, GuardPostIds.squadId(post));
+        assertNotEquals(post, squad);
+        assertEquals(firstLoadout, GuardPostIds.memberLoadoutSeed(post, 0));
+        assertNotEquals(firstLoadout, GuardPostIds.memberLoadoutSeed(post, 1));
+        assertNotEquals(firstLoadout, GuardPostIds.armoryLootSeed(post));
+        assertThrows(IllegalArgumentException.class,
+                () -> GuardPostIds.memberLoadoutSeed(post, 4));
+    }
+
     private static ResourceLocation id(String namespace, String path) {
         return ResourceLocation.fromNamespaceAndPath(namespace, path);
     }

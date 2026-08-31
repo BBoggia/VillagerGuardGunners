@@ -20,6 +20,7 @@ import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.api.GuardPostAccess;
+import com.gamergaming.villagerguardgunners.api.GuardPostAssignmentAccess;
 import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
@@ -101,6 +102,7 @@ import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupReloadSn
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupSelection;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroups;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIds;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBindingCodec;
 import com.gamergaming.villagerguardgunners.squad.SquadRegistrySavedData;
@@ -180,6 +182,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -282,15 +285,33 @@ public final class GuardGunnerGameTests {
                     piece.templatePosition(),
                     piece.placeSettings(),
                     Blocks.STRUCTURE_BLOCK);
+            var guardMarker = markers.stream()
+                    .filter(marker -> marker.nbt() != null
+                            && marker.nbt().getString("metadata").startsWith("guard_post:"))
+                    .findFirst()
+                    .orElse(null);
+            var armoryMarker = markers.stream()
+                    .filter(marker -> marker.nbt() != null
+                            && marker.nbt().getString("metadata").startsWith("armory:"))
+                    .findFirst()
+                    .orElse(null);
+            BlockPos expectedArmory = piece.templatePosition().offset(
+                    StructureTemplate.calculateRelativePosition(
+                            piece.placeSettings(),
+                            new BlockPos(4, 1, 2)));
             helper.assertTrue(
-                    markers.size() == 1
-                            && markers.get(0).pos().equals(
+                    markers.size() == 2
+                            && guardMarker != null
+                            && guardMarker.pos().equals(
                                     piece.templatePosition().offset(4, 1, 4))
-                            && markers.get(0).nbt() != null
-                            && "DATA".equals(markers.get(0).nbt().getString("mode"))
+                            && "DATA".equals(guardMarker.nbt().getString("mode"))
                             && "guard_post:villagerguardgunners:watchtower".equals(
-                                    markers.get(0).nbt().getString("metadata")),
-                    "The guard-post marker moved or changed under " + rotation);
+                                    guardMarker.nbt().getString("metadata"))
+                            && armoryMarker != null
+                            && armoryMarker.pos().equals(expectedArmory)
+                            && "armory:squad:villagerguardgunners:chests/watchtower_armory"
+                                    .equals(armoryMarker.nbt().getString("metadata")),
+                    "A watchtower marker moved or changed under " + rotation);
         }
 
         var level = helper.getLevel();
@@ -390,6 +411,16 @@ public final class GuardGunnerGameTests {
                     selectionSeed);
             BoundingBox bounds = piece.getBoundingBox();
             ChunkPos chunk = new ChunkPos(origin);
+            BlockPos armoryPosition = piece.template().filterBlocks(
+                            piece.templatePosition(),
+                            piece.placeSettings(),
+                            Blocks.STRUCTURE_BLOCK)
+                    .stream()
+                    .filter(marker -> marker.nbt() != null
+                            && marker.nbt().getString("metadata").startsWith("armory:"))
+                    .findFirst()
+                    .orElseThrow()
+                    .pos();
             piece.postProcess(
                     level,
                     level.structureManager(),
@@ -403,7 +434,7 @@ public final class GuardGunnerGameTests {
             helper.assertTrue(
                     guards.size() == selection.members().size()
                             && guards.size() == piece.spawnedGuardCount()
-                            && piece.claimedMarkerCount() == 1
+                            && piece.claimedMarkerCount() == 2
                             && piece.postId() != null,
                     "The marker did not create exactly its bounded selected group");
             UUID postId = piece.postId();
@@ -419,6 +450,8 @@ public final class GuardGunnerGameTests {
                         "A generated guard did not retain the selected post identity");
                 memberIndices.add(identity.memberIndex());
                 entityIds.add(guard.getUUID());
+                helper.assertTrue(GuardPostAssignmentAccess.get(guard) != null,
+                        "A generated guard lost its pending Step 14 assignment");
 
                 CompoundTag savedGuard = guard.saveWithoutId(new CompoundTag());
                 Guard restoredGuard = GuardEntityType.GUARD.get().create(level);
@@ -427,12 +460,23 @@ public final class GuardGunnerGameTests {
                 restoredGuard.load(savedGuard);
                 helper.assertTrue(identity.equals(GuardPostAccess.getIdentity(restoredGuard)),
                         "A guard's post identity did not survive entity persistence");
+                helper.assertTrue(GuardPostAssignmentAccess.get(restoredGuard) != null,
+                        "A pending post assignment did not survive protochunk persistence");
             }
             helper.assertTrue(
                     memberIndices.size() == guards.size() && entityIds.size() == guards.size(),
                     "Generated member slots or deterministic entity UUIDs collided");
             helper.assertTrue(level.getBlockState(origin.offset(4, 1, 4)).isAir(),
                     "The consumed data marker remained in the watchtower");
+            helper.assertTrue(
+                    level.getBlockEntity(armoryPosition) instanceof ArmoryBlockEntity armory
+                            && armory.isGeneratedFor(postId)
+                            && armory.getSquadLock() != null
+                            && armory.getSquadLock().squadId().equals(
+                                    GuardPostIds.squadId(postId)),
+                    "The Armory marker did not create the post's locked Armory");
+            CompoundTag armoryInventoryBefore = ((ArmoryBlockEntity) level.getBlockEntity(
+                    armoryPosition)).getInventory().serializeNBT();
 
             piece.postProcess(
                     level,
@@ -443,8 +487,22 @@ public final class GuardGunnerGameTests {
                     chunk,
                     origin);
             helper.assertTrue(
-                    level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size() == guards.size(),
-                    "Revisiting a live piece duplicated its generated guards");
+                    level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size() == guards.size()
+                            && armoryInventoryBefore.equals(
+                                    ((ArmoryBlockEntity) level.getBlockEntity(armoryPosition))
+                                            .getInventory().serializeNBT()),
+                    "Revisiting a live piece duplicated guards or Armory loot");
+            level.setBlock(armoryPosition, Blocks.STONE.defaultBlockState(), 3);
+            piece.postProcess(
+                    level,
+                    level.structureManager(),
+                    level.getChunkSource().getGenerator(),
+                    RandomSource.create(44721L),
+                    bounds,
+                    chunk,
+                    origin);
+            helper.assertTrue(level.getBlockState(armoryPosition).is(Blocks.STONE),
+                    "A completed marker respawned or erased a replaced Armory");
 
             var structure = level.registryAccess()
                     .registryOrThrow(Registries.STRUCTURE)
@@ -464,7 +522,7 @@ public final class GuardGunnerGameTests {
                             && restoredStart.getPieces().get(0)
                                     instanceof VillageWatchtowerPiece restoredPiece
                             && postId.equals(restoredPiece.postId())
-                            && restoredPiece.claimedMarkerCount() == 1
+                            && restoredPiece.claimedMarkerCount() == 2
                             && restoredPiece.spawnedGuardCount() == guards.size(),
                     "The completed marker ledger did not survive structure persistence");
             VillageWatchtowerPiece restoredPiece =
@@ -478,8 +536,9 @@ public final class GuardGunnerGameTests {
                     chunk,
                     origin);
             helper.assertTrue(
-                    level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size() == guards.size(),
-                    "Reloading and revisiting a completed piece duplicated its guards");
+                    level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size() == guards.size()
+                            && level.getBlockState(armoryPosition).is(Blocks.STONE),
+                    "Reloading a completed piece duplicated guards or rewrote its Armory cell");
         } finally {
             level.getServer().setDifficulty(originalDifficulty, true);
         }
@@ -510,7 +569,7 @@ public final class GuardGunnerGameTests {
                     chunk,
                     origin);
             helper.assertTrue(
-                    piece.claimedMarkerCount() == 1
+                    piece.claimedMarkerCount() == 2
                             && piece.spawnedGuardCount() == 0
                             && level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).isEmpty(),
                     "Peaceful did not consume the post marker with zero occupants");
@@ -525,7 +584,7 @@ public final class GuardGunnerGameTests {
                     chunk,
                     origin);
             helper.assertTrue(
-                    piece.claimedMarkerCount() == 1
+                    piece.claimedMarkerCount() == 2
                             && piece.spawnedGuardCount() == 0
                             && level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).isEmpty(),
                     "Changing difficulty rerolled an already consumed Peaceful post");
@@ -533,6 +592,176 @@ public final class GuardGunnerGameTests {
             level.getServer().setDifficulty(originalDifficulty, true);
         }
         helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE, timeoutTicks = 100)
+    public static void watchtowerMembersReceiveDeclaredIntegrationAndArmoryLootOnce(
+            GameTestHelper helper) {
+        var level = helper.getLevel();
+        var config = ModConfigs.GUARD_GUNNERS;
+        Difficulty originalDifficulty = level.getDifficulty();
+        boolean originalAddonEnabled = config.enabled.get();
+        boolean originalNaturalEnabled = config.naturalLoadouts.enabled.get();
+        Set<NaturalGuardSpawnSource> originalSources =
+                Set.copyOf(config.naturalLoadouts.enabledSpawnSources.get());
+        boolean originalCrossbowsOnly = config.naturalLoadouts.replaceCrossbowsOnly.get();
+        double originalChance = config.naturalLoadouts.normal.upgradeChance.get();
+        int originalMaximum = config.naturalLoadouts.normal.maximumNearby.get();
+
+        level.getServer().setDifficulty(Difficulty.NORMAL, true);
+        config.enabled.accept(true);
+        config.naturalLoadouts.enabled.accept(true);
+        config.naturalLoadouts.enabledSpawnSources.accept(
+                Set.of(NaturalGuardSpawnSource.STRUCTURE));
+        config.naturalLoadouts.replaceCrossbowsOnly.accept(false);
+        config.naturalLoadouts.normal.upgradeChance.accept(1.0D);
+        config.naturalLoadouts.normal.maximumNearby.accept(32);
+
+        long selectionSeed = 0x143a11L;
+        GuardPostGroupPool pool = GuardPostGroups.get(GuardPostGroupDefaults.WATCHTOWER);
+        GuardPostGroupSelection selection = pool == null
+                ? null
+                : pool.select(NaturalGuardDifficulty.NORMAL, selectionSeed).orElse(null);
+        helper.assertTrue(selection != null,
+                "The Step 14 fixture could not select the built-in Normal group");
+
+        BlockPos origin = helper.absolutePos(new BlockPos(10, 1, 8));
+        VillageWatchtowerPiece piece = new VillageWatchtowerPiece(
+                level.getStructureManager(),
+                origin,
+                Rotation.COUNTERCLOCKWISE_90,
+                selectionSeed);
+        BoundingBox bounds = piece.getBoundingBox();
+        ChunkPos chunk = new ChunkPos(origin);
+        BlockPos armoryPosition = piece.template().filterBlocks(
+                        piece.templatePosition(),
+                        piece.placeSettings(),
+                        Blocks.STRUCTURE_BLOCK)
+                .stream()
+                .filter(marker -> marker.nbt() != null
+                        && marker.nbt().getString("metadata").startsWith("armory:"))
+                .findFirst()
+                .orElseThrow()
+                .pos();
+        try {
+            piece.postProcess(
+                    level,
+                    level.structureManager(),
+                    level.getChunkSource().getGenerator(),
+                    RandomSource.create(1414L),
+                    bounds,
+                    chunk,
+                    origin);
+        } catch (RuntimeException | AssertionError exception) {
+            restoreWatchtowerIntegrationConfig(
+                    level,
+                    config,
+                    originalDifficulty,
+                    originalAddonEnabled,
+                    originalNaturalEnabled,
+                    originalSources,
+                    originalCrossbowsOnly,
+                    originalChance,
+                    originalMaximum);
+            throw exception;
+        }
+
+        helper.runAfterDelay(6, () -> {
+            try {
+                UUID postId = piece.postId();
+                UUID squadId = GuardPostIds.squadId(postId);
+                List<Guard> guards = level.getEntitiesOfClass(Guard.class, AABB.of(bounds));
+                helper.assertTrue(guards.size() == selection.members().size(),
+                        "Step 14 changed the selected guard count");
+                for (Guard guard : guards) {
+                    GuardPostIdentity identity = GuardPostAccess.getIdentity(guard);
+                    helper.assertTrue(identity != null,
+                            "An integrated guard lost its post identity");
+                    var member = selection.members().get(identity.memberIndex());
+                    var natural = (GuardNaturalLoadoutAccess) guard;
+                    helper.assertTrue(
+                            GuardPostAssignmentAccess.get(guard) == null
+                                    && member.role().equals(GuardRoleAccess.getRoleId(guard))
+                                    && squadId.equals(GuardSquadAccess.getSquadId(guard))
+                                    && natural.villagerGuardGunners$getNaturalLoadoutProvenance()
+                                            != null
+                                    && member.loadoutPool().equals(
+                                            natural.villagerGuardGunners$getNaturalLoadoutProvenance()
+                                                    .poolId())
+                                    && guard.getMainHandItem().getItem() instanceof IGun,
+                            "A guard did not receive its one-shot role, squad, and natural loadout");
+                }
+                helper.assertTrue(
+                        SquadRegistrySavedData.get(level.getServer()).find(squadId).isPresent(),
+                        "The deterministic watchtower squad was not registered");
+
+                helper.assertTrue(
+                        level.getBlockEntity(armoryPosition) instanceof ArmoryBlockEntity armory
+                                && armory.isGeneratedFor(postId)
+                                && armory.getSquadLock() != null
+                                && squadId.equals(armory.getSquadLock().squadId()),
+                        "The generated Armory did not share the post squad identity");
+                ArmoryBlockEntity armory =
+                        (ArmoryBlockEntity) level.getBlockEntity(armoryPosition);
+                int stockedSlots = 0;
+                for (int slot = 0; slot < armory.getInventory().getSlots(); slot++) {
+                    ItemStack stack = armory.getInventory().getStackInSlot(slot);
+                    if (!stack.isEmpty()) {
+                        stockedSlots++;
+                        helper.assertTrue(stack.getItem() instanceof IAmmo,
+                                "The generated Armory accepted non-ammunition loot");
+                    }
+                }
+                helper.assertTrue(stockedSlots > 0,
+                        "The declared watchtower Armory loot table produced no stock");
+                CompoundTag inventoryBefore = armory.getInventory().serializeNBT();
+
+                piece.postProcess(
+                        level,
+                        level.structureManager(),
+                        level.getChunkSource().getGenerator(),
+                        RandomSource.create(1415L),
+                        bounds,
+                        chunk,
+                        origin);
+                helper.assertTrue(
+                        inventoryBefore.equals(armory.getInventory().serializeNBT())
+                                && level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size()
+                                        == guards.size(),
+                        "A completed Step 14 marker revisit duplicated inventory or guards");
+            } finally {
+                restoreWatchtowerIntegrationConfig(
+                        level,
+                        config,
+                        originalDifficulty,
+                        originalAddonEnabled,
+                        originalNaturalEnabled,
+                        originalSources,
+                        originalCrossbowsOnly,
+                        originalChance,
+                        originalMaximum);
+            }
+            helper.succeed();
+        });
+    }
+
+    private static void restoreWatchtowerIntegrationConfig(
+            net.minecraft.server.level.ServerLevel level,
+            com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig config,
+            Difficulty difficulty,
+            boolean addonEnabled,
+            boolean naturalEnabled,
+            Set<NaturalGuardSpawnSource> sources,
+            boolean crossbowsOnly,
+            double chance,
+            int maximumNearby) {
+        level.getServer().setDifficulty(difficulty, true);
+        config.enabled.accept(addonEnabled);
+        config.naturalLoadouts.enabled.accept(naturalEnabled);
+        config.naturalLoadouts.enabledSpawnSources.accept(sources);
+        config.naturalLoadouts.replaceCrossbowsOnly.accept(crossbowsOnly);
+        config.naturalLoadouts.normal.upgradeChance.accept(chance);
+        config.naturalLoadouts.normal.maximumNearby.accept(maximumNearby);
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)

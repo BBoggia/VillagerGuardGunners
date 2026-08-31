@@ -42,6 +42,15 @@
         "mode": "DATA",
         "metadata": "guard_post:villagerguardgunners:watchtower"
       }
+    },
+    {
+      "symbol": "A",
+      "name": "minecraft:structure_block",
+      "properties": { "mode": "data" },
+      "nbt": {
+        "mode": "DATA",
+        "metadata": "armory:squad:villagerguardgunners:chests/watchtower_armory"
+      }
     }
   ],
   "layers": [
@@ -59,7 +68,7 @@
     [
       ".........",
       ".SMS.MSM.",
-      ".S.....S.",
+      ".S..A..S.",
       ".S.....S.",
       ".S..G..S.",
       ".S.....S.",

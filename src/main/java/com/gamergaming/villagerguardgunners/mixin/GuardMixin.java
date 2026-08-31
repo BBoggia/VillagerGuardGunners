@@ -23,6 +23,7 @@ import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.api.GuardPostAccess;
+import com.gamergaming.villagerguardgunners.api.GuardPostAssignmentAccess;
 import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
@@ -51,6 +52,8 @@ import com.gamergaming.villagerguardgunners.squad.SquadCommand;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandCodec;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentityCodec;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignment;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignmentCodec;
 import com.tacz.guns.api.entity.IGunOperator;
 
 import net.minecraft.ChatFormatting;
@@ -89,7 +92,8 @@ import tallestegg.guardvillagers.entities.Guard;
 @Mixin(Guard.class)
 public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardArmoryResupplyAccess,
         GuardBurstSafetyAccess,
-        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardPostAccess, GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
+        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardPostAccess, GuardPostAssignmentAccess,
+        GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
         GuardSquadCommandAccess {
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_AMMO_TAG = "villagerguardgunners:ammo_inventory";
@@ -175,6 +179,10 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
     @Unique
     @Nullable
     private GuardPostIdentity villagerGuardGunners$guardPostIdentity;
+
+    @Unique
+    @Nullable
+    private GuardPostAssignment villagerGuardGunners$guardPostAssignment;
 
     @Unique
     @Nullable
@@ -369,6 +377,8 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
                 SquadCommandCodec.readGuardRecord(compound));
         villagerGuardGunners$setGuardPostIdentity(
                 GuardPostIdentityCodec.readGuardRecord(compound));
+        villagerGuardGunners$setGuardPostAssignment(
+                GuardPostAssignmentCodec.readGuardRecord(compound));
         villagerGuardGunners$pendingMigrationDrops.clear();
 
         List<CompoundTag> legacyAmmo = GuardAmmoMigration.extractLegacyAmmoSlots(compound);
@@ -467,6 +477,9 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
         GuardPostIdentityCodec.writeGuardRecord(
                 compound,
                 villagerGuardGunners$getGuardPostIdentity());
+        GuardPostAssignmentCodec.writeGuardRecord(
+                compound,
+                villagerGuardGunners$getGuardPostAssignment());
 
         if (villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             compound.remove(VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG);
@@ -749,6 +762,26 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
     public void villagerGuardGunners$setGuardPostIdentity(
             @Nullable GuardPostIdentity identity) {
         villagerGuardGunners$guardPostIdentity = identity;
+    }
+
+    @Override
+    @Nullable
+    public synchronized GuardPostAssignment villagerGuardGunners$getGuardPostAssignment() {
+        return villagerGuardGunners$guardPostAssignment;
+    }
+
+    @Override
+    public synchronized void villagerGuardGunners$setGuardPostAssignment(
+            @Nullable GuardPostAssignment assignment) {
+        villagerGuardGunners$guardPostAssignment = assignment;
+    }
+
+    @Override
+    @Nullable
+    public synchronized GuardPostAssignment villagerGuardGunners$claimGuardPostAssignment() {
+        GuardPostAssignment assignment = villagerGuardGunners$guardPostAssignment;
+        villagerGuardGunners$guardPostAssignment = null;
+        return assignment;
     }
 
     @Override

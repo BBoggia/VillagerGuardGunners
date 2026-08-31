@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 
 /** Mutable piece-owned state that bounds and persists one-time marker work. */
 public final class GuardPostMarkerState {
-    public static final int CURRENT_SCHEMA_VERSION = 1;
+    public static final int CURRENT_SCHEMA_VERSION = 2;
     public static final int MAXIMUM_RECOGNIZED_MARKERS = 8;
 
     private static final String VERSION_TAG = "Version";
@@ -167,7 +167,8 @@ public final class GuardPostMarkerState {
                 return disabled();
             }
         }
-        if ((group != null && ((actions & Action.GUARD_POST.mask()) == 0 || postId == null))
+        if ((actions != 0 && postId == null)
+                || (group != null && (actions & Action.GUARD_POST.mask()) == 0)
                 || (spawned > 0 && (group == null || postId == null))) {
             return disabled();
         }

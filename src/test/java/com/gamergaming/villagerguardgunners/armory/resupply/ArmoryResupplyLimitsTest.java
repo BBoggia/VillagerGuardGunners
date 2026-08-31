@@ -17,6 +17,9 @@ final class ArmoryResupplyLimitsTest {
                 <= ArmoryResupplyLimits.HARD_MAX_REQUEST_LIFETIME_TICKS);
         assertEquals(1_024, ArmoryResupplyLimits.HARD_MAX_ACTIVE_RESERVATIONS);
         assertEquals(16.0D, ArmoryResupplyLimits.HARD_MAX_WITHDRAWAL_DISTANCE_SQUARED);
+        assertEquals(8, ArmoryResupplyLimits.HARD_MAX_PATH_ATTEMPTS);
+        assertEquals(4, ArmoryResupplyLimits.HARD_MAX_NATIVE_PATH_RESUMES);
+        assertTrue(ArmoryResupplyLimits.DEFAULT_TRIP_REVALIDATION_TICKS > 0);
     }
 
     @Test
@@ -42,6 +45,17 @@ final class ArmoryResupplyLimitsTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> ArmoryResupplyLimits.unreachableRetryDelay(0, 200));
+    }
+
+    @Test
+    void movementRetryBackoffCapsSoAllApproachesFitTheReservationWindow() {
+        assertEquals(10, ArmoryResupplyLimits.movementPathRetryDelay(1));
+        assertEquals(20, ArmoryResupplyLimits.movementPathRetryDelay(2));
+        assertEquals(40, ArmoryResupplyLimits.movementPathRetryDelay(3));
+        assertEquals(40, ArmoryResupplyLimits.movementPathRetryDelay(8));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ArmoryResupplyLimits.movementPathRetryDelay(0));
     }
 
     @Test

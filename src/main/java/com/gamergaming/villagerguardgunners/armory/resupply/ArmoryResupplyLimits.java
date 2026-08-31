@@ -14,9 +14,11 @@ public final class ArmoryResupplyLimits {
     public static final int HARD_MAX_RESERVATION_SOURCE_SLOTS = 1_024;
     public static final double HARD_MAX_WITHDRAWAL_DISTANCE_SQUARED = 16.0D;
     public static final double HARD_MAX_TRAVEL_DISTANCE_SQUARED = 64.0D * 64.0D;
-    public static final int HARD_MAX_PATH_ATTEMPTS = 4;
+    public static final int HARD_MAX_PATH_ATTEMPTS = 8;
+    public static final int HARD_MAX_NATIVE_PATH_RESUMES = 4;
     public static final int DEFAULT_PATH_RETRY_TICKS = TICKS_PER_SECOND / 2;
     public static final int DEFAULT_PROGRESS_CHECK_TICKS = 2 * TICKS_PER_SECOND;
+    public static final int DEFAULT_TRIP_REVALIDATION_TICKS = 2 * TICKS_PER_SECOND;
     public static final double MIN_PROGRESS_DISTANCE_SQUARED = 0.5D * 0.5D;
     public static final double DEFAULT_RESUPPLY_MOVEMENT_SPEED = 0.8D;
     public static final double HARD_MAX_RESUPPLY_MOVEMENT_SPEED = 2.0D;
@@ -58,6 +60,16 @@ public final class ArmoryResupplyLimits {
         long multiplier = 1L << Math.min(30, consecutiveFailures - 1);
         long delay = Math.min((long) HARD_MAX_RETRY_TICKS, multiplier * baseTicks);
         return (int) delay;
+    }
+
+    /**
+     * Short in-trip retries cap at two seconds so all eight distinct approach
+     * directions can be attempted inside the default reservation lifetime.
+     */
+    public static int movementPathRetryDelay(int attemptedApproaches) {
+        return unreachableRetryDelay(
+                Math.min(attemptedApproaches, 3),
+                DEFAULT_PATH_RETRY_TICKS);
     }
 
     public static long retryAt(long gameTick, int delayTicks) {

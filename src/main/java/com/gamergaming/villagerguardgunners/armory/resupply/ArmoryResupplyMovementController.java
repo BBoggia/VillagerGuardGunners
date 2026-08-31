@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import tallestegg.guardvillagers.entities.Guard;
@@ -24,11 +23,16 @@ import tallestegg.guardvillagers.entities.Guard;
  * class is deliberately dormant.</p>
  */
 public final class ArmoryResupplyMovementController {
-    private static final List<Direction> APPROACH_DIRECTIONS = List.of(
-            Direction.NORTH,
-            Direction.EAST,
-            Direction.SOUTH,
-            Direction.WEST);
+    private static final List<ApproachOffset> HORIZONTAL_APPROACH_OFFSETS = List.of(
+            new ApproachOffset(0, -1),
+            new ApproachOffset(1, 0),
+            new ApproachOffset(0, 1),
+            new ApproachOffset(-1, 0),
+            new ApproachOffset(1, -1),
+            new ApproachOffset(1, 1),
+            new ApproachOffset(-1, 1),
+            new ApproachOffset(-1, -1));
+    private static final List<Integer> APPROACH_VERTICAL_OFFSETS = List.of(0, -1, 1);
 
     private final Guard guard;
     private final PathNavigation navigation;
@@ -42,9 +46,13 @@ public final class ArmoryResupplyMovementController {
     private List<BlockPos> approachPositions = List.of();
     @Nullable
     private BlockPos ownedNavigationTarget;
+    @Nullable
+    private BlockPos pausedNavigationTarget;
     private int pathAttempts;
+    private int nativePathResumes;
     private long nextPathAttemptGameTick = Long.MIN_VALUE;
     private long nextProgressCheckGameTick = Long.MIN_VALUE;
+    private long nextTripRevalidationGameTick = Long.MIN_VALUE;
     private double progressAnchorX;
     private double progressAnchorY;
     private double progressAnchorZ;
@@ -80,6 +88,9 @@ public final class ArmoryResupplyMovementController {
     public MovementResult begin(
             ArmoryResupplyRequest.RequestKey requestedKey,
             boolean featureEnabled) {
+        if (requestedKey != null && requestedKey.equals(requestKey)) {
+            return repeatedBegin(featureEnabled);
+        }
         if (requestKey != null) {
             cancel();
         }
@@ -106,6 +117,13 @@ public final class ArmoryResupplyMovementController {
             return terminate(validation.status(), validation.gateStatus(), true);
         }
         prepareApproaches(found, gameTick);
+        MovementResult tripValidation = validateTripState(featureEnabled, level, gameTick);
+        if (tripValidation != null) {
+            return terminate(
+                    tripValidation.status(),
+                    tripValidation.gateStatus(),
+                    true);
+        }
         BlockPos armoryPosition = found.target().position();
         if (withinWithdrawalDistance(guard, armoryPosition)) {
             return result(MovementStatus.WITHDRAWAL_READY, null);
@@ -132,15 +150,27 @@ public final class ArmoryResupplyMovementController {
         if (!reservation.equals(liveReservation)) {
             return terminate(MovementStatus.RESERVATION_LOST, null, false);
         }
+        if (ownedNavigationTarget != null
+                && !ownedNavigationTarget.equals(navigation.getTargetPos())) {
+            return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
+        }
 
         MovementResult validation = validateSession(featureEnabled, level, gameTick);
         if (validation != null) {
             if (validation.status() == MovementStatus.WAITING_FOR_NATIVE_WEAPON) {
-                stopOwnedNavigation();
+                pauseOwnedNavigation();
                 nextPathAttemptGameTick = gameTick;
                 return result(validation.status(), validation.gateStatus());
             }
             return terminate(validation.status(), validation.gateStatus(), true);
+        }
+
+        MovementResult tripValidation = validateTripState(featureEnabled, level, gameTick);
+        if (tripValidation != null) {
+            return terminate(
+                    tripValidation.status(),
+                    tripValidation.gateStatus(),
+                    true);
         }
 
         BlockPos armoryPosition = reservation.target().position();
@@ -150,9 +180,6 @@ public final class ArmoryResupplyMovementController {
         }
 
         if (ownedNavigationTarget != null) {
-            if (!ownedNavigationTarget.equals(navigation.getTargetPos())) {
-                return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
-            }
             if (!navigation.isDone()) {
                 if (gameTick >= nextProgressCheckGameTick) {
                     if (!madeProgress(
@@ -174,6 +201,25 @@ public final class ArmoryResupplyMovementController {
             return pathAttemptFailed(gameTick);
         }
 
+        if (pausedNavigationTarget != null) {
+            if (!navigation.isDone()) {
+                return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
+            }
+            if (nativePathResumes >= ArmoryResupplyLimits.HARD_MAX_NATIVE_PATH_RESUMES) {
+                return terminate(MovementStatus.NATIVE_RESUME_LIMIT_REACHED, null, true);
+            }
+            BlockPos resumeTarget = pausedNavigationTarget;
+            pausedNavigationTarget = null;
+            nativePathResumes++;
+            if (!level.hasChunkAt(resumeTarget)) {
+                return pathAttemptFailed(gameTick);
+            }
+            if (!startNavigation(resumeTarget, gameTick)) {
+                return pathAttemptFailed(gameTick);
+            }
+            return result(MovementStatus.MOVING, null);
+        }
+
         if (gameTick < nextPathAttemptGameTick) {
             return result(MovementStatus.WAITING_TO_RETRY, null);
         }
@@ -188,27 +234,12 @@ public final class ArmoryResupplyMovementController {
             return pathAttemptFailed(gameTick);
         }
 
-        boolean started;
-        try {
-            started = navigation.moveTo(
-                    approach.getX() + 0.5D,
-                    approach.getY(),
-                    approach.getZ() + 0.5D,
-                    movementSpeed);
-        } catch (RuntimeException exception) {
-            navigation.stop();
+        if (!navigation.isDone()) {
+            return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
+        }
+        if (!startNavigation(approach, gameTick)) {
             return pathAttemptFailed(gameTick);
         }
-        if (!started) {
-            return pathAttemptFailed(gameTick);
-        }
-        BlockPos actualTarget = navigation.getTargetPos();
-        if (actualTarget == null || !actualTarget.equals(approach)) {
-            navigation.stop();
-            return pathAttemptFailed(gameTick);
-        }
-        ownedNavigationTarget = actualTarget.immutable();
-        captureProgressAnchor(gameTick);
         return result(MovementStatus.MOVING, null);
     }
 
@@ -231,6 +262,51 @@ public final class ArmoryResupplyMovementController {
 
     public boolean active() {
         return requestKey != null;
+    }
+
+    /** Repeated starts for the same key are observational and never self-cancel. */
+    private MovementResult repeatedBegin(boolean featureEnabled) {
+        if (!(guard.level() instanceof ServerLevel level)) {
+            return terminate(MovementStatus.GUARD_UNAVAILABLE, null, true);
+        }
+        long gameTick = level.getGameTime();
+        ArmoryAmmoReservation liveReservation = reservationBook
+                .find(Objects.requireNonNull(requestKey), gameTick)
+                .orElse(null);
+        if (!Objects.equals(reservation, liveReservation)) {
+            return terminate(MovementStatus.RESERVATION_LOST, null, false);
+        }
+        if (ownedNavigationTarget != null
+                && !ownedNavigationTarget.equals(navigation.getTargetPos())) {
+            return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
+        }
+        MovementResult validation = validateSession(featureEnabled, level, gameTick);
+        if (validation != null) {
+            if (validation.status() == MovementStatus.WAITING_FOR_NATIVE_WEAPON) {
+                pauseOwnedNavigation();
+                nextPathAttemptGameTick = gameTick;
+                return result(validation.status(), validation.gateStatus());
+            }
+            return terminate(validation.status(), validation.gateStatus(), true);
+        }
+        MovementResult tripValidation = validateTripState(featureEnabled, level, gameTick);
+        if (tripValidation != null) {
+            return terminate(
+                    tripValidation.status(),
+                    tripValidation.gateStatus(),
+                    true);
+        }
+        if (withinWithdrawalDistance(guard, Objects.requireNonNull(reservation).target().position())) {
+            stopOwnedNavigation();
+            return result(MovementStatus.WITHDRAWAL_READY, null);
+        }
+        if (ownedNavigationTarget != null && !navigation.isDone()) {
+            return result(MovementStatus.MOVING, null);
+        }
+        if (gameTick < nextPathAttemptGameTick) {
+            return result(MovementStatus.WAITING_TO_RETRY, null);
+        }
+        return result(MovementStatus.SESSION_STARTED, null);
     }
 
     private @Nullable MovementResult validateSession(
@@ -289,6 +365,53 @@ public final class ArmoryResupplyMovementController {
         return null;
     }
 
+    /**
+     * Revalidates the current weapon, need, destination, and exact source on a
+     * bounded cadence. Final withdrawal repeats the same shared preflight.
+     */
+    private @Nullable MovementResult validateTripState(
+            boolean featureEnabled,
+            ServerLevel level,
+            long gameTick) {
+        if (gameTick < nextTripRevalidationGameTick) {
+            return null;
+        }
+        nextTripRevalidationGameTick = ArmoryResupplyLimits.retryAt(
+                gameTick,
+                ArmoryResupplyLimits.DEFAULT_TRIP_REVALIDATION_TICKS);
+        ArmoryAmmoReservation current = Objects.requireNonNull(reservation);
+        if (!(level.getBlockEntity(current.target().position())
+                instanceof ArmoryBlockEntity armory)) {
+            return result(MovementStatus.ARMORY_UNAVAILABLE, null);
+        }
+        ArmoryAmmunitionWithdrawal.LiveStatus status =
+                ArmoryAmmunitionWithdrawal.validateForTravel(
+                        current,
+                        armory,
+                        guard,
+                        featureEnabled);
+        return switch (status) {
+            case READY -> null;
+            case GUARD_UNAVAILABLE -> result(MovementStatus.GUARD_UNAVAILABLE, null);
+            case DIMENSION_CHANGED -> result(MovementStatus.DIMENSION_CHANGED, null);
+            case ARMORY_UNAVAILABLE, INVALID_INPUT ->
+                    result(MovementStatus.ARMORY_UNAVAILABLE, null);
+            case TOO_FAR_AWAY -> result(MovementStatus.TOO_FAR_AWAY, null);
+            case SQUAD_CHANGED -> result(MovementStatus.SQUAD_CHANGED, null);
+            case ACCESS_DENIED -> result(MovementStatus.ACCESS_DENIED, null);
+            case GUARD_INVENTORY_UNAVAILABLE ->
+                    result(MovementStatus.GUARD_INVENTORY_UNAVAILABLE, null);
+            case WEAPON_CHANGED -> result(MovementStatus.WEAPON_CHANGED, null);
+            case RESERVE_UNAVAILABLE -> result(MovementStatus.RESERVE_UNAVAILABLE, null);
+            case NEED_SATISFIED -> result(MovementStatus.NEED_SATISFIED, null);
+            case SOURCE_CHANGED, INCOMPATIBLE_AMMUNITION ->
+                    result(MovementStatus.SOURCE_CHANGED, null);
+            case STATE_UNAVAILABLE, LOGISTICS_PREEMPTED -> result(
+                    MovementStatus.LOGISTICS_PREEMPTED,
+                    ArmoryResupplyGate.GateStatus.STATE_UNAVAILABLE);
+        };
+    }
+
     private void prepareApproaches(
             ArmoryAmmoReservation current,
             long gameTick) {
@@ -298,16 +421,37 @@ public final class ArmoryResupplyMovementController {
                 guard.getY(),
                 guard.getZ());
         this.nextPathAttemptGameTick = gameTick;
+        this.nextTripRevalidationGameTick = gameTick;
         captureProgressAnchor(gameTick);
+    }
+
+    private boolean startNavigation(BlockPos approach, long gameTick) {
+        boolean started;
+        try {
+            started = navigation.moveTo(
+                    approach.getX() + 0.5D,
+                    approach.getY(),
+                    approach.getZ() + 0.5D,
+                    movementSpeed);
+        } catch (RuntimeException exception) {
+            stopNavigationAt(approach);
+            return false;
+        }
+        BlockPos actualTarget = navigation.getTargetPos();
+        if (!started || actualTarget == null || !actualTarget.equals(approach)) {
+            stopNavigationAt(approach);
+            return false;
+        }
+        ownedNavigationTarget = actualTarget.immutable();
+        captureProgressAnchor(gameTick);
+        return true;
     }
 
     private MovementResult pathAttemptFailed(long gameTick) {
         if (pathAttempts >= ArmoryResupplyLimits.HARD_MAX_PATH_ATTEMPTS) {
             return terminate(MovementStatus.PATH_ATTEMPTS_EXHAUSTED, null, true);
         }
-        int retryDelay = ArmoryResupplyLimits.unreachableRetryDelay(
-                pathAttempts,
-                ArmoryResupplyLimits.DEFAULT_PATH_RETRY_TICKS);
+        int retryDelay = ArmoryResupplyLimits.movementPathRetryDelay(pathAttempts);
         nextPathAttemptGameTick = ArmoryResupplyLimits.retryAt(gameTick, retryDelay);
         return result(MovementStatus.WAITING_TO_RETRY, null);
     }
@@ -332,6 +476,7 @@ public final class ArmoryResupplyMovementController {
                 status,
                 gateStatus,
                 pathAttempts,
+                nativePathResumes,
                 nextPathAttemptGameTick,
                 ownedNavigationTarget);
     }
@@ -351,6 +496,24 @@ public final class ArmoryResupplyMovementController {
             navigation.stop();
         }
         clearNavigationOwnership();
+        pausedNavigationTarget = null;
+    }
+
+    private void pauseOwnedNavigation() {
+        if (ownedNavigationTarget == null) {
+            return;
+        }
+        if (ownedNavigationTarget.equals(navigation.getTargetPos())) {
+            pausedNavigationTarget = ownedNavigationTarget;
+            navigation.stop();
+        }
+        clearNavigationOwnership();
+    }
+
+    private void stopNavigationAt(BlockPos target) {
+        if (target.equals(navigation.getTargetPos())) {
+            navigation.stop();
+        }
     }
 
     private void clearNavigationOwnership() {
@@ -363,8 +526,11 @@ public final class ArmoryResupplyMovementController {
         requestKey = null;
         approachPositions = List.of();
         clearNavigationOwnership();
+        pausedNavigationTarget = null;
         pathAttempts = 0;
+        nativePathResumes = 0;
         nextPathAttemptGameTick = Long.MIN_VALUE;
+        nextTripRevalidationGameTick = Long.MIN_VALUE;
         progressAnchorX = 0.0D;
         progressAnchorY = 0.0D;
         progressAnchorZ = 0.0D;
@@ -381,9 +547,29 @@ public final class ArmoryResupplyMovementController {
                 || !Double.isFinite(guardZ)) {
             throw new IllegalArgumentException("guard position must be finite");
         }
-        List<BlockPos> positions = new ArrayList<>(APPROACH_DIRECTIONS.size());
-        for (Direction direction : APPROACH_DIRECTIONS) {
-            positions.add(armoryPosition.relative(direction).immutable());
+        List<BlockPos> positions = new ArrayList<>(HORIZONTAL_APPROACH_OFFSETS.size());
+        for (ApproachOffset horizontal : HORIZONTAL_APPROACH_OFFSETS) {
+            BlockPos nearestHeight = null;
+            double nearestDistance = Double.POSITIVE_INFINITY;
+            for (int verticalOffset : APPROACH_VERTICAL_OFFSETS) {
+                BlockPos candidate = armoryPosition.offset(
+                                horizontal.x(),
+                                verticalOffset,
+                                horizontal.z())
+                        .immutable();
+                double candidateDistance = distanceSquared(
+                        guardX,
+                        guardY,
+                        guardZ,
+                        candidate.getX() + 0.5D,
+                        candidate.getY(),
+                        candidate.getZ() + 0.5D);
+                if (candidateDistance < nearestDistance) {
+                    nearestHeight = candidate;
+                    nearestDistance = candidateDistance;
+                }
+            }
+            positions.add(Objects.requireNonNull(nearestHeight));
         }
         positions.sort(Comparator
                 .comparingDouble((BlockPos position) -> distanceSquared(
@@ -489,13 +675,20 @@ public final class ArmoryResupplyMovementController {
         TOO_FAR_AWAY,
         LOGISTICS_PREEMPTED,
         NAVIGATION_PREEMPTED,
-        PATH_ATTEMPTS_EXHAUSTED
+        PATH_ATTEMPTS_EXHAUSTED,
+        NATIVE_RESUME_LIMIT_REACHED,
+        WEAPON_CHANGED,
+        GUARD_INVENTORY_UNAVAILABLE,
+        RESERVE_UNAVAILABLE,
+        NEED_SATISFIED,
+        SOURCE_CHANGED
     }
 
     public record MovementResult(
             MovementStatus status,
             @Nullable ArmoryResupplyGate.GateStatus gateStatus,
             int pathAttempts,
+            int nativePathResumes,
             long nextPathAttemptGameTick,
             @Nullable BlockPos navigationTarget) {
         public MovementResult {
@@ -505,6 +698,8 @@ public final class ArmoryResupplyMovementController {
                     : navigationTarget.immutable();
             if (pathAttempts < 0
                     || pathAttempts > ArmoryResupplyLimits.HARD_MAX_PATH_ATTEMPTS
+                    || nativePathResumes < 0
+                    || nativePathResumes > ArmoryResupplyLimits.HARD_MAX_NATIVE_PATH_RESUMES
                     || ((status == MovementStatus.LOGISTICS_PREEMPTED
                                     || status == MovementStatus.WAITING_FOR_NATIVE_WEAPON)
                             != (gateStatus != null))) {
@@ -514,6 +709,16 @@ public final class ArmoryResupplyMovementController {
 
         public boolean withdrawalReady() {
             return status == MovementStatus.WITHDRAWAL_READY;
+        }
+    }
+
+    private record ApproachOffset(int x, int z) {
+        private ApproachOffset {
+            if ((x == 0 && z == 0)
+                    || Math.abs(x) > 1
+                    || Math.abs(z) > 1) {
+                throw new IllegalArgumentException("Approach offset must be adjacent");
+            }
         }
     }
 }

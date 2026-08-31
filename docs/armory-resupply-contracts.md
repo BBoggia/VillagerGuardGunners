@@ -119,8 +119,10 @@ creative, and infinite boxes fail closed. Candidate snapshots retain no live
 ## Transactional withdrawal
 
 Withdrawal atomically consumes reservation ownership before checking live
-state, so success, cancellation, expiry, and every failure release the claim
-exactly once. It then verifies the live server-side guard identity, dimension,
+state, so success, cancellation, expiry, and every contained failure release
+the claim exactly once. Its required feature-enabled input is evaluated by the
+same precedence gate, so disabling logistics cannot be bypassed at the final
+handoff. It then verifies the live server-side guard identity, dimension,
 AI/lifecycle state, squad identity, active primary-or-sidearm role, gun ID,
 magazine capacity, finite physical reserve, Armory identity and access lock,
 four-block proximity, source slot fingerprint, TaCZ compatibility, remaining
@@ -156,10 +158,13 @@ keeps the eventual request, candidate-selection, reservation, and movement
 costs separately measurable.
 
 Travel is limited to 64 blocks from both the request origin and the guard's
-current position. The controller chooses the four horizontal blocks adjacent
-to the solid Armory in deterministic nearest-first order. It makes at most one
-path construction attempt on a due retry and at most four attempts for the
-entire trip. Failed attempts use 10-, 20-, and 40-tick exponential spacing.
+current position. The controller chooses one nearest-height position for each
+cardinal and diagonal direction, considering the Armory's level and one block
+above or below. This keeps ordinary flat approaches cheap while allowing
+slabs, steps, hills, and diagonal entrances. It makes at most one path construction attempt
+on a due retry and at most eight approaches for the entire trip. Failed
+attempts use 10-, 20-, then capped 40-tick spacing so eight immediately failed
+directions remain inside the default reservation window.
 While a path is active, progress is sampled once every 40 ticks; less than a
 half-block of displacement releases that path and enters the same bounded
 retry sequence. Reservation expiry remains the outer wall-clock deadline.
@@ -177,11 +182,21 @@ state, and access lock. Combat, a squad command, follow, Hold Position,
 effective patrol, or recovery-required sidearm state immediately cancels
 logistics, releases the reservation, and stops only the path the controller can
 still identify as its own. A short native TaCZ weapon action stops owned
-movement but retains the expiring reservation until that action finishes;
-unreadable native state therefore cannot move indefinitely because the same
-reservation deadline still applies. If another system has replaced the
+movement but retains the expiring reservation until that action finishes. The
+same approach can then be resumed without consuming a failed-approach attempt;
+native resumes have their own hard limit of four and remain under the same
+reservation deadline. Unreadable native state therefore cannot move
+indefinitely. If another system has replaced the
 navigation target, logistics releases its claim without stopping that
 replacement path.
+
+The active weapon role, gun identity, remaining physical need, destination
+handler, exact source fingerprint, and TaCZ compatibility are revalidated once
+every 40 ticks with the same fail-closed preflight used by withdrawal. Pickup,
+sharing, a weapon swap, or player/automation edits therefore cancel an obsolete
+trip without paying this more expensive scan every movement tick. A repeated
+`begin` for the same request is observational and never releases its own
+reservation.
 
 The active reservation lookup is constant-time and expires only the requested
 key. It does not sweep the bounded global reservation ledger on every movement
@@ -208,23 +223,28 @@ explicit reservation.
 | --- | --- |
 | Two guards contend for one loose-ammo stack | Unit test proves claims total no more than the candidate snapshot and a third claim fails closed |
 | Duplicate request or withdrawal | Unit test proves reservation is idempotent; Forge GameTest proves a claimed reservation cannot withdraw twice |
+| Duplicate movement start | Forge GameTest repeats `begin` for the same request and proves the controller and reservation remain active |
 | Expiry, request clamp, Armory/guard release | Unit tests cover lazy expiry, expiry clamping, exact claim, and bulk release |
 | Global memory and source bounds | Unit tests fill the 1,024-entry ceiling and reject an additional reservation |
 | Player/hopper/pipe removes items after reservation | Forge GameTest removes most of the stack and proves only the ten remaining items transfer with exact total preservation |
 | Source item or NBT is replaced | Forge GameTest replaces the reserved caliber and proves neither inventory changes during withdrawal |
 | Finite ammo box | Unit and Forge tests prove one box remains indivisible and preserves its 120 encoded units |
 | Combat or another higher-priority guard state starts during travel | Forge GameTest proves the final precedence gate consumes the claim but moves no ammunition |
+| Feature disabled before withdrawal | Forge GameTest proves the shared gate consumes the claim without moving either inventory |
 | Transaction implementation | Source contract requires the shared live gate, `GuardAmmoTransactions.transfer`, loaded-state probing, and no runtime AI activation |
 | Reachable reserved Armory | Forge GameTest drives a real Guard Villager through bounded navigation, reaches withdrawal range, and transfers with Step 3 |
 | Combat begins during travel | Forge GameTest proves the shared live gate stops owned navigation, releases the reservation, and leaves both inventories unchanged |
-| Approach, range, and progress math | Unit tests cover deterministic unique cardinal approaches, inclusive 64-block travel, finite inputs, and the half-block progress boundary |
-| Runtime and performance boundary | Source contract requires loaded probes, four attempts, progress cadence, no chunk/entity search, no permanent-order mutation, and no AI registration |
+| Native TaCZ action begins during travel | Forge GameTest proves movement pauses and resumes the same approach without consuming a failed-path attempt; the independent native-resume count advances |
+| Reserved source changes during travel | Forge GameTest proves the 40-tick shared preflight cancels slow travel and releases the reservation without moving either inventory |
+| Approach, range, and progress math | Unit tests cover deterministic cardinal, diagonal, and one-block vertical approaches, inclusive 64-block travel, finite inputs, and the half-block progress boundary |
+| Runtime and performance boundary | Source contract requires loaded probes, eight approaches, four native resumes, progress and live-preflight cadences, no chunk/entity search, no permanent-order mutation, and no AI registration |
 
 The Step 3 checkpoint passed 352 plain JUnit/source-contract tests and all 77
-transformed Forge correctness GameTests on JDK 17. The Step 4 checkpoint passes
-356 plain JUnit/source-contract tests and all 79 transformed Forge correctness
-GameTests, including two development-only cases using real Guard Villagers
-navigation. GameTest sources remain excluded from the production JAR.
+transformed Forge correctness GameTests on JDK 17. The Step 4 review checkpoint
+passes 357 plain JUnit/source-contract tests and all 82 transformed Forge
+correctness GameTests, including duplicate-start, feature-disable, live-source,
+reachable-path, and combat-interruption cases. GameTest sources remain excluded
+from the production JAR.
 
 ## Timing and performance limits
 

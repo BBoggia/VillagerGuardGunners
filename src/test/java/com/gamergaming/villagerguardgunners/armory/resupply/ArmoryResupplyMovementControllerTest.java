@@ -14,26 +14,27 @@ final class ArmoryResupplyMovementControllerTest {
     private static final BlockPos ARMORY = new BlockPos(10, 64, 10);
 
     @Test
-    void approachPointsAreCardinalUniqueAndNearestFirst() {
+    void approachPointsCoverCardinalDiagonalAndUnevenTerrainNearestFirst() {
         List<BlockPos> fromNorth = ArmoryResupplyMovementController.approachPositions(
                 ARMORY, 10.5D, 64.0D, 2.5D);
         List<BlockPos> centered = ArmoryResupplyMovementController.approachPositions(
                 ARMORY, 10.5D, 64.0D, 10.5D);
+        List<BlockPos> fromUpperNorth = ArmoryResupplyMovementController.approachPositions(
+                ARMORY, 10.5D, 65.2D, 2.5D);
 
         assertAll(
-                () -> assertEquals(4, fromNorth.size()),
-                () -> assertEquals(4, fromNorth.stream().distinct().count()),
+                () -> assertEquals(8, fromNorth.size()),
+                () -> assertEquals(8, fromNorth.stream().distinct().count()),
                 () -> assertEquals(new BlockPos(10, 64, 9), fromNorth.get(0)),
-                () -> assertEquals(new BlockPos(11, 64, 10), fromNorth.get(1)),
-                () -> assertEquals(new BlockPos(9, 64, 10), fromNorth.get(2)),
-                () -> assertEquals(new BlockPos(10, 64, 11), fromNorth.get(3)),
+                () -> assertTrue(fromNorth.contains(new BlockPos(11, 64, 9))),
+                () -> assertEquals(new BlockPos(10, 65, 9), fromUpperNorth.get(0)),
                 () -> assertEquals(
                         List.of(
                                 new BlockPos(10, 64, 9),
                                 new BlockPos(11, 64, 10),
                                 new BlockPos(10, 64, 11),
                                 new BlockPos(9, 64, 10)),
-                        centered),
+                        centered.subList(0, 4)),
                 () -> assertThrows(
                         IllegalArgumentException.class,
                         () -> ArmoryResupplyMovementController.approachPositions(

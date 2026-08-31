@@ -30,15 +30,21 @@ final class ArmoryResupplyStepFourContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/ai/GuardGunCombatGoal.java");
 
         assertAll(
-                () -> assertTrue(documentation.contains("at most four attempts")),
+                () -> assertTrue(documentation.contains("at most eight approaches")),
                 () -> assertTrue(documentation.contains("getChunkNow")),
-                () -> assertTrue(limits.contains("HARD_MAX_PATH_ATTEMPTS = 4")),
+                () -> assertTrue(limits.contains("HARD_MAX_PATH_ATTEMPTS = 8")),
+                () -> assertTrue(limits.contains("HARD_MAX_NATIVE_PATH_RESUMES = 4")),
                 () -> assertTrue(limits.contains("HARD_MAX_TRAVEL_DISTANCE_SQUARED")),
                 () -> assertTrue(controller.contains("ArmoryResupplyLiveGate.evaluate(")),
                 () -> assertTrue(controller.contains("level.hasChunkAt(armoryPosition)")),
                 () -> assertTrue(controller.contains("level.hasChunkAt(approach)")),
                 () -> assertTrue(controller.contains("navigation.getTargetPos()")),
                 () -> assertTrue(controller.contains("DEFAULT_PROGRESS_CHECK_TICKS")),
+                () -> assertTrue(controller.contains("DEFAULT_TRIP_REVALIDATION_TICKS")),
+                () -> assertTrue(controller.contains("validateForTravel(")),
+                () -> assertTrue(controller.contains("requestedKey.equals(requestKey)")),
+                () -> assertTrue(controller.contains("pauseOwnedNavigation()")),
+                () -> assertTrue(controller.contains("HARD_MAX_NATIVE_PATH_RESUMES")),
                 () -> assertTrue(reservationBook.contains("movement hot path")),
                 () -> assertFalse(controller.contains("getChunk(")),
                 () -> assertFalse(controller.contains("getEntities")),

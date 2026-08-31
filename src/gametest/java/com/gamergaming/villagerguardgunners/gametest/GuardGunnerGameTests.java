@@ -6167,7 +6167,7 @@ public final class GuardGunnerGameTests {
                 0, stackSize - 10, false);
         ArmoryAmmunitionWithdrawal.WithdrawalResult withdrawal =
                 ArmoryAmmunitionWithdrawal.withdraw(
-                        book, request.key(), armory, guard);
+                        book, request.key(), armory, guard, true);
         helper.assertTrue(withdrawal.transferred()
                         && withdrawal.transferredItems() == 10
                         && withdrawal.transferredUnits() == 10L,
@@ -6185,7 +6185,8 @@ public final class GuardGunnerGameTests {
                                                 book,
                                                 request.key(),
                                                 armory,
-                                                guard)
+                                                guard,
+                                                true)
                                         .status()
                                 == ArmoryAmmunitionWithdrawal.WithdrawalStatus.NO_RESERVATION,
                 "A consumed reservation permitted a second withdrawal");
@@ -6230,7 +6231,7 @@ public final class GuardGunnerGameTests {
                 ArmoryResupplyLimits.DEFAULT_RESERVATION_LIFETIME_TICKS);
         ArmoryAmmunitionWithdrawal.WithdrawalResult withdrawal =
                 ArmoryAmmunitionWithdrawal.withdraw(
-                        book, request.key(), armory, guard);
+                        book, request.key(), armory, guard, true);
 
         ItemStack storedBox = reserves.getStackInSlot(0);
         helper.assertTrue(inspection.ready()
@@ -6285,7 +6286,7 @@ public final class GuardGunnerGameTests {
 
         ArmoryAmmunitionWithdrawal.WithdrawalResult withdrawal =
                 ArmoryAmmunitionWithdrawal.withdraw(
-                        book, request.key(), armory, guard);
+                        book, request.key(), armory, guard, true);
         ItemStack replacement = armory.getInventory().getStackInSlot(0);
         helper.assertTrue(
                 withdrawal.status()
@@ -6338,7 +6339,7 @@ public final class GuardGunnerGameTests {
 
         ArmoryAmmunitionWithdrawal.WithdrawalResult withdrawal =
                 ArmoryAmmunitionWithdrawal.withdraw(
-                        book, request.key(), armory, guard);
+                        book, request.key(), armory, guard, true);
         helper.assertTrue(
                 withdrawal.status()
                                 == ArmoryAmmunitionWithdrawal.WithdrawalStatus.LOGISTICS_PREEMPTED
@@ -6346,6 +6347,51 @@ public final class GuardGunnerGameTests {
                         && isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(guard))
                         && book.activeCount(gameTick) == 0,
                 "Live combat did not preempt Armory withdrawal without moving ammunition");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void disabledArmoryLogisticsCannotWithdraw(GameTestHelper helper) {
+        BlockPos armoryLocal = new BlockPos(2, 1, 2);
+        helper.setBlock(
+                armoryLocal,
+                com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get());
+        ArmoryBlockEntity armory = (ArmoryBlockEntity) Objects.requireNonNull(
+                helper.getLevel().getBlockEntity(helper.absolutePos(armoryLocal)));
+        Guard guard = spawnGuard(helper, new BlockPos(0, 1, 2));
+        guard.setNoAi(false);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.AUTO, 0, false));
+        GuardAmmoAccess.getAmmoHandler(guard).clear();
+        armory.getInventory().setStackInSlot(
+                0,
+                AmmoItemBuilder.create().setId(DEFAULT_AMMO).setCount(20).build());
+
+        long gameTick = helper.getLevel().getGameTime();
+        ArmoryResupplyRequest request = armoryRequest(guard, 7L, gameTick);
+        ArmorySupplyCandidate.Inspection inspection = ArmorySupplyCandidate.inspect(
+                request,
+                helper.getLevel().dimension().location(),
+                armory,
+                guard.getMainHandItem(),
+                0,
+                gameTick);
+        ArmoryReservationBook book = new ArmoryReservationBook();
+        helper.assertTrue(inspection.ready()
+                        && book.reserve(request, inspection.candidate(), gameTick, 100).reserved(),
+                "The feature-disable fixture could not reserve its initial stack");
+
+        ArmoryAmmunitionWithdrawal.WithdrawalResult withdrawal =
+                ArmoryAmmunitionWithdrawal.withdraw(
+                        book, request.key(), armory, guard, false);
+        helper.assertTrue(
+                withdrawal.status()
+                                == ArmoryAmmunitionWithdrawal.WithdrawalStatus.LOGISTICS_PREEMPTED
+                        && armory.getInventory().getStackInSlot(0).getCount() == 20
+                        && isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(guard))
+                        && book.activeCount(gameTick) == 0,
+                "A disabled feature still moved Armory ammunition");
         helper.succeed();
     }
 
@@ -6396,6 +6442,15 @@ public final class GuardGunnerGameTests {
                         == ArmoryResupplyMovementController.MovementStatus.SESSION_STARTED,
                 "The movement controller rejected a valid distant reservation: "
                         + begin.status());
+        ArmoryResupplyMovementController.MovementResult repeatedBegin =
+                movement.begin(request.key(), true);
+        helper.assertTrue(
+                repeatedBegin.status()
+                                == ArmoryResupplyMovementController.MovementStatus.SESSION_STARTED
+                        && movement.active()
+                        && book.activeCount(gameTick) == 1,
+                "A repeated start released its own live reservation: "
+                        + repeatedBegin.status());
 
         helper.onEachTick(() -> {
             // Other GameTests intentionally create hostiles in nearby arenas;
@@ -6405,7 +6460,7 @@ public final class GuardGunnerGameTests {
             if (result.withdrawalReady()) {
                 ArmoryAmmunitionWithdrawal.WithdrawalResult withdrawal =
                         ArmoryAmmunitionWithdrawal.withdraw(
-                                book, request.key(), armory, guard);
+                                book, request.key(), armory, guard, true);
                 movement.finishAfterWithdrawal();
                 helper.assertTrue(withdrawal.transferred()
                                 && withdrawal.transferredItems() == 20
@@ -6514,6 +6569,164 @@ public final class GuardGunnerGameTests {
                             && isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(guard)),
                     "Live combat did not stop owned movement and release ammunition unchanged");
             helper.succeed();
+        });
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 200)
+    public static void armoryMovementResumesNativePauseWithoutBurningPathAttempt(
+            GameTestHelper helper) {
+        BlockPos armoryLocal = new BlockPos(12, 1, 2);
+        clearArmoryMovementCorridor(helper);
+        helper.setBlock(
+                armoryLocal,
+                com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get());
+        ArmoryBlockEntity armory = (ArmoryBlockEntity) Objects.requireNonNull(
+                helper.getLevel().getBlockEntity(helper.absolutePos(armoryLocal)));
+        Guard guard = spawnGuard(helper, new BlockPos(1, 1, 2));
+        guard.goalSelector.removeAllGoals(goal -> true);
+        guard.targetSelector.removeAllGoals(goal -> true);
+        guard.setNoAi(false);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.AUTO, 0, false));
+        GuardAmmoAccess.getAmmoHandler(guard).clear();
+        armory.getInventory().setStackInSlot(
+                0,
+                AmmoItemBuilder.create().setId(DEFAULT_AMMO).setCount(20).build());
+
+        long gameTick = helper.getLevel().getGameTime();
+        ArmoryResupplyRequest request = armoryRequest(guard, 9L, gameTick);
+        ArmorySupplyCandidate.Inspection inspection = ArmorySupplyCandidate.inspect(
+                request,
+                helper.getLevel().dimension().location(),
+                armory,
+                guard.getMainHandItem(),
+                0,
+                gameTick);
+        ArmoryReservationBook book = new ArmoryReservationBook();
+        helper.assertTrue(inspection.ready()
+                        && book.reserve(request, inspection.candidate(), gameTick, 300).reserved(),
+                "The native-pause fixture could not reserve its Armory stack");
+        ArmoryResupplyMovementController movement =
+                new ArmoryResupplyMovementController(guard, book);
+        ArmoryResupplyMovementController.MovementResult begin =
+                movement.begin(request.key(), true);
+        helper.assertTrue(
+                begin.status()
+                                == ArmoryResupplyMovementController.MovementStatus.SESSION_STARTED
+                        || begin.status()
+                                == ArmoryResupplyMovementController.MovementStatus.WAITING_FOR_NATIVE_WEAPON,
+                "The native-pause fixture could not bind its reservation");
+
+        helper.onEachTick(() -> {
+            guard.setTarget(null);
+            ArmoryResupplyMovementController.MovementResult moving = movement.tick(true);
+            if (moving.status()
+                            == ArmoryResupplyMovementController.MovementStatus.WAITING_FOR_NATIVE_WEAPON
+                    || moving.status()
+                            == ArmoryResupplyMovementController.MovementStatus.WAITING_TO_RETRY) {
+                return;
+            }
+            helper.assertTrue(
+                    moving.status() == ArmoryResupplyMovementController.MovementStatus.MOVING,
+                    "The native-pause fixture did not start moving: " + moving.status());
+
+            IGunOperator operator = IGunOperator.fromLivingEntity(guard);
+            operator.getDataHolder().isBolting = true;
+            ArmoryResupplyMovementController.MovementResult paused = movement.tick(true);
+            helper.assertTrue(
+                    paused.status()
+                                    == ArmoryResupplyMovementController.MovementStatus.WAITING_FOR_NATIVE_WEAPON
+                            && paused.pathAttempts() == moving.pathAttempts(),
+                    "A native action did not pause the owned path cleanly");
+
+            forceNativeSwapFixtureIdle(operator);
+            ArmoryResupplyMovementController.MovementResult resumed = movement.tick(true);
+            helper.assertTrue(
+                    resumed.status() == ArmoryResupplyMovementController.MovementStatus.MOVING
+                            && resumed.pathAttempts() == moving.pathAttempts()
+                            && resumed.nativePathResumes() == 1
+                            && book.activeCount(helper.getLevel().getGameTime()) == 1,
+                    "Resuming a native pause consumed a failed-path attempt or lost ownership");
+            movement.cancel();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 160)
+    public static void armoryMovementCancelsWhenReservedSourceChanges(
+            GameTestHelper helper) {
+        BlockPos armoryLocal = new BlockPos(12, 1, 2);
+        clearArmoryMovementCorridor(helper);
+        helper.setBlock(
+                armoryLocal,
+                com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get());
+        ArmoryBlockEntity armory = (ArmoryBlockEntity) Objects.requireNonNull(
+                helper.getLevel().getBlockEntity(helper.absolutePos(armoryLocal)));
+        Guard guard = spawnGuard(helper, new BlockPos(1, 1, 2));
+        guard.goalSelector.removeAllGoals(goal -> true);
+        guard.targetSelector.removeAllGoals(goal -> true);
+        guard.setNoAi(false);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.AUTO, 0, false));
+        GuardAmmoAccess.getAmmoHandler(guard).clear();
+        armory.getInventory().setStackInSlot(
+                0,
+                AmmoItemBuilder.create().setId(DEFAULT_AMMO).setCount(20).build());
+
+        long gameTick = helper.getLevel().getGameTime();
+        ArmoryResupplyRequest request = armoryRequest(guard, 8L, gameTick);
+        ArmorySupplyCandidate.Inspection inspection = ArmorySupplyCandidate.inspect(
+                request,
+                helper.getLevel().dimension().location(),
+                armory,
+                guard.getMainHandItem(),
+                0,
+                gameTick);
+        ArmoryReservationBook book = new ArmoryReservationBook();
+        helper.assertTrue(inspection.ready()
+                        && book.reserve(request, inspection.candidate(), gameTick, 120).reserved(),
+                "The stale-source movement fixture could not reserve its stack");
+        ArmoryResupplyMovementController movement =
+                new ArmoryResupplyMovementController(guard, book, 0.1D);
+        helper.assertTrue(
+                movement.begin(request.key(), true).status()
+                        == ArmoryResupplyMovementController.MovementStatus.SESSION_STARTED,
+                "The stale-source movement fixture could not begin");
+        armory.getInventory().setStackInSlot(
+                0,
+                AmmoItemBuilder.create().setId(NINE_MILLIMETER).setCount(20).build());
+
+        helper.onEachTick(() -> {
+            guard.setTarget(null);
+            ArmoryResupplyMovementController.MovementResult result = movement.tick(true);
+            if (result.status()
+                    == ArmoryResupplyMovementController.MovementStatus.SOURCE_CHANGED) {
+                helper.assertTrue(
+                        !movement.active()
+                                && book.activeCount(helper.getLevel().getGameTime()) == 0
+                                && isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(guard))
+                                && armory.getInventory().getStackInSlot(0).getCount() == 20,
+                        "Stale-source cancellation changed an inventory or retained ownership");
+                helper.succeed();
+                return;
+            }
+            helper.assertTrue(
+                    result.status()
+                                    == ArmoryResupplyMovementController.MovementStatus.MOVING
+                            || result.status()
+                                    == ArmoryResupplyMovementController.MovementStatus.WAITING_TO_RETRY
+                            || result.status()
+                                    == ArmoryResupplyMovementController.MovementStatus.WAITING_FOR_NATIVE_WEAPON,
+                    "Stale-source travel terminated for the wrong reason: "
+                            + result.status() + "/" + result.gateStatus());
         });
     }
 

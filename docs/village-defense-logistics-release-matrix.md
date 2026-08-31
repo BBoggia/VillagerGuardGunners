@@ -41,8 +41,8 @@ and retained evidence each row requires.
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| ARMORY-PATH-01 | Request from reachable, blocked, distant, and unloaded Armories. | Only a reachable loaded candidate receives bounded path attempts; failures enter backoff. | Partial | Direct-reservation GameTest proves loaded reachable travel; policy/source tests prove range, attempts, progress, backoff, and no-force boundaries. Step 2 selection is still absent. |
-| ARMORY-PATH-02 | Interrupt travel with combat, Hold, Fall Back, Focus Target, follow, patrol, death, and recovery-required state. | Precedence is deterministic; reservations release when diversion is no longer valid; unchanged native behavior resumes. | Partial | Combat interruption passes with a real owned path; the shared gate covers all precedence states, but full runtime orchestration is still absent. |
+| ARMORY-PATH-01 | Request from reachable, blocked, distant, and unloaded Armories. | Only a reachable loaded candidate receives bounded path attempts; failures enter backoff. | Partial | Direct-reservation GameTests prove loaded reachable travel, idempotent start, and source-change cancellation; policy/source tests prove range, eight attempts, progress, backoff, and no-force boundaries. Step 2 selection is still absent. |
+| ARMORY-PATH-02 | Interrupt travel with combat, Hold, Fall Back, Focus Target, follow, patrol, death, and recovery-required state. | Precedence is deterministic; reservations release when diversion is no longer valid; unchanged native behavior resumes. | Partial | Combat interruption passes with a real owned path and disabled withdrawal fails closed; the shared gate covers all precedence states, but full runtime orchestration is still absent. |
 | ARMORY-PATH-03 | Resupply a dry primary with a usable sidearm and a dry active sidearm with a stowed primary. | The effective weapon role and TaCZ reserve model determine the request without weapon thrashing. | Not implemented | |
 
 ## Configuration and diagnostics

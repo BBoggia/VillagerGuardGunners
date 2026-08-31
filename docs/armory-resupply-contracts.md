@@ -2,11 +2,11 @@
 
 Step 1 defines the server-side state and request contracts used by later
 Village Defense Logistics phases. Step 3 adds the dormant reservation and
-withdrawal service boundary. This work does not register a goal, add a guard
-tick hook, index an Armory, construct a path, or activate resupply behavior.
-In particular, creating an `ArmoryResupplyRequest` never authorizes a transfer;
-a candidate snapshot does not either, and withdrawal revalidates every live
-input.
+withdrawal service boundary, and Step 4 adds its dormant bounded movement
+controller. This work does not register a goal, add a guard tick hook, or index
+or search for an Armory. In particular, creating an `ArmoryResupplyRequest`
+never authorizes a transfer; a candidate snapshot does not either, and
+withdrawal revalidates every live input.
 
 ## Precedence gate
 
@@ -146,7 +146,63 @@ the Armory to be the currently loaded block entity at its position and uses the
 level's current game tick. This prevents stale or synthetic timestamps from
 extending ownership.
 
-## Step 3 validation matrix
+## Bounded, interruptible movement
+
+`ArmoryResupplyMovementController` accepts only a request key that already owns
+a live Step 3 reservation. It performs no candidate search and cannot create a
+reservation. `begin` validates and binds the trip without constructing a path;
+the first `tick` is the earliest point at which navigation work can occur. This
+keeps the eventual request, candidate-selection, reservation, and movement
+costs separately measurable.
+
+Travel is limited to 64 blocks from both the request origin and the guard's
+current position. The controller chooses the four horizontal blocks adjacent
+to the solid Armory in deterministic nearest-first order. It makes at most one
+path construction attempt on a due retry and at most four attempts for the
+entire trip. Failed attempts use 10-, 20-, and 40-tick exponential spacing.
+While a path is active, progress is sampled once every 40 ticks; less than a
+half-block of displacement releases that path and enters the same bounded
+retry sequence. Reservation expiry remains the outer wall-clock deadline.
+
+Both the Armory block and selected approach block must still be loaded before
+path construction. Minecraft 1.20.1's `PathNavigationRegion` obtains its
+bounded inputs with `getChunkNow`, so the pathfinder observes absent chunks as
+empty navigation data rather than synchronously loading them. The controller
+also never calls `getChunk`, never searches for blocks or entities, and never
+attaches a chunk ticket.
+
+Every active tick rechecks the shared live precedence adapter, guard and squad
+identity, dimension, distance, reservation ownership, Armory identity, loaded
+state, and access lock. Combat, a squad command, follow, Hold Position,
+effective patrol, or recovery-required sidearm state immediately cancels
+logistics, releases the reservation, and stops only the path the controller can
+still identify as its own. A short native TaCZ weapon action stops owned
+movement but retains the expiring reservation until that action finishes;
+unreadable native state therefore cannot move indefinitely because the same
+reservation deadline still applies. If another system has replaced the
+navigation target, logistics releases its claim without stopping that
+replacement path.
+
+The active reservation lookup is constant-time and expires only the requested
+key. It does not sweep the bounded global reservation ledger on every movement
+tick; full lazy cleanup remains attached to reservation/capacity, claim,
+explicit purge, and diagnostic count operations.
+
+Reaching the existing four-block transaction radius stops owned navigation and
+returns `WITHDRAWAL_READY` without consuming the reservation. The future
+orchestrator must then call Step 3 withdrawal and clear the controller, or call
+`cancel` on every stop path. Completion defensively releases any still-live
+claim, so a failed future handoff cannot strand it until expiry. No permanent
+follow, patrol, target, order, weapon, or inventory state is changed by
+movement itself.
+
+Step 2's loaded-chunk Armory index has not yet been implemented, so Step 4 is
+intentionally not registered in `GuardMixin` or either existing movement goal.
+That missing selection/orchestration dependency prevents accidental global or
+per-guard searches while still allowing the controller to be tested against an
+explicit reservation.
+
+## Step 3 and Step 4 validation matrix
 
 | Boundary | Automated evidence |
 | --- | --- |
@@ -158,13 +214,17 @@ extending ownership.
 | Source item or NBT is replaced | Forge GameTest replaces the reserved caliber and proves neither inventory changes during withdrawal |
 | Finite ammo box | Unit and Forge tests prove one box remains indivisible and preserves its 120 encoded units |
 | Combat or another higher-priority guard state starts during travel | Forge GameTest proves the final precedence gate consumes the claim but moves no ammunition |
-| Transaction implementation | Source contract requires `ArmoryResupplyGate`, `GuardAmmoTransactions.transfer`, loaded-state probing, and no runtime AI activation |
+| Transaction implementation | Source contract requires the shared live gate, `GuardAmmoTransactions.transfer`, loaded-state probing, and no runtime AI activation |
+| Reachable reserved Armory | Forge GameTest drives a real Guard Villager through bounded navigation, reaches withdrawal range, and transfers with Step 3 |
+| Combat begins during travel | Forge GameTest proves the shared live gate stops owned navigation, releases the reservation, and leaves both inventories unchanged |
+| Approach, range, and progress math | Unit tests cover deterministic unique cardinal approaches, inclusive 64-block travel, finite inputs, and the half-block progress boundary |
+| Runtime and performance boundary | Source contract requires loaded probes, four attempts, progress cadence, no chunk/entity search, no permanent-order mutation, and no AI registration |
 
-The Step 3 checkpoint passes 352 plain JUnit/source-contract tests and all 77
-transformed Forge correctness GameTests on JDK 17. The four new GameTests use
-real Guard Villagers entities, the Armory block entity, and TaCZ loose-ammo and
-ammo-box implementations. They remain development-only and are excluded from
-the production JAR.
+The Step 3 checkpoint passed 352 plain JUnit/source-contract tests and all 77
+transformed Forge correctness GameTests on JDK 17. The Step 4 checkpoint passes
+356 plain JUnit/source-contract tests and all 79 transformed Forge correctness
+GameTests, including two development-only cases using real Guard Villagers
+navigation. GameTest sources remain excluded from the production JAR.
 
 ## Timing and performance limits
 
@@ -175,7 +235,8 @@ at two minutes. Stable UUID-derived offsets spread assessments across the
 interval. Tick arithmetic saturates instead of wrapping into an immediate
 retry.
 
-Step 2 may use these contracts to build a loaded-chunk-only Armory index, and
-Step 4 may invoke withdrawal after bounded movement reaches its target. Until
-then, the services are not referenced by `GuardMixin`, the gun combat goal, or
-the Armory block entity, and runtime behavior remains identical to 1.2.
+Step 2 may use these contracts to build a loaded-chunk-only Armory index. A
+later orchestrator can hand the resulting reservation to Step 4 and invoke
+Step 3 withdrawal after bounded movement reaches its target. Until then, the
+services are not referenced by `GuardMixin`, the gun combat goal, or the
+Armory block entity, and runtime behavior remains identical to 1.2.

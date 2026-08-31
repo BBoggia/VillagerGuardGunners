@@ -13,6 +13,13 @@ public final class ArmoryResupplyLimits {
     public static final int HARD_MAX_ACTIVE_RESERVATIONS = 1_024;
     public static final int HARD_MAX_RESERVATION_SOURCE_SLOTS = 1_024;
     public static final double HARD_MAX_WITHDRAWAL_DISTANCE_SQUARED = 16.0D;
+    public static final double HARD_MAX_TRAVEL_DISTANCE_SQUARED = 64.0D * 64.0D;
+    public static final int HARD_MAX_PATH_ATTEMPTS = 4;
+    public static final int DEFAULT_PATH_RETRY_TICKS = TICKS_PER_SECOND / 2;
+    public static final int DEFAULT_PROGRESS_CHECK_TICKS = 2 * TICKS_PER_SECOND;
+    public static final double MIN_PROGRESS_DISTANCE_SQUARED = 0.5D * 0.5D;
+    public static final double DEFAULT_RESUPPLY_MOVEMENT_SPEED = 0.8D;
+    public static final double HARD_MAX_RESUPPLY_MOVEMENT_SPEED = 2.0D;
     public static final int DEFAULT_SUCCESS_COOLDOWN_TICKS = 5 * TICKS_PER_SECOND;
     public static final int DEFAULT_NO_SUPPLY_RETRY_TICKS = 10 * TICKS_PER_SECOND;
     public static final int DEFAULT_UNREACHABLE_RETRY_TICKS = 10 * TICKS_PER_SECOND;

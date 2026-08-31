@@ -100,7 +100,9 @@ public final class ArmoryReservationBook {
             reservations.remove(requestKey);
             reservation = null;
         }
-        purgeExpiredInternal(gameTick);
+        // This is the movement hot path: expire only the requested key in O(1).
+        // Reserve/capacity, claim, explicit purge, and activeCount retain the
+        // bounded full-ledger cleanup points for unrelated stale entries.
         return Optional.ofNullable(reservation);
     }
 

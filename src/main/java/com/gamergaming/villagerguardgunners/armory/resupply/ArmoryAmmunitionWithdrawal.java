@@ -5,12 +5,9 @@ import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoTransactions;
 import com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
-import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
-import com.tacz.guns.api.entity.IGunOperator;
 import java.util.Objects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -98,18 +95,10 @@ public final class ArmoryAmmunitionWithdrawal {
         } catch (RuntimeException exception) {
             return WithdrawalResult.failed(WithdrawalStatus.GUARD_INVENTORY_UNAVAILABLE);
         }
-        ArmoryResupplyGate.GateStatus liveGate = ArmoryResupplyGate.evaluate(
+        ArmoryResupplyGate.GateStatus liveGate = ArmoryResupplyLiveGate.evaluate(
                 true,
-                true,
-                guard.isAlive() && !guard.isRemoved(),
-                !guard.isNoAi(),
-                loadout.state(),
-                guard.getTarget() != null && guard.getTarget().isAlive(),
-                GuardSquadCommandAccess.getCommand(guard) != null,
-                guard.isFollowing(),
-                GuardOrdersAccess.getOrders(guard).movement(),
-                guard.isPatrolling(),
-                nativeWeaponBusy(guard));
+                guard,
+                loadout.state());
         if (!liveGate.ready()) {
             return WithdrawalResult.failed(WithdrawalStatus.LOGISTICS_PREEMPTED);
         }
@@ -245,26 +234,6 @@ public final class ArmoryAmmunitionWithdrawal {
             return 1;
         }
         return (int) Math.min((long) available, remainingDemand);
-    }
-
-    /** Unreadable TaCZ state is busy so logistics never interrupts it. */
-    private static boolean nativeWeaponBusy(Guard guard) {
-        try {
-            IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-            var data = operator.getDataHolder();
-            return data.reloadStateType == null
-                    || data.reloadStateType.isReloading()
-                    || data.isBolting
-                    || data.meleePrepTickCount >= 0
-                    || data.chargeProgress > 0.0F
-                    || operator.getSynReloadState().getStateType().isReloading()
-                    || operator.getSynIsBolting()
-                    || operator.getSynMeleeCoolDown() > 0L
-                    || operator.getSynDrawCoolDown() > 0L
-                    || operator.getSynShootCoolDown() > 0L;
-        } catch (RuntimeException exception) {
-            return true;
-        }
     }
 
     public enum WithdrawalStatus {

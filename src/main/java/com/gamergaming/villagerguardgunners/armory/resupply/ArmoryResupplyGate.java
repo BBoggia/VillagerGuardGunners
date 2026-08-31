@@ -76,7 +76,8 @@ public final class ArmoryResupplyGate {
         FOLLOWING(false),
         HOLD_POSITION(false),
         PATROL_BOUND(false),
-        NATIVE_WEAPON_BUSY(false);
+        NATIVE_WEAPON_BUSY(false),
+        STATE_UNAVAILABLE(false);
 
         private final boolean ready;
 

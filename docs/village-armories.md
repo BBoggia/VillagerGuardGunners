@@ -59,13 +59,14 @@ bound ledger. The unreadable record is preserved through subsequent inventory
 changes and saves, so it cannot silently turn into a public armory after a
 restart.
 
-## Version 1.2 storage boundary
+## Current development boundary
 
-At this stage the armory is a complete player- and automation-facing storage
-block, but guards do not search for or withdraw from it yet. Village Defense
-Logistics Step 1 defines the inactive request and state contracts without
-wiring them into a guard tick. Later steps add the loaded-chunk runtime index,
-event-driven requests, staggered checks, path and claim limits,
-unreachable-target backoff, and transactional ammunition transfer. Keeping
-those concerns separate makes it possible to test storage and item safety
-without introducing background AI work prematurely.
+The armory remains a complete player- and automation-facing storage block, but
+guards do not search for or withdraw from it in normal gameplay yet. Village
+Defense Logistics Step 1 defines inactive request/state contracts, Step 3 adds
+expiring reservations and transactional withdrawal, and Step 4 adds bounded,
+interruptible travel for an explicitly reserved target. Step 2's loaded-chunk
+runtime index has not yet been implemented, so none of those dormant services
+is wired into a guard tick. Keeping selection, ownership, travel, and item
+movement separate makes it possible to test their safety without introducing
+background AI work prematurely.

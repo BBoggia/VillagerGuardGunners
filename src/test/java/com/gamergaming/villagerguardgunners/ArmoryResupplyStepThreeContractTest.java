@@ -34,7 +34,7 @@ final class ArmoryResupplyStepThreeContractTest {
                 () -> assertFalse(book.contains("BlockEntity")),
                 () -> assertFalse(book.contains("Level")),
                 () -> assertTrue(withdrawal.contains("GuardAmmoTransactions.transfer(")),
-                () -> assertTrue(withdrawal.contains("ArmoryResupplyGate.evaluate(")),
+                () -> assertTrue(withdrawal.contains("ArmoryResupplyLiveGate.evaluate(")),
                 () -> assertTrue(withdrawal.contains("hasChunkAt")),
                 () -> assertFalse(withdrawal.contains("getChunk(")),
                 () -> assertFalse(guardMixin.contains("ArmoryReservationBook")),

@@ -63,6 +63,18 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `ammunition.ammoSharingRadius` | 8 | 1–16 blocks | Bounds the donor search performed by a dry guard. It is not a continuous balancing radius. |
 | `ammunition.donorReserveMagazines` | 1 | 0–4 magazines | Whole attachment-adjusted magazines a donor retains before loose ammunition may be shared. |
 | `ammunition.requireMatchingOwnerForSharing` | `true` | boolean | Restricts sharing to guards with the same owner while allowing two unowned guards to share. |
+| `armoryResupply.enabled` | `true` | boolean | Enables the Armory-resupply policy beneath the add-on's global `enabled` switch. The runtime remains dormant until the loaded-Armory index is implemented. |
+| `armoryResupply.checkIntervalTicks` | 40 | 20–200 ticks | Staggered interval between ammunition-need assessments. Higher values reduce server work at the cost of slower response. |
+| `armoryResupply.searchRadius` | 48 | 8–64 blocks | Hard radius supplied to the future loaded-chunk-only Armory index query. It never authorizes chunk loading. |
+| `armoryResupply.maximumCandidateArmories` | 8 | 1–32 Armories | Maximum indexed Armories inspected for one request before candidate selection fails closed. |
+| `armoryResupply.lowReserveMagazines` | 1 | 0–64 magazines | Requests resupply below this many attachment-adjusted magazines. Zero disables automatic requests. |
+| `armoryResupply.targetReserveMagazines` | 3 | 0–64 magazines | Desired physical reserve after withdrawal. A value below the trigger is reported as invalid and creates no request. |
+| `armoryResupply.movementSpeed` | 0.8 | 0.1–2.0 | Movement speed for a trip that already owns an expiring reservation. |
+| `armoryResupply.requestLifetimeTicks` | 1200 | 20–2400 ticks | Maximum lifetime of one immutable resupply request. |
+| `armoryResupply.reservationLifetimeTicks` | 400 | 20–1200 ticks | Maximum ownership time for one reserved Armory source slot. |
+| `armoryResupply.successCooldownTicks` | 100 | 20–2400 ticks | Reassessment delay after a successful transaction. |
+| `armoryResupply.noSupplyRetryTicks` | 200 | 20–2400 ticks | Retry delay after bounded selection finds no compatible supply. |
+| `armoryResupply.unreachableRetryTicks` | 200 | 20–2400 ticks | Base retry delay after bounded navigation exhausts its approaches. |
 | `performance.visibilitySampleIntervalTicks` | 2 | 1–10 ticks | Lower values update visibility sooner but perform more line-of-sight checks. |
 | `performance.movementDecisionIntervalTicks` | 5 | 1–20 ticks | Lower values reconsider movement more often. |
 | `performance.pathRecalculationIntervalTicks` | 20 | 5–100 ticks | Lower values request navigation paths more often. |
@@ -72,7 +84,26 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 
 The performance defaults are the recommended starting point. Increasing an interval generally reduces server work at the cost of a small response delay. Decreasing an interval does the reverse. Safety checks, per-tick shot limits, native burst cancellation, and other hard fail-closed limits are deliberately not configurable.
 
-## Natural loadout policy
+## Armory resupply policy
+
+Config version 9 adds the synchronized `armoryResupply` section. Migrating a
+version-8 file initializes only these new fields and retains every prior
+combat, safety, ammunition, natural-loadout, and squad-command choice. Fzzy
+Config validates each numeric hard bound. The cross-field rule that the target
+reserve must be at least the low-reserve trigger is checked at the request
+boundary; an invalid pair fails closed and `/vgg inspect` reports it rather
+than silently rewriting either administrator choice.
+
+The configuration snapshot is immutable and contains no entity, level,
+inventory, path, reservation, or Armory reference. Search radius and candidate
+cap are inputs for the still-pending Step 2 loaded-chunk index; they do not
+enable a block scan or chunk load. Until that index and the runtime
+orchestrator are registered, `/vgg inspect` deliberately reports
+`runtime=NOT_REGISTERED`, `state=IDLE`, zero candidates and paths, and no next
+action. It can still evaluate the live precedence gate and ammunition need on
+demand. This inspection performs no recurring background work.
+
+## Natural loadout and squad-command policy
 
 Config version 8 adds bounded temporary squad-command dispatch. A dispatch
 queries only loaded guards around the issuing player, applies only to matching

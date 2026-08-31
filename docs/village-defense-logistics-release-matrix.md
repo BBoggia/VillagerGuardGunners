@@ -49,8 +49,8 @@ and retained evidence each row requires.
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| ARMORY-CFG-01 | Upgrade a complete schema-8 configuration and change every new schema-9 value. | Existing values remain exact; new bounded defaults synchronize; invalid values are rejected. | Not implemented | |
-| ARMORY-DIAG-01 | Inspect idle, searching, reserved, travelling, withdrawing, cooldown, and unreachable guards. | On-demand output reports the authoritative state, reason, candidate, quantity, and retry without enabling background work. | Not implemented | |
+| ARMORY-CFG-01 | Upgrade a complete schema-8 configuration and change every new schema-9 value. | Existing values remain exact; new bounded defaults synchronize; out-of-range values are corrected and an invalid trigger/target pair fails closed. | Pass | Unit tests preserve representative schema-8 choices, reset every new field only during migration, exercise all numeric bounds, and verify the immutable hard-bound snapshot. |
+| ARMORY-DIAG-01 | Inspect idle, searching, reserved, travelling, withdrawing, cooldown, and unreachable guards. | On-demand output reports the authoritative state, reason, candidate, quantity, and retry without enabling background work. | Partial | `/vgg inspect` reports the gate, need, complete policy, and truthful dormant runtime with zero idle work; active-state coverage awaits the Step 2 index/runtime orchestrator. |
 
 ## Squad feedback and coordination
 

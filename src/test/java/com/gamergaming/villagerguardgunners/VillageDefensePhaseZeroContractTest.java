@@ -38,9 +38,9 @@ final class VillageDefensePhaseZeroContractTest {
     }
 
     @Test
-    void shippedPersistenceAndDatapackVersionsRemainTheMigrationInputs() {
+    void currentSchemasRetainEveryShippedMigrationInput() {
         assertAll(
-                () -> assertEquals(8, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(9, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertEquals(1, NaturalGuardLoadoutFormat.LEGACY_VERSION),
                 () -> assertEquals(2, NaturalGuardLoadoutFormat.CONDITIONAL_VERSION),
                 () -> assertEquals(3, NaturalGuardLoadoutFormat.SIDEARM_VERSION),

@@ -575,6 +575,12 @@ tasks.register('verifyPhase8PerformanceReports') {
                 'naturalLoadouts.hard.upgradeChance'           : 0.65D,
                 'naturalLoadouts.hard.maximumNearby'           : 2,
                 'naturalLoadouts.hard.poolId'                  : 'villagerguardgunners:hard',
+                'squads.commandDispatchRadius'                 : 48.0D,
+                'squads.maximumAffectedGuards'                 : 32,
+                'squads.positionalCommandDurationTicks'       : 1200,
+                'squads.focusCommandDurationTicks'            : 400,
+                'squads.defendRadius'                         : 12.0D,
+                'squads.airCommandRange'                      : 32.0D,
                 'combat.requiredVisibleTicks'                  : 5,
                 'combat.maximumEngagementRange'                : 32.0D,
                 'combat.closeRangeDistance'                    : 4.0D,
@@ -645,6 +651,18 @@ tasks.register('verifyPhase8PerformanceReports') {
                 'ammunition.ammoSharingRadius'                : 8.0D,
                 'ammunition.donorReserveMagazines'            : 1,
                 'ammunition.requireMatchingOwnerForSharing'   : true,
+                'armoryResupply.enabled'                      : true,
+                'armoryResupply.checkIntervalTicks'           : 40,
+                'armoryResupply.searchRadius'                 : 48.0D,
+                'armoryResupply.maximumCandidateArmories'     : 8,
+                'armoryResupply.lowReserveMagazines'          : 1,
+                'armoryResupply.targetReserveMagazines'       : 3,
+                'armoryResupply.movementSpeed'                : 0.8D,
+                'armoryResupply.requestLifetimeTicks'         : 1200,
+                'armoryResupply.reservationLifetimeTicks'     : 400,
+                'armoryResupply.successCooldownTicks'         : 100,
+                'armoryResupply.noSupplyRetryTicks'           : 200,
+                'armoryResupply.unreachableRetryTicks'        : 200,
                 'performance.visibilitySampleIntervalTicks'    : 2,
                 'performance.movementDecisionIntervalTicks'    : 5,
                 'performance.pathRecalculationIntervalTicks'   : 20,
@@ -777,8 +795,8 @@ tasks.register('verifyPhase8PerformanceReports') {
                     || report.workload != expectedScenario.workload
                     || report.warmupTicks != 200
                     || report.sampleTicks != 1000
-                    || report.configProfile != 'default-v8'
-                    || report.configVersion != 8
+                    || report.configProfile != 'default-v9'
+                    || report.configVersion != 9
                     || report.jfrProfile != "${scenario}.jfr"
                     || report.minimumAcceptedShotEvidence != minimumAcceptedShotEvidence
                     || report.minimumAcceptedFiringGuards != minimumAcceptedFiringGuards
@@ -809,7 +827,7 @@ tasks.register('verifyPhase8PerformanceReports') {
                 if (!matches) {
                     throw new GradleException(
                             "Phase 8 scenario ${scenario} used ${path}=${actualValue}; "
-                                    + "the default-v8 profile requires ${expectedValue}")
+                                    + "the default-v9 profile requires ${expectedValue}")
                 }
             }
 

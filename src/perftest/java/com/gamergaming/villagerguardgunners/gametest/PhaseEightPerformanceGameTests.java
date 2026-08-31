@@ -833,7 +833,7 @@ public final class PhaseEightPerformanceGameTests {
         report.addProperty("workload", workload.name().toLowerCase());
         report.addProperty("warmupTicks", WARMUP_TICKS);
         report.addProperty("sampleTicks", samples.length);
-        report.addProperty("configProfile", "default-v8");
+        report.addProperty("configProfile", "default-v9");
         report.addProperty("configVersion", VillagerGuardGunnersConfig.CONFIG_VERSION);
         report.add("guardGunnerConfig", configSnapshot());
         report.addProperty("averageMspt", averageMspt);
@@ -1229,6 +1229,19 @@ public final class PhaseEightPerformanceGameTests {
         naturalLoadouts.add("hard", naturalDifficultySnapshot(config.naturalLoadouts.hard));
         snapshot.add("naturalLoadouts", naturalLoadouts);
 
+        JsonObject squads = new JsonObject();
+        squads.addProperty("commandDispatchRadius", config.squads.commandDispatchRadius.get());
+        squads.addProperty("maximumAffectedGuards", config.squads.maximumAffectedGuards.get());
+        squads.addProperty(
+                "positionalCommandDurationTicks",
+                config.squads.positionalCommandDurationTicks.get());
+        squads.addProperty(
+                "focusCommandDurationTicks",
+                config.squads.focusCommandDurationTicks.get());
+        squads.addProperty("defendRadius", config.squads.defendRadius.get());
+        squads.addProperty("airCommandRange", config.squads.airCommandRange.get());
+        snapshot.add("squads", squads);
+
         JsonObject combat = new JsonObject();
         combat.addProperty("requiredVisibleTicks", config.combat.requiredVisibleTicks.get());
         combat.addProperty("maximumEngagementRange", config.combat.maximumEngagementRange.get());
@@ -1332,6 +1345,39 @@ public final class PhaseEightPerformanceGameTests {
                 "requireMatchingOwnerForSharing",
                 config.ammunition.requireMatchingOwnerForSharing.get());
         snapshot.add("ammunition", ammunition);
+
+        JsonObject armoryResupply = new JsonObject();
+        armoryResupply.addProperty("enabled", config.armoryResupply.enabled.get());
+        armoryResupply.addProperty(
+                "checkIntervalTicks",
+                config.armoryResupply.checkIntervalTicks.get());
+        armoryResupply.addProperty("searchRadius", config.armoryResupply.searchRadius.get());
+        armoryResupply.addProperty(
+                "maximumCandidateArmories",
+                config.armoryResupply.maximumCandidateArmories.get());
+        armoryResupply.addProperty(
+                "lowReserveMagazines",
+                config.armoryResupply.lowReserveMagazines.get());
+        armoryResupply.addProperty(
+                "targetReserveMagazines",
+                config.armoryResupply.targetReserveMagazines.get());
+        armoryResupply.addProperty("movementSpeed", config.armoryResupply.movementSpeed.get());
+        armoryResupply.addProperty(
+                "requestLifetimeTicks",
+                config.armoryResupply.requestLifetimeTicks.get());
+        armoryResupply.addProperty(
+                "reservationLifetimeTicks",
+                config.armoryResupply.reservationLifetimeTicks.get());
+        armoryResupply.addProperty(
+                "successCooldownTicks",
+                config.armoryResupply.successCooldownTicks.get());
+        armoryResupply.addProperty(
+                "noSupplyRetryTicks",
+                config.armoryResupply.noSupplyRetryTicks.get());
+        armoryResupply.addProperty(
+                "unreachableRetryTicks",
+                config.armoryResupply.unreachableRetryTicks.get());
+        snapshot.add("armoryResupply", armoryResupply);
 
         JsonObject performance = new JsonObject();
         performance.addProperty(

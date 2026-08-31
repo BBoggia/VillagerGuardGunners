@@ -88,9 +88,10 @@ side. A public armory accepts any guard for future resupply; sneak-use a bound
 Squad Command Ledger on it to assign that squad, and repeat with the same
 ledger to return it to public access. Inventory and lock identity persist,
 contents drop when the block is broken, and comparator output reports
-fullness. The block has no ticker or world scan. Guard travel and automatic
-withdrawal are intentionally introduced by the following bounded-resupply
-step rather than this storage foundation.
+fullness. The block has no ticker or world scan. The 1.3 development line now
+contains bounded request, reservation, withdrawal, movement, configuration,
+and on-demand diagnostic contracts. Automatic gameplay remains dormant until
+the loaded-chunk Armory index and runtime orchestrator are implemented.
 
 Once a guard has a TaCZ gun equipped, an authorized player may crouch-right-
 click it while holding compatible loose ammunition or an ammo box. Quick

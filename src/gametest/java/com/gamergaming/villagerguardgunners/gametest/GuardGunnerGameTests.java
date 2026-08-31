@@ -26,11 +26,15 @@ import com.gamergaming.villagerguardgunners.armory.ArmoryLockInteractions;
 import com.gamergaming.villagerguardgunners.armory.ArmorySquadLock;
 import com.gamergaming.villagerguardgunners.armory.ArmorySquadLockCodec;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryAmmunitionWithdrawal;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyDiagnostics;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyGate;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryReservationBook;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyLimits;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyMovementController;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyNeed;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyRequest;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyState;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmorySupplyCandidate;
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
@@ -2147,6 +2151,81 @@ public final class GuardGunnerGameTests {
             helper.fail("The registered administrator inspection command could not be parsed: "
                     + exception.getMessage());
         }
+    }
+
+    @GameTest(batch = "armory_diagnostics", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE)
+    public static void armoryDiagnosticsAreOnDemandAndTruthfullyDormant(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        guard.goalSelector.removeAllGoals(goal -> true);
+        guard.targetSelector.removeAllGoals(goal -> true);
+        guard.setNoAi(false);
+        guard.setTarget(null);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.AUTO, 0, false));
+        GuardAmmoAccess.getAmmoHandler(guard).clear();
+        forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(guard));
+
+        ArmoryResupplySettings enabled = new ArmoryResupplySettings(
+                true,
+                40,
+                48.0D,
+                8,
+                1,
+                3,
+                0.8D,
+                1200,
+                400,
+                100,
+                200,
+                200);
+        ArmoryResupplyDiagnostics.Snapshot snapshot =
+                ArmoryResupplyDiagnostics.captureDormant(guard, enabled);
+        helper.assertTrue(
+                snapshot.runtimeStatus()
+                                == ArmoryResupplyDiagnostics.RuntimeStatus.NOT_REGISTERED
+                        && snapshot.state() == ArmoryResupplyState.IDLE
+                        && snapshot.gateStatus() == ArmoryResupplyGate.GateStatus.READY
+                        && snapshot.needEvaluationStatus()
+                                == ArmoryResupplyDiagnostics.NeedEvaluationStatus.EVALUATED
+                        && snapshot.needStatus()
+                                == ArmoryResupplyNeed.NeedStatus.REQUEST_REQUIRED
+                        && snapshot.requestRequired()
+                        && snapshot.gunId().equals(AK_47)
+                        && snapshot.observedReserveUnits() == 0L
+                        && snapshot.requestedUnits() > 0L
+                        && snapshot.candidateInspections() == 0
+                        && snapshot.pathAttempts() == 0
+                        && snapshot.nextActionGameTick() == -1L,
+                "The on-demand Armory diagnostic misrepresented dormant live state: "
+                        + snapshot);
+
+        ArmoryResupplySettings disabled = new ArmoryResupplySettings(
+                false,
+                enabled.checkIntervalTicks(),
+                enabled.searchRadius(),
+                enabled.maximumCandidateArmories(),
+                enabled.lowReserveMagazines(),
+                enabled.targetReserveMagazines(),
+                enabled.movementSpeed(),
+                enabled.requestLifetimeTicks(),
+                enabled.reservationLifetimeTicks(),
+                enabled.successCooldownTicks(),
+                enabled.noSupplyRetryTicks(),
+                enabled.unreachableRetryTicks());
+        ArmoryResupplyDiagnostics.Snapshot blocked =
+                ArmoryResupplyDiagnostics.captureDormant(guard, disabled);
+        helper.assertTrue(
+                blocked.gateStatus() == ArmoryResupplyGate.GateStatus.FEATURE_DISABLED
+                        && blocked.needEvaluationStatus()
+                                == ArmoryResupplyDiagnostics.NeedEvaluationStatus.NOT_EVALUATED
+                        && blocked.needStatus() == null
+                        && blocked.candidateInspections() == 0,
+                "Disabled Armory diagnostics performed or reported a need assessment: "
+                        + blocked);
+        helper.succeed();
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)

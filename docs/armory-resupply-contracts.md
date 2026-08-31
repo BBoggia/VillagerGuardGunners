@@ -217,7 +217,32 @@ That missing selection/orchestration dependency prevents accidental global or
 per-guard searches while still allowing the controller to be tested against an
 explicit reservation.
 
-## Step 3 and Step 4 validation matrix
+## Schema-9 configuration and diagnostics
+
+Step 5 publishes one synchronized Fzzy Config section for the bounded policy:
+feature enablement, staggered check interval, loaded-index search radius,
+candidate-inspection cap, low and target reserve magazines, movement speed,
+request and reservation lifetimes, and success/no-supply/unreachable retry
+timing. Each numeric value has a Fzzy Config range beneath the corresponding
+hard runtime ceiling. The immutable snapshot repeats those hard checks before
+it can reach a future runtime. A target below its trigger remains visible to
+the administrator but fails the existing need calculation closed with
+`INVALID_THRESHOLDS`.
+
+Migration from schema 8 initializes only the new Armory section and preserves
+every earlier configuration value. The global add-on switch and the local
+Armory switch combine into the feature input already required by movement and
+withdrawal, so a future caller cannot accidentally bypass either setting.
+
+`/vgg inspect <guard>` now captures the live Armory precedence and ammunition
+need only when explicitly invoked. It reports both the complete policy and the
+authoritative development boundary: `runtime=NOT_REGISTERED`, `state=IDLE`,
+zero candidate inspections, zero paths, and no scheduled action. The gate is
+evaluated before the bounded two-weapon/three-ammunition-slot summary. A
+blocked gate skips that summary. Diagnostics never query an Armory, reserve an
+item, construct a path, scan an entity or block collection, or load a chunk.
+
+## Step 3 through Step 5 validation matrix
 
 | Boundary | Automated evidence |
 | --- | --- |
@@ -238,13 +263,17 @@ explicit reservation.
 | Reserved source changes during travel | Forge GameTest proves the 40-tick shared preflight cancels slow travel and releases the reservation without moving either inventory |
 | Approach, range, and progress math | Unit tests cover deterministic cardinal, diagonal, and one-block vertical approaches, inclusive 64-block travel, finite inputs, and the half-block progress boundary |
 | Runtime and performance boundary | Source contract requires loaded probes, eight approaches, four native resumes, progress and live-preflight cadences, no chunk/entity search, no permanent-order mutation, and no AI registration |
+| Schema-8 migration and schema-9 bounds | Unit/source tests cover every new default, retained schema-8 choices, Fzzy min/max correction, immutable hard-bound validation, and invalid trigger/target fail-closed behavior |
+| On-demand diagnostics | Forge GameTest captures a real dry TaCZ guard and proves accurate dormant/need state; source contracts prove gate-first evaluation, zero Armory/path work, and `/vgg inspect` integration |
 
 The Step 3 checkpoint passed 352 plain JUnit/source-contract tests and all 77
 transformed Forge correctness GameTests on JDK 17. The Step 4 review checkpoint
 passes 357 plain JUnit/source-contract tests and all 82 transformed Forge
 correctness GameTests, including duplicate-start, feature-disable, live-source,
-reachable-path, and combat-interruption cases. GameTest sources remain excluded
-from the production JAR.
+reachable-path, and combat-interruption cases. The Step 5 checkpoint passes 363
+plain JUnit/source-contract tests and all 83 transformed Forge correctness
+GameTests, including schema-9 migration/bounds and live dormant diagnostics.
+GameTest sources remain excluded from the production JAR.
 
 ## Timing and performance limits
 

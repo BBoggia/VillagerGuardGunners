@@ -6,12 +6,18 @@ import java.util.UUID;
 public final class ArmoryResupplyLimits {
     public static final int TICKS_PER_SECOND = 20;
     public static final int DEFAULT_CHECK_INTERVAL_TICKS = 2 * TICKS_PER_SECOND;
+    public static final int MIN_CHECK_INTERVAL_TICKS = TICKS_PER_SECOND;
+    public static final int MAX_CHECK_INTERVAL_TICKS = 10 * TICKS_PER_SECOND;
+    public static final int MIN_CONFIGURED_DELAY_TICKS = TICKS_PER_SECOND;
     public static final int DEFAULT_REQUEST_LIFETIME_TICKS = 60 * TICKS_PER_SECOND;
     public static final int HARD_MAX_REQUEST_LIFETIME_TICKS = 2 * 60 * TICKS_PER_SECOND;
     public static final int DEFAULT_RESERVATION_LIFETIME_TICKS = 20 * TICKS_PER_SECOND;
     public static final int HARD_MAX_RESERVATION_LIFETIME_TICKS = 60 * TICKS_PER_SECOND;
     public static final int HARD_MAX_ACTIVE_RESERVATIONS = 1_024;
     public static final int HARD_MAX_RESERVATION_SOURCE_SLOTS = 1_024;
+    public static final double MIN_SEARCH_RADIUS = 8.0D;
+    public static final double HARD_MAX_SEARCH_RADIUS = 64.0D;
+    public static final int HARD_MAX_CANDIDATE_ARMORIES = 32;
     public static final double HARD_MAX_WITHDRAWAL_DISTANCE_SQUARED = 16.0D;
     public static final double HARD_MAX_TRAVEL_DISTANCE_SQUARED = 64.0D * 64.0D;
     public static final int HARD_MAX_PATH_ATTEMPTS = 8;
@@ -21,6 +27,7 @@ public final class ArmoryResupplyLimits {
     public static final int DEFAULT_TRIP_REVALIDATION_TICKS = 2 * TICKS_PER_SECOND;
     public static final double MIN_PROGRESS_DISTANCE_SQUARED = 0.5D * 0.5D;
     public static final double DEFAULT_RESUPPLY_MOVEMENT_SPEED = 0.8D;
+    public static final double MIN_RESUPPLY_MOVEMENT_SPEED = 0.1D;
     public static final double HARD_MAX_RESUPPLY_MOVEMENT_SPEED = 2.0D;
     public static final int DEFAULT_SUCCESS_COOLDOWN_TICKS = 5 * TICKS_PER_SECOND;
     public static final int DEFAULT_NO_SUPPLY_RETRY_TICKS = 10 * TICKS_PER_SECOND;

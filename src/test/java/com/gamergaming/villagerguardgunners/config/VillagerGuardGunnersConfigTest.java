@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyLimits;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
 import com.gamergaming.villagerguardgunners.combat.tactics.ExplosiveStandoffPolicy;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
@@ -28,7 +30,7 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(8, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(9, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertTrue(config.enabled.get()),
                 () -> assertTrue(config.naturalLoadouts.enabled.get()),
                 () -> assertEquals(
@@ -79,6 +81,21 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(8.0D, config.ammunition.ammoSharingRadius.get()),
                 () -> assertEquals(1, config.ammunition.donorReserveMagazines.get()),
                 () -> assertTrue(config.ammunition.requireMatchingOwnerForSharing.get()),
+                () -> assertEquals(
+                        new ArmoryResupplySettings(
+                                true,
+                                40,
+                                48.0D,
+                                8,
+                                1,
+                                3,
+                                0.8D,
+                                1200,
+                                400,
+                                100,
+                                200,
+                                200),
+                        config.armoryResupply.snapshot(true)),
                 () -> assertEquals(2, config.performance.visibilitySampleIntervalTicks.get()),
                 () -> assertEquals(5, config.performance.movementDecisionIntervalTicks.get()),
                 () -> assertEquals(20, config.performance.pathRecalculationIntervalTicks.get()),
@@ -134,8 +151,20 @@ final class VillagerGuardGunnersConfigTest {
         config.squads.focusCommandDurationTicks.accept(800);
         config.squads.defendRadius.accept(24.0D);
         config.squads.airCommandRange.accept(48.0D);
+        config.armoryResupply.enabled.accept(false);
+        config.armoryResupply.checkIntervalTicks.accept(80);
+        config.armoryResupply.searchRadius.accept(32.0D);
+        config.armoryResupply.maximumCandidateArmories.accept(16);
+        config.armoryResupply.lowReserveMagazines.accept(2);
+        config.armoryResupply.targetReserveMagazines.accept(6);
+        config.armoryResupply.movementSpeed.accept(1.2D);
+        config.armoryResupply.requestLifetimeTicks.accept(1800);
+        config.armoryResupply.reservationLifetimeTicks.accept(800);
+        config.armoryResupply.successCooldownTicks.accept(300);
+        config.armoryResupply.noSupplyRetryTicks.accept(400);
+        config.armoryResupply.unreachableRetryTicks.accept(600);
 
-        config.update(8);
+        config.update(9);
 
         assertAll(
                 () -> assertFalse(config.safety.preserveBlocksFromGuardExplosions.get()),
@@ -182,7 +211,64 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(2400, config.squads.positionalCommandDurationTicks.get()),
                 () -> assertEquals(800, config.squads.focusCommandDurationTicks.get()),
                 () -> assertEquals(24.0D, config.squads.defendRadius.get()),
-                () -> assertEquals(48.0D, config.squads.airCommandRange.get()));
+                () -> assertEquals(48.0D, config.squads.airCommandRange.get()),
+                () -> assertEquals(
+                        new ArmoryResupplySettings(
+                                false,
+                                80,
+                                32.0D,
+                                16,
+                                2,
+                                6,
+                                1.2D,
+                                1800,
+                                800,
+                                300,
+                                400,
+                                600),
+                        config.armoryResupply.snapshot(true)));
+    }
+
+    @Test
+    void versionEightConfigAddsBoundedArmoryDefaultsWithoutChangingExistingSettings() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.ammunition.shareAmmoBetweenGuards.accept(false);
+        config.squads.commandDispatchRadius.accept(96.0D);
+        config.armoryResupply.enabled.accept(false);
+        config.armoryResupply.checkIntervalTicks.accept(200);
+        config.armoryResupply.searchRadius.accept(64.0D);
+        config.armoryResupply.maximumCandidateArmories.accept(32);
+        config.armoryResupply.lowReserveMagazines.accept(12);
+        config.armoryResupply.targetReserveMagazines.accept(24);
+        config.armoryResupply.movementSpeed.accept(2.0D);
+        config.armoryResupply.requestLifetimeTicks.accept(2400);
+        config.armoryResupply.reservationLifetimeTicks.accept(1200);
+        config.armoryResupply.successCooldownTicks.accept(2400);
+        config.armoryResupply.noSupplyRetryTicks.accept(2400);
+        config.armoryResupply.unreachableRetryTicks.accept(2400);
+
+        config.update(8);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertFalse(config.ammunition.shareAmmoBetweenGuards.get()),
+                () -> assertEquals(96.0D, config.squads.commandDispatchRadius.get()),
+                () -> assertEquals(
+                        new ArmoryResupplySettings(
+                                true,
+                                40,
+                                48.0D,
+                                8,
+                                1,
+                                3,
+                                0.8D,
+                                1200,
+                                400,
+                                100,
+                                200,
+                                200),
+                        config.armoryResupply.snapshot(true)));
     }
 
     @Test
@@ -388,6 +474,49 @@ final class VillagerGuardGunnersConfigTest {
                         .correctEntry(-1, ValidationType.STRONG).get()),
                 () -> assertEquals(4, config.ammunition.donorReserveMagazines
                         .correctEntry(5, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.armoryResupply.checkIntervalTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(200, config.armoryResupply.checkIntervalTicks
+                        .correctEntry(201, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.MIN_SEARCH_RADIUS,
+                        config.armoryResupply.searchRadius
+                                .correctEntry(7.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_SEARCH_RADIUS,
+                        config.armoryResupply.searchRadius
+                                .correctEntry(65.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(1, config.armoryResupply.maximumCandidateArmories
+                        .correctEntry(0, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_CANDIDATE_ARMORIES,
+                        config.armoryResupply.maximumCandidateArmories
+                                .correctEntry(33, ValidationType.STRONG).get()),
+                () -> assertEquals(0, config.armoryResupply.lowReserveMagazines
+                        .correctEntry(-1, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RESERVE_MAGAZINES,
+                        config.armoryResupply.targetReserveMagazines
+                                .correctEntry(65, ValidationType.STRONG).get()),
+                () -> assertEquals(0.1D, config.armoryResupply.movementSpeed
+                        .correctEntry(0.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RESUPPLY_MOVEMENT_SPEED,
+                        config.armoryResupply.movementSpeed
+                                .correctEntry(3.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.armoryResupply.requestLifetimeTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_REQUEST_LIFETIME_TICKS,
+                        config.armoryResupply.requestLifetimeTicks
+                                .correctEntry(2401, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.armoryResupply.reservationLifetimeTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RESERVATION_LIFETIME_TICKS,
+                        config.armoryResupply.reservationLifetimeTicks
+                                .correctEntry(1201, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.armoryResupply.successCooldownTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RETRY_TICKS,
+                        config.armoryResupply.noSupplyRetryTicks
+                                .correctEntry(2401, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RETRY_TICKS,
+                        config.armoryResupply.unreachableRetryTicks
+                                .correctEntry(2401, ValidationType.STRONG).get()),
                 () -> assertEquals(8.0D, config.naturalLoadouts.nearbyCapRadius
                         .correctEntry(7.0D, ValidationType.STRONG).get()),
                 () -> assertEquals(256.0D, config.naturalLoadouts.nearbyCapRadius

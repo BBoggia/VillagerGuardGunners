@@ -33,11 +33,12 @@ final class ConfigFoundationContractTest {
         assertAll(
                 () -> assertTrue(config.contains(
                         "@Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)")),
-                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 8;")),
+                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 9;")),
                 () -> assertTrue(config.contains("public void update(int previousVersion)")),
                 () -> assertTrue(config.contains("previousVersion < 2")),
                 () -> assertTrue(config.contains("previousVersion < 3")),
                 () -> assertTrue(config.contains("previousVersion < 8")),
+                () -> assertTrue(config.contains("previousVersion < 9")),
                 () -> assertTrue(config.contains("previousVersion < 4")),
                 () -> assertTrue(config.contains("previousVersion < 5")),
                 () -> assertTrue(config.contains("previousVersion < 6")),
@@ -74,6 +75,7 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(config.contains("public EngagementSettings engagement")),
                 () -> assertTrue(config.contains("public SafetySettings safety")),
                 () -> assertTrue(config.contains("public AmmunitionSettings ammunition")),
+                () -> assertTrue(config.contains("public ArmorySettings armoryResupply")),
                 () -> assertTrue(config.contains("public PerformanceSettings performance")),
                 () -> assertTrue(!config.contains("damage")),
                 () -> assertTrue(!config.contains("infiniteGuardAmmo")),
@@ -170,6 +172,18 @@ final class ConfigFoundationContractTest {
                 "ammunition.ammoSharingRadius",
                 "ammunition.donorReserveMagazines",
                 "ammunition.requireMatchingOwnerForSharing",
+                "armoryResupply.enabled",
+                "armoryResupply.checkIntervalTicks",
+                "armoryResupply.searchRadius",
+                "armoryResupply.maximumCandidateArmories",
+                "armoryResupply.lowReserveMagazines",
+                "armoryResupply.targetReserveMagazines",
+                "armoryResupply.movementSpeed",
+                "armoryResupply.requestLifetimeTicks",
+                "armoryResupply.reservationLifetimeTicks",
+                "armoryResupply.successCooldownTicks",
+                "armoryResupply.noSupplyRetryTicks",
+                "armoryResupply.unreachableRetryTicks",
                 "performance.visibilitySampleIntervalTicks",
                 "performance.movementDecisionIntervalTicks",
                 "performance.pathRecalculationIntervalTicks",
@@ -243,6 +257,8 @@ final class ConfigFoundationContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/api/GuardAllyProtection.java");
         String engagement = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/combat/engagement/GuardRulesOfEngagement.java");
+        String diagnostics = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/command/GuardGunnerCommands.java");
 
         assertAll(
                 () -> assertTrue(goal.contains("config.enabled.get()")),
@@ -275,7 +291,9 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(engagement.contains("settings.mode.get()")),
                 () -> assertTrue(engagement.contains("settings.defensiveMemoryTicks.get()")),
                 () -> assertTrue(engagement.contains("settings.additionalTargets.get()")),
-                () -> assertTrue(engagement.contains("settings.excludedEntities.get()")));
+                () -> assertTrue(engagement.contains("settings.excludedEntities.get()")),
+                () -> assertTrue(diagnostics.contains("armoryResupply.snapshot(")),
+                () -> assertTrue(diagnostics.contains("ArmoryResupplyDiagnostics.captureDormant(")));
     }
 
     private static String read(String relativePath) throws IOException {

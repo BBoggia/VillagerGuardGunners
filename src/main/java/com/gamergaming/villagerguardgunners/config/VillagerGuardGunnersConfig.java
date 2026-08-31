@@ -1,6 +1,8 @@
 package com.gamergaming.villagerguardgunners.config;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyLimits;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
 import com.gamergaming.villagerguardgunners.combat.tactics.ExplosiveStandoffPolicy;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
@@ -35,7 +37,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 8;
+    public static final int CONFIG_VERSION = 9;
 
     @Comment("Enables Guard Villagers to use TaCZ guns. The server controls this setting.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -63,6 +65,9 @@ public final class VillagerGuardGunnersConfig extends Config {
 
     @Comment("Ammunition convenience settings. TaCZ remains authoritative for ammunition compatibility and reloading.")
     public AmmunitionSettings ammunition = new AmmunitionSettings();
+
+    @Comment("Bounded Village Armory resupply policy. Searches may inspect only loaded indexed Armories and never force a chunk to load.")
+    public ArmorySettings armoryResupply = new ArmorySettings();
 
     @Comment("Advanced scheduling settings. Lower intervals react faster but require more server work.")
     public PerformanceSettings performance = new PerformanceSettings();
@@ -118,6 +123,12 @@ public final class VillagerGuardGunnersConfig extends Config {
             // defaults do not alter a guard until a player deliberately issues
             // a command with a bound Squad Command Ledger.
             squads.restoreVersionEightDefaults();
+        }
+        if (previousVersion < 9) {
+            // Version 9 introduces Armory resupply policy. Every field is new,
+            // so initialize its bounded defaults while preserving all schema-8
+            // combat, safety, loadout, ammunition, and squad values.
+            armoryResupply.restoreVersionNineDefaults();
         }
     }
 
@@ -552,6 +563,110 @@ public final class VillagerGuardGunnersConfig extends Config {
             restoreDefault(ammoSharingRadius);
             restoreDefault(donorReserveMagazines);
             restoreDefault(requireMatchingOwnerForSharing);
+        }
+    }
+
+    @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.armoryResupply")
+    public static final class ArmorySettings extends ConfigSection {
+
+        @Comment("Allows otherwise-idle guards below the reserve trigger to use loaded Village Armories.")
+        public ValidatedBoolean enabled = new ValidatedBoolean(true);
+
+        @Comment("Ticks between staggered ammunition-need assessments. Range: 20 to 200 ticks.")
+        public ValidatedInt checkIntervalTicks = new ValidatedInt(
+                ArmoryResupplyLimits.DEFAULT_CHECK_INTERVAL_TICKS,
+                ArmoryResupplyLimits.MAX_CHECK_INTERVAL_TICKS,
+                ArmoryResupplyLimits.MIN_CHECK_INTERVAL_TICKS);
+
+        @Comment("Maximum loaded-Armory search radius. Range: 8 to 64 blocks.")
+        public ValidatedDouble searchRadius = new ValidatedDouble(
+                48.0D,
+                ArmoryResupplyLimits.HARD_MAX_SEARCH_RADIUS,
+                ArmoryResupplyLimits.MIN_SEARCH_RADIUS);
+
+        @Comment("Maximum loaded Armories inspected for one request. Range: 1 to 32 Armories.")
+        public ValidatedInt maximumCandidateArmories = new ValidatedInt(
+                8,
+                ArmoryResupplyLimits.HARD_MAX_CANDIDATE_ARMORIES,
+                1);
+
+        @Comment("Request resupply when physical reserve is below this many magazines. Zero disables automatic requests. Range: 0 to 64.")
+        public ValidatedInt lowReserveMagazines = new ValidatedInt(
+                ArmoryResupplyLimits.DEFAULT_LOW_RESERVE_MAGAZINES,
+                ArmoryResupplyLimits.HARD_MAX_RESERVE_MAGAZINES,
+                0);
+
+        @Comment("Desired physical reserve after resupply. Values below the trigger fail closed. Range: 0 to 64 magazines.")
+        public ValidatedInt targetReserveMagazines = new ValidatedInt(
+                ArmoryResupplyLimits.DEFAULT_TARGET_RESERVE_MAGAZINES,
+                ArmoryResupplyLimits.HARD_MAX_RESERVE_MAGAZINES,
+                0);
+
+        @Comment("Navigation speed while travelling to a reserved Armory. Range: 0.1 to 2.")
+        public ValidatedDouble movementSpeed = new ValidatedDouble(
+                ArmoryResupplyLimits.DEFAULT_RESUPPLY_MOVEMENT_SPEED,
+                ArmoryResupplyLimits.HARD_MAX_RESUPPLY_MOVEMENT_SPEED,
+                ArmoryResupplyLimits.MIN_RESUPPLY_MOVEMENT_SPEED);
+
+        @Comment("Maximum lifetime of one immutable resupply request. Range: 20 to 2400 ticks.")
+        public ValidatedInt requestLifetimeTicks = new ValidatedInt(
+                ArmoryResupplyLimits.DEFAULT_REQUEST_LIFETIME_TICKS,
+                ArmoryResupplyLimits.HARD_MAX_REQUEST_LIFETIME_TICKS,
+                ArmoryResupplyLimits.MIN_CONFIGURED_DELAY_TICKS);
+
+        @Comment("Maximum lifetime of a claimed Armory supply slot. Range: 20 to 1200 ticks.")
+        public ValidatedInt reservationLifetimeTicks = new ValidatedInt(
+                ArmoryResupplyLimits.DEFAULT_RESERVATION_LIFETIME_TICKS,
+                ArmoryResupplyLimits.HARD_MAX_RESERVATION_LIFETIME_TICKS,
+                ArmoryResupplyLimits.MIN_CONFIGURED_DELAY_TICKS);
+
+        @Comment("Delay after a successful withdrawal before reassessment. Range: 20 to 2400 ticks.")
+        public ValidatedInt successCooldownTicks = new ValidatedInt(
+                ArmoryResupplyLimits.DEFAULT_SUCCESS_COOLDOWN_TICKS,
+                ArmoryResupplyLimits.HARD_MAX_RETRY_TICKS,
+                ArmoryResupplyLimits.MIN_CONFIGURED_DELAY_TICKS);
+
+        @Comment("Delay after no compatible loaded Armory is found. Range: 20 to 2400 ticks.")
+        public ValidatedInt noSupplyRetryTicks = new ValidatedInt(
+                ArmoryResupplyLimits.DEFAULT_NO_SUPPLY_RETRY_TICKS,
+                ArmoryResupplyLimits.HARD_MAX_RETRY_TICKS,
+                ArmoryResupplyLimits.MIN_CONFIGURED_DELAY_TICKS);
+
+        @Comment("Base delay after bounded navigation cannot reach an Armory. Range: 20 to 2400 ticks.")
+        public ValidatedInt unreachableRetryTicks = new ValidatedInt(
+                ArmoryResupplyLimits.DEFAULT_UNREACHABLE_RETRY_TICKS,
+                ArmoryResupplyLimits.HARD_MAX_RETRY_TICKS,
+                ArmoryResupplyLimits.MIN_CONFIGURED_DELAY_TICKS);
+
+        public ArmoryResupplySettings snapshot(boolean parentEnabled) {
+            return new ArmoryResupplySettings(
+                    parentEnabled && enabled.get(),
+                    checkIntervalTicks.get(),
+                    searchRadius.get(),
+                    maximumCandidateArmories.get(),
+                    lowReserveMagazines.get(),
+                    targetReserveMagazines.get(),
+                    movementSpeed.get(),
+                    requestLifetimeTicks.get(),
+                    reservationLifetimeTicks.get(),
+                    successCooldownTicks.get(),
+                    noSupplyRetryTicks.get(),
+                    unreachableRetryTicks.get());
+        }
+
+        private void restoreVersionNineDefaults() {
+            restoreDefault(enabled);
+            restoreDefault(checkIntervalTicks);
+            restoreDefault(searchRadius);
+            restoreDefault(maximumCandidateArmories);
+            restoreDefault(lowReserveMagazines);
+            restoreDefault(targetReserveMagazines);
+            restoreDefault(movementSpeed);
+            restoreDefault(requestLifetimeTicks);
+            restoreDefault(reservationLifetimeTicks);
+            restoreDefault(successCooldownTicks);
+            restoreDefault(noSupplyRetryTicks);
+            restoreDefault(unreachableRetryTicks);
         }
     }
 

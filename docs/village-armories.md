@@ -64,9 +64,11 @@ restart.
 The armory remains a complete player- and automation-facing storage block, but
 guards do not search for or withdraw from it in normal gameplay yet. Village
 Defense Logistics Step 1 defines inactive request/state contracts, Step 3 adds
-expiring reservations and transactional withdrawal, and Step 4 adds bounded,
-interruptible travel for an explicitly reserved target. Step 2's loaded-chunk
-runtime index has not yet been implemented, so none of those dormant services
-is wired into a guard tick. Keeping selection, ownership, travel, and item
-movement separate makes it possible to test their safety without introducing
-background AI work prematurely.
+expiring reservations and transactional withdrawal, Step 4 adds bounded,
+interruptible travel for an explicitly reserved target, and Step 5 adds the
+schema-9 Fzzy Config policy plus truthful on-demand diagnostics. Step 2's
+loaded-chunk runtime index has not yet been implemented, so none of those
+dormant services is wired into a guard tick. `/vgg inspect` reports that state
+as `NOT_REGISTERED` instead of implying a search occurred. Keeping selection,
+ownership, travel, item movement, and inspection separate makes it possible to
+test their safety without introducing background AI work prematurely.

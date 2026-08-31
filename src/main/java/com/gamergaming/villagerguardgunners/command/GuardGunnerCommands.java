@@ -9,9 +9,12 @@ import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
 import com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyDiagnostics;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalEnvelope;
+import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDiagnostics;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutProvenance;
@@ -77,6 +80,11 @@ public final class GuardGunnerCommands {
         GuardFriendlyFireSafety.DiagnosticResult safety = snapshot.safety();
         NaturalGuardLoadoutDiagnostics.Snapshot naturalLoadout =
                 NaturalGuardLoadoutDiagnostics.capture(guard);
+        ArmoryResupplySettings armorySettings =
+                ModConfigs.GUARD_GUNNERS.armoryResupply.snapshot(
+                        ModConfigs.GUARD_GUNNERS.enabled.get());
+        ArmoryResupplyDiagnostics.Snapshot armoryResupply =
+                ArmoryResupplyDiagnostics.captureDormant(guard, armorySettings);
         ChatFormatting decisionColor = snapshot.decision() == GuardGunCombatGoal.FireDecision.READY_TO_FIRE
                 ? ChatFormatting.GREEN
                 : ChatFormatting.YELLOW;
@@ -218,6 +226,19 @@ public final class GuardGunnerCommands {
                         nativeState),
                 ammunitionColor(ammunition.sidearm())));
         send(source, line(
+                "Armory resupply",
+                armoryResupplyDetails(armoryResupply),
+                armoryResupply.runtimeStatus()
+                                == ArmoryResupplyDiagnostics.RuntimeStatus.NOT_REGISTERED
+                        ? ChatFormatting.YELLOW
+                        : ChatFormatting.GRAY));
+        send(source, line(
+                "Armory policy",
+                armoryPolicyDetails(armorySettings),
+                armorySettings.validReserveThresholds()
+                        ? ChatFormatting.GRAY
+                        : ChatFormatting.RED));
+        send(source, line(
                 "TaCZ",
                 "aiming=" + nativeState.aiming()
                         + ", reload=" + nativeState.reloadState()
@@ -337,5 +358,45 @@ public final class GuardGunnerCommands {
         return ammunition.displayedLoadedAmmo() > 0
                 ? ChatFormatting.GOLD
                 : ChatFormatting.RED;
+    }
+
+    private static String armoryResupplyDetails(
+            ArmoryResupplyDiagnostics.Snapshot snapshot) {
+        String details = "runtime=" + snapshot.runtimeStatus()
+                + ", state=" + snapshot.state()
+                + ", gate=" + snapshot.gateStatus()
+                + ", needEvaluation=" + snapshot.needEvaluationStatus()
+                + ", need=" + nullableName(snapshot.needStatus());
+        if (snapshot.weaponRole() != null && snapshot.gunId() != null) {
+            details += ", role=" + snapshot.weaponRole()
+                    + ", gun=" + snapshot.gunId()
+                    + ", urgency=" + nullableName(snapshot.urgency())
+                    + ", reserve=" + snapshot.observedReserveUnits()
+                    + "/" + snapshot.targetReserveUnits()
+                    + ", requested=" + snapshot.requestedUnits();
+        }
+        return details
+                + ", candidates=" + snapshot.candidateInspections()
+                + ", paths=" + snapshot.pathAttempts()
+                + ", nextAction="
+                + (snapshot.nextActionGameTick() < 0L
+                        ? "n/a"
+                        : snapshot.nextActionGameTick());
+    }
+
+    private static String armoryPolicyDetails(ArmoryResupplySettings settings) {
+        return "enabled=" + settings.enabled()
+                + ", interval=" + settings.checkIntervalTicks()
+                + ", radius=" + decimal(settings.searchRadius())
+                + ", candidateCap=" + settings.maximumCandidateArmories()
+                + ", reserveMagazines=" + settings.lowReserveMagazines()
+                + "->" + settings.targetReserveMagazines()
+                + ", thresholdsValid=" + settings.validReserveThresholds()
+                + ", speed=" + decimal(settings.movementSpeed())
+                + ", requestLifetime=" + settings.requestLifetimeTicks()
+                + ", reservationLifetime=" + settings.reservationLifetimeTicks()
+                + ", successCooldown=" + settings.successCooldownTicks()
+                + ", noSupplyRetry=" + settings.noSupplyRetryTicks()
+                + ", unreachableRetry=" + settings.unreachableRetryTicks();
     }
 }

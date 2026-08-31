@@ -310,6 +310,12 @@ Version numbers, immutable annotated tags, GitHub Actions artifacts, and the
 GitHub/CurseForge publishing sequence are documented in
 [docs/github-release-process.md](docs/github-release-process.md).
 
+The post-1.2 Village Defense Logistics development line begins with the
+[Phase 0 baseline and compatibility contract](docs/village-defense-logistics-phase-0.md).
+Its feature-specific validation cases are recorded separately in the
+[Village Defense Logistics release matrix](docs/village-defense-logistics-release-matrix.md)
+until they are promoted into the main release checklist for a 1.3 candidate.
+
 ## License
 
 All Rights Reserved. See [LICENSE.txt](LICENSE.txt).

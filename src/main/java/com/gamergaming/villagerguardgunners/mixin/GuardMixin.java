@@ -14,9 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ai.GuardArmoryResupplyGoal;
 import com.gamergaming.villagerguardgunners.ai.SquadCommandMovementGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoDeposits;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
@@ -24,6 +26,7 @@ import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
+import com.gamergaming.villagerguardgunners.armory.resupply.GuardArmoryResupplyController;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoMigration;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplateInteractions;
@@ -79,7 +82,8 @@ import tallestegg.guardvillagers.configuration.GuardConfig;
 import tallestegg.guardvillagers.entities.Guard;
 
 @Mixin(Guard.class)
-public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBurstSafetyAccess,
+public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardArmoryResupplyAccess,
+        GuardBurstSafetyAccess,
         GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardSidearmAccess, GuardSquadAccess,
         GuardSquadCommandAccess {
     @Unique
@@ -100,6 +104,10 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Unique
     private GuardSidearmStorage villagerGuardGunners$sidearmStorage;
+
+    @Unique
+    @Nullable
+    private GuardArmoryResupplyController villagerGuardGunners$armoryResupplyController;
 
     @Unique
     private LazyOptional<IItemHandler> villagerGuardGunners$combinedItemHandler;
@@ -298,6 +306,18 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     private void addNativeGunGoal(CallbackInfo ci) {
         goalSelector.addGoal(1, new SquadCommandMovementGoal((Guard) (Object) this));
         goalSelector.addGoal(2, new GuardGunCombatGoal((Guard) (Object) this));
+        villagerGuardGunners$armoryResupplyController =
+                new GuardArmoryResupplyController((Guard) (Object) this);
+        goalSelector.addGoal(
+                3,
+                new GuardArmoryResupplyGoal(villagerGuardGunners$armoryResupplyController));
+    }
+
+    @Override
+    @Nullable
+    public GuardArmoryResupplyController
+            villagerGuardGunners$getArmoryResupplyController() {
+        return villagerGuardGunners$armoryResupplyController;
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("HEAD"))

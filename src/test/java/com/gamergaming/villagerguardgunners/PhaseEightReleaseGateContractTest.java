@@ -80,6 +80,7 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(performanceHarness.contains("return -6.0D")),
                 () -> assertTrue(performanceHarness.contains("return 6.0D")),
                 () -> assertTrue(performanceHarness.contains("retainOnlyAddOnGoals(guard)")),
+                () -> assertTrue(performanceHarness.contains("GuardArmoryResupplyGoal")),
                 () -> assertTrue(performanceHarness.contains(
                         "workload == Workload.CLEAR_LANES")));
     }

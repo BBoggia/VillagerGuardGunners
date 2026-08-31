@@ -84,14 +84,16 @@ Orders restores the unchanged Guard Villagers patrol/follow behavior.
 The craftable **Village Armory** provides nine dedicated slots for TaCZ loose
 ammunition and ammo boxes. Players can stock it directly, and hoppers, pipes,
 and other Forge item-handler integrations can insert or extract from every
-side. A public armory accepts any guard for future resupply; sneak-use a bound
+side. A public armory accepts any guard for resupply; sneak-use a bound
 Squad Command Ledger on it to assign that squad, and repeat with the same
 ledger to return it to public access. Inventory and lock identity persist,
 contents drop when the block is broken, and comparator output reports
 fullness. The block has no ticker or world scan. The 1.3 development line now
-contains bounded request, reservation, withdrawal, movement, configuration,
-and on-demand diagnostic contracts. Automatic gameplay remains dormant until
-the loaded-chunk Armory index and runtime orchestrator are implemented.
+activates bounded automatic resupply: otherwise-idle guards below their reserve
+trigger query only the transient loaded-Armory index, reserve compatible supply,
+travel with interruptible low-priority navigation, and withdraw transactionally.
+Checks are UUID-staggered, candidate/path work is capped, and failures use
+cooldown or exponential backoff without loading a chunk.
 
 Once a guard has a TaCZ gun equipped, an authorized player may crouch-right-
 click it while holding compatible loose ammunition or an ammo box. Quick

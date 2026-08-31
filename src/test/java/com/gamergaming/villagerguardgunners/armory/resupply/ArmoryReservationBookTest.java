@@ -103,6 +103,44 @@ final class ArmoryReservationBookTest {
     }
 
     @Test
+    void dimensionUnloadReleasesOnlyThatDimensionsClaims() {
+        ArmoryReservationBook book = new ArmoryReservationBook();
+        ArmoryResupplyRequest overworld = request(1);
+        ResourceLocation nether =
+                ResourceLocation.fromNamespaceAndPath("minecraft", "the_nether");
+        ArmoryResupplyRequest netherRequest = new ArmoryResupplyRequest(
+                ArmoryResupplyRequest.CURRENT_CONTRACT_VERSION,
+                2L,
+                new UUID(5L, 6L),
+                nether,
+                BlockPos.ZERO,
+                null,
+                ArmoryResupplyWeaponRole.PRIMARY,
+                GUN_ID,
+                ArmoryResupplyUrgency.LOW_RESERVE,
+                30,
+                10,
+                29L,
+                90L,
+                61L,
+                0L,
+                1_200L);
+        ArmorySupplyCandidate netherCandidate = new ArmorySupplyCandidate(
+                new ArmoryReservationTarget(nether, TARGET.position(), TARGET.sourceSlot()),
+                FINGERPRINT,
+                AmmoCompatibility.AmmoKind.LOOSE,
+                32,
+                32,
+                32L);
+
+        assertTrue(book.reserve(overworld, looseCandidate(32, 32), 0L, 100).reserved());
+        assertTrue(book.reserve(netherRequest, netherCandidate, 0L, 100).reserved());
+        assertEquals(1, book.releaseDimension(DIMENSION));
+        assertTrue(book.find(overworld.key(), 1L).isEmpty());
+        assertTrue(book.find(netherRequest.key(), 1L).isPresent());
+    }
+
+    @Test
     void invalidTimesAndMismatchedDimensionsFailClosed() {
         ArmoryReservationBook book = new ArmoryReservationBook();
         ArmorySupplyCandidate wrongDimension = new ArmorySupplyCandidate(

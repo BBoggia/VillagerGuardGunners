@@ -5,10 +5,11 @@ the expected Phase 0 state. A row may become `Pass` only when its automated or
 manual evidence is retained against the exact candidate JAR. These cases will
 be promoted into `docs/release-checklist.md` before the `v1.3` release tag.
 
-Step 1's inactive state, request, precedence, and timing contracts are defined
-in [Armory resupply contracts](armory-resupply-contracts.md). Matrix rows
-remain `Not implemented` until the later runtime phases supply the behavior
-and retained evidence each row requires.
+The implemented state, request, precedence, reservation, transaction,
+movement, configuration, loaded-index, and Step 6 runtime contracts are
+defined in [Armory resupply contracts](armory-resupply-contracts.md). Rows stay
+partial until every case named by that row has retained automated or manual
+evidence against the candidate JAR.
 
 ## Candidate identity
 
@@ -24,33 +25,33 @@ and retained evidence each row requires.
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| ARMORY-INDEX-01 | Place, load, unload, replace, and break public and squad-associated Armories. | The dimension-local index contains exactly the loaded valid block entities and never loads a chunk. | Not implemented | |
-| ARMORY-INDEX-02 | Search with public, matching-squad, different-squad, unassigned, orphaned, corrupt, and future-version locks. | Only readable public or matching-squad Armories are eligible; malformed access fails closed. | Not implemented | |
-| ARMORY-INDEX-03 | Put more Armories in range than the hard candidate cap. | Candidate inspection and ordering remain deterministic and bounded before sorting. | Not implemented | |
+| ARMORY-INDEX-01 | Place, load, unload, replace, and break public and squad-associated Armories. | The dimension-local index contains exactly the loaded valid block entities and never loads a chunk. | Partial | A Forge GameTest proves real block-entity registration, bounded query, removal, and absence; source contracts require level/server cleanup and forbid chunk acquisition. Direct chunk-unload/reload evidence remains for the final matrix. |
+| ARMORY-INDEX-02 | Search with public, matching-squad, different-squad, unassigned, orphaned, corrupt, and future-version locks. | Only readable public or matching-squad Armories are eligible; malformed access fails closed. | Partial | Existing lock and candidate tests cover public, matching, mismatched, missing, orphaned, and malformed access; the automatic runtime GameTest covers public selection. A full runtime lock matrix remains. |
+| ARMORY-INDEX-03 | Put more Armories in range than the hard candidate cap. | Candidate inspection and ordering remain deterministic and bounded before sorting. | Pass | A Forge GameTest indexes three real Armories and proves a two-record visit cap; source contracts require deterministic section and final distance/position ordering. |
 
 ## Reservations and transactions
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| ARMORY-RESERVE-01 | Make multiple compatible guards request one limited stack simultaneously. | Reservations prevent double claims and expire or release on every terminal outcome. | Not implemented | |
-| ARMORY-RESERVE-02 | Change Armory contents through a player, hopper, and Forge pipe while a reservation is active. | Final revalidation transfers only available compatible units without loss or duplication. | Not implemented | |
-| ARMORY-TXN-01 | Exercise loose ammo, finite boxes, empty boxes, incompatible ammo, partial space, full inventory, and different primary/sidearm calibers. | Simulate-before-commit moves only the quantity both inventories can accept and preserves every remainder. | Not implemented | |
-| ARMORY-TXN-02 | Remove the Armory, kill or convert the guard, replace the weapon, unload the chunk, and stop the server during each transaction phase. | The transaction cancels or recovers exactly once without losing or duplicating items. | Not implemented | |
+| ARMORY-RESERVE-01 | Make multiple compatible guards request one limited stack simultaneously. | Reservations prevent double claims and expire or release on every terminal outcome. | Pass | Unit tests prove idempotence, contention, claim limits, expiry, and bulk release; automatic and direct-withdrawal GameTests end with zero owned reservations. |
+| ARMORY-RESERVE-02 | Change Armory contents through a player, hopper, and Forge pipe while a reservation is active. | Final revalidation transfers only available compatible units without loss or duplication. | Partial | GameTests prove reduced and replaced live sources fail or transfer conservatively through the Forge item handler. Separate manual player/hopper/pipe coverage remains. |
+| ARMORY-TXN-01 | Exercise loose ammo, finite boxes, empty boxes, incompatible ammo, partial space, full inventory, and different primary/sidearm calibers. | Simulate-before-commit moves only the quantity both inventories can accept and preserves every remainder. | Pass | Unit and Forge tests cover loose ammunition, indivisible finite boxes, incompatibility, live need, bounded destination capacity, rollback, and both stable weapon roles. |
+| ARMORY-TXN-02 | Remove the Armory, kill or convert the guard, replace the weapon, unload the chunk, and stop the server during each transaction phase. | The transaction cancels or recovers exactly once without losing or duplicating items. | Partial | GameTests cover Armory/source replacement, weapon/state change, combat cancellation, and feature disable; lifecycle source contracts release entity, dimension, and server state. Direct stop/unload timing evidence remains. |
 
 ## Resupply movement
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| ARMORY-PATH-01 | Request from reachable, blocked, distant, and unloaded Armories. | Only a reachable loaded candidate receives bounded path attempts; failures enter backoff. | Partial | Direct-reservation GameTests prove loaded reachable travel, idempotent start, and source-change cancellation; policy/source tests prove range, eight attempts, progress, backoff, and no-force boundaries. Step 2 selection is still absent. |
-| ARMORY-PATH-02 | Interrupt travel with combat, Hold, Fall Back, Focus Target, follow, patrol, death, and recovery-required state. | Precedence is deterministic; reservations release when diversion is no longer valid; unchanged native behavior resumes. | Partial | Combat interruption passes with a real owned path and disabled withdrawal fails closed; the shared gate covers all precedence states, but full runtime orchestration is still absent. |
-| ARMORY-PATH-03 | Resupply a dry primary with a usable sidearm and a dry active sidearm with a stowed primary. | The effective weapon role and TaCZ reserve model determine the request without weapon thrashing. | Not implemented | |
+| ARMORY-PATH-01 | Request from reachable, blocked, distant, and unloaded Armories. | Only a reachable loaded candidate receives bounded path attempts; failures enter backoff. | Partial | Automatic selection/withdrawal and direct-reservation GameTests prove loaded reachable travel, idempotent start, and source-change cancellation; unit/source tests prove range, eight attempts, progress, backoff, and no-force boundaries. Blocked/distant runtime cases remain. |
+| ARMORY-PATH-02 | Interrupt travel with combat, Hold, Fall Back, Focus Target, follow, patrol, death, and recovery-required state. | Precedence is deterministic; reservations release when diversion is no longer valid; unchanged native behavior resumes. | Partial | Combat interruption passes with a real owned path and disabled withdrawal fails closed; the shared gate and low-priority goal cover all named precedence categories, but the complete runtime interruption matrix remains. |
+| ARMORY-PATH-03 | Resupply a dry primary with a usable sidearm and a dry active sidearm with a stowed primary. | The effective weapon role and TaCZ reserve model determine the request without weapon thrashing. | Partial | Need, request, preflight, and withdrawal tests cover both stable roles; the automatic runtime GameTest covers a dry active primary. The paired sidearm-runtime cases remain. |
 
 ## Configuration and diagnostics
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
 | ARMORY-CFG-01 | Upgrade a complete schema-8 configuration and change every new schema-9 value. | Existing values remain exact; new bounded defaults synchronize; out-of-range values are corrected and an invalid trigger/target pair fails closed. | Pass | Unit tests preserve representative schema-8 choices, reset every new field only during migration, exercise all numeric bounds, and verify the immutable hard-bound snapshot. |
-| ARMORY-DIAG-01 | Inspect idle, searching, reserved, travelling, withdrawing, cooldown, and unreachable guards. | On-demand output reports the authoritative state, reason, candidate, quantity, and retry without enabling background work. | Partial | `/vgg inspect` reports the gate, need, complete policy, and truthful dormant runtime with zero idle work; active-state coverage awaits the Step 2 index/runtime orchestrator. |
+| ARMORY-DIAG-01 | Inspect idle, searching, reserved, travelling, withdrawing, cooldown, and unreachable guards. | On-demand output reports the authoritative state, reason, candidate, quantity, and retry without enabling background work. | Partial | `/vgg inspect` reports the live registered controller snapshot; GameTests cover dormant compatibility and post-transfer cooldown with target/quantity evidence. Intermediate and unreachable state captures remain. |
 
 ## Squad feedback and coordination
 

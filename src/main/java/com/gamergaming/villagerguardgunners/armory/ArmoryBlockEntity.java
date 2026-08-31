@@ -2,6 +2,7 @@ package com.gamergaming.villagerguardgunners.armory;
 
 import com.gamergaming.villagerguardgunners.armory.ArmorySquadLockCodec.DecodeResult;
 import com.gamergaming.villagerguardgunners.armory.ArmorySquadLockCodec.DecodeStatus;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyServerServices;
 import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
 import com.gamergaming.villagerguardgunners.menu.ArmoryMenu;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -200,6 +202,29 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
             pendingRejectedStacks.clear();
             setChanged();
         }
+        if (level instanceof ServerLevel serverLevel) {
+            ArmoryResupplyServerServices.forLevel(serverLevel)
+                    .loadedArmories()
+                    .register(serverLevel, this);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        if (level instanceof ServerLevel serverLevel) {
+            ArmoryResupplyServerServices.Services services =
+                    ArmoryResupplyServerServices.existingForLevel(serverLevel);
+            if (services != null) {
+                services.loadedArmories().unregister(
+                        serverLevel,
+                        worldPosition,
+                        this);
+                services.reservations().releaseArmory(
+                        serverLevel.dimension().location(),
+                        worldPosition);
+            }
+        }
+        super.setRemoved();
     }
 
     @Override

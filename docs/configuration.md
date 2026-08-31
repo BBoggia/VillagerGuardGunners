@@ -63,9 +63,9 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `ammunition.ammoSharingRadius` | 8 | 1–16 blocks | Bounds the donor search performed by a dry guard. It is not a continuous balancing radius. |
 | `ammunition.donorReserveMagazines` | 1 | 0–4 magazines | Whole attachment-adjusted magazines a donor retains before loose ammunition may be shared. |
 | `ammunition.requireMatchingOwnerForSharing` | `true` | boolean | Restricts sharing to guards with the same owner while allowing two unowned guards to share. |
-| `armoryResupply.enabled` | `true` | boolean | Enables the Armory-resupply policy beneath the add-on's global `enabled` switch. The runtime remains dormant until the loaded-Armory index is implemented. |
+| `armoryResupply.enabled` | `true` | boolean | Enables automatic Armory resupply beneath the add-on's global `enabled` switch. |
 | `armoryResupply.checkIntervalTicks` | 40 | 20–200 ticks | Staggered interval between ammunition-need assessments. Higher values reduce server work at the cost of slower response. |
-| `armoryResupply.searchRadius` | 48 | 8–64 blocks | Hard radius supplied to the future loaded-chunk-only Armory index query. It never authorizes chunk loading. |
+| `armoryResupply.searchRadius` | 48 | 8–64 blocks | Hard radius supplied to the loaded-chunk-only Armory index query. It never authorizes chunk loading. |
 | `armoryResupply.maximumCandidateArmories` | 8 | 1–32 Armories | Maximum indexed Armories inspected for one request before candidate selection fails closed. |
 | `armoryResupply.lowReserveMagazines` | 1 | 0–64 magazines | Requests resupply below this many attachment-adjusted magazines. Zero disables automatic requests. |
 | `armoryResupply.targetReserveMagazines` | 3 | 0–64 magazines | Desired physical reserve after withdrawal. A value below the trigger is reported as invalid and creates no request. |
@@ -96,12 +96,14 @@ than silently rewriting either administrator choice.
 
 The configuration snapshot is immutable and contains no entity, level,
 inventory, path, reservation, or Armory reference. Search radius and candidate
-cap are inputs for the still-pending Step 2 loaded-chunk index; they do not
-enable a block scan or chunk load. Until that index and the runtime
-orchestrator are registered, `/vgg inspect` deliberately reports
-`runtime=NOT_REGISTERED`, `state=IDLE`, zero candidates and paths, and no next
-action. It can still evaluate the live precedence gate and ammunition need on
-demand. This inspection performs no recurring background work.
+cap bound a transient section index populated only by block-entity load and
+unload events; they do not enable a block scan or chunk load. Guards assess
+need on stable UUID-staggered ticks, skip the index entirely when blocked or
+above the reserve trigger, and use cooldown/backoff rather than per-tick
+retries. `/vgg inspect` reports the registered runtime state, last outcome,
+current gate and need, selected Armory slot, bounded candidate/path counts,
+last transfer, and next action. Inspection itself performs no search, path, or
+mutation.
 
 ## Natural loadout and squad-command policy
 

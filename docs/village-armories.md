@@ -61,14 +61,19 @@ restart.
 
 ## Current development boundary
 
-The armory remains a complete player- and automation-facing storage block, but
-guards do not search for or withdraw from it in normal gameplay yet. Village
-Defense Logistics Step 1 defines inactive request/state contracts, Step 3 adds
-expiring reservations and transactional withdrawal, Step 4 adds bounded,
-interruptible travel for an explicitly reserved target, and Step 5 adds the
-schema-9 Fzzy Config policy plus truthful on-demand diagnostics. Step 2's
-loaded-chunk runtime index has not yet been implemented, so none of those
-dormant services is wired into a guard tick. `/vgg inspect` reports that state
-as `NOT_REGISTERED` instead of implying a search occurred. Keeping selection,
-ownership, travel, item movement, and inspection separate makes it possible to
-test their safety without introducing background AI work prematurely.
+Village Defense Logistics Step 6 activates the previously separated contracts.
+Armories register and unregister from a transient, dimension-local section index
+as their block entities load and unload. An otherwise-idle guard assesses its
+bounded ammunition summary only on a stable staggered tick, then inspects at
+most the configured number of indexed records and nine slots per returned
+Armory. The query has no block/entity scan, persistent data, chunk ticket, or
+`getChunk` path.
+
+A successful selection owns one expiring reservation and the low-priority MOVE
+goal only while travelling. Combat, squad commands, follow, Hold, patrol,
+sidearm recovery, lifecycle changes, and unreadable native TaCZ actions retain
+the established precedence. Final withdrawal revalidates the live weapon,
+need, lock, source fingerprint, destination, distance, and feature switches
+before the existing transactional transfer. `/vgg inspect` now reports
+`runtime=REGISTERED` with the authoritative state, outcome, selected slot,
+bounded work counts, transfer evidence, and retry time.

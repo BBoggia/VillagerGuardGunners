@@ -27,7 +27,8 @@ final class PerGuardOrdersContractTest {
         String menu = source("entity/GuardGunnerContainer.java");
 
         assertAll(
-                () -> assertTrue(mixin.contains("implements GuardAmmoAccess, GuardBurstSafetyAccess")),
+                () -> assertTrue(mixin.contains("implements GuardAmmoAccess")),
+                () -> assertTrue(mixin.contains("GuardBurstSafetyAccess")),
                 () -> assertTrue(mixin.contains("GuardOrdersAccess")),
                 () -> assertTrue(mixin.contains("GuardNaturalLoadoutAccess")),
                 () -> assertTrue(mixin.contains("villagerguardgunners:orders")),

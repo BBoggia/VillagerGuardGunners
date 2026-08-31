@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners;
 
 import com.gamergaming.villagerguardgunners.command.GuardGunnerCommands;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyServerServices;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
 import com.gamergaming.villagerguardgunners.init.ModBlocks;
@@ -33,6 +34,9 @@ public class VillagerGuardGunners {
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardLoadoutPools::registerReloadListener);
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardSpawnIntegration::onEntityJoin);
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardPopulationIndex::onEntityLeave);
+        MinecraftForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onEntityLeave);
+        MinecraftForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onLevelUnload);
+        MinecraftForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(SquadLedgerService::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(SquadLedgerService::onPlayerLoggedOut);
     }

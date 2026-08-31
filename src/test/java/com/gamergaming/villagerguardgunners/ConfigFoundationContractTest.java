@@ -293,7 +293,7 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(engagement.contains("settings.additionalTargets.get()")),
                 () -> assertTrue(engagement.contains("settings.excludedEntities.get()")),
                 () -> assertTrue(diagnostics.contains("armoryResupply.snapshot(")),
-                () -> assertTrue(diagnostics.contains("ArmoryResupplyDiagnostics.captureDormant(")));
+                () -> assertTrue(diagnostics.contains("ArmoryResupplyDiagnostics.capture(")));
     }
 
     private static String read(String relativePath) throws IOException {

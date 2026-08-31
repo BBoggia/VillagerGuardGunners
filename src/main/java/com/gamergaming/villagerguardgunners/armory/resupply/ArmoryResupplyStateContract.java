@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.armory.resupply;
 
 import java.util.Objects;
 
-/** Pure transition contract used by the later server runtime controller. */
+/** Pure transition contract used by the server runtime controller. */
 public final class ArmoryResupplyStateContract {
     private ArmoryResupplyStateContract() {
     }

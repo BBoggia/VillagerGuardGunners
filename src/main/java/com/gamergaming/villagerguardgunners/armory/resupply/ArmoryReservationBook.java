@@ -147,6 +147,14 @@ public final class ArmoryReservationBook {
                 && reservation.target().position().equals(position));
     }
 
+    public synchronized int releaseDimension(ResourceLocation dimension) {
+        if (dimension == null) {
+            return 0;
+        }
+        return removeMatching(reservation ->
+                reservation.target().dimension().equals(dimension));
+    }
+
     public synchronized int purgeExpired(long gameTick) {
         if (gameTick < 0L) {
             return 0;

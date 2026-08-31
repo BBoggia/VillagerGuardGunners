@@ -16,11 +16,10 @@ import tallestegg.guardvillagers.entities.Guard;
  * Bounded navigation for one already-reserved Armory request.
  *
  * <p>The controller never searches for an Armory, loads a chunk, transfers an
- * item, or changes permanent Guard Villagers orders. A future runtime goal is
- * responsible for owning the MOVE flag while this controller is active and
- * for invoking {@link ArmoryAmmunitionWithdrawal} after
- * {@link MovementStatus#WITHDRAWAL_READY}. Until that orchestrator exists this
- * class is deliberately dormant.</p>
+ * item, or changes permanent Guard Villagers orders. The Step 6 runtime goal
+ * owns the MOVE flag while this controller is active and invokes
+ * {@link ArmoryAmmunitionWithdrawal} after
+ * {@link MovementStatus#WITHDRAWAL_READY}.</p>
  */
 public final class ArmoryResupplyMovementController {
     private static final List<ApproachOffset> HORIZONTAL_APPROACH_OFFSETS = List.of(
@@ -74,7 +73,7 @@ public final class ArmoryResupplyMovementController {
         this.navigation = guard.getNavigation();
         this.reservationBook = Objects.requireNonNull(reservationBook, "reservationBook");
         if (!Double.isFinite(movementSpeed)
-                || movementSpeed <= 0.0D
+                || movementSpeed < ArmoryResupplyLimits.MIN_RESUPPLY_MOVEMENT_SPEED
                 || movementSpeed > ArmoryResupplyLimits.HARD_MAX_RESUPPLY_MOVEMENT_SPEED) {
             throw new IllegalArgumentException("movementSpeed is outside the hard bounds");
         }
@@ -254,7 +253,7 @@ public final class ArmoryResupplyMovementController {
     /**
      * Clears controller bookkeeping after Step 3 withdrawal. The defensive
      * release is a no-op after a successful claim and prevents a leaked claim
-     * if a future caller invokes completion after a failed withdrawal.
+     * if the orchestrator invokes completion after a failed withdrawal.
      */
     public void finishAfterWithdrawal() {
         cancel();

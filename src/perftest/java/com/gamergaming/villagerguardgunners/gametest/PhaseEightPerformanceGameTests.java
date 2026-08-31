@@ -2,6 +2,7 @@ package com.gamergaming.villagerguardgunners.gametest;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ai.GuardArmoryResupplyGoal;
 import com.gamergaming.villagerguardgunners.ai.SquadCommandMovementGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSharing;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
@@ -685,10 +686,11 @@ public final class PhaseEightPerformanceGameTests {
         }
     }
 
-    /** Removes unrelated Guard Villagers AI variance while retaining both add-on goals. */
+    /** Removes unrelated Guard Villagers AI variance while retaining all add-on goals. */
     private static void retainOnlyAddOnGoals(Guard guard) {
         guard.goalSelector.removeAllGoals(goal -> !(goal instanceof GuardGunCombatGoal)
-                && !(goal instanceof SquadCommandMovementGoal));
+                && !(goal instanceof SquadCommandMovementGoal)
+                && !(goal instanceof GuardArmoryResupplyGoal));
         guard.targetSelector.removeAllGoals(goal -> true);
     }
 

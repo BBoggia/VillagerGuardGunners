@@ -1,12 +1,12 @@
 # Armory resupply contracts
 
-Step 1 defines the server-side state and request contracts used by later
-Village Defense Logistics phases. Step 3 adds the dormant reservation and
-withdrawal service boundary, and Step 4 adds its dormant bounded movement
-controller. This work does not register a goal, add a guard tick hook, or index
-or search for an Armory. In particular, creating an `ArmoryResupplyRequest`
-never authorizes a transfer; a candidate snapshot does not either, and
-withdrawal revalidates every live input.
+Steps 1, 3, 4, and 5 define the state, reservation, withdrawal, movement,
+configuration, and diagnostic contracts for Village Defense Logistics. Step 6
+adds the missing loaded-Armory index and activates those contracts through one
+low-priority guard goal. Creating an `ArmoryResupplyRequest` never authorizes a transfer;
+neither does a candidate snapshot. Selection, reservation, movement,
+and withdrawal remain separate boundaries, and withdrawal revalidates every
+live input.
 
 ## Precedence gate
 
@@ -83,13 +83,13 @@ Both are retry states rather than per-tick loops. Cancellation returns to
 `IDLE`. Invalid event/state pairs throw immediately so a programming error
 cannot silently retain an owned reservation or navigation path.
 
-`RESERVED`, `TRAVELLING`, and `WITHDRAWING` own the future candidate
+`RESERVED`, `TRAVELLING`, and `WITHDRAWING` own the selected candidate
 reservation. Only `TRAVELLING` owns logistics navigation. The transition
 contract reports every exit that must release either resource before the
 state changes.
 
 States and requests are transient and are never written to guard or Armory
-NBT. Save, unload, restart, death, conversion, removal, or a future runtime
+NBT. Save, unload, restart, death, conversion, removal, or the runtime
 controller being discarded therefore cannot preserve an indefinite claim.
 
 ## Expiring reservations
@@ -204,18 +204,43 @@ tick; full lazy cleanup remains attached to reservation/capacity, claim,
 explicit purge, and diagnostic count operations.
 
 Reaching the existing four-block transaction radius stops owned navigation and
-returns `WITHDRAWAL_READY` without consuming the reservation. The future
-orchestrator must then call Step 3 withdrawal and clear the controller, or call
-`cancel` on every stop path. Completion defensively releases any still-live
-claim, so a failed future handoff cannot strand it until expiry. No permanent
-follow, patrol, target, order, weapon, or inventory state is changed by
-movement itself.
+returns `WITHDRAWAL_READY` without consuming the reservation. The Step 6
+orchestrator then invokes Step 3 withdrawal and clears the controller; every
+goal-stop and lifecycle path cancels its owned resources. Completion
+defensively releases any still-live claim, so a failed handoff cannot strand it
+until expiry. No permanent follow, patrol, target, order, weapon, or inventory
+state is changed by movement itself.
 
-Step 2's loaded-chunk Armory index has not yet been implemented, so Step 4 is
-intentionally not registered in `GuardMixin` or either existing movement goal.
-That missing selection/orchestration dependency prevents accidental global or
-per-guard searches while still allowing the controller to be tested against an
-explicit reservation.
+## Loaded-Armory index and runtime orchestration
+
+Step 6 supplies the previously missing selection boundary with one transient
+index per running server. Each dimension stores loaded Armories in section
+buckets populated only from block-entity load and removal events. Level unload
+removes that dimension, server stop clears the services, and guard removal
+cancels its controller and reservations. Nothing is persisted.
+
+Queries iterate only sections intersecting the configured radius, ordered by
+minimum section distance. They inspect at most the configured record cap,
+revalidate each block entity with `hasChunkAt` and the live block-entity
+identity, and return candidates in deterministic distance/position order. A
+query never uses `getChunk`, scans blocks or entities, or creates a chunk
+ticket. Stale entries encountered during a bounded query are removed.
+
+`GuardArmoryResupplyController` owns one guard's transient request. Its stable
+UUID-derived schedule runs the precedence gate before the bounded ammunition
+summary and runs both before the index query. When due and actionable, it
+queries the index, inspects at most nine slots per returned Armory, reserves
+the first compatible accessible supply, and hands that reservation to the
+movement controller. It calls withdrawal only after movement reaches the
+transaction radius. Success enters cooldown, missing supply uses a fixed
+retry, and path exhaustion uses capped exponential backoff. There is no
+per-tick failure loop.
+
+`GuardArmoryResupplyGoal` owns only the MOVE flag and has lower priority than
+squad commands and native gun combat. Any higher-priority goal stop cancels
+only logistics-owned navigation and reservations. The controller also
+re-evaluates live feature switches during travel and withdrawal, so a config
+disable cannot leave an active transfer path.
 
 ## Schema-9 configuration and diagnostics
 
@@ -225,24 +250,27 @@ candidate-inspection cap, low and target reserve magazines, movement speed,
 request and reservation lifetimes, and success/no-supply/unreachable retry
 timing. Each numeric value has a Fzzy Config range beneath the corresponding
 hard runtime ceiling. The immutable snapshot repeats those hard checks before
-it can reach a future runtime. A target below its trigger remains visible to
+it can reach the runtime. A target below its trigger remains visible to
 the administrator but fails the existing need calculation closed with
 `INVALID_THRESHOLDS`.
 
 Migration from schema 8 initializes only the new Armory section and preserves
 every earlier configuration value. The global add-on switch and the local
 Armory switch combine into the feature input already required by movement and
-withdrawal, so a future caller cannot accidentally bypass either setting.
+withdrawal, so the orchestrator cannot accidentally bypass either setting.
 
-`/vgg inspect <guard>` now captures the live Armory precedence and ammunition
-need only when explicitly invoked. It reports both the complete policy and the
-authoritative development boundary: `runtime=NOT_REGISTERED`, `state=IDLE`,
-zero candidate inspections, zero paths, and no scheduled action. The gate is
-evaluated before the bounded two-weapon/three-ammunition-slot summary. A
-blocked gate skips that summary. Diagnostics never query an Armory, reserve an
-item, construct a path, scan an entity or block collection, or load a chunk.
+`/vgg inspect <guard>` captures the live Armory precedence, ammunition need,
+and mixin-owned runtime state only when explicitly invoked. It reports
+`runtime=REGISTERED`, the state and last outcome, selected Armory and slot,
+candidate/path counts, last transferred units, and next action alongside the
+complete policy. The gate is evaluated before the bounded two-weapon/three-
+ammunition-slot summary; a blocked gate skips that summary. Diagnostics read
+the existing controller snapshot and never query an Armory, reserve an item,
+construct a path, scan an entity or block collection, or load a chunk. The
+`NOT_REGISTERED` representation remains only as a fail-closed compatibility
+view for a Guard instance without the expected mixin interface.
 
-## Step 3 through Step 5 validation matrix
+## Step 3 through Step 6 validation matrix
 
 | Boundary | Automated evidence |
 | --- | --- |
@@ -256,15 +284,17 @@ item, construct a path, scan an entity or block collection, or load a chunk.
 | Finite ammo box | Unit and Forge tests prove one box remains indivisible and preserves its 120 encoded units |
 | Combat or another higher-priority guard state starts during travel | Forge GameTest proves the final precedence gate consumes the claim but moves no ammunition |
 | Feature disabled before withdrawal | Forge GameTest proves the shared gate consumes the claim without moving either inventory |
-| Transaction implementation | Source contract requires the shared live gate, `GuardAmmoTransactions.transfer`, loaded-state probing, and no runtime AI activation |
+| Transaction implementation | Source contract requires the shared live gate, `GuardAmmoTransactions.transfer`, loaded-state probing, and separation from candidate selection |
 | Reachable reserved Armory | Forge GameTest drives a real Guard Villager through bounded navigation, reaches withdrawal range, and transfers with Step 3 |
 | Combat begins during travel | Forge GameTest proves the shared live gate stops owned navigation, releases the reservation, and leaves both inventories unchanged |
 | Native TaCZ action begins during travel | Forge GameTest proves movement pauses and resumes the same approach without consuming a failed-path attempt; the independent native-resume count advances |
 | Reserved source changes during travel | Forge GameTest proves the 40-tick shared preflight cancels slow travel and releases the reservation without moving either inventory |
 | Approach, range, and progress math | Unit tests cover deterministic cardinal, diagonal, and one-block vertical approaches, inclusive 64-block travel, finite inputs, and the half-block progress boundary |
-| Runtime and performance boundary | Source contract requires loaded probes, eight approaches, four native resumes, progress and live-preflight cadences, no chunk/entity search, no permanent-order mutation, and no AI registration |
+| Runtime and performance boundary | Source contracts require loaded probes, eight approaches, four native resumes, progress and live-preflight cadences, a staggered gate-first assessment, bounded index/slot work, no chunk/entity search, no permanent-order mutation, and the low-priority goal |
 | Schema-8 migration and schema-9 bounds | Unit/source tests cover every new default, retained schema-8 choices, Fzzy min/max correction, immutable hard-bound validation, and invalid trigger/target fail-closed behavior |
-| On-demand diagnostics | Forge GameTest captures a real dry TaCZ guard and proves accurate dormant/need state; source contracts prove gate-first evaluation, zero Armory/path work, and `/vgg inspect` integration |
+| Loaded-index lifecycle and cap | Forge GameTest loads three real Armories, proves a two-record query cap, removes them, and proves that the index no longer returns them |
+| Automatic runtime | Forge GameTest lets a real dry TaCZ guard reach its deterministic due tick, select and reserve a public Armory, withdraw through the mixin-owned controller, enter cooldown, and leave no reservation behind |
+| On-demand diagnostics | Forge GameTests cover the compatibility dormant view and the registered post-transfer runtime; source contracts prove gate-first evaluation, snapshot-only inspection, and `/vgg inspect` integration |
 
 The Step 3 checkpoint passed 352 plain JUnit/source-contract tests and all 77
 transformed Forge correctness GameTests on JDK 17. The Step 4 review checkpoint
@@ -272,8 +302,11 @@ passes 357 plain JUnit/source-contract tests and all 82 transformed Forge
 correctness GameTests, including duplicate-start, feature-disable, live-source,
 reachable-path, and combat-interruption cases. The Step 5 checkpoint passes 363
 plain JUnit/source-contract tests and all 83 transformed Forge correctness
-GameTests, including schema-9 migration/bounds and live dormant diagnostics.
-GameTest sources remain excluded from the production JAR.
+GameTests, including schema-9 migration/bounds and the compatibility diagnostic view.
+The Step 6 checkpoint passes 368 plain JUnit/source-contract tests and all 85
+transformed Forge correctness GameTests, including loaded-index lifecycle,
+bounded automatic selection, reservation, withdrawal, cooldown, and registered
+diagnostics. GameTest sources remain excluded from the production JAR.
 
 ## Timing and performance limits
 
@@ -284,8 +317,11 @@ at two minutes. Stable UUID-derived offsets spread assessments across the
 interval. Tick arithmetic saturates instead of wrapping into an immediate
 retry.
 
-Step 2 may use these contracts to build a loaded-chunk-only Armory index. A
-later orchestrator can hand the resulting reservation to Step 4 and invoke
-Step 3 withdrawal after bounded movement reaches its target. Until then, the
-services are not referenced by `GuardMixin`, the gun combat goal, or the
-Armory block entity, and runtime behavior remains identical to 1.2.
+Step 6 uses the stable UUID offset for the first assessment and every ordinary
+reassessment, so loaded guards do not synchronize onto a single global tick.
+Above-threshold guards pay the due gate plus bounded two-weapon/three-slot
+summary but no index or path work. Loaded Armories have no ticker. Automatic
+selection is capped at 32 index records and nine source slots per returned
+Armory, while path construction retains the independent eight-attempt limit.
+The opt-in Step 7 performance matrix remains the release evidence for the
+100-Armory, 100-satisfied-guard, and 50-request stress scenarios.

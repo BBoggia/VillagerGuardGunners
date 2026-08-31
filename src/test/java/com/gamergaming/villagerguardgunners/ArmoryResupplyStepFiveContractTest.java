@@ -52,7 +52,7 @@ final class ArmoryResupplyStepFiveContractTest {
     }
 
     @Test
-    void diagnosticsAreExplicitOnDemandAndDoNotPretendTheRuntimeExists()
+    void diagnosticsRemainExplicitOnDemandAfterRuntimeRegistration()
             throws IOException {
         String diagnostic = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/armory/resupply/ArmoryResupplyDiagnostics.java");
@@ -64,18 +64,19 @@ final class ArmoryResupplyStepFiveContractTest {
         assertAll(
                 () -> assertTrue(diagnostic.contains("captureDormant(")),
                 () -> assertTrue(diagnostic.contains("NOT_REGISTERED")),
+                () -> assertTrue(diagnostic.contains("REGISTERED")),
                 () -> assertTrue(diagnostic.contains("ArmoryResupplyLiveGate.evaluate(")),
                 () -> assertTrue(diagnostic.indexOf("ArmoryResupplyLiveGate.evaluate(")
                         < diagnostic.indexOf("GuardWeaponAmmunition.captureSummary(")),
-                () -> assertTrue(diagnostic.contains("candidateInspections != 0")),
-                () -> assertTrue(diagnostic.contains("pathAttempts != 0")),
+                () -> assertTrue(diagnostic.contains("HARD_MAX_CANDIDATE_ARMORIES")),
+                () -> assertTrue(diagnostic.contains("HARD_MAX_PATH_ATTEMPTS")),
                 () -> assertFalse(diagnostic.contains("getChunk(")),
                 () -> assertFalse(diagnostic.contains("getEntities")),
                 () -> assertFalse(diagnostic.contains("moveTo(")),
                 () -> assertFalse(diagnostic.contains("reserve(")),
                 () -> assertTrue(command.contains("\"Armory resupply\"")),
                 () -> assertTrue(command.contains("\"Armory policy\"")),
-                () -> assertTrue(command.contains("ArmoryResupplyDiagnostics.captureDormant(")),
+                () -> assertTrue(command.contains("ArmoryResupplyDiagnostics.capture(")),
                 () -> assertFalse(mod.contains("ArmoryResupplyDiagnostics")),
                 () -> assertFalse(mod.contains("ArmoryResupplyMovementController")));
     }

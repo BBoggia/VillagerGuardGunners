@@ -15,6 +15,7 @@ import com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition;
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection;
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection.ProtectionReason;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
@@ -36,6 +37,9 @@ import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyReques
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyState;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmorySupplyCandidate;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyServerServices;
+import com.gamergaming.villagerguardgunners.armory.resupply.GuardArmoryResupplyController;
+import com.gamergaming.villagerguardgunners.armory.resupply.LoadedArmoryIndex;
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
@@ -6806,6 +6810,130 @@ public final class GuardGunnerGameTests {
                                     == ArmoryResupplyMovementController.MovementStatus.WAITING_FOR_NATIVE_WEAPON,
                     "Stale-source travel terminated for the wrong reason: "
                             + result.status() + "/" + result.gateStatus());
+        });
+    }
+
+    @GameTest(
+            batch = "armory_loaded_index",
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE)
+    public static void loadedArmoryIndexTracksLifecycleAndBoundsQueries(
+            GameTestHelper helper) {
+        List<BlockPos> localPositions = List.of(
+                new BlockPos(2, 1, 2),
+                new BlockPos(3, 1, 2),
+                new BlockPos(4, 1, 2));
+        for (BlockPos position : localPositions) {
+            helper.setBlock(
+                    position,
+                    com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get());
+        }
+        BlockPos origin = helper.absolutePos(localPositions.get(0));
+        LoadedArmoryIndex index = ArmoryResupplyServerServices
+                .forLevel(helper.getLevel())
+                .loadedArmories();
+        LoadedArmoryIndex.QueryResult bounded = index.query(
+                helper.getLevel(),
+                origin.getX() + 0.5D,
+                origin.getY() + 0.5D,
+                origin.getZ() + 0.5D,
+                8.0D,
+                2);
+        helper.assertTrue(
+                bounded.visitedRecords() <= 2
+                        && bounded.armories().size() <= 2
+                        && !bounded.armories().isEmpty()
+                        && bounded.armories().stream().allMatch(armory ->
+                                localPositions.stream()
+                                        .map(helper::absolutePos)
+                                        .anyMatch(armory.getBlockPos()::equals)),
+                "The loaded Armory index exceeded its record cap or returned another region");
+
+        for (BlockPos position : localPositions) {
+            helper.setBlock(position, Blocks.AIR);
+        }
+        LoadedArmoryIndex.QueryResult afterRemoval = index.query(
+                helper.getLevel(),
+                origin.getX() + 0.5D,
+                origin.getY() + 0.5D,
+                origin.getZ() + 0.5D,
+                8.0D,
+                8);
+        helper.assertTrue(
+                afterRemoval.armories().stream().noneMatch(armory ->
+                        localPositions.stream()
+                                .map(helper::absolutePos)
+                                .anyMatch(armory.getBlockPos()::equals)),
+                "A removed Armory remained discoverable in the loaded-only index");
+        helper.succeed();
+    }
+
+    @GameTest(
+            batch = "armory_runtime",
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 160)
+    public static void armoryRuntimeSelectsReservesAndWithdrawsAutomatically(
+            GameTestHelper helper) {
+        BlockPos armoryLocal = new BlockPos(3, 1, 2);
+        helper.setBlock(
+                armoryLocal,
+                com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get());
+        ArmoryBlockEntity armory = (ArmoryBlockEntity) Objects.requireNonNull(
+                helper.getLevel().getBlockEntity(helper.absolutePos(armoryLocal)));
+        ItemStack stockedAmmo = AmmoItemBuilder.create()
+                .setId(DEFAULT_AMMO)
+                .build();
+        stockedAmmo.setCount(stockedAmmo.getMaxStackSize());
+        armory.getInventory().setStackInSlot(0, stockedAmmo);
+        int stockedUnits = armory.getInventory().getStackInSlot(0).getCount();
+
+        Guard guard = spawnGuard(helper, new BlockPos(1, 1, 2));
+        guard.goalSelector.removeAllGoals(goal -> true);
+        guard.targetSelector.removeAllGoals(goal -> true);
+        guard.setNoAi(false);
+        guard.setTarget(null);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.AUTO, 0, false));
+        GuardAmmoAccess.getAmmoHandler(guard).clear();
+        GuardArmoryResupplyController runtime = Objects.requireNonNull(
+                GuardArmoryResupplyAccess.getController(guard));
+
+        helper.onEachTick(() -> {
+            guard.setTarget(null);
+            forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(guard));
+            if (runtime.canStart()) {
+                runtime.tick();
+            }
+            GuardArmoryResupplyController.RuntimeSnapshot snapshot = runtime.snapshot();
+            if (snapshot.lastOutcome()
+                    == GuardArmoryResupplyController.RuntimeOutcome.TRANSFERRED) {
+                ArmoryResupplySettings settings =
+                        ModConfigs.GUARD_GUNNERS.armoryResupply.snapshot(
+                                ModConfigs.GUARD_GUNNERS.enabled.get());
+                ArmoryResupplyDiagnostics.Snapshot diagnostic =
+                        ArmoryResupplyDiagnostics.capture(guard, settings);
+                helper.assertTrue(
+                        snapshot.state() == ArmoryResupplyState.COOLDOWN
+                                && snapshot.candidateInspections() > 0
+                                && snapshot.candidateInspections()
+                                        <= settings.maximumCandidateArmories()
+                                && snapshot.pathAttempts() == 0
+                                && snapshot.lastTransferredUnits() == stockedUnits
+                                && diagnostic.runtimeStatus()
+                                        == ArmoryResupplyDiagnostics.RuntimeStatus.REGISTERED
+                                && diagnostic.state() == ArmoryResupplyState.COOLDOWN
+                                && diagnostic.lastTransferredUnits() == stockedUnits
+                                && armory.getInventory().getStackInSlot(0).isEmpty()
+                                && !isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(guard))
+                                && ArmoryResupplyServerServices.forLevel(helper.getLevel())
+                                        .reservations()
+                                        .activeCount(helper.getLevel().getGameTime()) == 0,
+                        "The registered Armory runtime did not complete exactly one bounded transfer: "
+                                + snapshot);
+                helper.succeed();
+            }
         });
     }
 

@@ -8,14 +8,14 @@ Phase 8 turns the behavior and performance requirements from Phases 0–7 into r
 
 The suites are deliberately isolated:
 
-- `src/gametest` contains 73 correctness GameTests and is selected by the normal `runGameTestServer` task.
+- `src/gametest` contains 85 correctness GameTests and is selected by the normal `runGameTestServer` task.
 - `src/perftest` contains 17 sequential scalability workloads and is selected only with `-Pphase8Performance=true`.
 - `src/main` contains production code only.
 - correctness tests use a generated 40×26×26 arena so fixtures outside the old 1×1×1 marker cannot overlap neighboring tests.
 - sequential performance workloads use distinct world regions 512 blocks apart, as well as entity/projectile/chunk cleanup.
 - the performance run uses `run-phase8-performance`, deletes its generated world and old reports before each matrix, and writes fresh evidence to `build/reports/phase8-performance`.
 
-`PhaseEightReleaseGateContractTest` prevents the source-set separation, matrix, evidence fields, config-profile reset, and artifact gate from silently being removed. The retained 1.2 reference reports used the complete `default-v8` profile. The current development reporter and `verifyPhase8PerformanceReports` require `default-v9`, including every dormant Armory-resupply policy value, so a future candidate capture cannot claim to use the old schema. The verifier checks that all 17 JSON/JFR pairs are present, internally consistent, percentile ordered, and backed by accepted native TaCZ shots, ammunition-work evidence, and exact or bounded sidearm state evidence wherever required. It parses every JFR and requires real execution samples rather than accepting a merely nonempty file.
+`PhaseEightReleaseGateContractTest` prevents the source-set separation, matrix, evidence fields, config-profile reset, and artifact gate from silently being removed. The retained 1.2 reference reports used the complete `default-v8` profile. The current development reporter and `verifyPhase8PerformanceReports` require `default-v9`, including every active Armory-resupply policy value, so a future candidate capture cannot claim to use the old schema. The performance fixture retains the low-priority Armory goal, allowing satisfied and dry guards to include its true staggered scheduling cost. The verifier checks that all 17 JSON/JFR pairs are present, internally consistent, percentile ordered, and backed by accepted native TaCZ shots, ammunition-work evidence, and exact or bounded sidearm state evidence wherever required. It parses every JFR and requires real execution samples rather than accepting a merely nonempty file.
 
 ## Correctness coverage
 
@@ -48,6 +48,7 @@ The automated layer now covers every correctness item that can be made determini
 | Sidearm ammunition handoff, pickup, sharing, and summaries recognize both stable weapon roles | real two-caliber AK-47/Glock GameTest plus bounded source contracts |
 | Sidearm configuration and recovery preserve authorization, shield/offhand state, target changes, active save/death ownership, and external main-hand replacement | transformed menu/lifecycle GameTests plus schema-3 token and source contracts |
 | Format-3 natural sidearms issue atomically with one full ammo stack per role, preserve primary provenance while stowed, and never displace an existing sidearm | strict parser/diagnostic contracts plus published-pool, capacity, occupied-slot, activation, and return GameTests |
+| Automatic Armory resupply is staggered, loaded-index-only, candidate/path bounded, reservation-owned, transactional, interruptible, and observable | real loaded-index lifecycle and automatic selection/withdrawal GameTests plus unit and source contracts |
 | Administrator inspection command is registered and executable | transformed command-dispatch GameTest against a real Guard |
 | Lag does not create a firing backlog and per-tick work is capped | cadence unit tests and source contracts |
 | A blocked lateral reposition cannot loop forever in one direction | progress-helper unit test and bounded reversal source contract |
@@ -78,7 +79,7 @@ scenario names, stale captures from another artifact, and malformed JFRs so
 unrelated evidence cannot be silently bundled with a release candidate.
 
 The final aggregate task is run without `-Pphase8Performance`. It consumes the
-separately generated performance evidence, executes the normal 73-case
+separately generated performance evidence, executes the normal 85-case
 correctness GameTest server, rebuilds the deterministic manifest, verifies that
 pickup and sharing still have independent rollback controls, and confirms that
 common production bytecode has no Minecraft client-class references. The

@@ -12,8 +12,9 @@ import tallestegg.guardvillagers.entities.Guard;
  * Bounded ammunition view of a guard's primary and configured sidearm.
  *
  * <p>The view is captured only from player handoff, dropped-item pickup,
- * emergency sharing, or diagnostics. It reads at most two weapon stacks and
- * the existing three ammunition slots and never performs an entity query.</p>
+ * emergency sharing, a staggered Armory need assessment, or diagnostics. It
+ * reads at most two weapon stacks and the existing three ammunition slots and
+ * never performs an entity query.</p>
  */
 public final class GuardWeaponAmmunition {
     private GuardWeaponAmmunition() {

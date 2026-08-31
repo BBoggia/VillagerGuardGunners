@@ -1,0 +1,589 @@
+package com.gamergaming.villagerguardgunners.armory.resupply;
+
+import com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition;
+import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
+import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
+import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
+import com.gamergaming.villagerguardgunners.init.ModConfigs;
+import java.util.Objects;
+import java.util.UUID;
+import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import tallestegg.guardvillagers.entities.Guard;
+
+/**
+ * Per-guard Step 6 orchestrator joining need, loaded-index selection,
+ * reservation, bounded movement, and transactional withdrawal.
+ *
+ * <p>The controller is owned by one low-priority MOVE goal. Idle calls perform
+ * only constant-time scheduling until the guard's staggered assessment tick.
+ * A due request inspects no more than the configured Armory cap and each
+ * Armory's fixed inventory. No world, entity, block, or unloaded-chunk search
+ * is available from this class.</p>
+ */
+public final class GuardArmoryResupplyController {
+    private final Guard guard;
+    private final VillagerGuardGunnersConfig config;
+
+    private ArmoryResupplyState state = ArmoryResupplyState.IDLE;
+    private RuntimeOutcome lastOutcome = RuntimeOutcome.NOT_ASSESSED;
+    @Nullable
+    private ArmoryResupplyGate.GateStatus lastGateStatus;
+    @Nullable
+    private ArmoryResupplyNeed.Assessment lastNeed;
+    @Nullable
+    private ArmoryResupplyRequest request;
+    @Nullable
+    private ArmoryResupplyMovementController movement;
+    @Nullable
+    private ArmoryResupplySettings activeSettings;
+    @Nullable
+    private ArmoryReservationTarget selectedTarget;
+    private long generation;
+    private long nextActionGameTick = Long.MIN_VALUE;
+    private int candidateInspections;
+    private int pathAttempts;
+    private int consecutiveUnreachable;
+    private long lastTransferredUnits;
+
+    public GuardArmoryResupplyController(Guard guard) {
+        this.guard = Objects.requireNonNull(guard, "guard");
+        this.config = ModConfigs.GUARD_GUNNERS;
+    }
+
+    /** Called from Goal#canUse; expensive work occurs only on a due tick. */
+    public boolean canStart() {
+        if (!(guard.level() instanceof ServerLevel level)
+                || !guard.isAlive()
+                || guard.isRemoved()) {
+            return false;
+        }
+        if (state.hasActiveRequest()) {
+            return true;
+        }
+        long gameTick = level.getGameTime();
+        if (nextActionGameTick == Long.MIN_VALUE) {
+            nextActionGameTick = nextStaggeredTick(
+                    gameTick,
+                    config.armoryResupply.checkIntervalTicks.get(),
+                    guard.getUUID());
+            lastOutcome = RuntimeOutcome.NOT_DUE;
+            return false;
+        }
+        if (gameTick < nextActionGameTick) {
+            lastOutcome = RuntimeOutcome.NOT_DUE;
+            return false;
+        }
+        if (state.isBackoff()) {
+            state = ArmoryResupplyStateContract.transition(
+                    state,
+                    ArmoryResupplyEvent.RETRY_READY);
+        }
+        return assessAndReserve(level, gameTick);
+    }
+
+    public boolean shouldContinue() {
+        return state == ArmoryResupplyState.TRAVELLING
+                || state == ArmoryResupplyState.WITHDRAWING
+                || state == ArmoryResupplyState.RESERVED;
+    }
+
+    /** Advances at most the already-owned movement or one final withdrawal. */
+    public void tick() {
+        if (!(guard.level() instanceof ServerLevel level)) {
+            cancelActive(RuntimeOutcome.CANCELLED, false);
+            return;
+        }
+        if (state == ArmoryResupplyState.WITHDRAWING) {
+            withdraw(level);
+            return;
+        }
+        if (state != ArmoryResupplyState.TRAVELLING || movement == null) {
+            return;
+        }
+
+        ArmoryResupplyMovementController.MovementResult result =
+                movement.tick(featureEnabledNow());
+        pathAttempts = result.pathAttempts();
+        if (result.nextPathAttemptGameTick() != Long.MIN_VALUE) {
+            nextActionGameTick = result.nextPathAttemptGameTick();
+        }
+        switch (result.status()) {
+            case MOVING, SESSION_STARTED, WAITING_TO_RETRY ->
+                    lastOutcome = RuntimeOutcome.MOVING;
+            case WAITING_FOR_NATIVE_WEAPON -> {
+                lastGateStatus = result.gateStatus();
+                lastOutcome = RuntimeOutcome.WAITING_FOR_NATIVE_WEAPON;
+            }
+            case WITHDRAWAL_READY -> {
+                state = ArmoryResupplyStateContract.transition(
+                        state,
+                        ArmoryResupplyEvent.WITHDRAWAL_REACHED);
+                lastOutcome = RuntimeOutcome.WITHDRAWING;
+                withdraw(level);
+            }
+            case PATH_ATTEMPTS_EXHAUSTED, NATIVE_RESUME_LIMIT_REACHED, TOO_FAR_AWAY ->
+                    enterUnreachable(level.getGameTime());
+            case ARMORY_UNAVAILABLE, ACCESS_DENIED, RESERVATION_LOST,
+                    WEAPON_CHANGED, GUARD_INVENTORY_UNAVAILABLE,
+                    RESERVE_UNAVAILABLE, NEED_SATISFIED, SOURCE_CHANGED ->
+                    enterNoSupply(level.getGameTime(), RuntimeOutcome.SUPPLY_CHANGED);
+            case INVALID_INPUT, GUARD_UNAVAILABLE, DIMENSION_CHANGED, SQUAD_CHANGED,
+                    LOGISTICS_PREEMPTED, NAVIGATION_PREEMPTED ->
+                    cancelActive(RuntimeOutcome.CANCELLED, true);
+            case IDLE -> cancelActive(RuntimeOutcome.CANCELLED, true);
+        }
+    }
+
+    /** Goal preemption releases only logistics-owned resources. */
+    public void stopForHigherPriorityGoal() {
+        if (state.hasActiveRequest()) {
+            cancelActive(RuntimeOutcome.CANCELLED, true);
+        }
+    }
+
+    /** Entity/server lifecycle cleanup; leaves no retry state behind. */
+    public void discard() {
+        releaseActiveResources();
+        state = ArmoryResupplyState.IDLE;
+        request = null;
+        activeSettings = null;
+        selectedTarget = null;
+        nextActionGameTick = Long.MIN_VALUE;
+        lastOutcome = RuntimeOutcome.CANCELLED;
+    }
+
+    public RuntimeSnapshot snapshot() {
+        return new RuntimeSnapshot(
+                state,
+                lastOutcome,
+                lastGateStatus,
+                lastNeed,
+                request,
+                selectedTarget,
+                candidateInspections,
+                pathAttempts,
+                diagnosticNextAction(),
+                lastTransferredUnits);
+    }
+
+    private boolean assessAndReserve(ServerLevel level, long gameTick) {
+        ArmoryResupplySettings settings;
+        try {
+            settings = config.armoryResupply.snapshot(config.enabled.get());
+        } catch (RuntimeException exception) {
+            lastOutcome = RuntimeOutcome.STATE_UNAVAILABLE;
+            scheduleStaggered(gameTick, config.armoryResupply.checkIntervalTicks.get());
+            return false;
+        }
+        activeSettings = settings;
+        candidateInspections = 0;
+        pathAttempts = 0;
+        lastTransferredUnits = 0L;
+
+        lastGateStatus = ArmoryResupplyLiveGate.evaluate(settings.enabled(), guard);
+        if (!lastGateStatus.ready()) {
+            lastNeed = null;
+            lastOutcome = RuntimeOutcome.GATE_BLOCKED;
+            scheduleStaggered(gameTick, settings.checkIntervalTicks());
+            return false;
+        }
+
+        GuardWeaponAmmunition.LoadoutSummary loadout;
+        try {
+            loadout = GuardWeaponAmmunition.captureSummary(
+                    guard,
+                    GuardAmmoAccess.getTaCZInventoryHandler(guard));
+            lastNeed = ArmoryResupplyNeed.assess(
+                    loadout,
+                    settings.lowReserveMagazines(),
+                    settings.targetReserveMagazines());
+        } catch (RuntimeException exception) {
+            lastNeed = null;
+            lastOutcome = RuntimeOutcome.STATE_UNAVAILABLE;
+            scheduleStaggered(gameTick, settings.checkIntervalTicks());
+            return false;
+        }
+        if (!lastNeed.requestRequired()) {
+            lastOutcome = RuntimeOutcome.NO_ACTIONABLE_NEED;
+            scheduleStaggered(gameTick, settings.checkIntervalTicks());
+            return false;
+        }
+
+        final UUID squadId;
+        try {
+            squadId = GuardSquadAccess.getSquadId(guard);
+            request = ArmoryResupplyRequest.create(
+                    nextGeneration(),
+                    guard.getUUID(),
+                    level.dimension().location(),
+                    guard.blockPosition(),
+                    squadId,
+                    lastNeed,
+                    gameTick,
+                    settings.requestLifetimeTicks());
+        } catch (RuntimeException exception) {
+            request = null;
+            lastOutcome = RuntimeOutcome.STATE_UNAVAILABLE;
+            scheduleStaggered(gameTick, settings.checkIntervalTicks());
+            return false;
+        }
+        state = ArmoryResupplyStateContract.transition(
+                state,
+                ArmoryResupplyEvent.REQUEST_CREATED);
+
+        ArmoryResupplyServerServices.Services services =
+                ArmoryResupplyServerServices.forLevel(level);
+        LoadedArmoryIndex.QueryResult query = services.loadedArmories().query(
+                level,
+                guard.getX(),
+                guard.getY(),
+                guard.getZ(),
+                settings.searchRadius(),
+                settings.maximumCandidateArmories());
+        candidateInspections = query.visitedRecords();
+        ItemStack activeGun = guard.getMainHandItem().copy();
+        ArmoryAmmoReservation reserved = reserveFirstCompatible(
+                services.reservations(),
+                query,
+                activeGun,
+                gameTick,
+                settings.reservationLifetimeTicks());
+        if (reserved == null) {
+            state = ArmoryResupplyStateContract.transition(
+                    state,
+                    ArmoryResupplyEvent.NO_SUPPLY);
+            clearActiveReferences(false);
+            lastOutcome = RuntimeOutcome.NO_SUPPLY;
+            nextActionGameTick = ArmoryResupplyLimits.retryAt(
+                    gameTick,
+                    settings.noSupplyRetryTicks());
+            return false;
+        }
+
+        selectedTarget = reserved.target();
+        state = ArmoryResupplyStateContract.transition(
+                state,
+                ArmoryResupplyEvent.CANDIDATE_RESERVED);
+        movement = new ArmoryResupplyMovementController(
+                guard,
+                services.reservations(),
+                settings.movementSpeed());
+        ArmoryResupplyMovementController.MovementResult movementResult =
+                movement.begin(Objects.requireNonNull(request).key(), settings.enabled());
+        pathAttempts = movementResult.pathAttempts();
+        if (movementResult.withdrawalReady()) {
+            state = ArmoryResupplyStateContract.transition(
+                    state,
+                    ArmoryResupplyEvent.WITHDRAWAL_REACHED);
+            lastOutcome = RuntimeOutcome.WITHDRAWING;
+            nextActionGameTick = gameTick;
+            return true;
+        }
+        if (movementResult.status()
+                        == ArmoryResupplyMovementController.MovementStatus.SESSION_STARTED
+                || movementResult.status()
+                        == ArmoryResupplyMovementController.MovementStatus.WAITING_FOR_NATIVE_WEAPON) {
+            state = ArmoryResupplyStateContract.transition(
+                    state,
+                    ArmoryResupplyEvent.TRAVEL_STARTED);
+            lastGateStatus = movementResult.gateStatus();
+            lastOutcome = movementResult.status()
+                            == ArmoryResupplyMovementController.MovementStatus.WAITING_FOR_NATIVE_WEAPON
+                    ? RuntimeOutcome.WAITING_FOR_NATIVE_WEAPON
+                    : RuntimeOutcome.RESERVED;
+            nextActionGameTick = gameTick;
+            return true;
+        }
+        switch (movementResult.status()) {
+            case PATH_ATTEMPTS_EXHAUSTED, NATIVE_RESUME_LIMIT_REACHED, TOO_FAR_AWAY ->
+                    enterUnreachable(gameTick);
+            case ARMORY_UNAVAILABLE, ACCESS_DENIED, RESERVATION_LOST,
+                    WEAPON_CHANGED, GUARD_INVENTORY_UNAVAILABLE,
+                    RESERVE_UNAVAILABLE, NEED_SATISFIED, SOURCE_CHANGED ->
+                    enterNoSupply(gameTick, RuntimeOutcome.SUPPLY_CHANGED);
+            case INVALID_INPUT, GUARD_UNAVAILABLE, DIMENSION_CHANGED, SQUAD_CHANGED,
+                    LOGISTICS_PREEMPTED, NAVIGATION_PREEMPTED, IDLE ->
+                    cancelActive(RuntimeOutcome.CANCELLED, true);
+            case MOVING, WAITING_TO_RETRY -> {
+                state = ArmoryResupplyStateContract.transition(
+                        state,
+                        ArmoryResupplyEvent.TRAVEL_STARTED);
+                lastOutcome = RuntimeOutcome.MOVING;
+            }
+            case SESSION_STARTED, WAITING_FOR_NATIVE_WEAPON, WITHDRAWAL_READY ->
+                    throw new IllegalStateException("Handled movement start status fell through");
+        }
+        return state.hasActiveRequest();
+    }
+
+    @Nullable
+    private ArmoryAmmoReservation reserveFirstCompatible(
+            ArmoryReservationBook reservations,
+            LoadedArmoryIndex.QueryResult query,
+            ItemStack activeGun,
+            long gameTick,
+            int reservationLifetimeTicks) {
+        ArmoryResupplyRequest activeRequest = Objects.requireNonNull(request);
+        for (ArmoryBlockEntity armory : query.armories()) {
+            int slots;
+            try {
+                slots = Math.min(
+                        armory.getInventory().getSlots(),
+                        ArmoryResupplyLimits.HARD_MAX_RESERVATION_SOURCE_SLOTS);
+            } catch (RuntimeException exception) {
+                continue;
+            }
+            for (int slot = 0; slot < slots; slot++) {
+                ArmorySupplyCandidate.Inspection inspection = ArmorySupplyCandidate.inspect(
+                        activeRequest,
+                        activeRequest.dimension(),
+                        armory,
+                        activeGun,
+                        slot,
+                        gameTick);
+                if (!inspection.ready()) {
+                    continue;
+                }
+                ArmoryReservationBook.ReservationResult reservation = reservations.reserve(
+                        activeRequest,
+                        Objects.requireNonNull(inspection.candidate()),
+                        gameTick,
+                        reservationLifetimeTicks);
+                if (reservation.reserved()) {
+                    return reservation.reservation();
+                }
+                if (reservation.status()
+                        == ArmoryReservationBook.ReservationStatus.CAPACITY_REACHED) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void withdraw(ServerLevel level) {
+        ArmoryResupplyRequest activeRequest = request;
+        ArmoryResupplySettings settings = activeSettings;
+        ArmoryReservationTarget target = selectedTarget;
+        ArmoryResupplyMovementController activeMovement = movement;
+        if (activeRequest == null || settings == null || target == null) {
+            cancelActive(RuntimeOutcome.STATE_UNAVAILABLE, true);
+            return;
+        }
+        ArmoryBlockEntity armory = null;
+        if (level.hasChunkAt(target.position())
+                && level.getBlockEntity(target.position()) instanceof ArmoryBlockEntity found) {
+            armory = found;
+        }
+        ArmoryAmmunitionWithdrawal.WithdrawalResult result =
+                ArmoryAmmunitionWithdrawal.withdraw(
+                        ArmoryResupplyServerServices.forLevel(level).reservations(),
+                        activeRequest.key(),
+                        armory,
+                        guard,
+                        featureEnabledNow());
+        if (activeMovement != null) {
+            activeMovement.finishAfterWithdrawal();
+        }
+        if (result.transferred()) {
+            state = ArmoryResupplyStateContract.transition(
+                    state,
+                    ArmoryResupplyEvent.TRANSFER_SUCCEEDED);
+            lastTransferredUnits = result.transferredUnits();
+            lastOutcome = RuntimeOutcome.TRANSFERRED;
+            consecutiveUnreachable = 0;
+            clearActiveReferences(false);
+            nextActionGameTick = ArmoryResupplyLimits.retryAt(
+                    level.getGameTime(),
+                    settings.successCooldownTicks());
+            return;
+        }
+        switch (result.status()) {
+            case ARMORY_UNAVAILABLE, NO_RESERVATION, RESERVATION_EXPIRED,
+                    NEED_SATISFIED, SOURCE_CHANGED, INCOMPATIBLE_AMMUNITION,
+                    DESTINATION_FULL, TRANSACTION_INVALID, TRANSACTION_ROLLED_BACK,
+                    TRANSACTION_ROLLBACK_FAILED ->
+                    enterNoSupply(level.getGameTime(), RuntimeOutcome.WITHDRAWAL_FAILED);
+            case INVALID_INPUT, GUARD_UNAVAILABLE, DIMENSION_CHANGED, TOO_FAR_AWAY,
+                    SQUAD_CHANGED, ACCESS_DENIED, GUARD_INVENTORY_UNAVAILABLE,
+                    STATE_UNAVAILABLE, LOGISTICS_PREEMPTED, WEAPON_CHANGED,
+                    RESERVE_UNAVAILABLE ->
+                    cancelActive(RuntimeOutcome.CANCELLED, true);
+            case TRANSFERRED -> throw new IllegalStateException(
+                    "Transferred status contradicted its payload");
+        }
+    }
+
+    private void enterNoSupply(long gameTick, RuntimeOutcome outcome) {
+        ArmoryResupplySettings settings = activeSettings;
+        if (state == ArmoryResupplyState.RESERVED
+                || state == ArmoryResupplyState.TRAVELLING
+                || state == ArmoryResupplyState.WITHDRAWING) {
+            state = ArmoryResupplyStateContract.transition(
+                    state,
+                    ArmoryResupplyEvent.NO_SUPPLY);
+        }
+        releaseActiveResources();
+        clearActiveReferences(false);
+        lastOutcome = outcome;
+        int delay = settings == null
+                ? config.armoryResupply.noSupplyRetryTicks.get()
+                : settings.noSupplyRetryTicks();
+        nextActionGameTick = ArmoryResupplyLimits.retryAt(gameTick, delay);
+    }
+
+    private void enterUnreachable(long gameTick) {
+        ArmoryResupplySettings settings = activeSettings;
+        if (state == ArmoryResupplyState.RESERVED
+                || state == ArmoryResupplyState.TRAVELLING) {
+            state = ArmoryResupplyStateContract.transition(
+                    state,
+                    ArmoryResupplyEvent.PATH_FAILED);
+        }
+        releaseActiveResources();
+        clearActiveReferences(false);
+        if (consecutiveUnreachable < Integer.MAX_VALUE) {
+            consecutiveUnreachable++;
+        }
+        int baseDelay = settings == null
+                ? config.armoryResupply.unreachableRetryTicks.get()
+                : settings.unreachableRetryTicks();
+        int delay = ArmoryResupplyLimits.unreachableRetryDelay(
+                consecutiveUnreachable,
+                baseDelay);
+        nextActionGameTick = ArmoryResupplyLimits.retryAt(gameTick, delay);
+        lastOutcome = RuntimeOutcome.UNREACHABLE;
+    }
+
+    private void cancelActive(RuntimeOutcome outcome, boolean scheduleRetry) {
+        if (state.hasActiveRequest()) {
+            state = ArmoryResupplyStateContract.transition(
+                    state,
+                    ArmoryResupplyEvent.CANCELLED);
+        }
+        releaseActiveResources();
+        clearActiveReferences(false);
+        lastOutcome = outcome;
+        if (scheduleRetry && guard.level() instanceof ServerLevel level) {
+            scheduleStaggered(
+                    level.getGameTime(),
+                    config.armoryResupply.checkIntervalTicks.get());
+        }
+    }
+
+    private void releaseActiveResources() {
+        if (movement != null) {
+            movement.cancel();
+            return;
+        }
+        if (request != null && guard.level() instanceof ServerLevel level) {
+            ArmoryResupplyServerServices.Services services =
+                    ArmoryResupplyServerServices.existingForLevel(level);
+            if (services != null) {
+                services.reservations().release(request.key());
+            }
+        }
+    }
+
+    private void clearActiveReferences(boolean clearNeed) {
+        request = null;
+        movement = null;
+        activeSettings = null;
+        selectedTarget = null;
+        if (clearNeed) {
+            lastNeed = null;
+        }
+    }
+
+    private boolean featureEnabledNow() {
+        try {
+            return config.enabled.get() && config.armoryResupply.enabled.get();
+        } catch (RuntimeException exception) {
+            return false;
+        }
+    }
+
+    private long nextGeneration() {
+        long current = generation;
+        if (generation < Long.MAX_VALUE) {
+            generation++;
+        }
+        return current;
+    }
+
+    private void scheduleStaggered(long gameTick, int intervalTicks) {
+        nextActionGameTick = nextStaggeredTick(
+                gameTick,
+                intervalTicks,
+                guard.getUUID());
+    }
+
+    static long nextStaggeredTick(
+            long gameTick,
+            int intervalTicks,
+            UUID guardId) {
+        if (gameTick < 0L || intervalTicks <= 0 || guardId == null) {
+            throw new IllegalArgumentException("Invalid Armory assessment schedule input");
+        }
+        int offset = ArmoryResupplyLimits.checkOffset(guardId, intervalTicks);
+        int current = (int) Math.floorMod(gameTick, (long) intervalTicks);
+        int delay = Math.floorMod(offset - current, intervalTicks);
+        if (delay == 0) {
+            delay = intervalTicks;
+        }
+        return gameTick > Long.MAX_VALUE - delay ? Long.MAX_VALUE : gameTick + delay;
+    }
+
+    private long diagnosticNextAction() {
+        return nextActionGameTick == Long.MIN_VALUE ? -1L : nextActionGameTick;
+    }
+
+    public enum RuntimeOutcome {
+        NOT_ASSESSED,
+        NOT_DUE,
+        GATE_BLOCKED,
+        NO_ACTIONABLE_NEED,
+        STATE_UNAVAILABLE,
+        NO_SUPPLY,
+        RESERVED,
+        MOVING,
+        WAITING_FOR_NATIVE_WEAPON,
+        WITHDRAWING,
+        TRANSFERRED,
+        SUPPLY_CHANGED,
+        WITHDRAWAL_FAILED,
+        UNREACHABLE,
+        CANCELLED
+    }
+
+    public record RuntimeSnapshot(
+            ArmoryResupplyState state,
+            RuntimeOutcome lastOutcome,
+            @Nullable ArmoryResupplyGate.GateStatus lastGateStatus,
+            @Nullable ArmoryResupplyNeed.Assessment lastNeed,
+            @Nullable ArmoryResupplyRequest request,
+            @Nullable ArmoryReservationTarget selectedTarget,
+            int candidateInspections,
+            int pathAttempts,
+            long nextActionGameTick,
+            long lastTransferredUnits) {
+        public RuntimeSnapshot {
+            Objects.requireNonNull(state, "state");
+            Objects.requireNonNull(lastOutcome, "lastOutcome");
+            if (candidateInspections < 0
+                    || candidateInspections > ArmoryResupplyLimits.HARD_MAX_CANDIDATE_ARMORIES
+                    || pathAttempts < 0
+                    || pathAttempts > ArmoryResupplyLimits.HARD_MAX_PATH_ATTEMPTS
+                    || nextActionGameTick < -1L
+                    || lastTransferredUnits < 0L
+                    || (state.ownsReservation() != (selectedTarget != null))
+                    || (state.hasActiveRequest() != (request != null))) {
+                throw new IllegalArgumentException("Armory runtime snapshot is contradictory");
+            }
+        }
+    }
+}

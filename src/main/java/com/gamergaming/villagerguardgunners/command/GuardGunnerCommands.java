@@ -84,7 +84,7 @@ public final class GuardGunnerCommands {
                 ModConfigs.GUARD_GUNNERS.armoryResupply.snapshot(
                         ModConfigs.GUARD_GUNNERS.enabled.get());
         ArmoryResupplyDiagnostics.Snapshot armoryResupply =
-                ArmoryResupplyDiagnostics.captureDormant(guard, armorySettings);
+                ArmoryResupplyDiagnostics.capture(guard, armorySettings);
         ChatFormatting decisionColor = snapshot.decision() == GuardGunCombatGoal.FireDecision.READY_TO_FIRE
                 ? ChatFormatting.GREEN
                 : ChatFormatting.YELLOW;
@@ -229,9 +229,9 @@ public final class GuardGunnerCommands {
                 "Armory resupply",
                 armoryResupplyDetails(armoryResupply),
                 armoryResupply.runtimeStatus()
-                                == ArmoryResupplyDiagnostics.RuntimeStatus.NOT_REGISTERED
-                        ? ChatFormatting.YELLOW
-                        : ChatFormatting.GRAY));
+                                == ArmoryResupplyDiagnostics.RuntimeStatus.REGISTERED
+                        ? ChatFormatting.GREEN
+                        : ChatFormatting.YELLOW));
         send(source, line(
                 "Armory policy",
                 armoryPolicyDetails(armorySettings),
@@ -364,6 +364,7 @@ public final class GuardGunnerCommands {
             ArmoryResupplyDiagnostics.Snapshot snapshot) {
         String details = "runtime=" + snapshot.runtimeStatus()
                 + ", state=" + snapshot.state()
+                + ", outcome=" + nullableName(snapshot.lastOutcome())
                 + ", gate=" + snapshot.gateStatus()
                 + ", needEvaluation=" + snapshot.needEvaluationStatus()
                 + ", need=" + nullableName(snapshot.needStatus());
@@ -375,9 +376,14 @@ public final class GuardGunnerCommands {
                     + "/" + snapshot.targetReserveUnits()
                     + ", requested=" + snapshot.requestedUnits();
         }
+        if (snapshot.armoryPosition() != null) {
+            details += ", armory=" + snapshot.armoryPosition().toShortString()
+                    + ", slot=" + snapshot.sourceSlot();
+        }
         return details
                 + ", candidates=" + snapshot.candidateInspections()
                 + ", paths=" + snapshot.pathAttempts()
+                + ", lastTransferred=" + snapshot.lastTransferredUnits()
                 + ", nextAction="
                 + (snapshot.nextActionGameTick() < 0L
                         ? "n/a"

@@ -2,8 +2,10 @@ package com.gamergaming.villagerguardgunners.armory.resupply;
 
 import com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import java.util.Objects;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import tallestegg.guardvillagers.entities.Guard;
 
@@ -16,21 +18,40 @@ public final class ArmoryResupplyDiagnostics {
     private ArmoryResupplyDiagnostics() {
     }
 
-    /**
-     * Captures the presently available Step 1/5 view. The loaded-Armory index
-     * and runtime orchestrator are not registered yet, so the authoritative
-     * runtime state is deliberately reported as dormant rather than inferred.
-     */
+    /** Captures current need plus the mixin-owned Step 6 runtime state. */
+    public static Snapshot capture(
+            Guard guard,
+            ArmoryResupplySettings settings) {
+        Objects.requireNonNull(guard, "guard");
+        Objects.requireNonNull(settings, "settings");
+
+        GuardArmoryResupplyController controller =
+                GuardArmoryResupplyAccess.getController(guard);
+        if (controller == null) {
+            return captureDormant(guard, settings);
+        }
+        CurrentNeed current = currentNeed(guard, settings);
+        return Snapshot.registered(settings, current, controller.snapshot());
+    }
+
     public static Snapshot captureDormant(
             Guard guard,
             ArmoryResupplySettings settings) {
         Objects.requireNonNull(guard, "guard");
         Objects.requireNonNull(settings, "settings");
 
+        CurrentNeed current = currentNeed(guard, settings);
+        return Snapshot.dormant(settings, current);
+    }
+
+    private static CurrentNeed currentNeed(
+            Guard guard,
+            ArmoryResupplySettings settings) {
+
         ArmoryResupplyGate.GateStatus gate =
                 ArmoryResupplyLiveGate.evaluate(settings.enabled(), guard);
         if (!gate.ready()) {
-            return Snapshot.notEvaluated(settings, gate);
+            return CurrentNeed.notEvaluated(gate);
         }
 
         final ArmoryResupplyNeed.Assessment need;
@@ -44,13 +65,13 @@ public final class ArmoryResupplyDiagnostics {
                     settings.lowReserveMagazines(),
                     settings.targetReserveMagazines());
         } catch (RuntimeException exception) {
-            return Snapshot.stateUnavailable(settings, gate);
+            return CurrentNeed.stateUnavailable(gate);
         }
-        return Snapshot.evaluated(settings, gate, need);
+        return CurrentNeed.evaluated(gate, need);
     }
 
     public enum RuntimeStatus {
-        /** Step 2 and the future goal/orchestrator have not been registered. */
+        REGISTERED,
         NOT_REGISTERED
     }
 
@@ -75,7 +96,11 @@ public final class ArmoryResupplyDiagnostics {
             long requestedUnits,
             int candidateInspections,
             int pathAttempts,
-            long nextActionGameTick) {
+            long nextActionGameTick,
+            @Nullable GuardArmoryResupplyController.RuntimeOutcome lastOutcome,
+            @Nullable BlockPos armoryPosition,
+            int sourceSlot,
+            long lastTransferredUnits) {
         public Snapshot {
             Objects.requireNonNull(runtimeStatus, "runtimeStatus");
             Objects.requireNonNull(state, "state");
@@ -83,9 +108,8 @@ public final class ArmoryResupplyDiagnostics {
             Objects.requireNonNull(gateStatus, "gateStatus");
             Objects.requireNonNull(needEvaluationStatus, "needEvaluationStatus");
             boolean evaluated = needEvaluationStatus == NeedEvaluationStatus.EVALUATED;
-            if (runtimeStatus != RuntimeStatus.NOT_REGISTERED
-                    || state != ArmoryResupplyState.IDLE
-                    || evaluated != (needStatus != null)
+            armoryPosition = armoryPosition == null ? null : armoryPosition.immutable();
+            if (evaluated != (needStatus != null)
                     || (!evaluated
                             && (weaponRole != null
                                     || gunId != null
@@ -96,11 +120,31 @@ public final class ArmoryResupplyDiagnostics {
                     || observedReserveUnits < 0L
                     || targetReserveUnits < 0L
                     || requestedUnits < 0L
-                    || candidateInspections != 0
-                    || pathAttempts != 0
-                    || nextActionGameTick != -1L) {
+                    || candidateInspections < 0
+                    || candidateInspections > ArmoryResupplyLimits.HARD_MAX_CANDIDATE_ARMORIES
+                    || pathAttempts < 0
+                    || pathAttempts > ArmoryResupplyLimits.HARD_MAX_PATH_ATTEMPTS
+                    || nextActionGameTick < -1L
+                    || ((armoryPosition == null) != (sourceSlot < 0))
+                    || lastTransferredUnits < 0L) {
                 throw new IllegalArgumentException(
-                        "Dormant Armory diagnostic fields contradict their status");
+                        "Armory diagnostic fields contradict their status");
+            }
+            if (runtimeStatus == RuntimeStatus.NOT_REGISTERED
+                    && (state != ArmoryResupplyState.IDLE
+                            || candidateInspections != 0
+                            || pathAttempts != 0
+                            || nextActionGameTick != -1L
+                            || lastOutcome != null
+                            || armoryPosition != null
+                            || sourceSlot != -1
+                            || lastTransferredUnits != 0L)) {
+                throw new IllegalArgumentException(
+                        "Dormant Armory diagnostic fields imply a runtime");
+            }
+            if (runtimeStatus == RuntimeStatus.REGISTERED && lastOutcome == null) {
+                throw new IllegalArgumentException(
+                        "Registered Armory diagnostics require a runtime outcome");
             }
             if (evaluated) {
                 boolean identified = weaponRole != null && gunId != null;
@@ -122,26 +166,88 @@ public final class ArmoryResupplyDiagnostics {
             return needStatus == ArmoryResupplyNeed.NeedStatus.REQUEST_REQUIRED;
         }
 
-        private static Snapshot notEvaluated(
+        private static Snapshot dormant(
                 ArmoryResupplySettings settings,
-                ArmoryResupplyGate.GateStatus gateStatus) {
-            return empty(settings, gateStatus, NeedEvaluationStatus.NOT_EVALUATED);
-        }
-
-        private static Snapshot stateUnavailable(
-                ArmoryResupplySettings settings,
-                ArmoryResupplyGate.GateStatus gateStatus) {
-            return empty(settings, gateStatus, NeedEvaluationStatus.STATE_UNAVAILABLE);
-        }
-
-        private static Snapshot empty(
-                ArmoryResupplySettings settings,
-                ArmoryResupplyGate.GateStatus gateStatus,
-                NeedEvaluationStatus evaluationStatus) {
+                CurrentNeed current) {
             return new Snapshot(
                     RuntimeStatus.NOT_REGISTERED,
                     ArmoryResupplyState.IDLE,
                     settings,
+                    current.gateStatus(),
+                    current.evaluationStatus(),
+                    current.needStatus(),
+                    current.weaponRole(),
+                    current.gunId(),
+                    current.urgency(),
+                    current.observedReserveUnits(),
+                    current.targetReserveUnits(),
+                    current.requestedUnits(),
+                    0,
+                    0,
+                    -1L,
+                    null,
+                    null,
+                    -1,
+                    0L);
+        }
+
+        private static Snapshot registered(
+                ArmoryResupplySettings settings,
+                CurrentNeed current,
+                GuardArmoryResupplyController.RuntimeSnapshot runtime) {
+            ArmoryReservationTarget target = runtime.selectedTarget();
+            return new Snapshot(
+                    RuntimeStatus.REGISTERED,
+                    runtime.state(),
+                    settings,
+                    current.gateStatus(),
+                    current.evaluationStatus(),
+                    current.needStatus(),
+                    current.weaponRole(),
+                    current.gunId(),
+                    current.urgency(),
+                    current.observedReserveUnits(),
+                    current.targetReserveUnits(),
+                    current.requestedUnits(),
+                    runtime.candidateInspections(),
+                    runtime.pathAttempts(),
+                    runtime.nextActionGameTick(),
+                    runtime.lastOutcome(),
+                    target == null ? null : target.position(),
+                    target == null ? -1 : target.sourceSlot(),
+                    runtime.lastTransferredUnits());
+        }
+    }
+
+    private record CurrentNeed(
+            ArmoryResupplyGate.GateStatus gateStatus,
+            NeedEvaluationStatus evaluationStatus,
+            @Nullable ArmoryResupplyNeed.NeedStatus needStatus,
+            @Nullable ArmoryResupplyWeaponRole weaponRole,
+            @Nullable ResourceLocation gunId,
+            @Nullable ArmoryResupplyUrgency urgency,
+            long observedReserveUnits,
+            long targetReserveUnits,
+            long requestedUnits) {
+        private CurrentNeed {
+            Objects.requireNonNull(gateStatus, "gateStatus");
+            Objects.requireNonNull(evaluationStatus, "evaluationStatus");
+        }
+
+        private static CurrentNeed notEvaluated(
+                ArmoryResupplyGate.GateStatus gateStatus) {
+            return empty(gateStatus, NeedEvaluationStatus.NOT_EVALUATED);
+        }
+
+        private static CurrentNeed stateUnavailable(
+                ArmoryResupplyGate.GateStatus gateStatus) {
+            return empty(gateStatus, NeedEvaluationStatus.STATE_UNAVAILABLE);
+        }
+
+        private static CurrentNeed empty(
+                ArmoryResupplyGate.GateStatus gateStatus,
+                NeedEvaluationStatus evaluationStatus) {
+            return new CurrentNeed(
                     gateStatus,
                     evaluationStatus,
                     null,
@@ -150,20 +256,13 @@ public final class ArmoryResupplyDiagnostics {
                     null,
                     0L,
                     0L,
-                    0L,
-                    0,
-                    0,
-                    -1L);
+                    0L);
         }
 
-        private static Snapshot evaluated(
-                ArmoryResupplySettings settings,
+        private static CurrentNeed evaluated(
                 ArmoryResupplyGate.GateStatus gateStatus,
                 ArmoryResupplyNeed.Assessment need) {
-            return new Snapshot(
-                    RuntimeStatus.NOT_REGISTERED,
-                    ArmoryResupplyState.IDLE,
-                    settings,
+            return new CurrentNeed(
                     gateStatus,
                     NeedEvaluationStatus.EVALUATED,
                     need.status(),
@@ -172,10 +271,7 @@ public final class ArmoryResupplyDiagnostics {
                     need.urgency(),
                     need.observedReserveUnits(),
                     need.targetReserveUnits(),
-                    need.requestedUnits(),
-                    0,
-                    0,
-                    -1L);
+                    need.requestedUnits());
         }
     }
 }

@@ -15,7 +15,7 @@ final class ArmoryResupplyStepOneContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void contractLayerIsDocumentedButNotActivatedByRuntimeEntryPoints()
+    void stepOneContractsRemainBoundedAfterStepSixActivation()
             throws IOException {
         String documentation = read("docs/armory-resupply-contracts.md");
         String combatGoal = read(
@@ -27,12 +27,13 @@ final class ArmoryResupplyStepOneContractTest {
 
         assertAll(
                 () -> assertTrue(documentation.contains("IDLE -> SEARCHING")),
-                () -> assertTrue(documentation.contains("does not register a goal")),
+                () -> assertTrue(documentation.contains("low-priority")),
                 () -> assertTrue(documentation.contains("never authorizes a transfer")),
                 () -> assertTrue(documentation.contains("HARD_MAX_REQUESTED_UNITS")),
                 () -> assertFalse(combatGoal.contains("ArmoryResupply")),
-                () -> assertFalse(guardMixin.contains("ArmoryResupply")),
-                () -> assertFalse(armory.contains("ArmoryResupply")),
+                () -> assertTrue(guardMixin.contains("GuardArmoryResupplyGoal")),
+                () -> assertFalse(guardMixin.contains("ArmoryReservationBook")),
+                () -> assertTrue(armory.contains("ArmoryResupplyServerServices")),
                 () -> assertFalse(armory.contains("static void tick(")));
     }
 

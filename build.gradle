@@ -482,6 +482,12 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/armory/resupply/GuardArmoryResupplyController.class',
                     'com/gamergaming/villagerguardgunners/armory/resupply/LoadedArmoryIndex.class',
                     'com/gamergaming/villagerguardgunners/client/ArmoryScreen.class',
+                    'com/gamergaming/villagerguardgunners/compat/tacz/network/TaCZGunPackSync.class',
+                    'com/gamergaming/villagerguardgunners/compat/tacz/network/TaCZGunPackSyncAssembly.class',
+                    'com/gamergaming/villagerguardgunners/compat/tacz/network/TaCZGunPackSyncNetwork.class',
+                    'com/gamergaming/villagerguardgunners/compat/tacz/network/TaCZGunPackSyncPacket.class',
+                    'com/gamergaming/villagerguardgunners/compat/tacz/network/TaCZGunPackSyncProtocol.class',
+                    'com/gamergaming/villagerguardgunners/compat/tacz/network/client/TaCZGunPackSyncClient.class',
                     'com/gamergaming/villagerguardgunners/config/VillagerGuardGunnersConfig.class',
                     'com/gamergaming/villagerguardgunners/command/NaturalGuardLoadoutCommandContract.class',
                     'com/gamergaming/villagerguardgunners/command/NaturalGuardLoadoutCommandService.class',
@@ -573,6 +579,7 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/mixin/GuardMixin.class',
                     'com/gamergaming/villagerguardgunners/mixin/ItemEntityMixin.class',
                     'com/gamergaming/villagerguardgunners/mixin/RaiseShieldGoalMixin.class',
+                    'com/gamergaming/villagerguardgunners/mixin/TaCZCommonAssetsManagerMixin.class',
                     'com/gamergaming/villagerguardgunners/mixin/VillagerToGuardMixin.class'
             ]
             List<String> missing = requiredEntries.findAll { !entries.contains(it) }
@@ -641,6 +648,7 @@ tasks.register('verifyReleaseArtifact') {
                         'GuardMixin',
                         'ItemEntityMixin',
                         'RaiseShieldGoalMixin',
+                        'TaCZCommonAssetsManagerMixin',
                         'VillagerToGuardMixin'
                     ]
                     || mixinMetadata.client != [

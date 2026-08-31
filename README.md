@@ -210,6 +210,13 @@ Individual guard policy, override precedence, authorization, persistence, and
 performance behavior are documented in
 [docs/per-guard-orders.md](docs/per-guard-orders.md).
 
+Large collections of TaCZ gun packs no longer fail login when TaCZ's combined
+common-data cache exceeds Minecraft's 1 MiB custom-payload limit. The add-on
+leaves normal TaCZ syncs untouched and chunks only oversized transfers through
+a bounded, checksum-verified compatibility channel. The cause, limits,
+diagnostics, and affected-save test procedure are documented in
+[docs/tacz-large-pack-sync.md](docs/tacz-large-pack-sync.md).
+
 Squad identity, ledger interaction, temporary command behavior, precedence,
 persistence, and performance boundaries are documented in
 [docs/squad-commands.md](docs/squad-commands.md).
@@ -295,8 +302,8 @@ correctness and manual-validation boundaries instead of claiming they ran as
 part of the bundle task.
 
 The final aggregate task must be run without `-Pphase8Performance`. It consumes
-the separately generated performance reports, runs the normal 88-case
-correctness GameTest server, and verifies the complete ammunition release
+the separately generated performance reports, runs the normal correctness
+GameTest server, and verifies the complete ammunition release
 evidence boundary. It does not replace the recordable multiplayer rows in the
 release checklist.
 

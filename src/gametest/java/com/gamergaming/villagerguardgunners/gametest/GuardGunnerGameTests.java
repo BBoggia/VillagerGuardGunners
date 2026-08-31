@@ -49,6 +49,9 @@ import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngage
 import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngagement.EngagementReason;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
 import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticalResolver;
+import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncAssembly;
+import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncPacket;
+import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncProtocol;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.gamergaming.villagerguardgunners.menu.ArmoryMenu;
@@ -121,9 +124,11 @@ import com.tacz.guns.api.item.gun.FireMode;
 import com.tacz.guns.init.ModItems;
 import com.tacz.guns.resource.pojo.data.gun.Bolt;
 import com.tacz.guns.resource.pojo.data.gun.GunReloadData;
+import com.tacz.guns.resource.CommonAssetsManager;
 import com.tacz.guns.util.AttachmentDataUtils;
 import com.tacz.guns.util.block.ProjectileExplosion;
 import com.mojang.authlib.GameProfile;
+import io.netty.buffer.Unpooled;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,6 +144,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
@@ -211,6 +217,42 @@ public final class GuardGunnerGameTests {
     private static final String MIGRATION_OVERFLOW_TAG = "villagerguardgunners:ammo_overflow";
 
     private GuardGunnerGameTests() {
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void taczCommonDataCacheRoundTripsThroughBoundedChunks(
+            GameTestHelper helper) {
+        CommonAssetsManager manager = CommonAssetsManager.getInstance();
+        helper.assertTrue(manager != null,
+                "TaCZ common assets were unavailable on the test server");
+        byte[] encoded = TaCZGunPackSyncProtocol.encodeCache(manager.getNetworkCache());
+        List<TaCZGunPackSyncPacket> chunks = TaCZGunPackSyncProtocol.split(
+                UUID.fromString("46ec7bab-9c5c-42ba-bff7-b88348789144"),
+                encoded);
+        TaCZGunPackSyncAssembly assembly = new TaCZGunPackSyncAssembly();
+        byte[] completed = null;
+        for (TaCZGunPackSyncPacket chunk : chunks) {
+            FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+            try {
+                TaCZGunPackSyncPacket.encode(chunk, buffer);
+                helper.assertTrue(
+                        buffer.readableBytes()
+                                < TaCZGunPackSyncProtocol.MINECRAFT_CUSTOM_PAYLOAD_LIMIT,
+                        "A replacement TaCZ packet exceeded Minecraft's payload limit");
+            } finally {
+                buffer.release();
+            }
+            var result = assembly.accept(chunk);
+            if (result.isPresent()) {
+                completed = result.orElseThrow();
+            }
+        }
+        helper.assertTrue(
+                completed != null
+                        && manager.getNetworkCache().equals(
+                                TaCZGunPackSyncProtocol.decodeCache(completed)),
+                "The live TaCZ common cache did not survive bounded reassembly");
+        helper.succeed();
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)

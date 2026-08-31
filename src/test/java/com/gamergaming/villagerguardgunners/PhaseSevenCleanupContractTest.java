@@ -137,7 +137,7 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardMixin\",\"ItemEntityMixin\",\"RaiseShieldGoalMixin\",\"VillagerToGuardMixin\"]")),
+                        "\"mixins\":[\"GuardMixin\",\"ItemEntityMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"VillagerToGuardMixin\"]")),
                 () -> assertTrue(mixins.contains(
                         "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));
@@ -179,11 +179,19 @@ final class PhaseSevenCleanupContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/role/GuardRoles.java");
         String guardPostGroupReload = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroups.java");
+        String largePackSync = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/network/"
+                        + "TaCZGunPackSync.java");
+        String largePackSyncClient = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/network/client/"
+                        + "TaCZGunPackSyncClient.java");
         String performanceSensitiveSource = productionSource
                 .replace(legacyNotice, "")
                 .replace(naturalLoadoutReload, "")
                 .replace(guardRoleReload, "")
-                .replace(guardPostGroupReload, "");
+                .replace(guardPostGroupReload, "")
+                .replace(largePackSync, "")
+                .replace(largePackSyncClient, "");
 
         assertAll(
                 () -> assertFalse(performanceSensitiveSource.contains("LogUtils")),
@@ -214,6 +222,15 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(guardPostGroupReload.contains("LOGGER.debug(")),
                 () -> assertFalse(guardPostGroupReload.contains("tick(")),
                 () -> assertFalse(guardPostGroupReload.contains("getEntitiesOfClass(")));
+        assertAll(
+                () -> assertTrue(largePackSync.contains("LOGGER.info(")),
+                () -> assertTrue(largePackSync.contains("LOGGER.error(")),
+                () -> assertFalse(largePackSync.contains("LOGGER.debug(")),
+                () -> assertFalse(largePackSync.contains("tick(")),
+                () -> assertTrue(largePackSyncClient.contains("LOGGER.info(")),
+                () -> assertTrue(largePackSyncClient.contains("LOGGER.error(")),
+                () -> assertFalse(largePackSyncClient.contains("LOGGER.debug(")),
+                () -> assertFalse(largePackSyncClient.contains("tick(")));
     }
 
     private static String read(String relativePath) throws IOException {

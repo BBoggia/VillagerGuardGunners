@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners;
 
 import com.gamergaming.villagerguardgunners.command.GuardGunnerCommands;
+import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncNetwork;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyServerServices;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
@@ -29,6 +30,7 @@ public class VillagerGuardGunners {
         IEventBus modEventBus = context.getModEventBus();
 
         ModConfigs.init();
+        TaCZGunPackSyncNetwork.init();
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);

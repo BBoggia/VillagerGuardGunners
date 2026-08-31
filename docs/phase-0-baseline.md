@@ -31,7 +31,7 @@ Run the cheapest checks first:
 
 1. `./gradlew test` — fast, deterministic unit and project-contract tests.
 2. `./gradlew build` — compilation, resources, mixin processing, packaging, and reobfuscation.
-3. `./gradlew runGameTestServer` — 24 Forge integration tests covering real guard construction, capabilities, save/migration/conversion, authorized menu behavior, TaCZ gun/operator initialization, tactical metadata caching, profile-driven movement, visibility, aim, maximum-cap and explosive-standoff firing gates, the preferred-versus-maximum range boundary, registered administrator diagnostics, native per-round burst cancellation, lifecycle edge cases, melee fallback, shield-goal compatibility, and direct/explosive friendly-fire backstops.
+3. `./gradlew runGameTestServer` — the Forge integration suite covering real guard construction, capabilities, save/migration/conversion, authorized menu behavior, TaCZ gun/operator initialization and common-cache synchronization, tactical metadata caching, profile-driven movement, visibility, aim, maximum-cap and explosive-standoff firing gates, the preferred-versus-maximum range boundary, registered administrator diagnostics, native per-round burst cancellation, lifecycle edge cases, melee fallback, shield-goal compatibility, and direct/explosive friendly-fire backstops.
 4. `./gradlew runServer` — dedicated-server smoke test for side-only classloading and multiplayer behavior.
 5. `./gradlew runClient` — menu, animation, sound, and observed combat validation.
 

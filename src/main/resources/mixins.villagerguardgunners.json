@@ -8,6 +8,7 @@
     "GuardMixin",
     "ItemEntityMixin",
     "RaiseShieldGoalMixin",
+    "TaCZCommonAssetsManagerMixin",
     "VillagerToGuardMixin"
   ],
   "client": [

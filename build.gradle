@@ -106,11 +106,25 @@ tasks.register('generateWatchtowerTemplate') {
         }
 
         Map<String, Integer> states = [:]
+        Map<String, Map<String, Object>> paletteBySymbol = [:]
         palette.eachWithIndex { entry, index ->
             String symbol = entry.symbol as String
             if (symbol.length() != 1 || states.put(symbol, index) != null) {
                 throw new GradleException(
                         "Watchtower palette symbol must be unique and one character: ${symbol}")
+            }
+            paletteBySymbol[symbol] = entry
+            Map<String, Object> blockEntityData = (entry.nbt ?: [:]) as Map<String, Object>
+            if (!blockEntityData.isEmpty()) {
+                if (entry.name != 'minecraft:structure_block'
+                        || blockEntityData.keySet() != (['mode', 'metadata'] as Set)
+                        || blockEntityData.mode != 'DATA'
+                        || !(blockEntityData.metadata instanceof String)
+                        || (blockEntityData.metadata as String).length() > 128
+                        || !(blockEntityData.metadata as String).startsWith('guard_post:')) {
+                    throw new GradleException(
+                            "Watchtower marker ${symbol} has unsupported block-entity data")
+                }
             }
         }
         Set<String> unknownSymbols = layers.flatten()
@@ -119,6 +133,14 @@ tasks.register('generateWatchtowerTemplate') {
         if (!unknownSymbols.isEmpty()) {
             throw new GradleException(
                     "Watchtower layers use unknown symbols: ${unknownSymbols.sort()}")
+        }
+        int markerCount = layers.flatten()
+                .collectMany { it.toList() }
+                .count { symbol ->
+                    !(((paletteBySymbol[symbol].nbt ?: [:]) as Map).isEmpty())
+                }
+        if (markerCount > 8) {
+            throw new GradleException('Watchtower blueprint exceeds the eight-marker hard limit')
         }
 
         template.parentFile.mkdirs()
@@ -180,6 +202,16 @@ tasks.register('generateWatchtowerTemplate') {
                                 row.toList().eachWithIndex { symbol, x ->
                                     intListTag('pos', [x, y, z])
                                     intTag('state', states[symbol])
+                                    Map<String, Object> blockEntityData =
+                                            (paletteBySymbol[symbol].nbt ?: [:]) as Map<String, Object>
+                                    if (!blockEntityData.isEmpty()) {
+                                        namedTag(10, 'nbt') {
+                                            blockEntityData.keySet().sort().each { key ->
+                                                stringTag(key, blockEntityData[key] as String)
+                                            }
+                                            output.writeByte(0)
+                                        }
+                                    }
                                     output.writeByte(0)
                                 }
                             }
@@ -466,6 +498,7 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/item/OrdersLedgerItem.class',
                     'com/gamergaming/villagerguardgunners/item/SquadCommandLedgerItem.class',
                     'com/gamergaming/villagerguardgunners/api/GuardNaturalLoadoutAccess.class',
+                    'com/gamergaming/villagerguardgunners/api/GuardPostAccess.class',
                     'com/gamergaming/villagerguardgunners/api/GuardArmoryResupplyAccess.class',
                     'com/gamergaming/villagerguardgunners/api/GuardRoleAccess.class',
                     'com/gamergaming/villagerguardgunners/api/GuardSquadAccess.class',
@@ -522,6 +555,12 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroupSelection.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroupVariant.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroups.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostIdentity.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostIdentityCodec.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostIds.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostMarker.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostMarkerState.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostSpawner.class',
                     'com/gamergaming/villagerguardgunners/ai/GuardGunCombatGoal.class',
                     'com/gamergaming/villagerguardgunners/api/GuardAllyProtection.class',
                     'com/gamergaming/villagerguardgunners/command/GuardGunnerCommands.class',

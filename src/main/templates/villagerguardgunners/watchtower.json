@@ -33,6 +33,15 @@
         "shape": "straight",
         "waterlogged": "false"
       }
+    },
+    {
+      "symbol": "G",
+      "name": "minecraft:structure_block",
+      "properties": { "mode": "data" },
+      "nbt": {
+        "mode": "DATA",
+        "metadata": "guard_post:villagerguardgunners:watchtower"
+      }
     }
   ],
   "layers": [
@@ -52,7 +61,7 @@
       ".SMS.MSM.",
       ".S.....S.",
       ".S.....S.",
-      ".S.....S.",
+      ".S..G..S.",
       ".S.....S.",
       ".S..L..S.",
       ".SMSSSMS.",

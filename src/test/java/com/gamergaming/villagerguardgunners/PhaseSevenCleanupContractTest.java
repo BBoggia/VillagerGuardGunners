@@ -33,7 +33,9 @@ final class PhaseSevenCleanupContractTest {
         }
         productionSourceWithoutNaturalConversionBridge = productionSource.replace(
                 read("src/main/java/com/gamergaming/villagerguardgunners/mixin/VillagerToGuardMixin.java"),
-                "");
+                "").replace(
+                        read("src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/GuardPostSpawner.java"),
+                        "");
     }
 
     @Test

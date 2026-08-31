@@ -21,7 +21,7 @@ final class VillageWatchtowerTemplateContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void blueprintIsExactBoundedAndContainsNoPrematureMarkers() throws IOException {
+    void blueprintIsExactBoundedAndContainsOneClosedGuardPostMarker() throws IOException {
         JsonObject blueprint = JsonParser.parseString(Files.readString(
                 PROJECT_DIRECTORY.resolve(
                         "src/main/templates/villagerguardgunners/watchtower.json"),
@@ -31,12 +31,17 @@ final class VillageWatchtowerTemplateContractTest {
         JsonArray layers = blueprint.getAsJsonArray("layers");
         Set<Character> symbols = new HashSet<>();
         Set<String> blockNames = new HashSet<>();
+        JsonObject guardMarker = null;
 
-        palette.forEach(element -> {
+        for (var element : palette) {
             JsonObject state = element.getAsJsonObject();
             symbols.add(state.get("symbol").getAsString().charAt(0));
             blockNames.add(state.get("name").getAsString());
-        });
+            if ("G".equals(state.get("symbol").getAsString())) {
+                guardMarker = state;
+            }
+        }
+        JsonObject exactGuardMarker = guardMarker;
 
         assertAll(
                 () -> assertEquals(3465, blueprint.get("dataVersion").getAsInt()),
@@ -49,9 +54,21 @@ final class VillageWatchtowerTemplateContractTest {
                 () -> assertTrue(blockNames.contains("minecraft:structure_void")),
                 () -> assertTrue(blockNames.contains("minecraft:ladder")),
                 () -> assertTrue(blockNames.contains("minecraft:stone_brick_stairs")),
-                () -> assertFalse(blockNames.contains("minecraft:structure_block")),
+                () -> assertTrue(blockNames.contains("minecraft:structure_block")),
+                () -> assertTrue(exactGuardMarker != null),
+                () -> assertEquals("minecraft:structure_block",
+                        exactGuardMarker.get("name").getAsString()),
+                () -> assertEquals("data",
+                        exactGuardMarker.getAsJsonObject("properties")
+                                .get("mode").getAsString()),
+                () -> assertEquals("DATA",
+                        exactGuardMarker.getAsJsonObject("nbt").get("mode").getAsString()),
+                () -> assertEquals("guard_post:villagerguardgunners:watchtower",
+                        exactGuardMarker.getAsJsonObject("nbt")
+                                .get("metadata").getAsString()),
                 () -> assertFalse(blueprint.has("entities")));
 
+        int markerCount = 0;
         for (var layer : layers) {
             JsonArray rows = layer.getAsJsonArray();
             assertEquals(9, rows.size());
@@ -60,9 +77,14 @@ final class VillageWatchtowerTemplateContractTest {
                 assertEquals(9, row.length());
                 for (char symbol : row.toCharArray()) {
                     assertTrue(symbols.contains(symbol));
+                    if (symbol == 'G') {
+                        markerCount++;
+                    }
                 }
             }
         }
+        assertEquals(1, markerCount);
+        assertEquals(".S..G..S.", layers.get(1).getAsJsonArray().get(4).getAsString());
     }
 
     @Test
@@ -74,6 +96,9 @@ final class VillageWatchtowerTemplateContractTest {
                 () -> assertTrue(build.contains("tasks.register('generateWatchtowerTemplate')")),
                 () -> assertTrue(build.contains("inputs.file blueprint")),
                 () -> assertTrue(build.contains("outputs.file template")),
+                () -> assertTrue(build.contains("markerCount > 8")),
+                () -> assertTrue(build.contains("blockEntityData.keySet()")),
+                () -> assertTrue(build.contains("namedTag(10, 'nbt')")),
                 () -> assertTrue(build.contains("processResources")),
                 () -> assertTrue(build.contains("dependsOn tasks.named('generateWatchtowerTemplate')")),
                 () -> assertTrue(build.contains(

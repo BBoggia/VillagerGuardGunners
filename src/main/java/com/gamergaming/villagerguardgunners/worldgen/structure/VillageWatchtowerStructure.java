@@ -37,12 +37,14 @@ public final class VillageWatchtowerStructure extends Structure {
                 0,
                 WatchtowerPlacement.FOOTPRINT_RADIUS);
         Rotation rotation = Rotation.getRandom(context.random());
+        long guardGroupSeed = context.random().nextLong();
         return Optional.of(new GenerationStub(
                 biomeCheckPosition,
                 pieces -> pieces.addPiece(new VillageWatchtowerPiece(
                         context.structureTemplateManager(),
                         templateOrigin,
-                        rotation))));
+                        rotation,
+                        guardGroupSeed))));
     }
 
     @Override

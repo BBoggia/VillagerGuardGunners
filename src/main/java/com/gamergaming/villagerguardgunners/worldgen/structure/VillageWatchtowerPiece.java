@@ -2,9 +2,19 @@ package com.gamergaming.villagerguardgunners.worldgen.structure;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.init.ModStructures;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupPool;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupSelection;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroups;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostMarker;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostMarkerState;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSpawner;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -25,6 +35,7 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
             "watchtower");
 
     private static final String ROTATION_TAG = "Rot";
+    private static final String POST_STATE_TAG = "VggPost";
     private static final BlockPos ROTATION_PIVOT = new BlockPos(
             WatchtowerPlacement.FOOTPRINT_RADIUS,
             0,
@@ -34,6 +45,14 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
             StructureTemplateManager templateManager,
             BlockPos templatePosition,
             Rotation rotation) {
+        this(templateManager, templatePosition, rotation, 0L);
+    }
+
+    public VillageWatchtowerPiece(
+            StructureTemplateManager templateManager,
+            BlockPos templatePosition,
+            Rotation rotation,
+            long guardGroupSeed) {
         super(
                 ModStructures.WATCHTOWER_PIECE.get(),
                 0,
@@ -42,6 +61,7 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                 TEMPLATE_LOCATION.toString(),
                 settings(rotation),
                 templatePosition);
+        markerState = GuardPostMarkerState.fresh(guardGroupSeed);
     }
 
     public VillageWatchtowerPiece(
@@ -52,7 +72,12 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                 tag,
                 templateManager,
                 ignored -> settings(readRotation(tag)));
+        markerState = GuardPostMarkerState.load(tag.contains(POST_STATE_TAG, Tag.TAG_COMPOUND)
+                ? tag.getCompound(POST_STATE_TAG)
+                : null);
     }
+
+    private GuardPostMarkerState markerState;
 
     private static StructurePlaceSettings settings(Rotation rotation) {
         return new StructurePlaceSettings()
@@ -80,6 +105,7 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
             CompoundTag tag) {
         super.addAdditionalSaveData(context, tag);
         tag.putString(ROTATION_TAG, placeSettings.getRotation().name());
+        tag.put(POST_STATE_TAG, markerState.save());
     }
 
     @Override
@@ -89,7 +115,67 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
             ServerLevelAccessor level,
             RandomSource random,
             BoundingBox bounds) {
-        // Step 11 intentionally has no functional data markers. Later steps
-        // add bounded marker handling here without scanning generated chunks.
+        if (!bounds.isInside(position)) {
+            return;
+        }
+        // Structure blocks are processor-ignored, but an explicit air write
+        // also consumes markers when replacing a custom template over terrain.
+        level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
+
+        Optional<GuardPostMarker> parsed = GuardPostMarker.parse(metadata);
+        if (parsed.isEmpty()) {
+            return;
+        }
+        GuardPostMarker marker = parsed.get();
+        if (markerState.claim(position, marker.action())
+                != GuardPostMarkerState.ClaimResult.CLAIMED) {
+            return;
+        }
+
+        UUID postId = markerState.ensurePostId(
+                level.getLevel().getSeed(),
+                level.getLevel().dimension().location(),
+                templatePosition);
+        GuardPostGroupPool group = GuardPostGroups.get(marker.groupId());
+        if (group == null) {
+            return;
+        }
+        Optional<GuardPostGroupSelection> selected = group.select(
+                GuardPostSpawner.mapDifficulty(level.getLevel().getDifficulty()),
+                markerState.selectionSeed());
+        if (selected.isEmpty()) {
+            return;
+        }
+        GuardPostGroupSelection selection = selected.get();
+        markerState.recordSelection(selection);
+        for (int memberIndex = 0; memberIndex < selection.members().size(); memberIndex++) {
+            if (GuardPostSpawner.spawnMember(
+                    level,
+                    bounds,
+                    position,
+                    placeSettings.getRotation(),
+                    postId,
+                    selection.groupId(),
+                    selection.variantName(),
+                    memberIndex)) {
+                markerState.recordSpawnedGuard();
+            }
+        }
+    }
+
+    public long guardGroupSeed() {
+        return markerState.selectionSeed();
+    }
+
+    public int claimedMarkerCount() {
+        return markerState.claimedMarkerCount();
+    }
+
+    public int spawnedGuardCount() {
+        return markerState.spawnedGuards();
+    }
+
+    public @Nullable UUID postId() {
+        return markerState.postId();
     }
 }

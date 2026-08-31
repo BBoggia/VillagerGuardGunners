@@ -19,6 +19,7 @@ import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardPostAccess;
 import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
@@ -96,6 +97,7 @@ import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupPool;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupReloadSnapshot;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupSelection;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroups;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBindingCodec;
 import com.gamergaming.villagerguardgunners.squad.SquadRegistrySavedData;
@@ -138,6 +140,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
@@ -163,6 +166,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -232,6 +236,19 @@ public final class GuardGunnerGameTests {
                             && bounds.getYSpan() == WatchtowerPlacement.TEMPLATE_HEIGHT
                             && bounds.getZSpan() == WatchtowerPlacement.FOOTPRINT_SIZE,
                     "Watchtower bounds or saved rotation pivot changed for " + rotation);
+            var markers = piece.template().filterBlocks(
+                    piece.templatePosition(),
+                    piece.placeSettings(),
+                    Blocks.STRUCTURE_BLOCK);
+            helper.assertTrue(
+                    markers.size() == 1
+                            && markers.get(0).pos().equals(
+                                    piece.templatePosition().offset(4, 1, 4))
+                            && markers.get(0).nbt() != null
+                            && "DATA".equals(markers.get(0).nbt().getString("mode"))
+                            && "guard_post:villagerguardgunners:watchtower".equals(
+                                    markers.get(0).nbt().getString("metadata")),
+                    "The guard-post marker moved or changed under " + rotation);
         }
 
         var level = helper.getLevel();
@@ -304,6 +321,174 @@ public final class GuardGunnerGameTests {
             helper.assertTrue(start.getPieces().size() == 1
                             && start.getPieces().get(0) instanceof VillageWatchtowerPiece,
                     "Accepted terrain did not produce exactly one watchtower template piece");
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void watchtowerMarkerSpawnsOnePersistentGuardGroupExactlyOnce(
+            GameTestHelper helper) {
+        var level = helper.getLevel();
+        Difficulty originalDifficulty = level.getDifficulty();
+        try {
+            level.getServer().setDifficulty(Difficulty.NORMAL, true);
+            long selectionSeed = 0x5a17c3e92dL;
+            GuardPostGroupPool pool = GuardPostGroups.get(GuardPostGroupDefaults.WATCHTOWER);
+            GuardPostGroupSelection selection = pool == null
+                    ? null
+                    : pool.select(NaturalGuardDifficulty.NORMAL, selectionSeed).orElse(null);
+            helper.assertTrue(selection != null,
+                    "The bundled Normal watchtower group was unavailable");
+
+            BlockPos origin = helper.absolutePos(new BlockPos(10, 1, 8));
+            VillageWatchtowerPiece piece = new VillageWatchtowerPiece(
+                    level.getStructureManager(),
+                    origin,
+                    Rotation.CLOCKWISE_90,
+                    selectionSeed);
+            BoundingBox bounds = piece.getBoundingBox();
+            ChunkPos chunk = new ChunkPos(origin);
+            piece.postProcess(
+                    level,
+                    level.structureManager(),
+                    level.getChunkSource().getGenerator(),
+                    RandomSource.create(4471L),
+                    bounds,
+                    chunk,
+                    origin);
+
+            List<Guard> guards = level.getEntitiesOfClass(Guard.class, AABB.of(bounds));
+            helper.assertTrue(
+                    guards.size() == selection.members().size()
+                            && guards.size() == piece.spawnedGuardCount()
+                            && piece.claimedMarkerCount() == 1
+                            && piece.postId() != null,
+                    "The marker did not create exactly its bounded selected group");
+            UUID postId = piece.postId();
+            Set<Integer> memberIndices = new java.util.HashSet<>();
+            Set<UUID> entityIds = new java.util.HashSet<>();
+            for (Guard guard : guards) {
+                GuardPostIdentity identity = GuardPostAccess.getIdentity(guard);
+                helper.assertTrue(
+                        identity != null
+                                && postId.equals(identity.postId())
+                                && GuardPostGroupDefaults.WATCHTOWER.equals(identity.groupId())
+                                && selection.variantName().equals(identity.variantName()),
+                        "A generated guard did not retain the selected post identity");
+                memberIndices.add(identity.memberIndex());
+                entityIds.add(guard.getUUID());
+
+                CompoundTag savedGuard = guard.saveWithoutId(new CompoundTag());
+                Guard restoredGuard = GuardEntityType.GUARD.get().create(level);
+                helper.assertTrue(restoredGuard != null,
+                        "Could not create the guard identity persistence fixture");
+                restoredGuard.load(savedGuard);
+                helper.assertTrue(identity.equals(GuardPostAccess.getIdentity(restoredGuard)),
+                        "A guard's post identity did not survive entity persistence");
+            }
+            helper.assertTrue(
+                    memberIndices.size() == guards.size() && entityIds.size() == guards.size(),
+                    "Generated member slots or deterministic entity UUIDs collided");
+            helper.assertTrue(level.getBlockState(origin.offset(4, 1, 4)).isAir(),
+                    "The consumed data marker remained in the watchtower");
+
+            piece.postProcess(
+                    level,
+                    level.structureManager(),
+                    level.getChunkSource().getGenerator(),
+                    RandomSource.create(4472L),
+                    bounds,
+                    chunk,
+                    origin);
+            helper.assertTrue(
+                    level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size() == guards.size(),
+                    "Revisiting a live piece duplicated its generated guards");
+
+            var structure = level.registryAccess()
+                    .registryOrThrow(Registries.STRUCTURE)
+                    .get(VillageWatchtowerPiece.TEMPLATE_LOCATION);
+            var serializationContext = StructurePieceSerializationContext.fromLevel(level);
+            StructureStart savedStart = new StructureStart(
+                    structure,
+                    chunk,
+                    0,
+                    new PiecesContainer(List.of(piece)));
+            StructureStart restoredStart = StructureStart.loadStaticStart(
+                    serializationContext,
+                    savedStart.createTag(serializationContext, chunk),
+                    level.getSeed());
+            helper.assertTrue(restoredStart != null
+                            && restoredStart.getPieces().size() == 1
+                            && restoredStart.getPieces().get(0)
+                                    instanceof VillageWatchtowerPiece restoredPiece
+                            && postId.equals(restoredPiece.postId())
+                            && restoredPiece.claimedMarkerCount() == 1
+                            && restoredPiece.spawnedGuardCount() == guards.size(),
+                    "The completed marker ledger did not survive structure persistence");
+            VillageWatchtowerPiece restoredPiece =
+                    (VillageWatchtowerPiece) restoredStart.getPieces().get(0);
+            restoredPiece.postProcess(
+                    level,
+                    level.structureManager(),
+                    level.getChunkSource().getGenerator(),
+                    RandomSource.create(4473L),
+                    restoredPiece.getBoundingBox(),
+                    chunk,
+                    origin);
+            helper.assertTrue(
+                    level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size() == guards.size(),
+                    "Reloading and revisiting a completed piece duplicated its guards");
+        } finally {
+            level.getServer().setDifficulty(originalDifficulty, true);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void peacefulWatchtowerMarkerIsConsumedWithoutLaterRespawn(
+            GameTestHelper helper) {
+        var level = helper.getLevel();
+        Difficulty originalDifficulty = level.getDifficulty();
+        try {
+            level.getServer().setDifficulty(Difficulty.PEACEFUL, true);
+            BlockPos origin = helper.absolutePos(new BlockPos(10, 1, 8));
+            VillageWatchtowerPiece piece = new VillageWatchtowerPiece(
+                    level.getStructureManager(),
+                    origin,
+                    Rotation.NONE,
+                    117L);
+            BoundingBox bounds = piece.getBoundingBox();
+            ChunkPos chunk = new ChunkPos(origin);
+            piece.postProcess(
+                    level,
+                    level.structureManager(),
+                    level.getChunkSource().getGenerator(),
+                    RandomSource.create(881L),
+                    bounds,
+                    chunk,
+                    origin);
+            helper.assertTrue(
+                    piece.claimedMarkerCount() == 1
+                            && piece.spawnedGuardCount() == 0
+                            && level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).isEmpty(),
+                    "Peaceful did not consume the post marker with zero occupants");
+
+            level.getServer().setDifficulty(Difficulty.HARD, true);
+            piece.postProcess(
+                    level,
+                    level.structureManager(),
+                    level.getChunkSource().getGenerator(),
+                    RandomSource.create(882L),
+                    bounds,
+                    chunk,
+                    origin);
+            helper.assertTrue(
+                    piece.claimedMarkerCount() == 1
+                            && piece.spawnedGuardCount() == 0
+                            && level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).isEmpty(),
+                    "Changing difficulty rerolled an already consumed Peaceful post");
+        } finally {
+            level.getServer().setDifficulty(originalDifficulty, true);
         }
         helper.succeed();
     }

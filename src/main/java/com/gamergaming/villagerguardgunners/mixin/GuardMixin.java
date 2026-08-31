@@ -22,6 +22,7 @@ import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardPostAccess;
 import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
@@ -48,6 +49,8 @@ import com.gamergaming.villagerguardgunners.squad.SquadMembershipCodec;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerInteractions;
 import com.gamergaming.villagerguardgunners.squad.SquadCommand;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandCodec;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentityCodec;
 import com.tacz.guns.api.entity.IGunOperator;
 
 import net.minecraft.ChatFormatting;
@@ -86,7 +89,7 @@ import tallestegg.guardvillagers.entities.Guard;
 @Mixin(Guard.class)
 public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardArmoryResupplyAccess,
         GuardBurstSafetyAccess,
-        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
+        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardPostAccess, GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
         GuardSquadCommandAccess {
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_AMMO_TAG = "villagerguardgunners:ammo_inventory";
@@ -168,6 +171,10 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
 
     @Unique
     private int villagerGuardGunners$squadCommandRevision;
+
+    @Unique
+    @Nullable
+    private GuardPostIdentity villagerGuardGunners$guardPostIdentity;
 
     @Unique
     @Nullable
@@ -360,6 +367,8 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
                 SquadMembershipCodec.readGuardRecord(compound));
         villagerGuardGunners$setSquadCommand(
                 SquadCommandCodec.readGuardRecord(compound));
+        villagerGuardGunners$setGuardPostIdentity(
+                GuardPostIdentityCodec.readGuardRecord(compound));
         villagerGuardGunners$pendingMigrationDrops.clear();
 
         List<CompoundTag> legacyAmmo = GuardAmmoMigration.extractLegacyAmmoSlots(compound);
@@ -455,6 +464,9 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
         SquadCommandCodec.writeGuardRecord(
                 compound,
                 villagerGuardGunners$getSquadCommand());
+        GuardPostIdentityCodec.writeGuardRecord(
+                compound,
+                villagerGuardGunners$getGuardPostIdentity());
 
         if (villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             compound.remove(VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG);
@@ -725,6 +737,18 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
     @Override
     public int villagerGuardGunners$getSquadCommandRevision() {
         return villagerGuardGunners$squadCommandRevision;
+    }
+
+    @Override
+    @Nullable
+    public GuardPostIdentity villagerGuardGunners$getGuardPostIdentity() {
+        return villagerGuardGunners$guardPostIdentity;
+    }
+
+    @Override
+    public void villagerGuardGunners$setGuardPostIdentity(
+            @Nullable GuardPostIdentity identity) {
+        villagerGuardGunners$guardPostIdentity = identity;
     }
 
     @Override

@@ -348,6 +348,11 @@ adds strict datapack-defined weighted groups, inherited loadout references,
 optional members, deterministic difficulty selection, and atomic
 last-known-good reload publication. It remains identifier-only: guard spawning
 and equipment issuance are reserved for later steps.
+The [Step 13 marker spawning and post identity](docs/village-watchtowers-step-13.md)
+adds one closed central template marker, deterministic one-shot Guard Villager
+creation, strict piece and guard provenance, Peaceful completion semantics, and
+duplicate prevention across piece revisits and persistence. Member-specific
+roles, loadouts, squads, Armories, and loot remain isolated for Step 14.
 
 ## License
 

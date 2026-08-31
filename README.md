@@ -277,7 +277,7 @@ for the reference measurements and interpretation. Headless tests cannot prove
 client animation or observer synchronization, so a release candidate must also
 complete [docs/release-checklist.md](docs/release-checklist.md).
 
-The final command verifies the release JAR and exact 17-report/17-JFR set, parses
+The final command verifies the release JAR and exact 20-report/20-JFR set, parses
 each JFR, enforces same-run baseline-relative p95/p99 budgets, and requires every
 JSON report to name the SHA-256 of that exact production JAR. It then writes a
 deterministic artifact manifest containing the byte size and SHA-256 of the JAR
@@ -287,7 +287,7 @@ correctness and manual-validation boundaries instead of claiming they ran as
 part of the bundle task.
 
 The final aggregate task must be run without `-Pphase8Performance`. It consumes
-the separately generated performance reports, runs the normal 73-case
+the separately generated performance reports, runs the normal 85-case
 correctness GameTest server, and verifies the complete ammunition release
 evidence boundary. It does not replace the recordable multiplayer rows in the
 release checklist.

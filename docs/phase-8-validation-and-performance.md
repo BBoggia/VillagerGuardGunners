@@ -9,13 +9,13 @@ Phase 8 turns the behavior and performance requirements from Phases 0–7 into r
 The suites are deliberately isolated:
 
 - `src/gametest` contains 85 correctness GameTests and is selected by the normal `runGameTestServer` task.
-- `src/perftest` contains 17 sequential scalability workloads and is selected only with `-Pphase8Performance=true`.
+- `src/perftest` contains 20 sequential scalability workloads and is selected only with `-Pphase8Performance=true`.
 - `src/main` contains production code only.
 - correctness tests use a generated 40×26×26 arena so fixtures outside the old 1×1×1 marker cannot overlap neighboring tests.
 - sequential performance workloads use distinct world regions 512 blocks apart, as well as entity/projectile/chunk cleanup.
 - the performance run uses `run-phase8-performance`, deletes its generated world and old reports before each matrix, and writes fresh evidence to `build/reports/phase8-performance`.
 
-`PhaseEightReleaseGateContractTest` prevents the source-set separation, matrix, evidence fields, config-profile reset, and artifact gate from silently being removed. The retained 1.2 reference reports used the complete `default-v8` profile. The current development reporter and `verifyPhase8PerformanceReports` require `default-v9`, including every active Armory-resupply policy value, so a future candidate capture cannot claim to use the old schema. The performance fixture retains the low-priority Armory goal, allowing satisfied and dry guards to include its true staggered scheduling cost. The verifier checks that all 17 JSON/JFR pairs are present, internally consistent, percentile ordered, and backed by accepted native TaCZ shots, ammunition-work evidence, and exact or bounded sidearm state evidence wherever required. It parses every JFR and requires real execution samples rather than accepting a merely nonempty file.
+`PhaseEightReleaseGateContractTest` prevents the source-set separation, matrix, evidence fields, config-profile reset, and artifact gate from silently being removed. The retained 1.2 reference reports used the complete `default-v8` profile. The current development reporter and `verifyPhase8PerformanceReports` require `default-v9`, including every active Armory-resupply policy value, so a future candidate capture cannot claim to use the old schema. The performance fixture retains the low-priority Armory goal, allowing satisfied and dry guards to include its true staggered scheduling cost. The verifier checks that all 20 JSON/JFR pairs are present, internally consistent, percentile ordered, and backed by accepted native TaCZ shots, ammunition-work evidence, exact or bounded sidearm state evidence, and bounded Armory-runtime evidence wherever required. It parses every JFR and requires real execution samples rather than accepting a merely nonempty file.
 
 ## Correctness coverage
 
@@ -94,7 +94,9 @@ The public `prepareCurseForgeRelease` packaging task also runs
 automated evidence boundary from being mistaken for completed hands-on release
 validation.
 
-Each performance workload creates real Guard Villagers, native TaCZ guns, targets, projectiles, safety queries, goal selectors, and entity ticks. It warms for 200 ticks and samples 1,000 ticks. The longer warmup prevents whichever unordered Forge batch runs first from measuring one-time class loading and JIT work as steady-state guard cost. Every scenario produces p50/p95/p99/max MSPT, aggregate and per-guard post-warmup native shot/ammunition evidence, live TaCZ bullets, GC count, heap delta, the complete active guard-gunner config snapshot, and a focused JFR recording using the default preset plus explicit 5 ms execution sampling. The narrower preset avoids a JDK 17 JFR metadata race seen with the broad profile preset while retaining CPU attribution. Total ammunition includes the gun and dedicated guard inventory so native reloads cannot hide consumption. Every firing workload must exercise at least 80% of its guards with evidence from each active guard; this prevents one guard from satisfying a many-guard scenario without making intended safety suppression a flaky failure. An end-of-sample state for every guard records its goal decision, aim state, line of sight, safety result, held items, and last TaCZ result after timing has ended, making intermittent participation failures actionable without allocating in the measured combat loop. Each scenario discards its owned native bullets after recording the end-of-sample count so later batches remain isolated. The test task removes its generated config before launch, and current report verification rejects any scenario that did not use the default-v9 values, including every natural-loadout policy value, squad-command bound, tactical mapping, profile value, rules-of-engagement control, explosive-standoff control, modpack ally default, ammunition quality-of-life control, and Armory-resupply policy value. The reference timing tables below remain the original default-v8 evidence and are not relabeled as schema-9 captures.
+Each performance workload creates the real server objects appropriate to its case: Guard Villagers, native TaCZ guns, targets, projectiles, safety queries, goal selectors, entity ticks, and loaded Armory block entities. It warms for 200 ticks and samples 1,000 ticks. The longer warmup prevents whichever unordered Forge batch runs first from measuring one-time class loading and JIT work as steady-state guard cost. Every scenario produces p50/p95/p99/max MSPT, aggregate and per-guard post-warmup native shot/ammunition evidence, live TaCZ bullets, GC count, heap delta, the complete active guard-gunner config snapshot, and a focused JFR recording using the default preset plus explicit 5 ms execution sampling. The narrower preset avoids a JDK 17 JFR metadata race seen with the broad profile preset while retaining CPU attribution. Total ammunition includes the gun and dedicated guard inventory so native reloads cannot hide consumption. Every firing workload must exercise at least 80% of its guards with evidence from each active guard; the mixed sidearm/RPG workload additionally requires at least 70% participation from each ten-guard role and the exact final 10/10 weapon mapping. These checks prevent one guard or one role from satisfying a group scenario without making transient lane visibility a flaky failure. An end-of-sample state for every guard records its goal decision, aim state, line of sight, safety result, held items, and last TaCZ result after timing has ended, making intermittent participation failures actionable without allocating in the measured combat loop. Each scenario discards its owned native bullets after recording the end-of-sample count so later batches remain isolated. The test task removes its generated config before launch, and current report verification rejects any scenario that did not use the default-v9 values, including every natural-loadout policy value, squad-command bound, tactical mapping, profile value, rules-of-engagement control, explosive-standoff control, modpack ally default, ammunition quality-of-life control, and Armory-resupply policy value. The reference timing tables below remain the original default-v8 evidence and are not relabeled as schema-9 captures.
+
+The three Armory workloads also record monotonic production counters captured only outside the timed sample: assessments, reserve summaries, index queries, visited and returned records, fixed-inventory slot inspections, reservation attempts, path constructions, per-trip maximum attempts, outcomes, transfers, active/backoff guards, reservation counts before and after cleanup, and forced-chunk-set delta. The verifier cross-checks controller and index observations, applies the configured eight-record and hard nine-slot bounds, requires a maximum of eight path attempts per trip, and rejects any forced-chunk change. These counters add only primitive increments to due logistics work; there is no per-tick snapshot allocation or new scan.
 
 The two ammunition pressure workloads target the bounded query paths directly.
 One keeps 100 compatible dropped-ammunition entities beside guards whose three
@@ -199,6 +201,32 @@ same-run, workload-specific budgets retain a regression ceiling without treating
 one development-machine run as a portable server-capacity guarantee.
 Navigation-heavy real-server profiling therefore remains worthwhile before
 calling a large battle configuration production-ready.
+
+## Armory Step 7 reference run: 2026-08-31
+
+All 20 default-v9 workloads and the independent JSON/JFR verifier passed on
+Java 17.0.12. The evidence is bound to development artifact
+`7f0eb3bccf6ec0b46552fa1e07e131b0f36d17de1a55bdab4f25fbdc02743d95`.
+These are total headless GameTest-server timings from one Apple-silicon
+development machine, not add-on-only timings or a portable capacity claim.
+
+| Scenario | Armories | Guards | Avg ms | p95 ms | p99 ms | Queries / visited / returned | Slot inspections / reservations / paths | Outcomes and cleanup |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Loaded Armories, no guards | 100 | 0 | 0.434 | 0.484 | 4.634 | 0 / 0 / 0 | 0 / 0 / 0 | 0 transfers; 0 forced chunks |
+| Satisfied armed guards | 100 | 100 | 0.892 | 0.978 | 1.619 | 0 / 0 / 0 | 0 / 0 / 0 | 2,346 due reserve summaries; no query or path |
+| Scarce mixed-caliber unreachable supply | 5 | 50 | 0.453 | 0.569 | 0.720 | 170 / 689 / 519 | 4,212 / 245 / 211 | max 8 paths/trip; 143 no-supply and 28 unreachable outcomes; 4 live reservations settled to 0; 0 transfers and forced chunks |
+
+The idle case proves that loaded Armories originate no logistics assessment,
+query, slot, reservation, path, task, or chunk-ticket work. The satisfied case
+includes the real staggered per-guard gate and bounded reserve summary, while
+proving that an above-threshold guard stops before the Armory index. The
+pressure case deliberately uses only five stocked, inaccessible Armories for
+50 alternating Glock/AK requests. It exercises scarce and wrong-caliber
+searches, failed reservations, bounded path construction, no-supply retry, and
+unreachable backoff without permitting a fixture transfer. Controller queries
+matched index queries exactly, controller candidate records matched index
+visits exactly, every numerical ceiling held, and explicit cleanup released
+the four reservations that were active at sample end.
 
 ## Remaining manual compatibility matrix
 

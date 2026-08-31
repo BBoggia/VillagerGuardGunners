@@ -18,7 +18,7 @@ evidence against the candidate JAR.
 - Baseline commit: `ee4a63ee596992e880f50da8463761438739e0e7`
 - Baseline JAR SHA-256: `9809fdaf10a7d34369d108383a6f41a3eba5a2fb7e60861a67f26c0373936c6a`
 - Candidate commit: record before validation
-- Candidate JAR SHA-256: record before validation
+- Candidate JAR SHA-256: `7f0eb3bccf6ec0b46552fa1e07e131b0f36d17de1a55bdab4f25fbdc02743d95`
 - Tested TaCZ content packs: record names and exact versions
 
 ## Armory index and access
@@ -73,9 +73,9 @@ evidence against the candidate JAR.
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| VDEF-PERF-01 | Keep 100 loaded Armories idle with no requesting guard. | Zero block-entity ticks, scans, paths, tasks, or forced chunks originate from logistics. | Not implemented | |
-| VDEF-PERF-02 | Keep 100 armed guards above the configured reserve threshold. | Zero Armory queries or logistics paths occur and p95/p99 stays inside the approved no-request envelope. | Not implemented | |
-| VDEF-PERF-03 | Trigger 50 simultaneous requests with scarce, unreachable, and mixed-caliber supplies. | Work is hard-bounded, reservations settle, backoff prevents retry storms, and the server remains inside the release timing budget. | Not implemented | |
+| VDEF-PERF-01 | Keep 100 loaded Armories idle with no requesting guard. | Zero block-entity ticks, scans, paths, tasks, or forced chunks originate from logistics. | Pass | The default-v9 opt-in run recorded 0 assessments, queries, record/slot inspections, reservations, paths, transfers, and forced-chunk delta; p95/p99 were 0.484/4.634 ms. |
+| VDEF-PERF-02 | Keep 100 armed guards above the configured reserve threshold. | Zero Armory queries or logistics paths occur and p95/p99 stays inside the approved no-request envelope. | Pass | The opt-in run recorded 2,346 staggered due summaries but 0 queries, slots, reservations, and paths; p95/p99 were 0.978/1.619 ms and passed the direct armed-idle budget. |
+| VDEF-PERF-03 | Trigger 50 simultaneous requests with scarce, unreachable, and mixed-caliber supplies. | Work is hard-bounded, reservations settle, backoff prevents retry storms, and the server remains inside the release timing budget. | Pass | Five inaccessible mixed-caliber Armories produced 170 capped queries, 211 path constructions, max 8 per trip, 143 no-supply and 28 unreachable outcomes, 0 transfers/forced chunks, and cleanup from 4 reservations to 0; p95/p99 were 0.569/0.720 ms. |
 | VDEF-DEDICATED-01 | Repeat stocking, request, travel, withdrawal, cancellation, save/restart, and observer synchronization on a dedicated server. | Server and clients agree on inventories and states with no client-only load failure, loss, duplication, or stuck navigation. | Not implemented | |
 
 ## Phase 0 status

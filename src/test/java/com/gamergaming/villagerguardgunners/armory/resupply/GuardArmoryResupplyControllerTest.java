@@ -2,6 +2,7 @@ package com.gamergaming.villagerguardgunners.armory.resupply;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
@@ -40,5 +41,30 @@ final class GuardArmoryResupplyControllerTest {
                         Long.MAX_VALUE,
                         200,
                         guardId));
+    }
+
+    @Test
+    void performanceMetricsRejectContradictoryBounds() {
+        assertAll(
+                () -> assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new GuardArmoryResupplyController.RuntimeMetrics(
+                                0L, 1L, 0L, 0L, 0L, 0L, 0L, 0,
+                                0L, 0L, 0L, 0L)),
+                () -> assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new GuardArmoryResupplyController.RuntimeMetrics(
+                                1L, 1L, 2L, 0L, 0L, 0L, 0L, 0,
+                                0L, 0L, 0L, 0L)),
+                () -> assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new GuardArmoryResupplyController.RuntimeMetrics(
+                                1L, 1L, 1L, 1L, 1L, 2L, 0L, 0,
+                                0L, 0L, 0L, 0L)),
+                () -> assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new GuardArmoryResupplyController.RuntimeMetrics(
+                                1L, 1L, 1L, 1L, 1L, 1L, 9L, 9,
+                                0L, 0L, 0L, 0L)));
     }
 }

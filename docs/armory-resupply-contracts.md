@@ -270,7 +270,7 @@ construct a path, scan an entity or block collection, or load a chunk. The
 `NOT_REGISTERED` representation remains only as a fail-closed compatibility
 view for a Guard instance without the expected mixin interface.
 
-## Step 3 through Step 6 validation matrix
+## Step 3 through Step 7 validation matrix
 
 | Boundary | Automated evidence |
 | --- | --- |
@@ -295,6 +295,8 @@ view for a Guard instance without the expected mixin interface.
 | Loaded-index lifecycle and cap | Forge GameTest loads three real Armories, proves a two-record query cap, removes them, and proves that the index no longer returns them |
 | Automatic runtime | Forge GameTest lets a real dry TaCZ guard reach its deterministic due tick, select and reserve a public Armory, withdraw through the mixin-owned controller, enter cooldown, and leave no reservation behind |
 | On-demand diagnostics | Forge GameTests cover the compatibility dormant view and the registered post-transfer runtime; source contracts prove gate-first evaluation, snapshot-only inspection, and `/vgg inspect` integration |
+| Passive and satisfied scalability | Opt-in workloads prove 100 loaded Armories perform zero logistics work and 100 above-threshold guards perform due reserve summaries but zero index, slot, reservation, or path work |
+| Scarce unreachable request pressure | An opt-in 50-guard mixed-caliber workload proves query/index agreement, eight-record and nine-slot bounds, eight maximum paths per trip, no-supply and unreachable backoff, zero forced chunks or transfers, and reservation cleanup to zero |
 
 The Step 3 checkpoint passed 352 plain JUnit/source-contract tests and all 77
 transformed Forge correctness GameTests on JDK 17. The Step 4 review checkpoint
@@ -307,6 +309,10 @@ The Step 6 checkpoint passes 368 plain JUnit/source-contract tests and all 85
 transformed Forge correctness GameTests, including loaded-index lifecycle,
 bounded automatic selection, reservation, withdrawal, cooldown, and registered
 diagnostics. GameTest sources remain excluded from the production JAR.
+The Step 7 checkpoint passes 372 plain JUnit/source-contract tests, all 85
+transformed Forge correctness GameTests, all 20 opt-in performance GameTests,
+and the independent JSON/JFR gate. The 20-scenario evidence set is bound to the
+exact production JAR and contains a real JFR execution sample for every case.
 
 ## Timing and performance limits
 
@@ -323,5 +329,7 @@ Above-threshold guards pay the due gate plus bounded two-weapon/three-slot
 summary but no index or path work. Loaded Armories have no ticker. Automatic
 selection is capped at 32 index records and nine source slots per returned
 Armory, while path construction retains the independent eight-attempt limit.
-The opt-in Step 7 performance matrix remains the release evidence for the
-100-Armory, 100-satisfied-guard, and 50-request stress scenarios.
+The completed Step 7 performance matrix is the retained release evidence for
+the 100-Armory, 100-satisfied-guard, and 50-request stress scenarios. Its
+production counters are monotonic primitive fields; snapshots are allocated
+only by the opt-in evidence harness outside the timed sample.

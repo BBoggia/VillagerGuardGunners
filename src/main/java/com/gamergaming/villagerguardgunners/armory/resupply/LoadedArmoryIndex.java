@@ -27,6 +27,9 @@ import net.minecraft.world.level.Level;
  */
 public final class LoadedArmoryIndex {
     private final Map<ResourceKey<Level>, DimensionIndex> dimensions = new HashMap<>();
+    private long queryCount;
+    private long visitedRecordCount;
+    private long returnedArmoryCount;
 
     public synchronized boolean register(
             ServerLevel level,
@@ -79,6 +82,7 @@ public final class LoadedArmoryIndex {
                 || maximumRecords > ArmoryResupplyLimits.HARD_MAX_CANDIDATE_ARMORIES) {
             return QueryResult.empty();
         }
+        queryCount = incrementSaturated(queryCount);
         DimensionIndex dimension = dimensions.get(level.dimension());
         if (dimension == null) {
             return QueryResult.empty();
@@ -132,6 +136,8 @@ public final class LoadedArmoryIndex {
         found.sort(Comparator
                 .comparingDouble(IndexedArmory::distanceSquared)
                 .thenComparingLong(candidate -> candidate.position().asLong()));
+        visitedRecordCount = addSaturated(visitedRecordCount, visitedRecords);
+        returnedArmoryCount = addSaturated(returnedArmoryCount, found.size());
         return new QueryResult(
                 found.stream().map(IndexedArmory::armory).toList(),
                 visitedRecords,
@@ -149,6 +155,11 @@ public final class LoadedArmoryIndex {
     public synchronized int loadedCount(ResourceKey<Level> dimension) {
         DimensionIndex index = dimension == null ? null : dimensions.get(dimension);
         return index == null ? 0 : index.size();
+    }
+
+    /** Monotonic counters used by the opt-in performance evidence harness. */
+    public synchronized Metrics metrics() {
+        return new Metrics(queryCount, visitedRecordCount, returnedArmoryCount);
     }
 
     public synchronized void clear() {
@@ -208,6 +219,31 @@ public final class LoadedArmoryIndex {
                 ? sectionMinimum - coordinate
                 : coordinate > sectionMaximum ? coordinate - sectionMaximum : 0.0D;
         return distance * distance;
+    }
+
+    private static long incrementSaturated(long value) {
+        return value == Long.MAX_VALUE ? Long.MAX_VALUE : value + 1L;
+    }
+
+    private static long addSaturated(long value, long increment) {
+        if (increment <= 0L) {
+            return value;
+        }
+        return value > Long.MAX_VALUE - increment
+                ? Long.MAX_VALUE
+                : value + increment;
+    }
+
+    public record Metrics(
+            long queries,
+            long visitedRecords,
+            long returnedArmories) {
+        public Metrics {
+            if (queries < 0L || visitedRecords < 0L || returnedArmories < 0L
+                    || returnedArmories > visitedRecords) {
+                throw new IllegalArgumentException("Loaded Armory metrics are contradictory");
+            }
+        }
     }
 
     public record QueryResult(

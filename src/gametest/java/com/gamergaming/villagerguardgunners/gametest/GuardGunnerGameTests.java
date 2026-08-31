@@ -6832,6 +6832,7 @@ public final class GuardGunnerGameTests {
         LoadedArmoryIndex index = ArmoryResupplyServerServices
                 .forLevel(helper.getLevel())
                 .loadedArmories();
+        LoadedArmoryIndex.Metrics metricsBefore = index.metrics();
         LoadedArmoryIndex.QueryResult bounded = index.query(
                 helper.getLevel(),
                 origin.getX() + 0.5D,
@@ -6839,6 +6840,7 @@ public final class GuardGunnerGameTests {
                 origin.getZ() + 0.5D,
                 8.0D,
                 2);
+        LoadedArmoryIndex.Metrics metricsAfter = index.metrics();
         helper.assertTrue(
                 bounded.visitedRecords() <= 2
                         && bounded.armories().size() <= 2
@@ -6848,6 +6850,13 @@ public final class GuardGunnerGameTests {
                                         .map(helper::absolutePos)
                                         .anyMatch(armory.getBlockPos()::equals)),
                 "The loaded Armory index exceeded its record cap or returned another region");
+        helper.assertTrue(
+                metricsAfter.queries() - metricsBefore.queries() == 1L
+                        && metricsAfter.visitedRecords() - metricsBefore.visitedRecords()
+                                == bounded.visitedRecords()
+                        && metricsAfter.returnedArmories() - metricsBefore.returnedArmories()
+                                == bounded.armories().size(),
+                "The loaded Armory performance counters did not match the bounded query");
 
         for (BlockPos position : localPositions) {
             helper.setBlock(position, Blocks.AIR);
@@ -6909,6 +6918,8 @@ public final class GuardGunnerGameTests {
             GuardArmoryResupplyController.RuntimeSnapshot snapshot = runtime.snapshot();
             if (snapshot.lastOutcome()
                     == GuardArmoryResupplyController.RuntimeOutcome.TRANSFERRED) {
+                GuardArmoryResupplyController.RuntimeMetrics runtimeMetrics =
+                        runtime.performanceMetrics();
                 ArmoryResupplySettings settings =
                         ModConfigs.GUARD_GUNNERS.armoryResupply.snapshot(
                                 ModConfigs.GUARD_GUNNERS.enabled.get());
@@ -6921,6 +6932,15 @@ public final class GuardGunnerGameTests {
                                         <= settings.maximumCandidateArmories()
                                 && snapshot.pathAttempts() == 0
                                 && snapshot.lastTransferredUnits() == stockedUnits
+                                && runtimeMetrics.assessments() == 1L
+                                && runtimeMetrics.needAssessments() == 1L
+                                && runtimeMetrics.armoryQueries() == 1L
+                                && runtimeMetrics.candidateRecords() == 1L
+                                && runtimeMetrics.sourceSlotInspections() == 1L
+                                && runtimeMetrics.reservationAttempts() == 1L
+                                && runtimeMetrics.pathConstructionAttempts() == 0L
+                                && runtimeMetrics.successfulTransfers() == 1L
+                                && runtimeMetrics.transferredUnits() == stockedUnits
                                 && diagnostic.runtimeStatus()
                                         == ArmoryResupplyDiagnostics.RuntimeStatus.REGISTERED
                                 && diagnostic.state() == ArmoryResupplyState.COOLDOWN

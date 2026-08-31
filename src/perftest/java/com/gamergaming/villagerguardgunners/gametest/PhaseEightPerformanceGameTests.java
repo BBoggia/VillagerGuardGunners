@@ -6,8 +6,16 @@ import com.gamergaming.villagerguardgunners.ai.GuardArmoryResupplyGoal;
 import com.gamergaming.villagerguardgunners.ai.SquadCommandMovementGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSharing;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
+import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyServerServices;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyLimits;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyState;
+import com.gamergaming.villagerguardgunners.armory.resupply.GuardArmoryResupplyController;
+import com.gamergaming.villagerguardgunners.armory.resupply.LoadedArmoryIndex;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
+import com.gamergaming.villagerguardgunners.init.ModBlocks;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
@@ -87,6 +95,8 @@ public final class PhaseEightPerformanceGameTests {
             "villagerguardgunners.phase8ProductionArtifactSha256";
     private static final ResourceLocation NINE_MILLIMETER =
             ResourceLocation.fromNamespaceAndPath("tacz", "9mm");
+    private static final ResourceLocation SEVEN_SIXTY_TWO_BY_THIRTY_NINE =
+            ResourceLocation.fromNamespaceAndPath("tacz", "762x39");
 
     private PhaseEightPerformanceGameTests() {
     }
@@ -198,6 +208,27 @@ public final class PhaseEightPerformanceGameTests {
                 Workload.IDLE_WITH_SIDEARMS);
     }
 
+    @GameTest(batch = "phase8_17_armory_idle_100", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 1_600)
+    public static void loadedIdleArmories100(GameTestHelper helper) {
+        runScenario(helper, "armory-idle-100", 0, Weapon.UNARMED,
+                Workload.ARMORY_IDLE);
+    }
+
+    @GameTest(batch = "phase8_18_armory_satisfied_100", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 1_600)
+    public static void suppliedGuardsSkipArmoryQueries100(GameTestHelper helper) {
+        runScenario(helper, "armory-satisfied-100", 100, Weapon.SEMI,
+                Workload.ARMORY_SATISFIED);
+    }
+
+    @GameTest(batch = "phase8_19_armory_pressure_50", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 1_600)
+    public static void scarceUnreachableMixedArmoryRequests50(GameTestHelper helper) {
+        runScenario(helper, "armory-request-pressure-50", 50, Weapon.DRY_SEMI,
+                Workload.ARMORY_REQUEST_PRESSURE);
+    }
+
     private static void runScenario(
             GameTestHelper helper,
             String name,
@@ -220,12 +251,13 @@ public final class PhaseEightPerformanceGameTests {
         List<Vec3> targetAnchors = new ArrayList<>(guardCount);
         List<MovingFriendly> movingFriendlies = new ArrayList<>(guardCount);
         List<ItemEntity> droppedAmmoEntities = new ArrayList<>(guardCount);
+        List<BlockPos> armoryPositions = new ArrayList<>(workload.armoryCount());
         double rowSpacing = rowSpacing(weapon, workload);
         double columnSpacing = workload.columnSpacing();
         double scenarioZOffset = scenarioZOffset(name);
         List<ChunkPos> forcedChunks = forceScenarioChunks(
                 helper,
-                guardCount,
+                Math.max(guardCount, workload.armoryCount()),
                 columnSpacing,
                 rowSpacing,
                 scenarioZOffset);
@@ -254,18 +286,26 @@ public final class PhaseEightPerformanceGameTests {
             GuardAmmoHandler ammoHandler = GuardAmmoAccess.getAmmoHandler(guard);
             ammoHandlers.add(ammoHandler);
             ItemStack gun = ItemStack.EMPTY;
-            if (weapon != Weapon.UNARMED) {
-                gun = createGunStack(weapon);
+            Weapon guardWeapon = workload.weaponForGuard(index, weapon);
+            if (guardWeapon != Weapon.UNARMED) {
+                gun = createGunStack(guardWeapon);
                 guard.setItemSlot(EquipmentSlot.MAINHAND, gun);
-                if (weapon.reloadAmmoId != null) {
+                if (guardWeapon.reloadAmmoId != null) {
                     for (int slot = 0; slot < ammoHandler.getSlots(); slot++) {
                         ammoHandler.setStackInSlot(
                                 slot,
                                 AmmoItemBuilder.create()
-                                        .setId(weapon.reloadAmmoId)
-                                        .setCount(weapon.reloadAmmoPerSlot)
+                                        .setId(guardWeapon.reloadAmmoId)
+                                        .setCount(guardWeapon.reloadAmmoPerSlot)
                                         .build());
                     }
+                }
+                if (workload == Workload.ARMORY_SATISFIED) {
+                    ItemStack reserve = AmmoItemBuilder.create()
+                            .setId(NINE_MILLIMETER)
+                            .build();
+                    reserve.setCount(reserve.getMaxStackSize());
+                    ammoHandler.setStackInSlot(0, reserve);
                 }
                 if (workload == Workload.DROPPED_AMMO_PRESSURE) {
                     for (int slot = 0; slot < ammoHandler.getSlots(); slot++) {
@@ -293,13 +333,9 @@ public final class PhaseEightPerformanceGameTests {
                     cleanup.add(droppedAmmo);
                 }
             }
-            if (workload.hasSidearmLoadout()) {
-                ItemStack sidearmRemainder = GuardSidearmAccess
-                        .getConfiguredSidearmInventory(guard)
-                        .insertItem(0, createGunStack(Weapon.SEMI), false);
-                helper.assertTrue(
-                        sidearmRemainder.isEmpty(),
-                        "Could not install the performance scenario sidearm");
+            if (workload.hasSidearmLoadout()
+                    && workload != Workload.DRY_PRIMARY_SIDEARM_SWITCH) {
+                installPerformanceSidearm(helper, guard);
             }
             gunStacks.add(gun);
             cleanup.add(guard);
@@ -351,6 +387,14 @@ public final class PhaseEightPerformanceGameTests {
             }
         }
 
+        prepareArmoryFixture(
+                helper,
+                workload,
+                scenarioZOffset,
+                columnSpacing,
+                rowSpacing,
+                armoryPositions);
+
         MinecraftServer server = helper.getLevel().getServer();
         long[] samples = new long[SAMPLE_TICKS];
         int[] sampleCount = {0};
@@ -361,6 +405,10 @@ public final class PhaseEightPerformanceGameTests {
         int[] ammoRemainingAtStart = new int[guardCount];
         int[] firstSidearmActiveTick = new int[guardCount];
         Arrays.fill(firstSidearmActiveTick, -1);
+        LoadedArmoryIndex.Metrics[] armoryIndexMetricsAtStart = new LoadedArmoryIndex.Metrics[1];
+        ArmoryControllerTotals[] armoryControllerTotalsAtStart = new ArmoryControllerTotals[1];
+        int[] loadedArmoriesAtStart = {-1};
+        int[] forcedChunksAtStart = {-1};
         boolean[] completed = {false};
         boolean[] shotRecorderRegistered = {false};
         AcceptedShotRecorder shotRecorder = new AcceptedShotRecorder(guards);
@@ -407,6 +455,14 @@ public final class PhaseEightPerformanceGameTests {
                     nominalShotClock);
             observeSidearmActivationTicks(guards, firstSidearmActiveTick, testTick);
             if (testTick == WARMUP_TICKS - 1L) {
+                if (workload == Workload.DRY_PRIMARY_SIDEARM_SWITCH) {
+                    // Install immediately before target release. Installing
+                    // these dry-primary fallbacks during initial entity setup
+                    // allowed the controller to activate them without a
+                    // target, invalidating the intended simultaneous-switch
+                    // timing evidence.
+                    guards.forEach(guard -> installPerformanceSidearm(helper, guard));
+                }
                 recording.start();
             }
             if (testTick == WARMUP_TICKS) {
@@ -421,6 +477,13 @@ public final class PhaseEightPerformanceGameTests {
                         gunStacks,
                         ammoHandlers,
                         ammoRemainingAtStart);
+                ArmoryResupplyServerServices.Services armoryServices =
+                        ArmoryResupplyServerServices.forLevel(helper.getLevel());
+                armoryIndexMetricsAtStart[0] = armoryServices.loadedArmories().metrics();
+                armoryControllerTotalsAtStart[0] = armoryControllerTotals(guards);
+                loadedArmoriesAtStart[0] = armoryServices.loadedArmories()
+                        .loadedCount(helper.getLevel().dimension());
+                forcedChunksAtStart[0] = helper.getLevel().getForcedChunks().size();
             }
             if (testTick < WARMUP_TICKS || sampleCount[0] >= SAMPLE_TICKS) {
                 return;
@@ -436,6 +499,14 @@ public final class PhaseEightPerformanceGameTests {
                     MinecraftForge.EVENT_BUS.unregister(shotRecorder);
                     shotRecorderRegistered[0] = false;
                 }
+                ArmoryEvidence armoryEvidence = captureArmoryEvidence(
+                        helper,
+                        guards,
+                        workload,
+                        armoryIndexMetricsAtStart[0],
+                        armoryControllerTotalsAtStart[0],
+                        loadedArmoriesAtStart[0],
+                        forcedChunksAtStart[0]);
                 ShotEvidence shotEvidence = writeReport(
                         helper,
                         name,
@@ -453,9 +524,11 @@ public final class PhaseEightPerformanceGameTests {
                         guards,
                         droppedAmmoEntities,
                         firstSidearmActiveTick,
+                        armoryEvidence,
                         recording);
                 discardScenarioBullets(helper, guards);
                 cleanup.forEach(Entity::discard);
+                armoryPositions.forEach(position -> helper.setBlock(position, Blocks.AIR));
                 releaseScenarioChunks(helper, forcedChunks);
                 int minimumShotEvidence = minimumAcceptedShotEvidence(guardCount, weapon, workload);
                 int minimumFiringGuards = minimumAcceptedFiringGuards(guardCount, workload);
@@ -480,7 +553,8 @@ public final class PhaseEightPerformanceGameTests {
                         || shotEvidence.sidearmRoleEvidence().sidearmRoleFiringGuards()
                                 < shotEvidence.sidearmRoleEvidence().minimumFiringGuardsPerRole()
                         || shotEvidence.sidearmRoleEvidence().primaryRoleFiringGuards()
-                                < shotEvidence.sidearmRoleEvidence().minimumFiringGuardsPerRole()) {
+                                < shotEvidence.sidearmRoleEvidence().minimumFiringGuardsPerRole()
+                        || !armoryEvidence.validFor(workload, guardCount)) {
                     helper.fail("The performance scenario recorded "
                             + shotEvidence.acceptedTotal()
                             + " accepted native TaCZ shots across "
@@ -520,7 +594,9 @@ public final class PhaseEightPerformanceGameTests {
                             + "/"
                             + shotEvidence.sidearmRoleEvidence().primaryRoleFiringGuards()
                             + "/"
-                            + shotEvidence.sidearmRoleEvidence().minimumFiringGuardsPerRole());
+                            + shotEvidence.sidearmRoleEvidence().minimumFiringGuardsPerRole()
+                            + ", armoryEvidence="
+                            + armoryEvidence);
                     return;
                 }
                 helper.succeed();
@@ -532,7 +608,10 @@ public final class PhaseEightPerformanceGameTests {
         if (workload == Workload.IDLE
                 || workload == Workload.IDLE_WITH_SIDEARMS
                 || workload == Workload.DROPPED_AMMO_PRESSURE
-                || workload == Workload.DRY_SHARING_PRESSURE) {
+                || workload == Workload.DRY_SHARING_PRESSURE
+                || workload == Workload.ARMORY_IDLE
+                || workload == Workload.ARMORY_SATISFIED
+                || workload == Workload.ARMORY_REQUEST_PRESSURE) {
             return 4.0D;
         }
         return switch (weapon) {
@@ -562,9 +641,153 @@ public final class PhaseEightPerformanceGameTests {
             case "dry-primary-sidearm-switch-50" -> 14;
             case "mixed-explosive-standoff-sidearm-20" -> 15;
             case "idle-armed-sidearms-100" -> 16;
+            case "armory-idle-100" -> 17;
+            case "armory-satisfied-100" -> 18;
+            case "armory-request-pressure-50" -> 19;
             default -> throw new IllegalArgumentException("Unknown performance scenario: " + name);
         };
         return scenarioIndex * 512.0D;
+    }
+
+    private static void prepareArmoryFixture(
+            GameTestHelper helper,
+            Workload workload,
+            double scenarioZOffset,
+            double columnSpacing,
+            double rowSpacing,
+            List<BlockPos> positions) {
+        if (workload.armoryCount() == 0) {
+            return;
+        }
+        for (int index = 0; index < workload.armoryCount(); index++) {
+            BlockPos position;
+            ResourceLocation ammoId = null;
+            if (workload == Workload.ARMORY_REQUEST_PRESSURE) {
+                int column = index;
+                position = new BlockPos(
+                        (int) Math.floor(2.5D + column * columnSpacing) + 10,
+                        FLOOR_Y + 1,
+                        (int) Math.floor(scenarioZOffset + 20.5D));
+                ammoId = column % 2 == 0
+                        ? NINE_MILLIMETER
+                        : SEVEN_SIXTY_TWO_BY_THIRTY_NINE;
+                // Keep the nearest reachable point beyond the withdrawal
+                // radius. A one-block cage correctly blocks the eight
+                // approach nodes, but a guard can stand immediately outside
+                // it and still satisfy the transactional distance check.
+                // This 9x9, four-block-high solid enclosure makes the stocked
+                // Armory intentionally unreachable without unloaded chunks or
+                // fixture-only changes to production navigation.
+                for (int x = position.getX() - 4; x <= position.getX() + 4; x++) {
+                    for (int z = position.getZ() - 4; z <= position.getZ() + 4; z++) {
+                        helper.setBlock(new BlockPos(x, FLOOR_Y, z), Blocks.STONE);
+                        if (x != position.getX() || z != position.getZ()) {
+                            for (int y = FLOOR_Y + 1; y <= FLOOR_Y + 4; y++) {
+                                helper.setBlock(new BlockPos(x, y, z), Blocks.STONE);
+                            }
+                        }
+                    }
+                }
+            } else {
+                int column = index / 10;
+                int row = index % 10;
+                int x = (int) Math.floor(2.5D + column * columnSpacing)
+                        + (workload == Workload.ARMORY_SATISFIED ? 3 : 0);
+                int z = (int) Math.floor(scenarioZOffset + 2.5D + row * rowSpacing);
+                position = new BlockPos(x, FLOOR_Y + 1, z);
+                if (workload == Workload.ARMORY_SATISFIED) {
+                    ammoId = NINE_MILLIMETER;
+                }
+            }
+            helper.setBlock(position, ModBlocks.ARMORY.get());
+            ArmoryBlockEntity armory = (ArmoryBlockEntity) helper.getLevel()
+                    .getBlockEntity(helper.absolutePos(position));
+            helper.assertTrue(armory != null, "Could not create the Armory performance fixture");
+            if (ammoId != null) {
+                ItemStack ammunition = AmmoItemBuilder.create().setId(ammoId).build();
+                ammunition.setCount(ammunition.getMaxStackSize());
+                armory.getInventory().setStackInSlot(0, ammunition);
+            }
+            positions.add(position);
+        }
+    }
+
+    private static void installPerformanceSidearm(
+            GameTestHelper helper,
+            Guard guard) {
+        ItemStack sidearmRemainder = GuardSidearmAccess
+                .getConfiguredSidearmInventory(guard)
+                .insertItem(0, createGunStack(Weapon.SEMI), false);
+        helper.assertTrue(
+                sidearmRemainder.isEmpty(),
+                "Could not install the performance scenario sidearm");
+    }
+
+    private static ArmoryControllerTotals armoryControllerTotals(List<Guard> guards) {
+        ArmoryControllerTotals totals = ArmoryControllerTotals.ZERO;
+        for (Guard guard : guards) {
+            GuardArmoryResupplyController controller =
+                    GuardArmoryResupplyAccess.getController(guard);
+            if (controller != null) {
+                totals = totals.plus(controller.performanceMetrics());
+            }
+        }
+        return totals;
+    }
+
+    private static ArmoryEvidence captureArmoryEvidence(
+            GameTestHelper helper,
+            List<Guard> guards,
+            Workload workload,
+            LoadedArmoryIndex.Metrics indexStart,
+            ArmoryControllerTotals controllerStart,
+            int loadedAtStart,
+            int forcedChunksAtStart) {
+        ArmoryResupplyServerServices.Services services =
+                ArmoryResupplyServerServices.forLevel(helper.getLevel());
+        LoadedArmoryIndex.Metrics indexEnd = services.loadedArmories().metrics();
+        ArmoryControllerTotals controllerEnd = armoryControllerTotals(guards);
+        ArmoryControllerTotals controllerDelta = controllerEnd.minus(controllerStart);
+        int activeGuardsAtEnd = 0;
+        int backoffGuardsAtEnd = 0;
+        for (Guard guard : guards) {
+            GuardArmoryResupplyController controller =
+                    GuardArmoryResupplyAccess.getController(guard);
+            if (controller == null) {
+                continue;
+            }
+            ArmoryResupplyState state = controller.snapshot().state();
+            if (state.hasActiveRequest()) {
+                activeGuardsAtEnd++;
+            }
+            if (state.isBackoff()) {
+                backoffGuardsAtEnd++;
+            }
+        }
+        int activeReservationsBeforeCleanup = services.reservations()
+                .activeCount(helper.getLevel().getGameTime());
+        if (workload.isArmoryPerformance()) {
+            guards.forEach(GuardArmoryResupplyAccess::cancel);
+        }
+        int activeReservationsAfterCleanup = services.reservations()
+                .activeCount(helper.getLevel().getGameTime());
+        return new ArmoryEvidence(
+                loadedAtStart,
+                services.loadedArmories().loadedCount(helper.getLevel().dimension()),
+                delta(indexEnd.queries(), indexStart.queries()),
+                delta(indexEnd.visitedRecords(), indexStart.visitedRecords()),
+                delta(indexEnd.returnedArmories(), indexStart.returnedArmories()),
+                controllerDelta,
+                controllerEnd.maximumPathAttemptsPerTrip(),
+                activeGuardsAtEnd,
+                backoffGuardsAtEnd,
+                activeReservationsBeforeCleanup,
+                activeReservationsAfterCleanup,
+                helper.getLevel().getForcedChunks().size() - forcedChunksAtStart);
+    }
+
+    private static long delta(long end, long start) {
+        return end >= start ? end - start : 0L;
     }
 
     private static List<ChunkPos> forceScenarioChunks(
@@ -767,6 +990,7 @@ public final class PhaseEightPerformanceGameTests {
             List<Guard> guards,
             List<ItemEntity> droppedAmmoEntities,
             int[] firstSidearmActiveTick,
+            ArmoryEvidence armoryEvidence,
             Recording recording) {
         long[] sorted = samples.clone();
         Arrays.sort(sorted);
@@ -831,8 +1055,9 @@ public final class PhaseEightPerformanceGameTests {
         JsonObject report = new JsonObject();
         report.addProperty("scenario", name);
         report.addProperty("guards", guardCount);
-        report.addProperty("weapon", weapon.gunId == null ? "none" : weapon.gunId.toString());
+        report.addProperty("weapon", workload.reportWeapon(weapon));
         report.addProperty("workload", workload.name().toLowerCase());
+        report.addProperty("armories", workload.armoryCount());
         report.addProperty("warmupTicks", WARMUP_TICKS);
         report.addProperty("sampleTicks", samples.length);
         report.addProperty("configProfile", "default-v9");
@@ -908,6 +1133,7 @@ public final class PhaseEightPerformanceGameTests {
         report.addProperty(
                 "sidearmActivationTimingValid",
                 sidearmRoleEvidence.activationTimingValid());
+        armoryEvidence.addTo(report);
         JsonArray perGuardEvidence = new JsonArray();
         Arrays.stream(perGuardShotEvidence).forEach(perGuardEvidence::add);
         report.add("perGuardAcceptedShotEvidence", perGuardEvidence);
@@ -987,7 +1213,9 @@ public final class PhaseEightPerformanceGameTests {
                     "expectedGunId",
                     workload.expectsSidearmActiveForRole(index)
                             ? Weapon.SEMI.gunId.toString()
-                            : weapon.gunId == null ? "none" : weapon.gunId.toString());
+                            : workload.weaponForGuard(index, weapon).gunId == null
+                                    ? "none"
+                                    : workload.weaponForGuard(index, weapon).gunId.toString());
             state.addProperty(
                     "expectedSidearmActive",
                     workload.expectsSidearmActiveForRole(index));
@@ -1122,7 +1350,7 @@ public final class PhaseEightPerformanceGameTests {
         }
         int minimumFiringGuardsPerRole = workload
                         == Workload.MIXED_EXPLOSIVE_STANDOFF_SIDEARM
-                ? Math.max(1, ((guards.size() / 2) * 4 + 4) / 5)
+                ? Math.max(1, ((guards.size() / 2) * 7 + 9) / 10)
                 : 0;
         return new SidearmRoleEvidence(
                 sidearmRoleFiringGuards,
@@ -1589,12 +1817,18 @@ public final class PhaseEightPerformanceGameTests {
         DROPPED_AMMO_PRESSURE,
         DRY_SHARING_PRESSURE,
         DRY_PRIMARY_SIDEARM_SWITCH,
-        MIXED_EXPLOSIVE_STANDOFF_SIDEARM;
+        MIXED_EXPLOSIVE_STANDOFF_SIDEARM,
+        ARMORY_IDLE,
+        ARMORY_SATISFIED,
+        ARMORY_REQUEST_PRESSURE;
 
         private boolean hasTarget() {
             return this != IDLE
                     && this != IDLE_WITH_SIDEARMS
-                    && this != DROPPED_AMMO_PRESSURE;
+                    && this != DROPPED_AMMO_PRESSURE
+                    && this != ARMORY_IDLE
+                    && this != ARMORY_SATISFIED
+                    && this != ARMORY_REQUEST_PRESSURE;
         }
 
         private boolean hasSidearmLoadout() {
@@ -1640,10 +1874,42 @@ public final class PhaseEightPerformanceGameTests {
             // A 20-block RPG target would otherwise occupy the next guard
             // column and correctly trip explosive ally protection. The moving
             // friendly workload also needs room for independent repositioning.
+            if (this == ARMORY_IDLE) {
+                return 4.0D;
+            }
             return this == MIXED_EXPLOSIVE_STANDOFF_SIDEARM
                             || this == PROTECTED_LANES
                     ? 32.0D
                     : 20.0D;
+        }
+
+        private int armoryCount() {
+            return switch (this) {
+                case ARMORY_IDLE, ARMORY_SATISFIED -> 100;
+                case ARMORY_REQUEST_PRESSURE -> 5;
+                default -> 0;
+            };
+        }
+
+        private boolean isArmoryPerformance() {
+            return this == ARMORY_IDLE
+                    || this == ARMORY_SATISFIED
+                    || this == ARMORY_REQUEST_PRESSURE;
+        }
+
+        private Weapon weaponForGuard(int guardIndex, Weapon fallback) {
+            if (this != ARMORY_REQUEST_PRESSURE) {
+                return fallback;
+            }
+            return guardIndex % 2 == 0
+                    ? Weapon.DRY_SEMI
+                    : Weapon.DRY_AUTOMATIC;
+        }
+
+        private String reportWeapon(Weapon fallback) {
+            return this == ARMORY_REQUEST_PRESSURE
+                    ? "mixed"
+                    : fallback.gunId == null ? "none" : fallback.gunId.toString();
         }
 
         private int expectedSidearmLoadouts(int guardCount) {
@@ -1663,6 +1929,161 @@ public final class PhaseEightPerformanceGameTests {
                 case DRY_PRIMARY_SIDEARM_SWITCH -> guardCount;
                 case MIXED_EXPLOSIVE_STANDOFF_SIDEARM -> guardCount / 2;
                 default -> 0;
+            };
+        }
+    }
+
+    private record ArmoryControllerTotals(
+            long assessments,
+            long needAssessments,
+            long armoryQueries,
+            long candidateRecords,
+            long sourceSlotInspections,
+            long reservationAttempts,
+            long pathConstructionAttempts,
+            int maximumPathAttemptsPerTrip,
+            long successfulTransfers,
+            long transferredUnits,
+            long noSupplyOutcomes,
+            long unreachableOutcomes) {
+        private static final ArmoryControllerTotals ZERO = new ArmoryControllerTotals(
+                0L, 0L, 0L, 0L, 0L, 0L, 0L, 0, 0L, 0L, 0L, 0L);
+
+        private ArmoryControllerTotals plus(
+                GuardArmoryResupplyController.RuntimeMetrics metrics) {
+            return new ArmoryControllerTotals(
+                    assessments + metrics.assessments(),
+                    needAssessments + metrics.needAssessments(),
+                    armoryQueries + metrics.armoryQueries(),
+                    candidateRecords + metrics.candidateRecords(),
+                    sourceSlotInspections + metrics.sourceSlotInspections(),
+                    reservationAttempts + metrics.reservationAttempts(),
+                    pathConstructionAttempts + metrics.pathConstructionAttempts(),
+                    Math.max(maximumPathAttemptsPerTrip, metrics.maximumPathAttemptsPerTrip()),
+                    successfulTransfers + metrics.successfulTransfers(),
+                    transferredUnits + metrics.transferredUnits(),
+                    noSupplyOutcomes + metrics.noSupplyOutcomes(),
+                    unreachableOutcomes + metrics.unreachableOutcomes());
+        }
+
+        private ArmoryControllerTotals minus(ArmoryControllerTotals start) {
+            return new ArmoryControllerTotals(
+                    delta(assessments, start.assessments),
+                    delta(needAssessments, start.needAssessments),
+                    delta(armoryQueries, start.armoryQueries),
+                    delta(candidateRecords, start.candidateRecords),
+                    delta(sourceSlotInspections, start.sourceSlotInspections),
+                    delta(reservationAttempts, start.reservationAttempts),
+                    delta(pathConstructionAttempts, start.pathConstructionAttempts),
+                    maximumPathAttemptsPerTrip,
+                    delta(successfulTransfers, start.successfulTransfers),
+                    delta(transferredUnits, start.transferredUnits),
+                    delta(noSupplyOutcomes, start.noSupplyOutcomes),
+                    delta(unreachableOutcomes, start.unreachableOutcomes));
+        }
+    }
+
+    private record ArmoryEvidence(
+            int loadedAtStart,
+            int loadedAtEnd,
+            long indexQueries,
+            long indexVisitedRecords,
+            long indexReturnedArmories,
+            ArmoryControllerTotals controller,
+            int maximumPathAttemptsPerTrip,
+            int activeGuardsAtEnd,
+            int backoffGuardsAtEnd,
+            int activeReservationsBeforeCleanup,
+            int activeReservationsAfterCleanup,
+            int forcedChunkCountDelta) {
+
+        private void addTo(JsonObject report) {
+            report.addProperty("loadedArmoriesAtStart", loadedAtStart);
+            report.addProperty("loadedArmoriesAtEnd", loadedAtEnd);
+            report.addProperty("armoryIndexQueries", indexQueries);
+            report.addProperty("armoryIndexVisitedRecords", indexVisitedRecords);
+            report.addProperty("armoryIndexReturnedArmories", indexReturnedArmories);
+            report.addProperty("armoryAssessments", controller.assessments());
+            report.addProperty("armoryNeedAssessments", controller.needAssessments());
+            report.addProperty("armoryControllerQueries", controller.armoryQueries());
+            report.addProperty("armoryCandidateRecords", controller.candidateRecords());
+            report.addProperty("armorySourceSlotInspections", controller.sourceSlotInspections());
+            report.addProperty("armoryReservationAttempts", controller.reservationAttempts());
+            report.addProperty(
+                    "armoryPathConstructionAttempts",
+                    controller.pathConstructionAttempts());
+            report.addProperty("armoryMaximumPathAttemptsPerTrip", maximumPathAttemptsPerTrip);
+            report.addProperty("armorySuccessfulTransfers", controller.successfulTransfers());
+            report.addProperty("armoryTransferredUnits", controller.transferredUnits());
+            report.addProperty("armoryNoSupplyOutcomes", controller.noSupplyOutcomes());
+            report.addProperty("armoryUnreachableOutcomes", controller.unreachableOutcomes());
+            report.addProperty("armoryActiveGuardsAtEnd", activeGuardsAtEnd);
+            report.addProperty("armoryBackoffGuardsAtEnd", backoffGuardsAtEnd);
+            report.addProperty(
+                    "activeArmoryReservationsBeforeCleanup",
+                    activeReservationsBeforeCleanup);
+            report.addProperty(
+                    "activeArmoryReservationsAfterCleanup",
+                    activeReservationsAfterCleanup);
+            report.addProperty("armoryForcedChunkCountDelta", forcedChunkCountDelta);
+        }
+
+        private boolean validFor(Workload workload, int guardCount) {
+            long candidateLimit = controller.armoryQueries()
+                    * ModConfigs.GUARD_GUNNERS.armoryResupply.maximumCandidateArmories.get();
+            long slotLimit = indexReturnedArmories
+                    * ArmoryResupplyLimits.HARD_MAX_RESERVATION_SOURCE_SLOTS;
+            boolean generallyValid = loadedAtStart == workload.armoryCount()
+                    && loadedAtEnd == workload.armoryCount()
+                    && indexQueries == controller.armoryQueries()
+                    && indexVisitedRecords == controller.candidateRecords()
+                    && indexVisitedRecords <= candidateLimit
+                    && controller.sourceSlotInspections() <= slotLimit
+                    && controller.reservationAttempts()
+                            <= controller.sourceSlotInspections()
+                    && maximumPathAttemptsPerTrip
+                            <= ArmoryResupplyLimits.HARD_MAX_PATH_ATTEMPTS
+                    && activeGuardsAtEnd >= 0
+                    && activeGuardsAtEnd <= guardCount
+                    && backoffGuardsAtEnd >= 0
+                    && backoffGuardsAtEnd <= guardCount
+                    && activeReservationsBeforeCleanup >= 0
+                    && activeReservationsAfterCleanup >= 0
+                    && forcedChunkCountDelta == 0;
+            if (!generallyValid || !workload.isArmoryPerformance()) {
+                return generallyValid;
+            }
+            if (activeReservationsAfterCleanup != 0
+                    || controller.successfulTransfers() != 0L
+                    || controller.transferredUnits() != 0L) {
+                return false;
+            }
+            return switch (workload) {
+                case ARMORY_IDLE -> controller.assessments() == 0L
+                        && indexQueries == 0L
+                        && indexVisitedRecords == 0L
+                        && controller.sourceSlotInspections() == 0L
+                        && controller.pathConstructionAttempts() == 0L
+                        && controller.reservationAttempts() == 0L;
+                case ARMORY_SATISFIED -> controller.assessments() > 0L
+                        && controller.needAssessments() == controller.assessments()
+                        && indexQueries == 0L
+                        && indexVisitedRecords == 0L
+                        && controller.sourceSlotInspections() == 0L
+                        && controller.pathConstructionAttempts() == 0L
+                        && controller.reservationAttempts() == 0L;
+                case ARMORY_REQUEST_PRESSURE -> controller.assessments() > 0L
+                        && controller.needAssessments() > 0L
+                        && indexQueries > 0L
+                        && indexVisitedRecords > 0L
+                        && indexReturnedArmories > 0L
+                        && controller.sourceSlotInspections() > 0L
+                        && controller.reservationAttempts() > 0L
+                        && controller.pathConstructionAttempts() > 0L
+                        && maximumPathAttemptsPerTrip > 0
+                        && controller.noSupplyOutcomes() > 0L
+                        && controller.unreachableOutcomes() > 0L;
+                default -> false;
             };
         }
     }

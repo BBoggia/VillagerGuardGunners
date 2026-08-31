@@ -48,6 +48,19 @@ public final class GuardArmoryResupplyController {
     private int pathAttempts;
     private int consecutiveUnreachable;
     private long lastTransferredUnits;
+    private long assessmentCount;
+    private long needAssessmentCount;
+    private long armoryQueryCount;
+    private long candidateRecordCount;
+    private long sourceSlotInspectionCount;
+    private long reservationAttemptCount;
+    private long pathConstructionAttemptCount;
+    private int accountedTripPathAttempts;
+    private int maximumPathAttemptsPerTrip;
+    private long successfulTransferCount;
+    private long transferredUnitCount;
+    private long noSupplyOutcomeCount;
+    private long unreachableOutcomeCount;
 
     public GuardArmoryResupplyController(Guard guard) {
         this.guard = Objects.requireNonNull(guard, "guard");
@@ -107,7 +120,7 @@ public final class GuardArmoryResupplyController {
 
         ArmoryResupplyMovementController.MovementResult result =
                 movement.tick(featureEnabledNow());
-        pathAttempts = result.pathAttempts();
+        accountPathAttempts(result.pathAttempts());
         if (result.nextPathAttemptGameTick() != Long.MIN_VALUE) {
             nextActionGameTick = result.nextPathAttemptGameTick();
         }
@@ -170,7 +183,29 @@ public final class GuardArmoryResupplyController {
                 lastTransferredUnits);
     }
 
+    /**
+     * Monotonic primitive counters for the opt-in performance evidence suite.
+     * Capturing them allocates only when explicitly requested outside a timed
+     * sample; normal goal ticks merely update primitive fields on due work.
+     */
+    public RuntimeMetrics performanceMetrics() {
+        return new RuntimeMetrics(
+                assessmentCount,
+                needAssessmentCount,
+                armoryQueryCount,
+                candidateRecordCount,
+                sourceSlotInspectionCount,
+                reservationAttemptCount,
+                pathConstructionAttemptCount,
+                maximumPathAttemptsPerTrip,
+                successfulTransferCount,
+                transferredUnitCount,
+                noSupplyOutcomeCount,
+                unreachableOutcomeCount);
+    }
+
     private boolean assessAndReserve(ServerLevel level, long gameTick) {
+        assessmentCount = incrementSaturated(assessmentCount);
         ArmoryResupplySettings settings;
         try {
             settings = config.armoryResupply.snapshot(config.enabled.get());
@@ -182,6 +217,7 @@ public final class GuardArmoryResupplyController {
         activeSettings = settings;
         candidateInspections = 0;
         pathAttempts = 0;
+        accountedTripPathAttempts = 0;
         lastTransferredUnits = 0L;
 
         lastGateStatus = ArmoryResupplyLiveGate.evaluate(settings.enabled(), guard);
@@ -194,6 +230,7 @@ public final class GuardArmoryResupplyController {
 
         GuardWeaponAmmunition.LoadoutSummary loadout;
         try {
+            needAssessmentCount = incrementSaturated(needAssessmentCount);
             loadout = GuardWeaponAmmunition.captureSummary(
                     guard,
                     GuardAmmoAccess.getTaCZInventoryHandler(guard));
@@ -237,6 +274,7 @@ public final class GuardArmoryResupplyController {
 
         ArmoryResupplyServerServices.Services services =
                 ArmoryResupplyServerServices.forLevel(level);
+        armoryQueryCount = incrementSaturated(armoryQueryCount);
         LoadedArmoryIndex.QueryResult query = services.loadedArmories().query(
                 level,
                 guard.getX(),
@@ -245,6 +283,9 @@ public final class GuardArmoryResupplyController {
                 settings.searchRadius(),
                 settings.maximumCandidateArmories());
         candidateInspections = query.visitedRecords();
+        candidateRecordCount = addSaturated(
+                candidateRecordCount,
+                query.visitedRecords());
         ItemStack activeGun = guard.getMainHandItem().copy();
         ArmoryAmmoReservation reserved = reserveFirstCompatible(
                 services.reservations(),
@@ -258,6 +299,7 @@ public final class GuardArmoryResupplyController {
                     ArmoryResupplyEvent.NO_SUPPLY);
             clearActiveReferences(false);
             lastOutcome = RuntimeOutcome.NO_SUPPLY;
+            noSupplyOutcomeCount = incrementSaturated(noSupplyOutcomeCount);
             nextActionGameTick = ArmoryResupplyLimits.retryAt(
                     gameTick,
                     settings.noSupplyRetryTicks());
@@ -274,7 +316,7 @@ public final class GuardArmoryResupplyController {
                 settings.movementSpeed());
         ArmoryResupplyMovementController.MovementResult movementResult =
                 movement.begin(Objects.requireNonNull(request).key(), settings.enabled());
-        pathAttempts = movementResult.pathAttempts();
+        accountPathAttempts(movementResult.pathAttempts());
         if (movementResult.withdrawalReady()) {
             state = ArmoryResupplyStateContract.transition(
                     state,
@@ -338,6 +380,7 @@ public final class GuardArmoryResupplyController {
                 continue;
             }
             for (int slot = 0; slot < slots; slot++) {
+                sourceSlotInspectionCount = incrementSaturated(sourceSlotInspectionCount);
                 ArmorySupplyCandidate.Inspection inspection = ArmorySupplyCandidate.inspect(
                         activeRequest,
                         activeRequest.dimension(),
@@ -348,6 +391,7 @@ public final class GuardArmoryResupplyController {
                 if (!inspection.ready()) {
                     continue;
                 }
+                reservationAttemptCount = incrementSaturated(reservationAttemptCount);
                 ArmoryReservationBook.ReservationResult reservation = reservations.reserve(
                         activeRequest,
                         Objects.requireNonNull(inspection.candidate()),
@@ -394,6 +438,10 @@ public final class GuardArmoryResupplyController {
                     state,
                     ArmoryResupplyEvent.TRANSFER_SUCCEEDED);
             lastTransferredUnits = result.transferredUnits();
+            successfulTransferCount = incrementSaturated(successfulTransferCount);
+            transferredUnitCount = addSaturated(
+                    transferredUnitCount,
+                    result.transferredUnits());
             lastOutcome = RuntimeOutcome.TRANSFERRED;
             consecutiveUnreachable = 0;
             clearActiveReferences(false);
@@ -430,6 +478,7 @@ public final class GuardArmoryResupplyController {
         releaseActiveResources();
         clearActiveReferences(false);
         lastOutcome = outcome;
+        noSupplyOutcomeCount = incrementSaturated(noSupplyOutcomeCount);
         int delay = settings == null
                 ? config.armoryResupply.noSupplyRetryTicks.get()
                 : settings.noSupplyRetryTicks();
@@ -457,6 +506,7 @@ public final class GuardArmoryResupplyController {
                 baseDelay);
         nextActionGameTick = ArmoryResupplyLimits.retryAt(gameTick, delay);
         lastOutcome = RuntimeOutcome.UNREACHABLE;
+        unreachableOutcomeCount = incrementSaturated(unreachableOutcomeCount);
     }
 
     private void cancelActive(RuntimeOutcome outcome, boolean scheduleRetry) {
@@ -542,6 +592,37 @@ public final class GuardArmoryResupplyController {
         return nextActionGameTick == Long.MIN_VALUE ? -1L : nextActionGameTick;
     }
 
+    private void accountPathAttempts(int currentPathAttempts) {
+        if (currentPathAttempts < 0
+                || currentPathAttempts > ArmoryResupplyLimits.HARD_MAX_PATH_ATTEMPTS) {
+            throw new IllegalArgumentException("Path-attempt evidence exceeded its bounds");
+        }
+        if (currentPathAttempts < accountedTripPathAttempts) {
+            accountedTripPathAttempts = 0;
+        }
+        pathConstructionAttemptCount = addSaturated(
+                pathConstructionAttemptCount,
+                currentPathAttempts - accountedTripPathAttempts);
+        accountedTripPathAttempts = currentPathAttempts;
+        maximumPathAttemptsPerTrip = Math.max(
+                maximumPathAttemptsPerTrip,
+                currentPathAttempts);
+        pathAttempts = currentPathAttempts;
+    }
+
+    private static long incrementSaturated(long value) {
+        return value == Long.MAX_VALUE ? Long.MAX_VALUE : value + 1L;
+    }
+
+    private static long addSaturated(long value, long increment) {
+        if (increment <= 0L) {
+            return value;
+        }
+        return value > Long.MAX_VALUE - increment
+                ? Long.MAX_VALUE
+                : value + increment;
+    }
+
     public enum RuntimeOutcome {
         NOT_ASSESSED,
         NOT_DUE,
@@ -583,6 +664,42 @@ public final class GuardArmoryResupplyController {
                     || (state.ownsReservation() != (selectedTarget != null))
                     || (state.hasActiveRequest() != (request != null))) {
                 throw new IllegalArgumentException("Armory runtime snapshot is contradictory");
+            }
+        }
+    }
+
+    public record RuntimeMetrics(
+            long assessments,
+            long needAssessments,
+            long armoryQueries,
+            long candidateRecords,
+            long sourceSlotInspections,
+            long reservationAttempts,
+            long pathConstructionAttempts,
+            int maximumPathAttemptsPerTrip,
+            long successfulTransfers,
+            long transferredUnits,
+            long noSupplyOutcomes,
+            long unreachableOutcomes) {
+        public RuntimeMetrics {
+            if (assessments < 0L
+                    || needAssessments < 0L
+                    || needAssessments > assessments
+                    || armoryQueries < 0L
+                    || armoryQueries > needAssessments
+                    || candidateRecords < 0L
+                    || sourceSlotInspections < 0L
+                    || reservationAttempts < 0L
+                    || reservationAttempts > sourceSlotInspections
+                    || pathConstructionAttempts < 0L
+                    || maximumPathAttemptsPerTrip < 0
+                    || maximumPathAttemptsPerTrip
+                            > ArmoryResupplyLimits.HARD_MAX_PATH_ATTEMPTS
+                    || successfulTransfers < 0L
+                    || transferredUnits < 0L
+                    || noSupplyOutcomes < 0L
+                    || unreachableOutcomes < 0L) {
+                throw new IllegalArgumentException("Armory runtime metrics are contradictory");
             }
         }
     }

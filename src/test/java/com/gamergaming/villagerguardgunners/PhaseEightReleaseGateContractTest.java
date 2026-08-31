@@ -57,6 +57,13 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(build.contains("report.workload != expectedScenario.workload")),
                 () -> assertTrue(build.contains("report.sidearmLoadoutsObserved")),
                 () -> assertTrue(build.contains("report.sidearmActiveGuardsAtEnd")),
+                () -> assertTrue(build.contains("'armory-idle-100'")),
+                () -> assertTrue(build.contains("'armory-satisfied-100'")),
+                () -> assertTrue(build.contains("'armory-request-pressure-50'")),
+                () -> assertTrue(build.contains("report.armoryIndexQueries")),
+                () -> assertTrue(build.contains("report.armoryPathConstructionAttempts")),
+                () -> assertTrue(build.contains("report.armoryForcedChunkCountDelta")),
+                () -> assertTrue(build.contains("activeArmoryReservationsAfterCleanup")),
                 () -> assertTrue(build.contains("validFinalSidearmStates")),
                 () -> assertTrue(build.contains("finalRecoveryRequired != 0")),
                 () -> assertTrue(build.contains("nonNegativeEvidenceFields")),
@@ -81,6 +88,11 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(performanceHarness.contains("return 6.0D")),
                 () -> assertTrue(performanceHarness.contains("retainOnlyAddOnGoals(guard)")),
                 () -> assertTrue(performanceHarness.contains("GuardArmoryResupplyGoal")),
+                () -> assertTrue(performanceHarness.contains("ArmoryEvidence")),
+                () -> assertTrue(performanceHarness.contains("ARMORY_IDLE")),
+                () -> assertTrue(performanceHarness.contains("ARMORY_SATISFIED")),
+                () -> assertTrue(performanceHarness.contains("ARMORY_REQUEST_PRESSURE")),
+                () -> assertTrue(performanceHarness.contains("guards.forEach(GuardArmoryResupplyAccess::cancel)")),
                 () -> assertTrue(performanceHarness.contains(
                         "workload == Workload.CLEAR_LANES")));
     }

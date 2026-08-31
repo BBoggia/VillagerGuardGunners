@@ -300,7 +300,7 @@ public final class PhaseEightPerformanceGameTests {
                                         .build());
                     }
                 }
-                if (workload == Workload.ARMORY_SATISFIED) {
+                if (workload.suppliesFullPrimaryReserve()) {
                     ItemStack reserve = AmmoItemBuilder.create()
                             .setId(NINE_MILLIMETER)
                             .build();
@@ -1928,6 +1928,12 @@ public final class PhaseEightPerformanceGameTests {
                     || this == ARMORY_REQUEST_PRESSURE;
         }
 
+        private boolean suppliesFullPrimaryReserve() {
+            return this == IDLE
+                    || this == IDLE_WITH_SIDEARMS
+                    || this == ARMORY_SATISFIED;
+        }
+
         private Weapon weaponForGuard(int guardIndex, Weapon fallback) {
             if (this != ARMORY_REQUEST_PRESSURE) {
                 return fallback;
@@ -2081,8 +2087,18 @@ public final class PhaseEightPerformanceGameTests {
                     && activeReservationsBeforeCleanup >= 0
                     && activeReservationsAfterCleanup >= 0
                     && forcedChunkCountDelta == 0;
-            if (!generallyValid || !workload.isArmoryPerformance()) {
+            if (!generallyValid) {
                 return generallyValid;
+            }
+            if (workload == Workload.IDLE || workload == Workload.IDLE_WITH_SIDEARMS) {
+                return indexQueries == 0L
+                        && indexVisitedRecords == 0L
+                        && controller.sourceSlotInspections() == 0L
+                        && controller.reservationAttempts() == 0L
+                        && controller.pathConstructionAttempts() == 0L;
+            }
+            if (!workload.isArmoryPerformance()) {
+                return true;
             }
             if (activeReservationsAfterCleanup != 0
                     || controller.successfulTransfers() != 0L

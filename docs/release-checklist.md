@@ -14,7 +14,7 @@ the relevant manual rows pass against the exact files being distributed.
 - Fzzy Config: `0.7.6+1.20.1`
 - Kotlin for Forge: `4.12.0`
 - Gun pack(s): record exact names and versions in the release notes
-- Current development JAR SHA-256: `37acf644917d83ed538575f2a654f09b34408b1fde14b317a5187485d9a9be69`
+- Current development JAR SHA-256: `98cd60ef18e118428cfda3ce23387168463e940e786ac6542bf5e2c5bd811813`
 
 ## Automated gates
 

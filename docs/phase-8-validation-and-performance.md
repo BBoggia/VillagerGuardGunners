@@ -221,9 +221,9 @@ development machine, not add-on-only timings or a portable capacity claim.
 
 | Scenario | Armories | Guards | Avg ms | p95 ms | p99 ms | Queries / visited / returned | Slot inspections / reservations / paths | Outcomes and cleanup |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| Loaded Armories, no guards | 100 | 0 | 0.434 | 0.484 | 4.634 | 0 / 0 / 0 | 0 / 0 / 0 | 0 transfers; 0 forced chunks |
-| Satisfied armed guards | 100 | 100 | 0.892 | 0.978 | 1.619 | 0 / 0 / 0 | 0 / 0 / 0 | 2,346 due reserve summaries; no query or path |
-| Scarce mixed-caliber unreachable supply | 5 | 50 | 0.453 | 0.569 | 0.720 | 170 / 689 / 519 | 4,212 / 245 / 211 | max 8 paths/trip; 143 no-supply and 28 unreachable outcomes; 4 live reservations settled to 0; 0 transfers and forced chunks |
+| Loaded Armories, no guards | 100 | 0 | 0.745 | 0.921 | 1.191 | 0 / 0 / 0 | 0 / 0 / 0 | 0 transfers; 0 forced chunks |
+| Satisfied armed guards | 100 | 100 | 1.413 | 1.690 | 1.988 | 0 / 0 / 0 | 0 / 0 / 0 | 2,475 due reserve summaries; no query or path |
+| Scarce mixed-caliber unreachable supply | 5 | 50 | 1.124 | 1.486 | 1.803 | 218 / 911 / 697 | 5,793 / 330 / 205 | max 8 paths/trip; 194 no-supply and 32 unreachable outcomes; 0 live reservations after natural settlement and cleanup; 0 transfers and forced chunks |
 
 The idle case proves that loaded Armories originate no logistics assessment,
 query, slot, reservation, path, task, or chunk-ticket work. The satisfied case
@@ -241,7 +241,7 @@ the four reservations that were active at sample end.
 
 All 20 default-v9 workloads and the independent JSON/JFR verifier passed again
 after the effective-order layer became role-aware. The run is bound to artifact
-`37acf644917d83ed538575f2a654f09b34408b1fde14b317a5187485d9a9be69`.
+`98cd60ef18e118428cfda3ce23387168463e940e786ac6542bf5e2c5bd811813`.
 Roleless guards use the same cached order object after first resolution, while
 assigned-role behavior and cache invalidation are covered by the normal
 87-case correctness suite. This performance run therefore exercises the new

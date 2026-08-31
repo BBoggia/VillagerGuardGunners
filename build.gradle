@@ -35,12 +35,15 @@ def curseForgeReleaseDirectory = layout.buildDirectory.dir(
 def generatedGameTestArenaDirectory = layout.buildDirectory.dir('generated/gametest-arena')
 def phase8ArtifactSha256Property = 'villagerguardgunners.phase8ProductionArtifactSha256'
 def naturalLoadoutAuthoringPaths = [
+        'docs/guard-roles.md',
         'docs/natural-loadout-migration.md',
         'docs/natural-loadout-v3-sidearms.md',
         'docs/examples/natural-loadout-datapack/README.md',
         'docs/examples/natural-loadout-datapack/pack.mcmeta',
+        'docs/examples/natural-loadout-datapack/data/vgg_example/guard_roles/village_marksman.json',
         'docs/examples/natural-loadout-datapack/data/vgg_example/natural_guard_loadouts/contextual_guards.json',
         'docs/examples/natural-loadout-datapack/data/vgg_example/natural_guard_loadouts/migrated_normal.json',
+        'docs/examples/natural-loadout-datapack/data/vgg_example/natural_guard_loadouts/role_marksmen.json',
         'docs/examples/natural-loadout-datapack/data/vgg_example/natural_guard_loadouts/rifle_sidearms.json',
         'docs/examples/natural-loadout-datapack/data/vgg_example/tags/worldgen/biome/is_dry.json',
         'docs/examples/natural-loadout-datapack/data/vgg_example/tags/worldgen/structure/villages.json'
@@ -289,6 +292,11 @@ tasks.register('verifyReleaseArtifact') {
                     'data/villagerguardgunners/natural_guard_loadouts/easy.json',
                     'data/villagerguardgunners/natural_guard_loadouts/normal.json',
                     'data/villagerguardgunners/natural_guard_loadouts/hard.json',
+                    'data/villagerguardgunners/guard_roles/breacher.json',
+                    'data/villagerguardgunners/guard_roles/demolitions.json',
+                    'data/villagerguardgunners/guard_roles/marksman.json',
+                    'data/villagerguardgunners/guard_roles/rifleman.json',
+                    'data/villagerguardgunners/guard_roles/support.json',
                     'data/villagerguardgunners/tags/entity_types/guard_allies.json',
                     'data/villagerguardgunners/tags/entity_types/always_engage.json',
                     'data/villagerguardgunners/tags/entity_types/never_engage.json',
@@ -314,6 +322,7 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/command/NaturalGuardLoadoutCommandContract.class',
                     'com/gamergaming/villagerguardgunners/command/NaturalGuardLoadoutCommandService.class',
                     'com/gamergaming/villagerguardgunners/command/NaturalGuardLoadoutCommands.class',
+                    'com/gamergaming/villagerguardgunners/command/GuardRoleCommands.class',
                     'com/gamergaming/villagerguardgunners/command/SquadRegistryCommands.class',
                     'com/gamergaming/villagerguardgunners/init/ModConfigs.class',
                     'com/gamergaming/villagerguardgunners/init/ModBlocks.class',
@@ -325,6 +334,7 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/item/SquadCommandLedgerItem.class',
                     'com/gamergaming/villagerguardgunners/api/GuardNaturalLoadoutAccess.class',
                     'com/gamergaming/villagerguardgunners/api/GuardArmoryResupplyAccess.class',
+                    'com/gamergaming/villagerguardgunners/api/GuardRoleAccess.class',
                     'com/gamergaming/villagerguardgunners/api/GuardSquadAccess.class',
                     'com/gamergaming/villagerguardgunners/api/GuardSquadCommandAccess.class',
                     'com/gamergaming/villagerguardgunners/ai/SquadCommandMovementController.class',
@@ -334,6 +344,10 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplate.class',
                     'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplateInteractions.class',
                     'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplateService.class',
+                    'com/gamergaming/villagerguardgunners/role/GuardRoleDefinition.class',
+                    'com/gamergaming/villagerguardgunners/role/GuardRoleReloadSnapshot.class',
+                    'com/gamergaming/villagerguardgunners/role/GuardRoleResolver.class',
+                    'com/gamergaming/villagerguardgunners/role/GuardRoles.class',
                     'com/gamergaming/villagerguardgunners/squad/SquadLedgerBinding.class',
                     'com/gamergaming/villagerguardgunners/squad/SquadLedgerBindingCodec.class',
                     'com/gamergaming/villagerguardgunners/squad/SquadLedgerInteractions.class',
@@ -954,6 +968,17 @@ tasks.register('verifyPhase8PerformanceReports') {
             boolean armoryPerformance = expectedScenario.workload == 'armory_idle'
                     || expectedScenario.workload == 'armory_satisfied'
                     || expectedScenario.workload == 'armory_request_pressure'
+            boolean passiveGuardWorkload = expectedScenario.workload == 'idle'
+                    || expectedScenario.workload == 'idle_with_sidearms'
+            if (passiveGuardWorkload
+                    && (((Number) report.armoryIndexQueries).longValue() != 0L
+                            || ((Number) report.armoryIndexVisitedRecords).longValue() != 0L
+                            || ((Number) report.armorySourceSlotInspections).longValue() != 0L
+                            || ((Number) report.armoryReservationAttempts).longValue() != 0L
+                            || ((Number) report.armoryPathConstructionAttempts).longValue() != 0L)) {
+                throw new GradleException(
+                        "Passive guard scenario ${scenario} performed Armory search work")
+            }
             if (armoryPerformance
                     && (((Number) report.activeArmoryReservationsAfterCleanup).intValue() != 0
                             || ((Number) report.armorySuccessfulTransfers).longValue() != 0L

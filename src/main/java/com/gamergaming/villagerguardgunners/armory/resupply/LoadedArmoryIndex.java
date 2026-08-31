@@ -308,12 +308,14 @@ public final class LoadedArmoryIndex {
 
         private void removeIdentity(BlockPos position, ArmoryBlockEntity armory) {
             long positionKey = position.asLong();
-            if (sectionByPosition.containsKey(positionKey)) {
-                Long sectionKey = sectionByPosition.get(positionKey);
-                NavigableMap<Long, ArmoryBlockEntity> entries = bySection.get(sectionKey);
-                if (entries == null || entries.get(positionKey) == armory) {
-                    sectionByPosition.remove(positionKey);
-                }
+            Long sectionKey = sectionByPosition.get(positionKey);
+            if (sectionKey == null) {
+                return;
+            }
+            NavigableMap<Long, ArmoryBlockEntity> entries = bySection.get(sectionKey);
+            ArmoryBlockEntity indexed = entries == null ? null : entries.get(positionKey);
+            if (indexed == null || indexed == armory) {
+                sectionByPosition.remove(positionKey, sectionKey);
             }
         }
 

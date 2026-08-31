@@ -7032,6 +7032,33 @@ public final class GuardGunnerGameTests {
                                 .map(helper::absolutePos)
                                 .anyMatch(armory.getBlockPos()::equals)),
                 "A removed Armory remained discoverable in the loaded-only index");
+
+        int loadedBeforeStaleRegistration = index.loadedCount(helper.getLevel().dimension());
+        BlockPos stalePosition = helper.absolutePos(new BlockPos(6, 1, 6));
+        ArmoryBlockEntity staleArmory = new ArmoryBlockEntity(
+                stalePosition,
+                com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get()
+                        .defaultBlockState());
+        staleArmory.setLevel(helper.getLevel());
+        helper.assertTrue(
+                index.register(helper.getLevel(), staleArmory)
+                        && index.loadedCount(helper.getLevel().dimension())
+                                == loadedBeforeStaleRegistration + 1,
+                "The stale-record fixture was not registered in the loaded Armory index");
+
+        LoadedArmoryIndex.QueryResult afterStaleRegistration = index.query(
+                helper.getLevel(),
+                stalePosition.getX() + 0.5D,
+                stalePosition.getY() + 0.5D,
+                stalePosition.getZ() + 0.5D,
+                8.0D,
+                8);
+        helper.assertTrue(
+                afterStaleRegistration.armories().stream()
+                                .noneMatch(armory -> armory == staleArmory)
+                        && index.loadedCount(helper.getLevel().dimension())
+                                == loadedBeforeStaleRegistration,
+                "Query self-healing retained a stale Armory position identity");
         helper.succeed();
     }
 

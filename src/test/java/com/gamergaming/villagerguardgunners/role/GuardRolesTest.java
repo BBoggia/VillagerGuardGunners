@@ -84,6 +84,27 @@ final class GuardRolesTest {
     }
 
     @Test
+    void parentAndInheritanceDepthLimitsAreInclusiveAndFailClosedBeyondTheLimit() {
+        Map<ResourceLocation, JsonElement> maximumParents = rolesWithParentCount(
+                GuardRoles.MAXIMUM_PARENTS);
+        assertTrue(GuardRoles.compile(maximumParents).containsKey(id("child")));
+        assertThrows(
+                JsonParseException.class,
+                () -> GuardRoles.compile(rolesWithParentCount(
+                        GuardRoles.MAXIMUM_PARENTS + 1)));
+
+        Map<ResourceLocation, JsonElement> maximumDepth = inheritanceChain(
+                GuardRoles.MAXIMUM_INHERITANCE_DEPTH);
+        assertEquals(
+                GuardRoles.MAXIMUM_INHERITANCE_DEPTH,
+                GuardRoles.compile(maximumDepth).size());
+        assertThrows(
+                JsonParseException.class,
+                () -> GuardRoles.compile(inheritanceChain(
+                        GuardRoles.MAXIMUM_INHERITANCE_DEPTH + 1)));
+    }
+
+    @Test
     void failedPublicationRetainsLastKnownGoodDefinitionsAndGeneration() {
         GuardRoles registry = new GuardRoles();
         registry.publish(new GuardRoles.PreparedResources(
@@ -110,6 +131,37 @@ final class GuardRolesTest {
 
     private static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath("test", path);
+    }
+
+    private static Map<ResourceLocation, JsonElement> rolesWithParentCount(int parentCount) {
+        Map<ResourceLocation, JsonElement> roles = new LinkedHashMap<>();
+        StringBuilder parents = new StringBuilder();
+        for (int index = 0; index < parentCount; index++) {
+            String parent = "parent_" + index;
+            roles.put(id(parent), json("""
+                    {"format":1,"orders":{}}
+                    """));
+            if (index > 0) {
+                parents.append(',');
+            }
+            parents.append('"').append("test:").append(parent).append('"');
+        }
+        roles.put(id("child"), json("""
+                {"format":1,"inherits":[%s],"orders":{}}
+                """.formatted(parents)));
+        return roles;
+    }
+
+    private static Map<ResourceLocation, JsonElement> inheritanceChain(int roleCount) {
+        Map<ResourceLocation, JsonElement> roles = new LinkedHashMap<>();
+        for (int index = 0; index < roleCount; index++) {
+            String inheritance = index == 0
+                    ? ""
+                    : ",\"inherits\":[\"test:depth_" + (index - 1) + "\"]";
+            roles.put(id("depth_" + index), json(
+                    "{\"format\":1" + inheritance + ",\"orders\":{}}"));
+        }
+        return roles;
     }
 
     private static JsonElement json(String source) {

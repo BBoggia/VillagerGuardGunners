@@ -42,6 +42,7 @@ public final class GuardRoles extends SimplePreparableReloadListener<GuardRoles.
     public static final int FORMAT_VERSION = 1;
     public static final int MAXIMUM_ROLES = 256;
     public static final int MAXIMUM_PARENTS = 8;
+    /** Maximum definitions in one inheritance path, including the assigned role. */
     public static final int MAXIMUM_INHERITANCE_DEPTH = 16;
 
     private static final Set<String> ROOT_FIELDS = Set.of("format", "inherits", "orders");
@@ -172,9 +173,10 @@ public final class GuardRoles extends SimplePreparableReloadListener<GuardRoles.
                         parse(entry.getKey(), entry.getValue())));
 
         Map<ResourceLocation, GuardRoleDefinition> resolved = new LinkedHashMap<>();
+        Map<ResourceLocation, Integer> inheritanceDepths = new HashMap<>();
         Map<ResourceLocation, VisitState> states = new HashMap<>();
         for (ResourceLocation id : unresolved.keySet()) {
-            resolve(id, unresolved, resolved, states, new ArrayList<>(), 0);
+            resolve(id, unresolved, resolved, inheritanceDepths, states, new ArrayList<>());
         }
         return Map.copyOf(resolved);
     }
@@ -247,17 +249,12 @@ public final class GuardRoles extends SimplePreparableReloadListener<GuardRoles.
             ResourceLocation id,
             Map<ResourceLocation, UnresolvedRole> unresolved,
             Map<ResourceLocation, GuardRoleDefinition> resolved,
+            Map<ResourceLocation, Integer> inheritanceDepths,
             Map<ResourceLocation, VisitState> states,
-            List<ResourceLocation> path,
-            int depth) {
+            List<ResourceLocation> path) {
         GuardRoleDefinition cached = resolved.get(id);
         if (cached != null) {
             return cached;
-        }
-        if (depth > MAXIMUM_INHERITANCE_DEPTH) {
-            throw new JsonParseException(
-                    "Role inheritance exceeds maximum depth " + MAXIMUM_INHERITANCE_DEPTH
-                            + " at " + id);
         }
         if (states.get(id) == VisitState.VISITING) {
             path.add(id);
@@ -271,10 +268,24 @@ public final class GuardRoles extends SimplePreparableReloadListener<GuardRoles.
         states.put(id, VisitState.VISITING);
         path.add(id);
         GuardOrders inherited = GuardOrders.DEFAULT;
+        int inheritanceDepth = 1;
         for (ResourceLocation parentId : role.parents()) {
             GuardRoleDefinition parent = resolve(
-                    parentId, unresolved, resolved, states, path, depth + 1);
+                    parentId,
+                    unresolved,
+                    resolved,
+                    inheritanceDepths,
+                    states,
+                    path);
+            inheritanceDepth = Math.max(
+                    inheritanceDepth,
+                    Math.addExact(inheritanceDepths.get(parentId), 1));
             inherited = mergeCompatible(id, inherited, parent.effectiveDefaults());
+        }
+        if (inheritanceDepth > MAXIMUM_INHERITANCE_DEPTH) {
+            throw new JsonParseException(
+                    "Role inheritance exceeds maximum depth " + MAXIMUM_INHERITANCE_DEPTH
+                            + " at " + id);
         }
         path.remove(path.size() - 1);
         states.put(id, VisitState.VISITED);
@@ -285,6 +296,7 @@ public final class GuardRoles extends SimplePreparableReloadListener<GuardRoles.
                 role.declaredDefaults(),
                 role.declaredDefaults().withFallback(inherited));
         resolved.put(id, definition);
+        inheritanceDepths.put(id, inheritanceDepth);
         return definition;
     }
 

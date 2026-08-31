@@ -8,6 +8,11 @@ public final class ArmoryResupplyLimits {
     public static final int DEFAULT_CHECK_INTERVAL_TICKS = 2 * TICKS_PER_SECOND;
     public static final int DEFAULT_REQUEST_LIFETIME_TICKS = 60 * TICKS_PER_SECOND;
     public static final int HARD_MAX_REQUEST_LIFETIME_TICKS = 2 * 60 * TICKS_PER_SECOND;
+    public static final int DEFAULT_RESERVATION_LIFETIME_TICKS = 20 * TICKS_PER_SECOND;
+    public static final int HARD_MAX_RESERVATION_LIFETIME_TICKS = 60 * TICKS_PER_SECOND;
+    public static final int HARD_MAX_ACTIVE_RESERVATIONS = 1_024;
+    public static final int HARD_MAX_RESERVATION_SOURCE_SLOTS = 1_024;
+    public static final double HARD_MAX_WITHDRAWAL_DISTANCE_SQUARED = 16.0D;
     public static final int DEFAULT_SUCCESS_COOLDOWN_TICKS = 5 * TICKS_PER_SECOND;
     public static final int DEFAULT_NO_SUPPLY_RETRY_TICKS = 10 * TICKS_PER_SECOND;
     public static final int DEFAULT_UNREACHABLE_RETRY_TICKS = 10 * TICKS_PER_SECOND;

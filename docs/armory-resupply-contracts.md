@@ -1,10 +1,12 @@
 # Armory resupply contracts
 
-Step 1 defines the server-side contracts used by later Village Defense
-Logistics phases. It does not register a goal, add a guard tick hook, index an
-Armory, construct a path, reserve an item, or move ammunition. In particular,
-creating an `ArmoryResupplyRequest` never authorizes a transfer; the eventual
-withdrawal transaction must revalidate every live input.
+Step 1 defines the server-side state and request contracts used by later
+Village Defense Logistics phases. Step 3 adds the dormant reservation and
+withdrawal service boundary. This work does not register a goal, add a guard
+tick hook, index an Armory, construct a path, or activate resupply behavior.
+In particular, creating an `ArmoryResupplyRequest` never authorizes a transfer;
+a candidate snapshot does not either, and withdrawal revalidates every live
+input.
 
 ## Precedence gate
 
@@ -90,6 +92,80 @@ States and requests are transient and are never written to guard or Armory
 NBT. Save, unload, restart, death, conversion, removal, or a future runtime
 controller being discarded therefore cannot preserve an indefinite claim.
 
+## Expiring reservations
+
+`ArmoryReservationBook` is an in-memory, server-thread service with no level,
+entity, block-entity, item-handler, or chunk references. It owns at most
+`HARD_MAX_ACTIVE_RESERVATIONS` immutable entries and removes expired entries
+lazily during already-requested operations; it has no ticker. Reservation
+lifetimes are capped at one minute and clamped to the owning request expiry.
+An unload/restart discards the entire transient book rather than preserving a
+stale claim.
+
+One request key owns at most one reservation. Repeating the same request is
+idempotent, while reservations from different guards contend on the exact
+dimension, Armory position, source slot, item ID, and full item tag. The sum of
+claims cannot exceed the candidate's bounded live item-count snapshot. Guard
+and Armory bulk-release operations support death, conversion, reassignment,
+block removal, and chunk-unload cleanup; expiry remains the final safety net.
+
+A reservation records both physical item count and ammunition units. Loose
+ammunition uses one unit per item. A finite TaCZ ammo box is an indivisible
+one-item supply and may contain more units than the request's remaining ideal
+target; it is never split or rewritten. Empty, unreadable, incompatible,
+creative, and infinite boxes fail closed. Candidate snapshots retain no live
+`ItemStack` and are bookkeeping inputs only, not transfer authority.
+
+## Transactional withdrawal
+
+Withdrawal atomically consumes reservation ownership before checking live
+state, so success, cancellation, expiry, and every failure release the claim
+exactly once. It then verifies the live server-side guard identity, dimension,
+AI/lifecycle state, squad identity, active primary-or-sidearm role, gun ID,
+magazine capacity, finite physical reserve, Armory identity and access lock,
+four-block proximity, source slot fingerprint, TaCZ compatibility, remaining
+demand, and destination capacity. The loaded-state check uses `hasChunkAt`
+before reading the block entity and never requests or loads a chunk.
+
+Immediately before inventory access it also re-evaluates the Step 1 precedence
+gate. Combat, squad commands, following, Hold Position, patrol-bound movement,
+sidearm recovery, and an active or unreadable TaCZ weapon action all preempt
+withdrawal without changing either inventory.
+
+The final move reuses `GuardAmmoTransactions.transfer`, whose
+simulate-before-commit snapshots and rollback checks cover both inventories.
+If a player, hopper, or pipe reduces a loose-ammunition stack after reservation,
+only the still-present compatible items can move. Replaced, emptied, locked,
+unloaded, incompatible, satisfied, or full-destination cases move nothing. A
+successful partial transfer or indivisible-box transfer ends that reservation;
+a later bounded request may obtain any remaining deficit.
+
+The transaction derives expiry time from the guard's live server level rather
+than accepting a caller-provided clock. Candidate inspection likewise requires
+the Armory to be the currently loaded block entity at its position and uses the
+level's current game tick. This prevents stale or synthetic timestamps from
+extending ownership.
+
+## Step 3 validation matrix
+
+| Boundary | Automated evidence |
+| --- | --- |
+| Two guards contend for one loose-ammo stack | Unit test proves claims total no more than the candidate snapshot and a third claim fails closed |
+| Duplicate request or withdrawal | Unit test proves reservation is idempotent; Forge GameTest proves a claimed reservation cannot withdraw twice |
+| Expiry, request clamp, Armory/guard release | Unit tests cover lazy expiry, expiry clamping, exact claim, and bulk release |
+| Global memory and source bounds | Unit tests fill the 1,024-entry ceiling and reject an additional reservation |
+| Player/hopper/pipe removes items after reservation | Forge GameTest removes most of the stack and proves only the ten remaining items transfer with exact total preservation |
+| Source item or NBT is replaced | Forge GameTest replaces the reserved caliber and proves neither inventory changes during withdrawal |
+| Finite ammo box | Unit and Forge tests prove one box remains indivisible and preserves its 120 encoded units |
+| Combat or another higher-priority guard state starts during travel | Forge GameTest proves the final precedence gate consumes the claim but moves no ammunition |
+| Transaction implementation | Source contract requires `ArmoryResupplyGate`, `GuardAmmoTransactions.transfer`, loaded-state probing, and no runtime AI activation |
+
+The Step 3 checkpoint passes 352 plain JUnit/source-contract tests and all 77
+transformed Forge correctness GameTests on JDK 17. The four new GameTests use
+real Guard Villagers entities, the Armory block entity, and TaCZ loose-ammo and
+ammo-box implementations. They remain development-only and are excluded from
+the production JAR.
+
 ## Timing and performance limits
 
 The provisional defaults use a deterministic two-second per-guard assessment
@@ -99,6 +175,7 @@ at two minutes. Stable UUID-derived offsets spread assessments across the
 interval. Tick arithmetic saturates instead of wrapping into an immediate
 retry.
 
-Step 2 may use these contracts to build a loaded-chunk-only Armory index. Until
-then, the new classes are not referenced by `GuardMixin`, the gun combat goal,
-or the Armory block entity, and runtime behavior remains identical to 1.2.
+Step 2 may use these contracts to build a loaded-chunk-only Armory index, and
+Step 4 may invoke withdrawal after bounded movement reaches its target. Until
+then, the services are not referenced by `GuardMixin`, the gun combat goal, or
+the Armory block entity, and runtime behavior remains identical to 1.2.

@@ -2,7 +2,7 @@
 
 This directory is a complete Minecraft 1.20.1 server datapack. Copy the
 directory into a world's `datapacks` directory, or zip its contents so
-`pack.mcmeta` is at the root of the archive. It adds three pools but does not
+`pack.mcmeta` is at the root of the archive. It adds four pools and one role but does not
 replace the mod's built-in pools or alter configuration by itself.
 
 - `vgg_example:migrated_normal` is a format-2 copy of the built-in Normal pool.
@@ -13,6 +13,8 @@ replace the mod's built-in pools or alter configuration by itself.
   filters, raid state, and integration-owned guard scoreboard tags.
 - `vgg_example:rifle_sidearms` demonstrates format 3 with a validated pistol
   sidearm and a complete ammunition stack for each weapon. It is Hard-only.
+- `vgg_example:role_marksmen` demonstrates format 4 and assigns the standalone
+  `vgg_example:village_marksman` behavioral role after successful issuance.
 
 After installing the pack, run:
 
@@ -21,8 +23,11 @@ After installing the pack, run:
 /vgg loadouts validate vgg_example:migrated_normal
 /vgg loadouts validate vgg_example:contextual_guards
 /vgg loadouts validate vgg_example:rifle_sidearms
+/vgg loadouts validate vgg_example:role_marksmen
 /vgg loadouts inspect vgg_example:contextual_guards 1
 /vgg loadouts inspect vgg_example:rifle_sidearms 1
+/vgg loadouts inspect vgg_example:role_marksmen 1
+/vgg roles inspect vgg_example:village_marksman
 /vgg loadouts preview hard structure vgg_example:contextual_guards
 ```
 

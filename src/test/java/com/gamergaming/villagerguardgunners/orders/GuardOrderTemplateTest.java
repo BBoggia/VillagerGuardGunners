@@ -14,6 +14,7 @@ import com.gamergaming.villagerguardgunners.orders.GuardOrders.RangeOrder;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.TacticalOrder;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.ToggleOrder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Test;
 
 final class GuardOrderTemplateTest {
@@ -46,6 +47,26 @@ final class GuardOrderTemplateTest {
                 () -> assertTrue(decoded.isValid()),
                 () -> assertEquals(rawOrders, decoded.orders()),
                 () -> assertEquals(-1, decoded.storedVersion()));
+    }
+
+    @Test
+    void versionTwoRoundTripsRoleWhileVersionOneLeavesExistingRoleUntouched() {
+        ResourceLocation role = ResourceLocation.fromNamespaceAndPath("test", "marksman");
+        CompoundTag current = new CompoundTag();
+        GuardOrderTemplate.writeTo(current, COMPLETE_ORDERS, role);
+        DecodeResult currentDecoded = GuardOrderTemplate.readFrom(current);
+
+        CompoundTag legacy = encoded(COMPLETE_ORDERS);
+        templateTag(legacy).putInt("Version", GuardOrderTemplate.LEGACY_DATA_VERSION);
+        templateTag(legacy).remove("Role");
+        DecodeResult legacyDecoded = GuardOrderTemplate.readFrom(legacy);
+
+        assertAll(
+                () -> assertEquals(role, currentDecoded.roleId()),
+                () -> assertTrue(currentDecoded.includesRoleAssignment()),
+                () -> assertNull(legacyDecoded.roleId()),
+                () -> assertFalse(legacyDecoded.includesRoleAssignment()),
+                () -> assertEquals(COMPLETE_ORDERS, legacyDecoded.orders()));
     }
 
     @Test

@@ -8,7 +8,7 @@ Phase 8 turns the behavior and performance requirements from Phases 0–7 into r
 
 The suites are deliberately isolated:
 
-- `src/gametest` contains 85 correctness GameTests and is selected by the normal `runGameTestServer` task.
+- `src/gametest` contains 87 correctness GameTests and is selected by the normal `runGameTestServer` task.
 - `src/perftest` contains 20 sequential scalability workloads and is selected only with `-Pphase8Performance=true`.
 - `src/main` contains production code only.
 - correctness tests use a generated 40×26×26 arena so fixtures outside the old 1×1×1 marker cannot overlap neighboring tests.
@@ -48,6 +48,8 @@ The automated layer now covers every correctness item that can be made determini
 | Sidearm ammunition handoff, pickup, sharing, and summaries recognize both stable weapon roles | real two-caliber AK-47/Glock GameTest plus bounded source contracts |
 | Sidearm configuration and recovery preserve authorization, shield/offhand state, target changes, active save/death ownership, and external main-hand replacement | transformed menu/lifecycle GameTests plus schema-3 token and source contracts |
 | Format-3 natural sidearms issue atomically with one full ammo stack per role, preserve primary provenance while stowed, and never displace an existing sidearm | strict parser/diagnostic contracts plus published-pool, capacity, occupied-slot, activation, and return GameTests |
+| Format-4 natural roles resolve strict bounded inheritance and assign atomically without changing formats 1-3 | parser/publication unit tests plus loaded/missing-role issuance GameTest |
+| Role defaults remain beneath explicit orders, commands, and global safety while assignment is item-neutral and persistent | all-field precedence unit test plus transformed persistence/cache/item-invariance GameTest |
 | Automatic Armory resupply is staggered, loaded-index-only, candidate/path bounded, reservation-owned, transactional, interruptible, and observable | real loaded-index lifecycle and automatic selection/withdrawal GameTests plus unit and source contracts |
 | Administrator inspection command is registered and executable | transformed command-dispatch GameTest against a real Guard |
 | Lag does not create a firing backlog and per-tick work is capped | cadence unit tests and source contracts |
@@ -79,7 +81,7 @@ scenario names, stale captures from another artifact, and malformed JFRs so
 unrelated evidence cannot be silently bundled with a release candidate.
 
 The final aggregate task is run without `-Pphase8Performance`. It consumes the
-separately generated performance evidence, executes the normal 85-case
+separately generated performance evidence, executes the normal 87-case
 correctness GameTest server, rebuilds the deterministic manifest, verifies that
 pickup and sharing still have independent rollback controls, and confirms that
 common production bytecode has no Minecraft client-class references. The
@@ -95,6 +97,13 @@ automated evidence boundary from being mistaken for completed hands-on release
 validation.
 
 Each performance workload creates the real server objects appropriate to its case: Guard Villagers, native TaCZ guns, targets, projectiles, safety queries, goal selectors, entity ticks, and loaded Armory block entities. It warms for 200 ticks and samples 1,000 ticks. The longer warmup prevents whichever unordered Forge batch runs first from measuring one-time class loading and JIT work as steady-state guard cost. Every scenario produces p50/p95/p99/max MSPT, aggregate and per-guard post-warmup native shot/ammunition evidence, live TaCZ bullets, GC count, heap delta, the complete active guard-gunner config snapshot, and a focused JFR recording using the default preset plus explicit 5 ms execution sampling. The narrower preset avoids a JDK 17 JFR metadata race seen with the broad profile preset while retaining CPU attribution. Total ammunition includes the gun and dedicated guard inventory so native reloads cannot hide consumption. Every firing workload must exercise at least 80% of its guards with evidence from each active guard; the mixed sidearm/RPG workload additionally requires at least 70% participation from each ten-guard role and the exact final 10/10 weapon mapping. These checks prevent one guard or one role from satisfying a group scenario without making transient lane visibility a flaky failure. An end-of-sample state for every guard records its goal decision, aim state, line of sight, safety result, held items, and last TaCZ result after timing has ended, making intermittent participation failures actionable without allocating in the measured combat loop. Each scenario discards its owned native bullets after recording the end-of-sample count so later batches remain isolated. The test task removes its generated config before launch, and current report verification rejects any scenario that did not use the default-v9 values, including every natural-loadout policy value, squad-command bound, tactical mapping, profile value, rules-of-engagement control, explosive-standoff control, modpack ally default, ammunition quality-of-life control, and Armory-resupply policy value. The reference timing tables below remain the original default-v8 evidence and are not relabeled as schema-9 captures.
+
+Scenario cleanup is guarded independently from JFR/report generation. A
+profiler or report exception therefore unregisters the event recorder, closes
+the recording, discards scenario-owned entities and bullets, removes fixture
+Armories, and releases forced chunks before the failure reaches GameTest. This
+prevents one failed capture from contaminating the counters or geometry of
+later workloads.
 
 The three Armory workloads also record monotonic production counters captured only outside the timed sample: assessments, reserve summaries, index queries, visited and returned records, fixed-inventory slot inspections, reservation attempts, path constructions, per-trip maximum attempts, outcomes, transfers, active/backoff guards, reservation counts before and after cleanup, and forced-chunk-set delta. The verifier cross-checks controller and index observations, applies the configured eight-record and hard nine-slot bounds, requires a maximum of eight path attempts per trip, and rejects any forced-chunk change. These counters add only primitive increments to due logistics work; there is no per-tick snapshot allocation or new scan.
 
@@ -227,6 +236,24 @@ unreachable backoff without permitting a fixture transfer. Controller queries
 matched index queries exactly, controller candidate records matched index
 visits exactly, every numerical ceiling held, and explicit cleanup released
 the four reservations that were active at sample end.
+
+## Guard-role Step 8 verification run: 2026-08-31
+
+All 20 default-v9 workloads and the independent JSON/JFR verifier passed again
+after the effective-order layer became role-aware. The run is bound to artifact
+`37acf644917d83ed538575f2a654f09b34408b1fde14b317a5187485d9a9be69`.
+Roleless guards use the same cached order object after first resolution, while
+assigned-role behavior and cache invalidation are covered by the normal
+87-case correctness suite. This performance run therefore exercises the new
+resolver on every live combat, ammunition, sidearm, and Armory gate without
+inventing a recurring role scan.
+
+The 100-guard unarmed baseline measured 1.365 ms p95 and 1.637 ms p99. The
+largest timings remained the intentionally expensive mixed RPG/sidearm case at
+7.342 ms p95 and 7.837 ms p99. Every workload passed its same-run relative
+budget, firing-participation, sidearm-role, Armory-bound, cleanup, artifact,
+and JFR-integrity gates. These figures remain same-machine regression evidence,
+not a portable server-capacity promise.
 
 ## Remaining manual compatibility matrix
 

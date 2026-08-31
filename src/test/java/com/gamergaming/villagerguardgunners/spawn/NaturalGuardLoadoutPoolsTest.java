@@ -63,7 +63,7 @@ final class NaturalGuardLoadoutPoolsTest {
                         () -> parse(poolId, "{\"entries\": []}")),
                 () -> assertThrows(
                         JsonParseException.class,
-                        () -> parse(poolId, "{\"format\": 4, \"entries\": []}")),
+                        () -> parse(poolId, "{\"format\": 5, \"entries\": []}")),
                 () -> assertThrows(
                         JsonParseException.class,
                         () -> parse(poolId,

@@ -106,4 +106,36 @@ final class GuardOrdersTest {
                 () -> assertTrue(MovementOrder.HOLD_POSITION.holdsPosition()),
                 () -> assertFalse(MovementOrder.PATROL_BOUND.holdsPosition()));
     }
+
+    @Test
+    void explicitOrdersOverrideRoleDefaultsFieldByFieldBeforeServerSafety() {
+        GuardOrders roleDefaults = new GuardOrders(
+                EngagementOrder.HOSTILE_MOBS_ONLY,
+                TacticalOrder.SUPPORT,
+                ToggleOrder.ENABLED,
+                ToggleOrder.ENABLED,
+                ToggleOrder.ENABLED,
+                MovementOrder.TACTICAL,
+                RangeOrder.BLOCKS_48);
+        GuardOrders explicit = GuardOrders.DEFAULT
+                .withEngagement(EngagementOrder.DEFENSIVE)
+                .withExplosives(ToggleOrder.DISABLED)
+                .withMaximumRange(RangeOrder.BLOCKS_24);
+
+        GuardOrders effective = explicit.withFallback(roleDefaults);
+        assertAll(
+                () -> assertEquals(EngagementOrder.DEFENSIVE, effective.engagement()),
+                () -> assertEquals(TacticalOrder.SUPPORT, effective.tactics()),
+                () -> assertEquals(ToggleOrder.DISABLED, effective.explosives()),
+                () -> assertEquals(ToggleOrder.ENABLED, effective.ammoPickup()),
+                () -> assertEquals(ToggleOrder.ENABLED, effective.ammoSharing()),
+                () -> assertEquals(MovementOrder.TACTICAL, effective.movement()),
+                () -> assertEquals(RangeOrder.BLOCKS_24, effective.maximumRange()),
+                () -> assertEquals(
+                        EngagementMode.HOLD_FIRE,
+                        effective.resolveEngagementMode(EngagementMode.HOLD_FIRE)),
+                () -> assertFalse(effective.permitsAmmoPickup(false)),
+                () -> assertFalse(effective.permitsAmmoSharing(false)),
+                () -> assertEquals(16.0D, effective.resolveMaximumRange(16.0D)));
+    }
 }

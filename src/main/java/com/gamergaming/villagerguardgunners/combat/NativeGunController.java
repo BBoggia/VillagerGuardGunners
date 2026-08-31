@@ -10,7 +10,6 @@ import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSharing;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalEnvelope;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfileDefinition;
@@ -19,6 +18,7 @@ import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticalTraits;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.tacz.guns.api.GunProperties;
 import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.entity.IGunOperator;
@@ -452,7 +452,7 @@ public final class NativeGunController {
     }
 
     private boolean ordersRevisionIsCurrent() {
-        return trackedOrdersRevision == GuardOrdersAccess.getRevision(guard);
+        return trackedOrdersRevision == GuardRoleResolver.effectiveRevision(guard);
     }
 
     /**
@@ -616,7 +616,7 @@ public final class NativeGunController {
             return false;
         }
         return !currentWeaponIsExplosiveFromCache()
-                || GuardOrdersAccess.getOrders(guard).permitsExplosiveWeapons();
+                || GuardRoleResolver.effectiveOrders(guard).permitsExplosiveWeapons();
     }
 
     private boolean currentWeaponIsExplosiveFromCache() {
@@ -796,7 +796,7 @@ public final class NativeGunController {
     }
 
     private boolean synchronizeWeapon() {
-        int ordersRevision = GuardOrdersAccess.getRevision(guard);
+        int ordersRevision = GuardRoleResolver.effectiveRevision(guard);
         if (ordersRevision != trackedOrdersRevision) {
             trackedOrdersRevision = ordersRevision;
             nextGunDataRefreshGameTick = Long.MIN_VALUE;
@@ -952,7 +952,7 @@ public final class NativeGunController {
             boolean metadataReadable,
             WeaponTacticalTraits traits) {
 
-        TacticalProfile guardOverride = GuardOrdersAccess.getOrders(guard)
+        TacticalProfile guardOverride = GuardRoleResolver.effectiveOrders(guard)
                 .tacticalProfileOverride();
         WeaponTacticalResolver.Resolution resolution;
         try {
@@ -1444,7 +1444,7 @@ public final class NativeGunController {
     }
 
     private double effectiveMaximumRange() {
-        GuardOrders orders = GuardOrdersAccess.getOrders(guard);
+        GuardOrders orders = GuardRoleResolver.effectiveOrders(guard);
         return orders.resolveMaximumRange(config.combat.maximumEngagementRange.get());
     }
 

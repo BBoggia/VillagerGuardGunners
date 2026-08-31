@@ -425,74 +425,102 @@ public final class PhaseEightPerformanceGameTests {
             recording.setMaxSize(256L * 1024L * 1024L);
             recording.enable("jdk.ExecutionSample").withPeriod(Duration.ofMillis(5L));
         } catch (IOException | ParseException exception) {
+            discardScenarioBullets(helper, guards);
+            cleanup.forEach(Entity::discard);
+            armoryPositions.forEach(position -> helper.setBlock(position, Blocks.AIR));
             releaseScenarioChunks(helper, forcedChunks);
             helper.fail("Could not configure the Phase 8 JFR recording: " + exception.getMessage());
             return;
         }
         MinecraftForge.EVENT_BUS.register(shotRecorder);
         shotRecorderRegistered[0] = true;
+        boolean[] scenarioCleanedUp = {false};
+        Runnable cleanupScenario = () -> {
+            if (scenarioCleanedUp[0]) {
+                return;
+            }
+            scenarioCleanedUp[0] = true;
+            if (shotRecorderRegistered[0]) {
+                MinecraftForge.EVENT_BUS.unregister(shotRecorder);
+                shotRecorderRegistered[0] = false;
+            }
+            try {
+                recording.close();
+            } catch (RuntimeException ignored) {
+                // Cleanup must continue even if JFR itself is already broken.
+            }
+            discardScenarioBullets(helper, guards);
+            cleanup.forEach(Entity::discard);
+            armoryPositions.forEach(position -> helper.setBlock(position, Blocks.AIR));
+            releaseScenarioChunks(helper, forcedChunks);
+        };
 
         helper.onEachTick(() -> {
             if (completed[0]) {
                 return;
             }
-
-            long testTick = helper.getTick();
-            maintainScenarioTargets(
-                    guards,
-                    guardAnchors,
-                    targets,
-                    targetAnchors,
-                    workload,
-                    weapon,
-                    testTick);
-            moveProtectedFriendlies(movingFriendlies, testTick);
-            advanceUnthrottledTaCZClocks(
-                    operators,
-                    weapon,
-                    testTick,
-                    shotRecorder,
-                    nominalShotClock);
-            observeSidearmActivationTicks(guards, firstSidearmActiveTick, testTick);
-            if (testTick == WARMUP_TICKS - 1L) {
-                if (workload == Workload.DRY_PRIMARY_SIDEARM_SWITCH) {
-                    // Install immediately before target release. Installing
-                    // these dry-primary fallbacks during initial entity setup
-                    // allowed the controller to activate them without a
-                    // target, invalidating the intended simultaneous-switch
-                    // timing evidence.
-                    guards.forEach(guard -> installPerformanceSidearm(helper, guard));
+            try {
+                long testTick = helper.getTick();
+                maintainScenarioTargets(
+                        guards,
+                        guardAnchors,
+                        targets,
+                        targetAnchors,
+                        workload,
+                        weapon,
+                        testTick);
+                moveProtectedFriendlies(movingFriendlies, testTick);
+                advanceUnthrottledTaCZClocks(
+                        operators,
+                        weapon,
+                        testTick,
+                        shotRecorder,
+                        nominalShotClock);
+                observeSidearmActivationTicks(guards, firstSidearmActiveTick, testTick);
+                if (testTick == WARMUP_TICKS - 1L) {
+                    if (workload == Workload.DRY_PRIMARY_SIDEARM_SWITCH) {
+                        // Install immediately before target release. Installing
+                        // these dry-primary fallbacks during initial entity setup
+                        // allowed the controller to activate them without a
+                        // target, invalidating the intended simultaneous-switch
+                        // timing evidence.
+                        guards.forEach(guard -> installPerformanceSidearm(helper, guard));
+                    }
+                    recording.start();
                 }
-                recording.start();
-            }
-            if (testTick == WARMUP_TICKS) {
-                // Warmup exists to initialize the same native firing paths,
-                // not to carry its already-measured projectile population into
-                // the sample. Only bullets owned by this scenario are removed.
-                discardScenarioBullets(helper, guards);
-                gcCollectionsAtStart[0] = garbageCollectionCount();
-                usedHeapAtStart[0] = usedHeapBytes();
-                shotRecorder.copyCountsTo(acceptedShotEventsAtStart);
-                captureAmmoEvidence(
-                        gunStacks,
-                        ammoHandlers,
-                        ammoRemainingAtStart);
-                ArmoryResupplyServerServices.Services armoryServices =
-                        ArmoryResupplyServerServices.forLevel(helper.getLevel());
-                armoryIndexMetricsAtStart[0] = armoryServices.loadedArmories().metrics();
-                armoryControllerTotalsAtStart[0] = armoryControllerTotals(guards);
-                loadedArmoriesAtStart[0] = armoryServices.loadedArmories()
-                        .loadedCount(helper.getLevel().dimension());
-                forcedChunksAtStart[0] = helper.getLevel().getForcedChunks().size();
-            }
-            if (testTick < WARMUP_TICKS || sampleCount[0] >= SAMPLE_TICKS) {
-                return;
-            }
+                if (testTick == WARMUP_TICKS) {
+                    // Warmup exists to initialize the same native firing paths,
+                    // not to carry its already-measured projectile population into
+                    // the sample. Only bullets owned by this scenario are removed.
+                    discardScenarioBullets(helper, guards);
+                    gcCollectionsAtStart[0] = garbageCollectionCount();
+                    usedHeapAtStart[0] = usedHeapBytes();
+                    shotRecorder.copyCountsTo(acceptedShotEventsAtStart);
+                    captureAmmoEvidence(
+                            gunStacks,
+                            ammoHandlers,
+                            ammoRemainingAtStart);
+                    ArmoryResupplyServerServices.Services armoryServices =
+                            ArmoryResupplyServerServices.forLevel(helper.getLevel());
+                    armoryIndexMetricsAtStart[0] = armoryServices.loadedArmories().metrics();
+                    armoryControllerTotalsAtStart[0] = armoryControllerTotals(guards);
+                    loadedArmoriesAtStart[0] = armoryServices.loadedArmories()
+                            .loadedCount(helper.getLevel().dimension());
+                    forcedChunksAtStart[0] = helper.getLevel().getForcedChunks().size();
+                }
+                if (testTick < WARMUP_TICKS || sampleCount[0] >= SAMPLE_TICKS) {
+                    return;
+                }
 
-            long[] serverTickTimes = server.tickTimes;
-            int previousTickIndex = Math.floorMod(server.getTickCount() - 1, serverTickTimes.length);
-            samples[sampleCount[0]++] = serverTickTimes[previousTickIndex];
-            if (sampleCount[0] == SAMPLE_TICKS) {
+                long[] serverTickTimes = server.tickTimes;
+                int previousTickIndex = Math.floorMod(
+                        server.getTickCount() - 1,
+                        serverTickTimes.length);
+                samples[sampleCount[0]++] = serverTickTimes[previousTickIndex];
+                if (sampleCount[0] != SAMPLE_TICKS) {
+                    return;
+                }
+
                 completed[0] = true;
                 shotRecorder.copyCountsTo(acceptedShotEventsAtEnd);
                 if (shotRecorderRegistered[0]) {
@@ -526,11 +554,11 @@ public final class PhaseEightPerformanceGameTests {
                         firstSidearmActiveTick,
                         armoryEvidence,
                         recording);
-                discardScenarioBullets(helper, guards);
-                cleanup.forEach(Entity::discard);
-                armoryPositions.forEach(position -> helper.setBlock(position, Blocks.AIR));
-                releaseScenarioChunks(helper, forcedChunks);
-                int minimumShotEvidence = minimumAcceptedShotEvidence(guardCount, weapon, workload);
+                cleanupScenario.run();
+                int minimumShotEvidence = minimumAcceptedShotEvidence(
+                        guardCount,
+                        weapon,
+                        workload);
                 int minimumFiringGuards = minimumAcceptedFiringGuards(guardCount, workload);
                 int minimumPerActiveGuardEvidence =
                         minimumAcceptedPerActiveGuardShotEvidence(workload);
@@ -600,6 +628,9 @@ public final class PhaseEightPerformanceGameTests {
                     return;
                 }
                 helper.succeed();
+            } catch (RuntimeException | Error exception) {
+                cleanupScenario.run();
+                throw exception;
             }
         });
     }

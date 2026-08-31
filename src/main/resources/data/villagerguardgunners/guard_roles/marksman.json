@@ -1,0 +1,11 @@
+{
+  "format": 1,
+  "inherits": [
+    "villagerguardgunners:rifleman"
+  ],
+  "orders": {
+    "tactics": "marksman",
+    "movement": "hold_position",
+    "maximum_range": "blocks_64"
+  }
+}

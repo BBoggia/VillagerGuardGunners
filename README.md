@@ -66,10 +66,18 @@ world position through `/vgg loadouts validate`, `/vgg loadouts inspect`, and
 
 Craft an **Orders Ledger** shapelessly from a Book and Quill and an Emerald to
 reuse a setup across guards. Use a blank ledger on a guard to capture its seven
-orders, use the written ledger on another guard to apply them, or sneak-use it
+orders and optional datapack role, use the written ledger on another guard to apply them, or sneak-use it
 to overwrite the stored template. It copies behavior parameters only—never
 equipment, ammunition, ownership, patrol positions, or other guard data—and
 all operations recheck Guard Villagers permissions and distance on the server.
+
+Datapack-defined **guard roles** provide reusable behavioral defaults beneath
+those explicit orders. Roles never grant or move items, remain subordinate to
+all global safety controls and temporary squad-command precedence, and add no
+scan or tick handler. They can be assigned through natural-loadout format 4,
+an Orders Ledger, or permission-level-2 `/vgg roles` commands. The strict,
+bounded format and built-in unassigned examples are documented in
+[docs/guard-roles.md](docs/guard-roles.md).
 
 The separate **Squad Command Ledger** assigns authorized guards to a stable
 squad and issues temporary Rally, Defend, Hold, Focus Target, Fall Back, and
@@ -287,7 +295,7 @@ correctness and manual-validation boundaries instead of claiming they ran as
 part of the bundle task.
 
 The final aggregate task must be run without `-Pphase8Performance`. It consumes
-the separately generated performance reports, runs the normal 85-case
+the separately generated performance reports, runs the normal 87-case
 correctness GameTest server, and verifies the complete ammunition release
 evidence boundary. It does not replace the recordable multiplayer rows in the
 release checklist.

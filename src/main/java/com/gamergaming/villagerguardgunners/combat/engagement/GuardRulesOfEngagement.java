@@ -2,9 +2,9 @@ package com.gamergaming.villagerguardgunners.combat.engagement;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -55,7 +55,7 @@ public final class GuardRulesOfEngagement {
 
         VillagerGuardGunnersConfig.EngagementSettings settings =
                 ModConfigs.GUARD_GUNNERS.engagement;
-        EngagementMode mode = GuardOrdersAccess.getOrders(shooter)
+        EngagementMode mode = GuardRoleResolver.effectiveOrders(shooter)
                 .resolveEngagementMode(settings.mode.get());
         ResourceLocation entityTypeId = ForgeRegistries.ENTITY_TYPES.getKey(target.getType());
         if (entityTypeId != null && settings.excludedEntities.get().contains(entityTypeId)) {

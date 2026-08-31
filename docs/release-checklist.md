@@ -14,12 +14,12 @@ the relevant manual rows pass against the exact files being distributed.
 - Fzzy Config: `0.7.6+1.20.1`
 - Kotlin for Forge: `4.12.0`
 - Gun pack(s): record exact names and versions in the release notes
-- Current development JAR SHA-256: `7f0eb3bccf6ec0b46552fa1e07e131b0f36d17de1a55bdab4f25fbdc02743d95`
+- Current development JAR SHA-256: `37acf644917d83ed538575f2a654f09b34408b1fde14b317a5187485d9a9be69`
 
 ## Automated gates
 
-- [x] `./gradlew check` after sidearm Step 8 release validation
-- [x] `./gradlew runGameTestServer` — all 85 required correctness tests passed against the Step 7 candidate
+- [x] `./gradlew check` after guard-role Step 8 validation
+- [x] `./gradlew runGameTestServer` — all 87 required correctness tests passed against the Step 8 candidate
 - [x] `./gradlew runGameTestServer -Pphase8Performance=true` — all 20 required performance tests passed against the current JAR
 - [x] `./gradlew verifyPhase8PerformanceReports` — all 20 JSON/JFR pairs passed artifact, evidence, JFR, and timing verification
 - [x] `./gradlew assembleReleaseCandidateEvidence` — deterministic manifest records 20 JSON and 20 JFR files

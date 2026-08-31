@@ -18,7 +18,7 @@ evidence against the candidate JAR.
 - Baseline commit: `ee4a63ee596992e880f50da8463761438739e0e7`
 - Baseline JAR SHA-256: `9809fdaf10a7d34369d108383a6f41a3eba5a2fb7e60861a67f26c0373936c6a`
 - Candidate commit: record before validation
-- Candidate JAR SHA-256: `7f0eb3bccf6ec0b46552fa1e07e131b0f36d17de1a55bdab4f25fbdc02743d95`
+- Candidate JAR SHA-256: `37acf644917d83ed538575f2a654f09b34408b1fde14b317a5187485d9a9be69`
 - Tested TaCZ content packs: record names and exact versions
 
 ## Armory index and access
@@ -65,9 +65,9 @@ evidence against the candidate JAR.
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| ROLE-DATA-01 | Load valid, malformed, cyclic or conflicting, missing, and future-version role datapacks. | Publication is bounded and atomic; existing roleless guards and last-known-good data remain safe. | Not implemented | |
-| ROLE-ORDER-01 | Combine role defaults with every explicit guard order, global restriction, and temporary command. | Global safety wins, then explicit orders, then role defaults; assigning a role never creates or moves an item. | Not implemented | |
-| VDEF-UPGRADE-01 | Load representative 1.2 guards, sidearm states, Orders Ledgers, squad records, Armory locks, configuration, and format-1/2/3 datapacks. | Every shipped record retains its 1.2 meaning or enters its documented fail-closed recovery path without data loss. | Not implemented | |
+| ROLE-DATA-01 | Load valid, malformed, cyclic or conflicting, missing, and future-version role datapacks. | Publication is bounded and atomic; existing roleless guards and last-known-good data remain safe. | Pass | Unit tests cover strict syntax, bounds, inheritance, cycles, conflicts, missing parents, future formats, and last-known-good publication; Forge startup verifies bundled publication. |
+| ROLE-ORDER-01 | Combine role defaults with every explicit guard order, global restriction, and temporary command. | Global safety wins, then explicit orders, then role defaults; assigning a role never creates or moves an item. | Pass | Unit tests cover all seven precedence fields and global caps; a Forge GameTest covers persistence, item-neutral assignment, cache invalidation, and effective precedence. Existing squad-command movement remains ahead of effective role movement. |
+| VDEF-UPGRADE-01 | Load representative 1.2 guards, sidearm states, Orders Ledgers, squad records, Armory locks, configuration, and format-1/2/3 datapacks. | Every shipped record retains its 1.2 meaning or enters its documented fail-closed recovery path without data loss. | Partial | Existing migration tests cover configuration, guards, sidearms, squads, Armory locks, and formats 1-3. Orders Ledger tests prove version 1 remains readable and does not clear a role; format-4 tests prove older formats reject the new field. Final combined dedicated-server upgrade evidence remains. |
 
 ## Performance and dedicated-server evidence
 

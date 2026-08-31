@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "orders": {
+    "tactics": "generalist",
+    "ammo_pickup": "enabled",
+    "ammo_sharing": "enabled",
+    "movement": "tactical"
+  }
+}

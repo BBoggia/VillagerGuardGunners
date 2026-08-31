@@ -19,6 +19,7 @@ import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
@@ -60,6 +61,8 @@ import com.gamergaming.villagerguardgunners.orders.GuardOrders.EngagementOrder;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.OrderField;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.RangeOrder;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.TacticalOrder;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
+import com.gamergaming.villagerguardgunners.role.GuardRoles;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDiagnostics;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
@@ -690,6 +693,59 @@ public final class GuardGunnerGameTests {
                 GuardSidearmTransactions.returnPrimary(guard, true).status()
                         == SidearmTransitionStatus.RETURNED,
                 "Naturally issued sidearm could not return its primary");
+        helper.succeed();
+    }
+
+    @GameTest(batch = "guard_roles", templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void formatFourNaturalLoadoutAssignsRoleAtomicallyAndRejectsMissingRole(
+            GameTestHelper helper) {
+        ResourceLocation rifleman = ResourceLocation.fromNamespaceAndPath(
+                VillagerGuardGunners.MODID, "rifleman");
+        Guard issued = spawnGuard(helper);
+        issued.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+        NaturalGuardLoadoutCandidate roleCandidate = new NaturalGuardLoadoutCandidate(
+                ResourceLocation.fromNamespaceAndPath(
+                        VillagerGuardGunners.MODID, "gametest/format_four"),
+                GLOCK_17,
+                null,
+                rifleman,
+                NaturalGuardDifficulty.NORMAL,
+                NaturalGuardSpawnSource.STRUCTURE);
+
+        NaturalGuardLoadoutIssuance.Result issuedResult =
+                NaturalGuardLoadoutIssuance.issue(issued, roleCandidate, false);
+        helper.assertTrue(
+                issuedResult.issued()
+                        && rifleman.equals(GuardRoleAccess.getRoleId(issued))
+                        && GuardRoleResolver.effectiveOrders(issued).tactics()
+                                == TacticalOrder.GENERALIST,
+                "Format-4 issuance did not commit its loaded role with the gun and ammunition: "
+                        + issuedResult.status());
+
+        Guard rejected = spawnGuard(helper, new BlockPos(4, 1, 0));
+        ItemStack original = new ItemStack(Items.CROSSBOW);
+        rejected.setItemSlot(EquipmentSlot.MAINHAND, original.copy());
+        ResourceLocation priorRole = ResourceLocation.fromNamespaceAndPath(
+                VillagerGuardGunners.MODID, "support");
+        GuardRoleAccess.setRoleId(rejected, priorRole);
+        NaturalGuardLoadoutCandidate missingRoleCandidate = new NaturalGuardLoadoutCandidate(
+                ResourceLocation.fromNamespaceAndPath(
+                        VillagerGuardGunners.MODID, "gametest/format_four_missing"),
+                GLOCK_17,
+                null,
+                ResourceLocation.fromNamespaceAndPath("missing", "role"),
+                NaturalGuardDifficulty.NORMAL,
+                NaturalGuardSpawnSource.STRUCTURE);
+        NaturalGuardLoadoutIssuance.Result rejectedResult =
+                NaturalGuardLoadoutIssuance.issue(rejected, missingRoleCandidate, false);
+        helper.assertTrue(
+                rejectedResult.status()
+                                == NaturalGuardLoadoutIssuance.IssuanceStatus
+                                        .ROLE_DEFINITION_UNAVAILABLE
+                        && stacksMatch(original, rejected.getMainHandItem())
+                        && isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(rejected))
+                        && priorRole.equals(GuardRoleAccess.getRoleId(rejected)),
+                "A missing format-4 role changed the guard before failing closed");
         helper.succeed();
     }
 
@@ -3992,6 +4048,9 @@ public final class GuardGunnerGameTests {
                 GuardOrders.MovementOrder.HOLD_POSITION,
                 RangeOrder.BLOCKS_48);
         GuardOrdersAccess.setOrders(source, sourceOrders);
+        ResourceLocation sourceRole = ResourceLocation.fromNamespaceAndPath(
+                VillagerGuardGunners.MODID, "marksman");
+        GuardRoleAccess.setRoleId(source, sourceRole);
         ItemStack sourceGun = gun(GLOCK_17, FireMode.SEMI, 7, true);
         source.setItemSlot(EquipmentSlot.MAINHAND, sourceGun.copy());
         GuardAmmoAccess.getAmmoHandler(source).setStackInSlot(
@@ -4016,7 +4075,9 @@ public final class GuardGunnerGameTests {
                             false);
             helper.assertTrue(captured.status() == OperationStatus.CAPTURED
                             && captured.changedLedger()
-                            && captured.completed(),
+                            && captured.completed()
+                            && sourceRole.equals(
+                                    GuardOrderTemplate.readFrom(ledger.getTag()).roleId()),
                     "A blank authorized ledger did not capture the source guard's orders");
             helper.assertTrue(ledger.getCount() == 1
                             && "Marksman".equals(ledger.getHoverName().getString()),
@@ -4051,6 +4112,7 @@ public final class GuardGunnerGameTests {
                             .build());
             CompoundTag ledgerTagBeforeApply = Objects.requireNonNull(ledger.getTag()).copy();
             int revisionBeforeApply = GuardOrdersAccess.getRevision(destination);
+            int roleRevisionBeforeApply = GuardRoleAccess.getRevision(destination);
             GuardOrderTemplateService.OperationResult applied =
                     GuardOrderTemplateService.apply(
                             player,
@@ -4058,11 +4120,15 @@ public final class GuardGunnerGameTests {
                             InteractionHand.MAIN_HAND);
             helper.assertTrue(applied.status() == OperationStatus.APPLIED
                             && applied.changedGuard()
-                            && sourceOrders.equals(GuardOrdersAccess.getOrders(destination)),
+                            && sourceOrders.equals(GuardOrdersAccess.getOrders(destination))
+                            && sourceRole.equals(GuardRoleAccess.getRoleId(destination)),
                     "A valid template did not atomically replace all destination orders");
             helper.assertTrue(
                     GuardOrdersAccess.getRevision(destination) == revisionBeforeApply + 1,
                     "Applying a changed template did not invalidate combat state exactly once");
+            helper.assertTrue(
+                    GuardRoleAccess.getRevision(destination) == roleRevisionBeforeApply + 1,
+                    "Applying a changed template did not invalidate role state exactly once");
             helper.assertTrue(ItemStack.isSameItemSameTags(
                             destinationGun,
                             destination.getMainHandItem())
@@ -4078,6 +4144,7 @@ public final class GuardGunnerGameTests {
                     "Applying orders consumed or modified the reusable ledger");
 
             int revisionBeforeNoOp = GuardOrdersAccess.getRevision(destination);
+            int roleRevisionBeforeNoOp = GuardRoleAccess.getRevision(destination);
             GuardOrderTemplateService.OperationResult alreadyMatches =
                     GuardOrderTemplateService.apply(
                             player,
@@ -4085,7 +4152,8 @@ public final class GuardGunnerGameTests {
                             InteractionHand.MAIN_HAND);
             helper.assertTrue(alreadyMatches.status() == OperationStatus.ALREADY_MATCHES
                             && alreadyMatches.completed()
-                            && GuardOrdersAccess.getRevision(destination) == revisionBeforeNoOp,
+                            && GuardOrdersAccess.getRevision(destination) == revisionBeforeNoOp
+                            && GuardRoleAccess.getRevision(destination) == roleRevisionBeforeNoOp,
                     "Applying matching orders caused a redundant combat-state revision");
 
             ItemStack blank = new ItemStack(
@@ -4282,6 +4350,22 @@ public final class GuardGunnerGameTests {
                                     GuardOrdersAccess.getOrders(guard)),
                     "A future template version did not fail closed with its version intact");
             GuardOrderTemplate.writeTo(ledger.getOrCreateTag(), permissiveTemplate);
+            ResourceLocation preservedLegacyRole = ResourceLocation.fromNamespaceAndPath(
+                    VillagerGuardGunners.MODID, "support");
+            GuardRoleAccess.setRoleId(guard, preservedLegacyRole);
+            Objects.requireNonNull(ledger.getTag())
+                    .getCompound(GuardOrderTemplate.TEMPLATE_TAG)
+                    .putInt("Version", GuardOrderTemplate.LEGACY_DATA_VERSION);
+            GuardOrderTemplateService.OperationResult legacyApplied =
+                    GuardOrderTemplateService.apply(
+                            editor,
+                            guard,
+                            InteractionHand.MAIN_HAND);
+            helper.assertTrue(
+                    legacyApplied.completed()
+                            && preservedLegacyRole.equals(GuardRoleAccess.getRoleId(guard)),
+                    "A version-1 Orders Ledger cleared a role it could not represent");
+            GuardOrderTemplate.writeTo(ledger.getOrCreateTag(), permissiveTemplate);
 
             Guard removedGuard = spawnGuard(helper, new BlockPos(5, 1, 0));
             removedGuard.discard();
@@ -4373,6 +4457,80 @@ public final class GuardGunnerGameTests {
             guard.setTarget(null);
             GuardBurstSafetyAccess.clearSafetyCheck(guard);
         }
+    }
+
+    @GameTest(batch = "guard_roles", templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void guardRolesPersistResolveAndRemainItemNeutral(GameTestHelper helper) {
+        ResourceLocation rifleman = ResourceLocation.fromNamespaceAndPath(
+                VillagerGuardGunners.MODID, "rifleman");
+        helper.assertTrue(GuardRoles.get(rifleman) != null,
+                "The bundled rifleman guard role was not published");
+
+        Guard guard = spawnGuard(helper);
+        ItemStack heldBefore = new ItemStack(Items.CROSSBOW);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, heldBefore.copy());
+        GuardAmmoHandler ammo = GuardAmmoAccess.getAmmoHandler(guard);
+        ItemStack ammunition = AmmoItemBuilder.create()
+                .setId(DEFAULT_AMMO)
+                .setCount(17)
+                .build();
+        ammo.setStackInSlot(0, ammunition.copy());
+        CompoundTag ammoBefore = ammo.serializeNBT();
+        int revisionBefore = GuardRoleResolver.effectiveRevision(guard);
+
+        helper.assertTrue(GuardRoleAccess.setRoleId(guard, rifleman),
+                "The role assignment access was unavailable");
+        GuardOrders roleDefaults = GuardRoleResolver.effectiveOrders(guard);
+        helper.assertTrue(
+                roleDefaults.tactics() == TacticalOrder.GENERALIST
+                        && roleDefaults.ammoPickup() == GuardOrders.ToggleOrder.ENABLED
+                        && roleDefaults.ammoSharing() == GuardOrders.ToggleOrder.ENABLED
+                        && roleDefaults.movement() == GuardOrders.MovementOrder.TACTICAL,
+                "The rifleman role defaults did not resolve");
+        helper.assertTrue(roleDefaults == GuardRoleResolver.effectiveOrders(guard),
+                "Unchanged live role resolution allocated a new effective-order snapshot");
+        helper.assertTrue(
+                ItemStack.isSameItemSameTags(heldBefore, guard.getMainHandItem())
+                        && heldBefore.getCount() == guard.getMainHandItem().getCount()
+                        && ammoBefore.equals(ammo.serializeNBT()),
+                "Assigning a behavioral role created, removed, or moved an item");
+        helper.assertTrue(revisionBefore != GuardRoleResolver.effectiveRevision(guard),
+                "Role assignment did not invalidate the combat metadata revision");
+
+        GuardOrders explicit = GuardOrders.DEFAULT
+                .withEngagement(EngagementOrder.DEFENSIVE)
+                .withTactics(TacticalOrder.MARKSMAN)
+                .withAmmoSharing(GuardOrders.ToggleOrder.DISABLED)
+                .withMaximumRange(RangeOrder.BLOCKS_16);
+        GuardOrdersAccess.setOrders(guard, explicit);
+        GuardOrders effective = GuardRoleResolver.effectiveOrders(guard);
+        helper.assertTrue(
+                effective.engagement() == EngagementOrder.DEFENSIVE
+                        && effective.tactics() == TacticalOrder.MARKSMAN
+                        && effective.ammoPickup() == GuardOrders.ToggleOrder.ENABLED
+                        && effective.ammoSharing() == GuardOrders.ToggleOrder.DISABLED
+                        && effective.maximumRange() == RangeOrder.BLOCKS_16,
+                "Explicit guard orders did not override role defaults field by field");
+        helper.assertTrue(effective == GuardRoleResolver.effectiveOrders(guard),
+                "Unchanged explicit/role precedence bypassed its per-guard cache");
+        helper.assertTrue(
+                effective.resolveEngagementMode(EngagementMode.HOLD_FIRE)
+                        == EngagementMode.HOLD_FIRE
+                        && !effective.permitsAmmoPickup(false)
+                        && !effective.permitsAmmoSharing(false)
+                        && effective.resolveMaximumRange(8.0D) == 8.0D,
+                "A role or explicit order widened a global safety restriction");
+
+        CompoundTag saved = new CompoundTag();
+        guard.addAdditionalSaveData(saved);
+        Guard restored = Objects.requireNonNull(
+                GuardEntityType.GUARD.get().create(helper.getLevel()));
+        restored.readAdditionalSaveData(saved);
+        helper.assertTrue(
+                rifleman.equals(GuardRoleAccess.getRoleId(restored))
+                        && effective.equals(GuardRoleResolver.effectiveOrders(restored)),
+                "The guard role or explicit precedence did not survive save/load");
+        helper.succeed();
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)

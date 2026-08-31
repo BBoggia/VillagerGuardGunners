@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 public final class NaturalGuardLoadoutPools
         extends SimplePreparableReloadListener<NaturalGuardLoadoutPools.PreparedResources> {
     public static final String DIRECTORY = "natural_guard_loadouts";
-    public static final int FORMAT_VERSION = NaturalGuardLoadoutFormat.SIDEARM_VERSION;
+    public static final int FORMAT_VERSION = NaturalGuardLoadoutFormat.ROLE_VERSION;
 
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new Gson();
@@ -76,6 +76,23 @@ public final class NaturalGuardLoadoutPools
     public static void reportUnavailableSidearm(NaturalGuardLoadoutCandidate candidate) {
         if (candidate.sidearmId() != null) {
             reportUnavailableWeapon(candidate.poolId(), candidate.sidearmId(), "sidearm");
+        }
+    }
+
+    /** Logs one actionable warning per missing format-4 role per reload. */
+    public static void reportUnavailableRole(NaturalGuardLoadoutCandidate candidate) {
+        if (candidate.roleId() == null) {
+            return;
+        }
+        UnavailableGun unavailable = new UnavailableGun(
+                candidate.poolId(), candidate.roleId(), "guard_role");
+        PublishedState state = INSTANCE.publishedState;
+        if (state.unavailableGunWarnings().add(unavailable)) {
+            LOGGER.warn(
+                    "Natural guard loadout pool {} selected unavailable guard role {}; "
+                            + "this guard's one-time loadout attempt was left unchanged",
+                    candidate.poolId(),
+                    candidate.roleId());
         }
     }
 

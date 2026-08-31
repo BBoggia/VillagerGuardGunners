@@ -42,6 +42,11 @@ Its complete rules are documented in
 sidearms are a deliberate modpack opt-in: the bundled pools remain format 1
 and contain none.
 
+Format 4 retains the complete format-3 schema and adds an optional canonical
+`role` ID. The role is a behavioral default set, not an item grant; see
+[guard-roles.md](guard-roles.md). Formats 1 through 3 reject the field and
+retain their prior selection and issuance meaning.
+
 `gun` must be a canonical namespaced TaCZ gun ID. `weight` must be a positive
 32-bit integer. Selection probability is an entry's weight divided by the sum
 of all weights in that pool; weights do not need to add to 100.
@@ -52,7 +57,8 @@ empty pools, and total-weight overflow. Format 1 rejects repeated gun IDs.
 Format 2 permits one gun in multiple entries only when their normalized
 conditions differ; an exact gun-and-condition duplicate is invalid even if its
 weight differs. Format 3 uses primary gun, optional sidearm, and conditions as
-the duplicate identity. A pool may contain at most 256 entries, each condition
+the duplicate identity. Format 4 additionally includes the optional role ID.
+A pool may contain at most 256 entries, each condition
 collection may contain at most 64 values, and one pool may reference at most
 128 distinct biome and structure selectors in total. These limits bound both
 spawn-time matching and explicit administrator diagnostics. Invalid syntax or
@@ -73,6 +79,8 @@ The repository includes a complete Minecraft 1.20.1
 format-1 to format-2 conversion, while `vgg_example:contextual_guards` covers
 every contextual selector category and includes an unconditional fallback.
 `vgg_example:rifle_sidearms` demonstrates the strict format-3 opt-in.
+`vgg_example:role_marksmen` demonstrates format 4 with an item-neutral role
+assignment.
 The pack is inert until one of those IDs is selected in Fzzy Config, so copying
 it cannot replace the built-in balance accidentally.
 
@@ -173,7 +181,7 @@ loaded guards, then consults a dimension-local, chunk-bucketed saved-data index
 for authenticated guards in unloaded chunks. It counts only guards whose
 effective primary role authenticated against a successful natural-loadout identity when
 last loaded or saved. Selection stores immutable pool, primary gun, optional
-sidearm, difficulty, and source
+sidearm, optional role, difficulty, and source
 metadata, then immediately passes that candidate to the one-shot issuance stage
 on the same server task. Only a completely issued guard counts toward the
 nearby cap.
@@ -203,6 +211,11 @@ exactly one complete loose-ammunition stack, and verifies its ID and native
 `IAmmo.isAmmoOfGun` result. Missing, malformed, incompatible, unreadable, or
 disallowed explosive definitions leave the guard's original equipment and
 inventory unchanged.
+
+A selected format-4 role must exist in the current atomic role publication.
+Missing definitions reject issuance before a weapon or ammunition stack is
+changed. A successful issuance persists the role ID in the same transaction
+boundary as equipment, ammunition, sidearm state, and provenance.
 
 A format-3 sidearm must also satisfy the reviewed sidearm eligibility contract:
 it is a single non-explosive pistol in this release. It cannot inherit the

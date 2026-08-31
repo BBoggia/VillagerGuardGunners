@@ -1,6 +1,6 @@
 package com.gamergaming.villagerguardgunners.armory.resupply;
 
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
@@ -90,7 +90,7 @@ public final class ArmoryResupplyLiveGate {
             return ArmoryResupplyGate.GateStatus.FOLLOWING;
         }
         GuardOrders.MovementOrder movement =
-                GuardOrdersAccess.getOrders(guard).movement();
+                GuardRoleResolver.effectiveOrders(guard).movement();
         if (movement.holdsPosition()) {
             return ArmoryResupplyGate.GateStatus.HOLD_POSITION;
         }

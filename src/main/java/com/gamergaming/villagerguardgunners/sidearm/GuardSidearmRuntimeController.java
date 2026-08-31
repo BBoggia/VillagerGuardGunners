@@ -1,6 +1,6 @@
 package com.gamergaming.villagerguardgunners.sidearm;
 
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import java.util.Objects;
 import javax.annotation.Nullable;
@@ -210,7 +210,7 @@ public final class GuardSidearmRuntimeController {
         boolean explosivePrimary = activationReason
                 == SidearmActivationReason.EXPLOSIVE_DISALLOWED
                 || activationReason == SidearmActivationReason.EXPLOSIVE_STANDOFF;
-        boolean primaryAllowed = GuardOrdersAccess.getOrders(guard).permitsExplosiveWeapons();
+        boolean primaryAllowed = GuardRoleResolver.effectiveOrders(guard).permitsExplosiveWeapons();
         SidearmReturnReason reason = SidearmDecisionPolicy.returnReason(
                 featureEnabled,
                 targetActive,

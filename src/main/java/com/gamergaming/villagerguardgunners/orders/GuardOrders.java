@@ -146,6 +146,23 @@ public record GuardOrders(
         return new GuardOrders(engagement, tactics, explosives, ammoPickup, ammoSharing, movement, value);
     }
 
+    /**
+     * Fills only inherited fields from a lower-priority set of defaults.
+     * Explicit per-guard values therefore remain authoritative over role
+     * defaults without resolving either layer against server policy early.
+     */
+    public GuardOrders withFallback(GuardOrders fallback) {
+        GuardOrders lower = Objects.requireNonNullElse(fallback, DEFAULT);
+        return new GuardOrders(
+                engagement == EngagementOrder.INHERIT ? lower.engagement : engagement,
+                tactics == TacticalOrder.INHERIT ? lower.tactics : tactics,
+                explosives == ToggleOrder.INHERIT ? lower.explosives : explosives,
+                ammoPickup == ToggleOrder.INHERIT ? lower.ammoPickup : ammoPickup,
+                ammoSharing == ToggleOrder.INHERIT ? lower.ammoSharing : ammoSharing,
+                movement == MovementOrder.INHERIT ? lower.movement : movement,
+                maximumRange == RangeOrder.INHERIT ? lower.maximumRange : maximumRange);
+    }
+
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
         tag.putInt(VERSION_TAG, DATA_VERSION);

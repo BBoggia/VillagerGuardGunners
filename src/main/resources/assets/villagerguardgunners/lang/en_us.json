@@ -62,6 +62,8 @@
   "item.villagerguardgunners.orders_ledger": "Orders Ledger",
   "item.villagerguardgunners.orders_ledger.tooltip.blank": "Blank — use on a guard to copy its orders",
   "item.villagerguardgunners.orders_ledger.tooltip.stored": "Stored Guard Orders",
+  "item.villagerguardgunners.orders_ledger.tooltip.role": "Role: %s",
+  "item.villagerguardgunners.orders_ledger.tooltip.legacy_role": "Role: unchanged (legacy template)",
   "item.villagerguardgunners.orders_ledger.tooltip.apply": "Use on a guard to apply this template",
   "item.villagerguardgunners.orders_ledger.tooltip.overwrite": "Sneak-use on a guard to overwrite it",
   "item.villagerguardgunners.orders_ledger.tooltip.corrupt": "This ledger's order template is damaged",

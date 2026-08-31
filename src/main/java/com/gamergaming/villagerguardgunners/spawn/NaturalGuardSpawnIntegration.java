@@ -171,6 +171,7 @@ public final class NaturalGuardSpawnIntegration {
                     difficulty.poolId(),
                     decision.entry().gunId(),
                     decision.entry().sidearmId(),
+                    decision.entry().roleId(),
                     difficultyKey,
                     source);
             access.villagerGuardGunners$setNaturalLoadoutCandidate(candidate);
@@ -191,6 +192,11 @@ public final class NaturalGuardSpawnIntegration {
                         == NaturalGuardLoadoutIssuance.IssuanceStatus
                                 .SIDEARM_DEFINITION_UNAVAILABLE) {
                     NaturalGuardLoadoutPools.reportUnavailableSidearm(candidate);
+                }
+                if (issuance.status()
+                        == NaturalGuardLoadoutIssuance.IssuanceStatus
+                                .ROLE_DEFINITION_UNAVAILABLE) {
+                    NaturalGuardLoadoutPools.reportUnavailableRole(candidate);
                 }
                 // Only fully issued gunner guards reserve a nearby population
                 // slot. A rejected or rolled-back candidate remains a

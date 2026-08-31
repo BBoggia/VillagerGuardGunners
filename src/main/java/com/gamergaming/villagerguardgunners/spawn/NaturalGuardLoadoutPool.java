@@ -29,7 +29,8 @@ public final class NaturalGuardLoadoutPool {
         this.id = Objects.requireNonNull(id, "id");
         if (format != NaturalGuardLoadoutFormat.LEGACY_VERSION
                 && format != NaturalGuardLoadoutFormat.CONDITIONAL_VERSION
-                && format != NaturalGuardLoadoutFormat.SIDEARM_VERSION) {
+                && format != NaturalGuardLoadoutFormat.SIDEARM_VERSION
+                && format != NaturalGuardLoadoutFormat.ROLE_VERSION) {
             throw new IllegalArgumentException("Unsupported natural guard loadout format");
         }
         this.format = format;
@@ -63,12 +64,19 @@ public final class NaturalGuardLoadoutPool {
                 throw new IllegalArgumentException(
                         "Natural loadout sidearms require format 3");
             }
+            if (format < NaturalGuardLoadoutFormat.ROLE_VERSION
+                    && entry.roleId() != null) {
+                throw new IllegalArgumentException(
+                        "Natural loadout roles require format 4");
+            }
             Object identity = switch (format) {
                 case NaturalGuardLoadoutFormat.LEGACY_VERSION -> entry.gunId();
                 case NaturalGuardLoadoutFormat.CONDITIONAL_VERSION ->
                         new ConditionalEntryIdentity(entry.gunId(), entry.conditions());
-                default -> new SidearmEntryIdentity(
+                case NaturalGuardLoadoutFormat.SIDEARM_VERSION -> new SidearmEntryIdentity(
                         entry.gunId(), entry.sidearmId(), entry.conditions());
+                default -> new RoleEntryIdentity(
+                        entry.gunId(), entry.sidearmId(), entry.roleId(), entry.conditions());
             };
             if (!entryIdentities.add(identity)) {
                 throw new IllegalArgumentException(
@@ -201,21 +209,30 @@ public final class NaturalGuardLoadoutPool {
     public record Entry(
             ResourceLocation gunId,
             @Nullable ResourceLocation sidearmId,
+            @Nullable ResourceLocation roleId,
             int weight,
             NaturalGuardLoadoutConditionSpec conditions) {
         public Entry(ResourceLocation gunId, int weight) {
-            this(gunId, null, weight, NaturalGuardLoadoutConditionSpec.ANY);
+            this(gunId, null, null, weight, NaturalGuardLoadoutConditionSpec.ANY);
         }
 
         public Entry(
                 ResourceLocation gunId,
                 int weight,
                 NaturalGuardLoadoutConditionSpec conditions) {
-            this(gunId, null, weight, conditions);
+            this(gunId, null, null, weight, conditions);
         }
 
         public Entry(ResourceLocation gunId, ResourceLocation sidearmId, int weight) {
-            this(gunId, sidearmId, weight, NaturalGuardLoadoutConditionSpec.ANY);
+            this(gunId, sidearmId, null, weight, NaturalGuardLoadoutConditionSpec.ANY);
+        }
+
+        public Entry(
+                ResourceLocation gunId,
+                @Nullable ResourceLocation sidearmId,
+                int weight,
+                NaturalGuardLoadoutConditionSpec conditions) {
+            this(gunId, sidearmId, null, weight, conditions);
         }
 
         public Entry {
@@ -235,6 +252,13 @@ public final class NaturalGuardLoadoutPool {
     private record SidearmEntryIdentity(
             ResourceLocation gunId,
             @Nullable ResourceLocation sidearmId,
+            NaturalGuardLoadoutConditionSpec conditions) {
+    }
+
+    private record RoleEntryIdentity(
+            ResourceLocation gunId,
+            @Nullable ResourceLocation sidearmId,
+            @Nullable ResourceLocation roleId,
             NaturalGuardLoadoutConditionSpec conditions) {
     }
 }

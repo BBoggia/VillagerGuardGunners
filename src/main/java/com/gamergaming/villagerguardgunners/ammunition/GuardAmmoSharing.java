@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.tacz.guns.api.item.IAmmo;
@@ -33,7 +33,7 @@ public final class GuardAmmoSharing {
         }
         boolean serverSharingEnabled =
                 ModConfigs.GUARD_GUNNERS.ammunition.shareAmmoBetweenGuards.get();
-        if (!GuardOrdersAccess.getOrders(recipient)
+        if (!GuardRoleResolver.effectiveOrders(recipient)
                 .permitsAmmoSharing(serverSharingEnabled)) {
             return SharingResult.failed(SharingStatus.DISABLED);
         }
@@ -87,7 +87,7 @@ public final class GuardAmmoSharing {
         for (Guard donor : nearbyGuards) {
             double distanceSquared = donor.distanceToSqr(recipient);
             if (distanceSquared > radiusSquared
-                    || !GuardOrdersAccess.getOrders(donor).permitsAmmoSharing(true)
+                    || !GuardRoleResolver.effectiveOrders(donor).permitsAmmoSharing(true)
                     || !ownersMayShare(
                             recipient.getOwnerId(),
                             donor.getOwnerId(),

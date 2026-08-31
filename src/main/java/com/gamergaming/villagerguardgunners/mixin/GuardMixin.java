@@ -22,6 +22,7 @@ import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
@@ -54,6 +55,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -84,7 +86,7 @@ import tallestegg.guardvillagers.entities.Guard;
 @Mixin(Guard.class)
 public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardArmoryResupplyAccess,
         GuardBurstSafetyAccess,
-        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardSidearmAccess, GuardSquadAccess,
+        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
         GuardSquadCommandAccess {
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_AMMO_TAG = "villagerguardgunners:ammo_inventory";
@@ -94,6 +96,9 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
 
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_ORDERS_TAG = "villagerguardgunners:orders";
+
+    @Unique
+    private static final String VILLAGER_GUARD_GUNNERS_ROLE_TAG = "villagerguardgunners:guard_role";
 
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_PENDING_NATURAL_SPAWN_TAG =
@@ -130,6 +135,25 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
 
     @Unique
     private int villagerGuardGunners$ordersRevision;
+
+    @Unique
+    @Nullable
+    private ResourceLocation villagerGuardGunners$roleId;
+
+    @Unique
+    private int villagerGuardGunners$roleRevision;
+
+    @Unique
+    private GuardOrders villagerGuardGunners$cachedEffectiveOrders = GuardOrders.DEFAULT;
+
+    @Unique
+    private int villagerGuardGunners$cachedEffectiveOrdersRevision = Integer.MIN_VALUE;
+
+    @Unique
+    private int villagerGuardGunners$cachedEffectiveRoleRevision = Integer.MIN_VALUE;
+
+    @Unique
+    private long villagerGuardGunners$cachedEffectiveRoleGeneration = Long.MIN_VALUE;
 
     @Unique
     @Nullable
@@ -331,6 +355,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
                 Tag.TAG_COMPOUND)
                 ? GuardOrders.load(compound.getCompound(VILLAGER_GUARD_GUNNERS_ORDERS_TAG))
                 : GuardOrders.DEFAULT);
+        villagerGuardGunners$setRoleId(villagerGuardGunners$readRoleId(compound));
         villagerGuardGunners$setSquadMembership(
                 SquadMembershipCodec.readGuardRecord(compound));
         villagerGuardGunners$setSquadCommand(
@@ -417,6 +442,12 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
             compound.remove(VILLAGER_GUARD_GUNNERS_ORDERS_TAG);
         } else {
             compound.put(VILLAGER_GUARD_GUNNERS_ORDERS_TAG, orders.save());
+        }
+        ResourceLocation roleId = villagerGuardGunners$getRoleId();
+        if (roleId == null) {
+            compound.remove(VILLAGER_GUARD_GUNNERS_ROLE_TAG);
+        } else {
+            compound.putString(VILLAGER_GUARD_GUNNERS_ROLE_TAG, roleId.toString());
         }
         SquadMembershipCodec.writeGuardRecord(
                 compound,
@@ -594,6 +625,62 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
     @Override
     public int villagerGuardGunners$getOrdersRevision() {
         return villagerGuardGunners$ordersRevision;
+    }
+
+    @Override
+    @Nullable
+    public ResourceLocation villagerGuardGunners$getRoleId() {
+        return villagerGuardGunners$roleId;
+    }
+
+    @Override
+    public void villagerGuardGunners$setRoleId(@Nullable ResourceLocation roleId) {
+        if (!java.util.Objects.equals(roleId, villagerGuardGunners$roleId)) {
+            villagerGuardGunners$roleId = roleId;
+            villagerGuardGunners$roleRevision++;
+        }
+    }
+
+    @Override
+    public int villagerGuardGunners$getRoleRevision() {
+        return villagerGuardGunners$roleRevision;
+    }
+
+    @Override
+    public GuardOrders villagerGuardGunners$resolveEffectiveOrders(
+            GuardOrders roleDefaults,
+            long roleGeneration) {
+        GuardOrders normalizedDefaults = roleDefaults == null
+                ? GuardOrders.DEFAULT
+                : roleDefaults;
+        if (villagerGuardGunners$cachedEffectiveOrdersRevision
+                        != villagerGuardGunners$ordersRevision
+                || villagerGuardGunners$cachedEffectiveRoleRevision
+                        != villagerGuardGunners$roleRevision
+                || villagerGuardGunners$cachedEffectiveRoleGeneration != roleGeneration) {
+            GuardOrders explicit = villagerGuardGunners$getOrders();
+            villagerGuardGunners$cachedEffectiveOrders = normalizedDefaults.equals(
+                    GuardOrders.DEFAULT)
+                    ? explicit
+                    : explicit.withFallback(normalizedDefaults);
+            villagerGuardGunners$cachedEffectiveOrdersRevision =
+                    villagerGuardGunners$ordersRevision;
+            villagerGuardGunners$cachedEffectiveRoleRevision =
+                    villagerGuardGunners$roleRevision;
+            villagerGuardGunners$cachedEffectiveRoleGeneration = roleGeneration;
+        }
+        return villagerGuardGunners$cachedEffectiveOrders;
+    }
+
+    @Unique
+    @Nullable
+    private static ResourceLocation villagerGuardGunners$readRoleId(CompoundTag compound) {
+        if (!compound.contains(VILLAGER_GUARD_GUNNERS_ROLE_TAG, Tag.TAG_STRING)) {
+            return null;
+        }
+        String encoded = compound.getString(VILLAGER_GUARD_GUNNERS_ROLE_TAG);
+        ResourceLocation roleId = ResourceLocation.tryParse(encoded);
+        return roleId != null && roleId.toString().equals(encoded) ? roleId : null;
     }
 
     @Override

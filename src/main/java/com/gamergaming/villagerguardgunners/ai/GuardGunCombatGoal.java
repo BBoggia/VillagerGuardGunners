@@ -10,8 +10,8 @@ import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
 import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngagement;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.MovementOrder;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.squad.SquadCommand;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandType;
 import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmRuntimeController;
@@ -467,7 +467,7 @@ public final class GuardGunCombatGoal extends Goal {
             transitionMovementState(GuardCombatMovement.State.HOLD, gameTime);
             return;
         }
-        MovementOrder movementOrder = GuardOrdersAccess.getOrders(guard).movement();
+        MovementOrder movementOrder = GuardRoleResolver.effectiveOrders(guard).movement();
         boolean defendOverride = activeCommand != null
                 && activeCommand.type() == SquadCommandType.DEFEND;
         if (!defendOverride && movementOrder.holdsPosition()) {
@@ -644,7 +644,7 @@ public final class GuardGunCombatGoal extends Goal {
         GuardRulesOfEngagement.EngagementReason engagementReason =
                 GuardRulesOfEngagement.classify(guard, observedTarget);
         boolean weaponAllowedByOrders = gunController.isWeaponAllowedByOrders();
-        EngagementMode engagementMode = GuardOrdersAccess.getOrders(guard)
+        EngagementMode engagementMode = GuardRoleResolver.effectiveOrders(guard)
                 .resolveEngagementMode(config.engagement.mode.get());
         FireDecision decision = classifyDecision(
                 observedTarget,

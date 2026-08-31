@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.function.Function;
 import net.minecraft.resources.ResourceLocation;
 
-/** Strict syntax and semantic parser for natural-loadout formats 1 through 3. */
+/** Strict syntax and semantic parser for natural-loadout formats 1 through 4. */
 final class NaturalGuardLoadoutParser {
     private NaturalGuardLoadoutParser() {
     }
@@ -35,9 +35,10 @@ final class NaturalGuardLoadoutParser {
         int format = requiredPositiveInteger(root, "format", "pool");
         if (format != NaturalGuardLoadoutFormat.LEGACY_VERSION
                 && format != NaturalGuardLoadoutFormat.CONDITIONAL_VERSION
-                && format != NaturalGuardLoadoutFormat.SIDEARM_VERSION) {
+                && format != NaturalGuardLoadoutFormat.SIDEARM_VERSION
+                && format != NaturalGuardLoadoutFormat.ROLE_VERSION) {
             throw new JsonParseException(
-                    "Unsupported format " + format + "; supported formats are 1, 2, and 3");
+                    "Unsupported format " + format + "; supported formats are 1, 2, 3, and 4");
         }
 
         JsonElement entriesElement = root.get("entries");
@@ -57,7 +58,9 @@ final class NaturalGuardLoadoutParser {
                     NaturalGuardLoadoutFormat.VERSION_1_ENTRY_FIELDS;
             case NaturalGuardLoadoutFormat.CONDITIONAL_VERSION ->
                     NaturalGuardLoadoutFormat.VERSION_2_ENTRY_FIELDS;
-            default -> NaturalGuardLoadoutFormat.VERSION_3_ENTRY_FIELDS;
+            case NaturalGuardLoadoutFormat.SIDEARM_VERSION ->
+                    NaturalGuardLoadoutFormat.VERSION_3_ENTRY_FIELDS;
+            default -> NaturalGuardLoadoutFormat.VERSION_4_ENTRY_FIELDS;
         };
         for (int index = 0; index < entriesJson.size(); index++) {
             String location = "entry " + index;
@@ -68,8 +71,11 @@ final class NaturalGuardLoadoutParser {
             JsonObject entryJson = entryElement.getAsJsonObject();
             rejectUnknownFields(entryJson, entryFields, location);
             ResourceLocation gunId = requiredCanonicalId(entryJson, "gun", location);
-            ResourceLocation sidearmId = format == NaturalGuardLoadoutFormat.SIDEARM_VERSION
+            ResourceLocation sidearmId = format >= NaturalGuardLoadoutFormat.SIDEARM_VERSION
                     ? optionalCanonicalId(entryJson, "sidearm", location)
+                    : null;
+            ResourceLocation roleId = format >= NaturalGuardLoadoutFormat.ROLE_VERSION
+                    ? optionalCanonicalId(entryJson, "role", location)
                     : null;
             int weight = requiredPositiveInteger(entryJson, "weight", location);
             NaturalGuardLoadoutConditionSpec conditions =
@@ -77,7 +83,7 @@ final class NaturalGuardLoadoutParser {
                             ? optionalConditions(entryJson, location)
                             : NaturalGuardLoadoutConditionSpec.ANY;
             entries.add(new NaturalGuardLoadoutPool.Entry(
-                    gunId, sidearmId, weight, conditions));
+                    gunId, sidearmId, roleId, weight, conditions));
         }
         return new NaturalGuardLoadoutPool(id, format, entries);
     }

@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import java.util.List;
@@ -60,7 +60,7 @@ public final class GuardDroppedAmmoPickup {
         for (Guard guard : nearbyGuards) {
             double distanceSquared = guard.distanceToSqr(droppedAmmo);
             if (distanceSquared > radiusSquared
-                    || !GuardOrdersAccess.getOrders(guard).permitsAmmoPickup(true)
+                    || !GuardRoleResolver.effectiveOrders(guard).permitsAmmoPickup(true)
                     || (recipient != null
                     && (distanceSquared > nearestDistanceSquared
                     || (distanceSquared == nearestDistanceSquared

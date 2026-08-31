@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Versioned item-NBT representation of a complete set of raw per-guard orders.
@@ -22,10 +23,12 @@ import net.minecraft.nbt.Tag;
  */
 public final class GuardOrderTemplate {
     public static final String TEMPLATE_TAG = "villagerguardgunners:order_template";
-    public static final int DATA_VERSION = 1;
+    public static final int LEGACY_DATA_VERSION = 1;
+    public static final int DATA_VERSION = 2;
 
     private static final String VERSION_TAG = "Version";
     private static final String ORDERS_TAG = "Orders";
+    private static final String ROLE_TAG = "Role";
     private static final String ENGAGEMENT_TAG = "Engagement";
     private static final String TACTICS_TAG = "Tactics";
     private static final String EXPLOSIVES_TAG = "Explosives";
@@ -42,12 +45,23 @@ public final class GuardOrderTemplate {
      * and every unrelated tag already present on the future ledger stack.
      */
     public static void writeTo(CompoundTag itemTag, GuardOrders orders) {
+        writeTo(itemTag, orders, null);
+    }
+
+    /** Writes a version-2 template, where an absent role deliberately means none. */
+    public static void writeTo(
+            CompoundTag itemTag,
+            GuardOrders orders,
+            @Nullable ResourceLocation roleId) {
         Objects.requireNonNull(itemTag, "itemTag");
         Objects.requireNonNull(orders, "orders");
 
         CompoundTag templateTag = new CompoundTag();
         templateTag.putInt(VERSION_TAG, DATA_VERSION);
         templateTag.put(ORDERS_TAG, orders.save());
+        if (roleId != null) {
+            templateTag.putString(ROLE_TAG, roleId.toString());
+        }
         itemTag.put(TEMPLATE_TAG, templateTag);
     }
 
@@ -68,7 +82,8 @@ public final class GuardOrderTemplate {
         }
 
         int templateVersion = templateTag.getInt(VERSION_TAG);
-        if (templateVersion != DATA_VERSION) {
+        if (templateVersion != LEGACY_DATA_VERSION
+                && templateVersion != DATA_VERSION) {
             return DecodeResult.unsupported(templateVersion);
         }
         if (!templateTag.contains(ORDERS_TAG, Tag.TAG_COMPOUND)) {
@@ -124,6 +139,19 @@ public final class GuardOrderTemplate {
             return DecodeResult.corrupt();
         }
 
+        ResourceLocation roleId = null;
+        boolean includesRoleAssignment = templateVersion >= DATA_VERSION;
+        if (includesRoleAssignment && templateTag.contains(ROLE_TAG)) {
+            if (!templateTag.contains(ROLE_TAG, Tag.TAG_STRING)) {
+                return DecodeResult.corrupt();
+            }
+            String encodedRole = templateTag.getString(ROLE_TAG);
+            roleId = ResourceLocation.tryParse(encodedRole);
+            if (roleId == null || !roleId.toString().equals(encodedRole)) {
+                return DecodeResult.corrupt();
+            }
+        }
+
         return DecodeResult.valid(new GuardOrders(
                 engagement,
                 tactics,
@@ -131,7 +159,7 @@ public final class GuardOrderTemplate {
                 ammoPickup,
                 ammoSharing,
                 movement,
-                maximumRange));
+                maximumRange), roleId, includesRoleAssignment);
     }
 
     @Nullable
@@ -168,12 +196,19 @@ public final class GuardOrderTemplate {
     public record DecodeResult(
             DecodeStatus status,
             @Nullable GuardOrders orders,
+            @Nullable ResourceLocation roleId,
+            boolean includesRoleAssignment,
             int storedVersion) {
         public DecodeResult {
             Objects.requireNonNull(status, "status");
             if ((status == DecodeStatus.VALID) != (orders != null)) {
                 throw new IllegalArgumentException(
                         "Only a valid template may contain decoded orders");
+            }
+            if (status != DecodeStatus.VALID
+                    && (roleId != null || includesRoleAssignment)) {
+                throw new IllegalArgumentException(
+                        "Only a valid template may contain role data");
             }
             if (status != DecodeStatus.UNSUPPORTED_VERSION && storedVersion != -1) {
                 throw new IllegalArgumentException(
@@ -186,22 +221,28 @@ public final class GuardOrderTemplate {
         }
 
         private static DecodeResult blank() {
-            return new DecodeResult(DecodeStatus.BLANK, null, -1);
+            return new DecodeResult(DecodeStatus.BLANK, null, null, false, -1);
         }
 
-        private static DecodeResult valid(GuardOrders orders) {
-            return new DecodeResult(DecodeStatus.VALID, orders, -1);
+        private static DecodeResult valid(
+                GuardOrders orders,
+                @Nullable ResourceLocation roleId,
+                boolean includesRoleAssignment) {
+            return new DecodeResult(
+                    DecodeStatus.VALID,
+                    orders,
+                    roleId,
+                    includesRoleAssignment,
+                    -1);
         }
 
         private static DecodeResult corrupt() {
-            return new DecodeResult(DecodeStatus.CORRUPT, null, -1);
+            return new DecodeResult(DecodeStatus.CORRUPT, null, null, false, -1);
         }
 
         private static DecodeResult unsupported(int storedVersion) {
             return new DecodeResult(
-                    DecodeStatus.UNSUPPORTED_VERSION,
-                    null,
-                    storedVersion);
+                    DecodeStatus.UNSUPPORTED_VERSION, null, null, false, storedVersion);
         }
     }
 }

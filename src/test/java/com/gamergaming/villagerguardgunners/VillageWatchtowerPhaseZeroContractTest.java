@@ -57,7 +57,9 @@ final class VillageWatchtowerPhaseZeroContractTest {
                 () -> assertTrue(readme.contains(
                         "docs/village-watchtowers-release-matrix.md")),
                 () -> assertTrue(readme.contains(
-                        "docs/village-watchtowers-step-11.md")));
+                        "docs/village-watchtowers-step-11.md")),
+                () -> assertTrue(readme.contains(
+                        "docs/village-watchtowers-step-12.md")));
     }
 
     @Test

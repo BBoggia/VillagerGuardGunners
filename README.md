@@ -343,6 +343,11 @@ The [Step 11 template and bounded placement](docs/village-watchtowers-step-11.md
 adds the first 9 x 14 x 9 tower, centered persisted rotations, nine-point dry
 terrain validation, and village-compatible Overworld biome activation while
 leaving all guard, Armory, marker, and loot work disabled for later steps.
+The [Step 12 guard-post composition layer](docs/village-watchtowers-step-12.md)
+adds strict datapack-defined weighted groups, inherited loadout references,
+optional members, deterministic difficulty selection, and atomic
+last-known-good reload publication. It remains identifier-only: guard spawning
+and equipment issuance are reserved for later steps.
 
 ## License
 

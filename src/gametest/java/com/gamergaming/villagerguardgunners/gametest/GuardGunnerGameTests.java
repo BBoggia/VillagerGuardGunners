@@ -91,6 +91,11 @@ import com.gamergaming.villagerguardgunners.squad.SquadMembership;
 import com.gamergaming.villagerguardgunners.squad.SquadMembershipCodec;
 import com.gamergaming.villagerguardgunners.worldgen.structure.VillageWatchtowerPiece;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerPlacement;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupDefaults;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupPool;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupReloadSnapshot;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupSelection;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroups;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBindingCodec;
 import com.gamergaming.villagerguardgunners.squad.SquadRegistrySavedData;
@@ -299,6 +304,35 @@ public final class GuardGunnerGameTests {
             helper.assertTrue(start.getPieces().size() == 1
                             && start.getPieces().get(0) instanceof VillageWatchtowerPiece,
                     "Accepted terrain did not produce exactly one watchtower template piece");
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void watchtowerGuardGroupsPublishAndSelectDeterministically(
+            GameTestHelper helper) {
+        GuardPostGroupReloadSnapshot reload = GuardPostGroups.reloadSnapshot();
+        GuardPostGroupPool pool = GuardPostGroups.get(GuardPostGroupDefaults.WATCHTOWER);
+        helper.assertTrue(
+                reload.lastReloadAccepted() && pool != null,
+                "The bundled watchtower guard-post group was not published");
+        helper.assertTrue(
+                pool.select(NaturalGuardDifficulty.PEACEFUL, 42L).isEmpty(),
+                "Peaceful unexpectedly selected watchtower occupants");
+
+        for (NaturalGuardDifficulty difficulty : List.of(
+                NaturalGuardDifficulty.EASY,
+                NaturalGuardDifficulty.NORMAL,
+                NaturalGuardDifficulty.HARD)) {
+            GuardPostGroupSelection first = pool.select(difficulty, 42L).orElse(null);
+            GuardPostGroupSelection repeated = pool.select(difficulty, 42L).orElse(null);
+            helper.assertTrue(
+                    first != null
+                            && first.equals(repeated)
+                            && first.members().size() >= 1
+                            && first.members().size() <= 4,
+                    "Watchtower group selection was absent, nondeterministic, or unbounded for "
+                            + difficulty);
         }
         helper.succeed();
     }

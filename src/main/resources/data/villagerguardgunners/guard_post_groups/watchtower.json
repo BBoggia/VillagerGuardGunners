@@ -1,0 +1,113 @@
+{
+  "format": 1,
+  "variants": [
+    {
+      "name": "easy_sentry",
+      "weight": 4,
+      "difficulties": [
+        "easy"
+      ],
+      "loadout_pool": "villagerguardgunners:easy",
+      "members": [
+        {
+          "role": "villagerguardgunners:rifleman"
+        }
+      ]
+    },
+    {
+      "name": "easy_pair",
+      "weight": 1,
+      "difficulties": [
+        "easy"
+      ],
+      "loadout_pool": "villagerguardgunners:easy",
+      "members": [
+        {
+          "role": "villagerguardgunners:rifleman"
+        },
+        {
+          "role": "villagerguardgunners:rifleman",
+          "chance": 50
+        }
+      ]
+    },
+    {
+      "name": "normal_patrol",
+      "weight": 3,
+      "difficulties": [
+        "normal"
+      ],
+      "loadout_pool": "villagerguardgunners:normal",
+      "members": [
+        {
+          "role": "villagerguardgunners:rifleman"
+        },
+        {
+          "role": "villagerguardgunners:marksman"
+        }
+      ]
+    },
+    {
+      "name": "normal_support",
+      "weight": 1,
+      "difficulties": [
+        "normal"
+      ],
+      "loadout_pool": "villagerguardgunners:normal",
+      "members": [
+        {
+          "role": "villagerguardgunners:rifleman"
+        },
+        {
+          "role": "villagerguardgunners:support"
+        },
+        {
+          "role": "villagerguardgunners:marksman",
+          "chance": 50
+        }
+      ]
+    },
+    {
+      "name": "hard_squad",
+      "weight": 3,
+      "difficulties": [
+        "hard"
+      ],
+      "loadout_pool": "villagerguardgunners:hard",
+      "members": [
+        {
+          "role": "villagerguardgunners:rifleman"
+        },
+        {
+          "role": "villagerguardgunners:marksman"
+        },
+        {
+          "role": "villagerguardgunners:support"
+        }
+      ]
+    },
+    {
+      "name": "hard_breach",
+      "weight": 1,
+      "difficulties": [
+        "hard"
+      ],
+      "loadout_pool": "villagerguardgunners:hard",
+      "members": [
+        {
+          "role": "villagerguardgunners:rifleman"
+        },
+        {
+          "role": "villagerguardgunners:support"
+        },
+        {
+          "role": "villagerguardgunners:breacher"
+        },
+        {
+          "role": "villagerguardgunners:demolitions",
+          "chance": 25
+        }
+      ]
+    }
+  ]
+}

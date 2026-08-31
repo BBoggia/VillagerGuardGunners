@@ -175,10 +175,13 @@ final class PhaseSevenCleanupContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutPools.java");
         String guardRoleReload = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/role/GuardRoles.java");
+        String guardPostGroupReload = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroups.java");
         String performanceSensitiveSource = productionSource
                 .replace(legacyNotice, "")
                 .replace(naturalLoadoutReload, "")
-                .replace(guardRoleReload, "");
+                .replace(guardRoleReload, "")
+                .replace(guardPostGroupReload, "");
 
         assertAll(
                 () -> assertFalse(performanceSensitiveSource.contains("LogUtils")),
@@ -203,6 +206,12 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(guardRoleReload.contains("LOGGER.debug(")),
                 () -> assertFalse(guardRoleReload.contains("tick(")),
                 () -> assertFalse(guardRoleReload.contains("getEntitiesOfClass(")));
+        assertAll(
+                () -> assertTrue(guardPostGroupReload.contains("LOGGER.error(")),
+                () -> assertTrue(guardPostGroupReload.contains("LOGGER.info(")),
+                () -> assertFalse(guardPostGroupReload.contains("LOGGER.debug(")),
+                () -> assertFalse(guardPostGroupReload.contains("tick(")),
+                () -> assertFalse(guardPostGroupReload.contains("getEntitiesOfClass(")));
     }
 
     private static String read(String relativePath) throws IOException {

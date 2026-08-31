@@ -7,6 +7,7 @@ import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
 import com.gamergaming.villagerguardgunners.init.ModBlocks;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import com.gamergaming.villagerguardgunners.init.ModMenus;
+import com.gamergaming.villagerguardgunners.init.ModStructures;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutPools;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardPopulationIndex;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnIntegration;
@@ -31,6 +32,7 @@ public class VillagerGuardGunners {
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModMenus.register(modEventBus);
+        ModStructures.register(modEventBus);
         MinecraftForge.EVENT_BUS.addListener(GuardGunnerCommands::register);
         MinecraftForge.EVENT_BUS.addListener(GuardRoles::registerReloadListener);
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardLoadoutPools::registerReloadListener);

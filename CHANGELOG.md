@@ -4,6 +4,14 @@ All notable Villager Guard Gunners changes are recorded here.
 
 ## Unreleased
 
+### Development
+
+- Added the dormant Minecraft 1.20.1 registry and datapack skeleton for the
+  planned Village Watchtower structure. The structure type, structure settings,
+  structure set, and empty biome tag now validate as a complete packaged unit,
+  while an empty generation point independently prevents unfinished towers from
+  appearing before the template and terrain phase.
+
 ## 1.3-beta1 - 2026-08-31
 
 ### Added

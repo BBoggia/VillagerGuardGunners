@@ -336,6 +336,9 @@ structure placement, guard-group, loadout, lifecycle, compatibility, and
 performance cases are tracked in the
 [Village Watchtowers validation matrix](docs/village-watchtowers-release-matrix.md)
 before production world-generation registration begins.
+The [Step 10 registry skeleton](docs/village-watchtowers-step-10.md) registers
+the codec and validates the built-in structure data while an empty biome tag
+and empty generation point keep incomplete towers from generating.
 
 ## License
 

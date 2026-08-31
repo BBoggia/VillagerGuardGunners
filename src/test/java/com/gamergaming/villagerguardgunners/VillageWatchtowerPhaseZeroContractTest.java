@@ -59,19 +59,31 @@ final class VillageWatchtowerPhaseZeroContractTest {
     }
 
     @Test
-    void phaseZeroHasNoProductionWorldGenerationSurface() throws IOException {
+    void stepTenAddsOnlyTheDormantRegistryAndDataSkeleton() throws IOException {
         Path resources = PROJECT_DIRECTORY.resolve("src/main/resources/data/villagerguardgunners");
         Path sources = PROJECT_DIRECTORY.resolve(
                 "src/main/java/com/gamergaming/villagerguardgunners");
         String build = read("build.gradle");
+        String structure = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/structure/"
+                        + "VillageWatchtowerStructure.java");
 
         assertAll(
-                () -> assertFalse(Files.exists(resources.resolve("worldgen/structure"))),
-                () -> assertFalse(Files.exists(resources.resolve("worldgen/structure_set"))),
+                () -> assertTrue(Files.isRegularFile(
+                        resources.resolve("worldgen/structure/watchtower.json"))),
+                () -> assertTrue(Files.isRegularFile(
+                        resources.resolve("worldgen/structure_set/watchtowers.json"))),
+                () -> assertTrue(Files.isRegularFile(resources.resolve(
+                        "tags/worldgen/biome/has_structure/watchtower.json"))),
                 () -> assertFalse(Files.exists(resources.resolve("worldgen/template_pool"))),
                 () -> assertFalse(Files.exists(resources.resolve("structures/watchtower.nbt"))),
                 () -> assertFalse(Files.exists(resources.resolve("loot_tables/chests/watchtower.json"))),
-                () -> assertFalse(Files.exists(sources.resolve("worldgen"))),
+                () -> assertTrue(Files.isRegularFile(sources.resolve(
+                        "worldgen/structure/VillageWatchtowerStructure.java"))),
+                () -> assertTrue(structure.contains("return Optional.empty()")),
+                () -> assertFalse(structure.contains("afterPlace(")),
+                () -> assertFalse(structure.contains("getChunk(")),
+                () -> assertFalse(structure.contains("addFreshEntity")),
                 () -> assertFalse(build.contains("watchtower.nbt")));
     }
 

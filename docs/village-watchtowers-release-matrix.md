@@ -13,6 +13,7 @@ uses the exact candidate JAR and world seed named by that evidence.
 - Baseline JAR SHA-256: `d498dabe6e87de95034a70befc92997a6a9d8b931211362471606242cf480417`
 - Candidate commit: record before validation
 - Step 9 development JAR SHA-256: `3f5777605a7b788885c5512f1e92f6af9944eb97d3a2c787b4639cfc3c0e657d`
+- Step 10 development JAR SHA-256: `f4d01c87387d637262537051b8155e1e289859c55c32bed94efe700b3b84268b`
 - Test seeds: record fixed positive, negative, and random seeds
 - Tested worldgen/village mods: record exact names and versions
 - Tested TaCZ content packs: record exact names and versions
@@ -21,7 +22,7 @@ uses the exact candidate JAR and world seed named by that evidence.
 
 | ID | Case | Expected result | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| TOWER-DATA-01 | Start with the built-in structure, structure set, biome tag, template, processors, and loot data enabled. | Every referenced registry key resolves during server datapack load and `/locate structure` can resolve the watchtower key. | Not implemented | |
+| TOWER-DATA-01 | Start with the built-in structure, structure set, biome tag, template, processors, and loot data enabled. | Every referenced registry key resolves during server datapack load and `/locate structure` can resolve the watchtower key. | Partial | Step 10 registers the custom codec and packages a structure, structure set, and deliberately empty biome tag. All 393 unit/source/artifact tests and the 87-case Forge server pass prove their exact identities, dormant gates, packaged surface, and dynamic-registry binding; template, processors, loot, activation, and locate evidence remain. |
 | TOWER-DATA-02 | Override the built-in biome tag, structure settings, placement, template, and loot table through a datapack. | Standard datapack priority selects the replacement without Java-side hardcoded copies or duplicate registration. | Not implemented | |
 | TOWER-DATA-03 | Remove or disable the structure set after towers already exist. | Existing chunks and saved guards/Armories load normally; no new tower generates and no repair scan starts. | Not implemented | |
 | TOWER-DATA-04 | Load missing, malformed, future-format, oversized, cyclic, or conflicting guard-post group documents. | Invalid publication fails closed within hard bounds and retains the last known good generation; unrelated datapack data continues loading. | Not implemented | |
@@ -90,7 +91,7 @@ uses the exact candidate JAR and world seed named by that evidence.
 - [x] Guard, marker, Armory, and recurring-work hard ceilings recorded.
 - [x] Placement, group, integration, lifecycle, compatibility, and performance
   cases defined before implementation.
-- [ ] Production structure registry and datapack skeleton implemented.
+- [x] Production structure registry and dormant datapack skeleton implemented.
 - [ ] Tower template and placement implemented.
 - [ ] Guard-post composition and spawning implemented.
 - [ ] Integration and lifecycle matrix completed.

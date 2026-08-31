@@ -506,17 +506,124 @@ public final class NativeGunController {
                 && !weaponState.isSuspended();
     }
 
+    /** True only after TaCZ reload and guard-ammunition sharing both failed. */
+    public boolean isCurrentWeaponDryConfirmed() {
+        return guard.getMainHandItem() == trackedStack
+                && weaponState.remainingDryTicks(guard.level().getGameTime()) > 0L;
+    }
+
+    /** Reads the already-cached current tactical traits, refreshing scripts once this tick. */
+    public boolean isCurrentWeaponExplosive() {
+        return refreshDynamicExplosionTacticalState()
+                && currentWeaponIsExplosiveFromCache();
+    }
+
+    /**
+     * Constant-time native action gate for a complete weapon-stack swap.
+     * A suspended third-party definition may still be returned safely when no
+     * native action is in progress.
+     */
+    public boolean isSidearmSwapSafe() {
+        try {
+            var data = operator.getDataHolder();
+            if (guard.getMainHandItem() != trackedStack
+                    || isNativeBurstActive(currentRelativeTimestamp())
+                    || !triggerState.canAttemptAction()
+                    || triggerState.getChargeProgress() > 0.0F
+                    || data.reloadStateType.isReloading()
+                    || data.isBolting
+                    || data.meleePrepTickCount >= 0
+                    || hasLiveDrawCooldown(data.drawTimestamp)
+                    || hasLiveShootCooldown(data.shootTimestamp)) {
+                return false;
+            }
+            return !operator.getSynReloadState().getStateType().isReloading()
+                    && !operator.getSynIsBolting()
+                    && operator.getSynMeleeCoolDown() <= 0L
+                    && operator.getSynDrawCoolDown() <= 0L
+                    && operator.getSynShootCoolDown() <= 0L;
+        } catch (RuntimeException exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Confirms that the weapon bound after a sidearm transaction retained a
+     * complete, non-explosive TaCZ firing definition. This is deliberately
+     * evaluated before the active sidearm receives another native trigger tick.
+     */
+    public boolean isCurrentWeaponSidearmCompatible() {
+        return hasCurrentWeaponData(guard.getMainHandItem())
+                && refreshDynamicExplosionTacticalState()
+                && hasUsableCachedTacticalState()
+                && hasValidFiringWindow()
+                && !currentWeaponIsExplosiveFromCache();
+    }
+
+    /** Stops new trigger work while a deferred lifecycle return settles. */
+    public void prepareForSidearmTransition() {
+        try {
+            synchronizeWeapon();
+            operator.aim(false);
+            updateNativeBurstSafety(currentRelativeTimestamp(), false);
+            triggerState.reset();
+            fireCadence.reset();
+        } catch (RuntimeException exception) {
+            suspendInvalidWeapon();
+        }
+    }
+
+    /** Rebinds TaCZ caches and starts its native draw path after a stack transaction. */
+    public void refreshAfterSidearmTransaction() {
+        try {
+            synchronizeWeapon();
+        } catch (RuntimeException exception) {
+            suspendInvalidWeapon();
+        }
+    }
+
+    private boolean hasLiveDrawCooldown(long drawTimestamp) {
+        if (drawTimestamp < 0L || gunData == null) {
+            return false;
+        }
+        float drawTimeSeconds = gunData.getDrawTime();
+        if (!Float.isFinite(drawTimeSeconds) || drawTimeSeconds < 0.0F) {
+            return true;
+        }
+        long elapsed = System.currentTimeMillis() - drawTimestamp;
+        if (elapsed < 0L) {
+            return true;
+        }
+        double remaining = drawTimeSeconds * 1_000.0D - elapsed - 5.0D;
+        return remaining > 0.0D;
+    }
+
+    private boolean hasLiveShootCooldown(long shootTimestamp) {
+        if (shootTimestamp < 0L || gunData == null || trackedGun == null) {
+            return false;
+        }
+        long shootInterval = resolveShootInterval(trackedStack);
+        return shootInterval > 0L
+                && calculateShootCooldown(
+                        currentRelativeTimestamp(),
+                        shootInterval,
+                        shootTimestamp) > 0L;
+    }
+
     /** Explosive traits are read from the cached tactical snapshot. */
     public boolean isWeaponAllowedByOrders() {
         if (!refreshDynamicExplosionTacticalState()) {
             return false;
         }
-        boolean currentExplosiveWeapon = guard.getMainHandItem() == trackedStack
+        return !currentWeaponIsExplosiveFromCache()
+                || GuardOrdersAccess.getOrders(guard).permitsExplosiveWeapons();
+    }
+
+    private boolean currentWeaponIsExplosiveFromCache() {
+        return guard.getMainHandItem() == trackedStack
                 && cachedTacticalState.gunId() != null
                 && cachedTacticalState.gunId().equals(trackedGunId)
                 && cachedTacticalState.traits().explosive();
-        return !currentExplosiveWeapon
-                || GuardOrdersAccess.getOrders(guard).permitsExplosiveWeapons();
     }
 
     /**

@@ -4,26 +4,33 @@ Phase 5 completes the safety boundary around native TaCZ gunfire. The pre-fire c
 
 ## Shared protection rule
 
-`GuardFriendlyFireSafety.isProtected` is the only ally predicate used before and after a shot. It protects:
+`GuardFriendlyFireSafety.isProtected` delegates to `GuardAllyProtection`, the only ally resolver used before and after a shot. It protects:
 
 - the guard's owner, matched by UUID rather than only a currently resolved entity reference;
 - all `AbstractVillager` entities;
 - all Guard Villagers guards;
 - iron golems; and
-- living entities allied to the guard through Minecraft's team relationship.
+- owned vanilla/modded living entities and Minecraft alliance relationships by default;
+- entity types in `#villagerguardgunners:guard_allies` or the synchronized explicit addition set; and
+- entities accepted by a registered positive-only compatibility provider.
+
+Explicit type exclusions override additions, tags, the broad villager/golem,
+owned-entity, alliance, and provider rules. They cannot bypass protection for
+another guard or the shooter's owner. This precedence is shared unchanged by
+the corridor and both native damage backstops.
 
 Guard Villagers' configurable target blacklist is deliberately not part of this predicate. Refusing to select a mob as an AI target does not make that mob friendly, so hostile entities remain valid gun and explosion victims.
 
 ## Pre-fire corridor
 
-When a shot is actually due, the goal performs one living-entity query in the axis-aligned box from TaCZ's projectile origin (the guard eye position minus 0.1 blocks) to the target eye position. The box is inflated once for the complete native risk envelope calculated in Phase 3:
+When a shot is actually due, the goal performs one living-entity query over the axis-aligned union of the safety envelopes from TaCZ's projectile origin (the guard eye position minus 0.1 blocks) to the target eye position. The envelopes use:
 
 - runtime attachment/script inaccuracy;
 - current heat inaccuracy;
 - explosive radius; and
 - protected-entity movement during a TaCZ-owned burst.
 
-Only protected candidates are returned. Each candidate's real bounding box is inflated by the same safety padding and clipped against the shot segment. This replaces the earlier center-point/sphere approximation, which could miss the upper or lower part of a tall entity. No block ray trace is issued for any friendly.
+Only protected candidates are returned. Each candidate's real bounding box is checked against three progressive sections: fixed base/burst clearance at the muzzle, full distance-aware spread clearance farther forward, and full blast clearance downrange. A widened section cannot block an entity whose own bounds have not reached that forward section. This removes the former six-block-scale box around an explosive shooter while preserving the direct muzzle line and the complete forward/impact envelope. It also retains the bounding-box coverage that avoids missing the upper or lower part of a tall entity. No block ray trace is issued for any friendly, and the hot path still performs only one entity query per due shot.
 
 A protected target fails closed before the entity query. Extreme or malformed padding continues to fail closed before a potentially oversized query.
 
@@ -43,13 +50,15 @@ TaCZ fires this event before ignition, headshot multiplication, damage, knockbac
 
 TaCZ's `ProjectileExplosion` calls Forge's normal explosion detonation hook before it traces exposure or applies damage and knockback. For only that explosion type, Phase 5 uses Minecraft's public `Explosion.getIndirectSourceEntity()` to identify a Guard-owned native projectile, then removes protected entities from the mutable affected-entity list.
 
-No reflection or accessor mixin is required: TaCZ supplies its kinetic projectile as the explosion's direct source, and Minecraft resolves that projectile's owner as the indirect source. Blocks and hostile entities remain in their original affected lists. Removing protected entities before TaCZ's fifteen-point exposure calculation also avoids that ray-tracing cost for each protected entity in the blast.
+No reflection or accessor mixin is required: TaCZ supplies its kinetic projectile as the explosion's direct source, and Minecraft resolves that projectile's owner as the indirect source. Hostile entities remain in the original affected list. By default, the synchronized `safety.preserveBlocksFromGuardExplosions` setting also clears Forge's already-computed mutable block list for a Guard-owned TaCZ explosion. This retains the native explosion, particles, sound, hostile damage, and knockback while preventing guards from dismantling the terrain they defend. Disabling the setting restores TaCZ's normal block effects; player-owned and non-TaCZ explosions are never altered.
+
+The preservation handler performs no block or point-of-interest search. It runs only after TaCZ and Forge have computed an explosion's affected lists and clears the existing block list, so it adds no guard tick cost and avoids building a second village-boundary system.
 
 ## Verification
 
-The unit and source-contract suite checks bounding-box corridor geometry, conservative spread/burst padding, direct and explosive event wiring, cache limits, and the absence of added block ray tracing or reflection.
+The unit and source-contract suite checks bounding-box corridor geometry, progressive muzzle/spread/blast clearance, conservative burst padding, direct and explosive event wiring, configurable block preservation, cache limits, and the absence of added block ray tracing or reflection.
 
-At the end of Phase 5, eight Forge GameTests verified the existing inventory/native integration and Phase 5 behavior with real loaded Guard Villagers and TaCZ classes. The Phase 5 tests cover the shared owner/villager/guard/golem/team predicate, hostile exclusion, direct-hit cancellation including projectile-owner fallback, and selective removal from a TaCZ projectile explosion. Phase 8, the post-review regressions, Fzzy Config integration, maximum-range regression, and administrator-command coverage expand the current integration suite to 19 tests.
+At the end of Phase 5, eight Forge GameTests verified the existing inventory/native integration and Phase 5 behavior with real loaded Guard Villagers and TaCZ classes. The Phase 5 tests cover the shared owner/villager/guard/golem/team predicate, hostile exclusion, direct-hit cancellation including projectile-owner fallback, selective removal from a TaCZ projectile explosion, enabled/disabled block preservation, and isolation from player-owned TaCZ explosions. Later coverage adds explicit modpack additions/exclusions, non-bypassable guard/owner protection, owned entities, scoreboard alliances, compatibility providers, rules of engagement, a real RPG transition from blocked forward blast clearance to permitted near-shooter side clearance, and the shared TaCZ-native ammunition model and transaction layer. Phase 8, the post-review regressions, Fzzy Config integration, administrator-command coverage, tactical profiles, modpack ally protection, ROE, ammunition quality-of-life work, natural-loadout issuance, contextual selection and diagnostics, persistence and live cap validation, squad and armory hardening, and player-facing combat status expand the current integration suite to 52 tests.
 
 Run:
 

@@ -34,6 +34,17 @@ def curseForgeReleaseDirectory = layout.buildDirectory.dir(
         "distributions/curseforge/${mod_version}")
 def generatedGameTestArenaDirectory = layout.buildDirectory.dir('generated/gametest-arena')
 def phase8ArtifactSha256Property = 'villagerguardgunners.phase8ProductionArtifactSha256'
+def naturalLoadoutAuthoringPaths = [
+        'docs/natural-loadout-migration.md',
+        'docs/natural-loadout-v3-sidearms.md',
+        'docs/examples/natural-loadout-datapack/README.md',
+        'docs/examples/natural-loadout-datapack/pack.mcmeta',
+        'docs/examples/natural-loadout-datapack/data/vgg_example/natural_guard_loadouts/contextual_guards.json',
+        'docs/examples/natural-loadout-datapack/data/vgg_example/natural_guard_loadouts/migrated_normal.json',
+        'docs/examples/natural-loadout-datapack/data/vgg_example/natural_guard_loadouts/rifle_sidearms.json',
+        'docs/examples/natural-loadout-datapack/data/vgg_example/tags/worldgen/biome/is_dry.json',
+        'docs/examples/natural-loadout-datapack/data/vgg_example/tags/worldgen/structure/villages.json'
+]
 def sha256OfFile = { File file ->
     java.security.MessageDigest.getInstance('SHA-256')
             .digest(file.bytes)
@@ -44,8 +55,7 @@ def sha256OfFile = { File file ->
 sourceSets {
     gameTest {
         java.srcDir 'src/gametest/java'
-        resources.srcDir 'src/gametest/resources'
-        resources.srcDir generatedGameTestArenaDirectory
+        resources.setSrcDirs(['src/gametest/resources', generatedGameTestArenaDirectory])
         compileClasspath += sourceSets.main.output
         runtimeClasspath += output + compileClasspath
     }
@@ -267,7 +277,15 @@ tasks.register('verifyReleaseArtifact') {
                     'assets/villagerguardgunners/textures/gui/gunner_inventory.png',
                     'assets/villagerguardgunners/lang/en_us.json',
                     'assets/villagerguardgunners/models/item/orders_ledger.json',
+                    'assets/villagerguardgunners/models/item/squad_command_ledger.json',
+                    'assets/villagerguardgunners/blockstates/armory.json',
+                    'assets/villagerguardgunners/models/block/armory.json',
+                    'assets/villagerguardgunners/models/item/armory.json',
                     'data/villagerguardgunners/recipes/orders_ledger.json',
+                    'data/villagerguardgunners/recipes/squad_command_ledger.json',
+                    'data/villagerguardgunners/recipes/armory.json',
+                    'data/villagerguardgunners/loot_tables/blocks/armory.json',
+                    'data/minecraft/tags/blocks/mineable/axe.json',
                     'data/villagerguardgunners/natural_guard_loadouts/easy.json',
                     'data/villagerguardgunners/natural_guard_loadouts/normal.json',
                     'data/villagerguardgunners/natural_guard_loadouts/hard.json',
@@ -281,18 +299,60 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/ammunition/GuardAmmoSharing.class',
                     'com/gamergaming/villagerguardgunners/ammunition/GuardAmmoSummary.class',
                     'com/gamergaming/villagerguardgunners/ammunition/GuardAmmoTransactions.class',
+                    'com/gamergaming/villagerguardgunners/ammunition/GuardWeaponAmmunition.class',
+                    'com/gamergaming/villagerguardgunners/armory/ArmoryBlock.class',
+                    'com/gamergaming/villagerguardgunners/armory/ArmoryBlockEntity.class',
+                    'com/gamergaming/villagerguardgunners/armory/ArmoryItemHandler.class',
+                    'com/gamergaming/villagerguardgunners/armory/ArmoryLockInteractions.class',
+                    'com/gamergaming/villagerguardgunners/armory/ArmorySquadLock.class',
+                    'com/gamergaming/villagerguardgunners/armory/ArmorySquadLockCodec.class',
+                    'com/gamergaming/villagerguardgunners/client/ArmoryScreen.class',
                     'com/gamergaming/villagerguardgunners/config/VillagerGuardGunnersConfig.class',
+                    'com/gamergaming/villagerguardgunners/command/NaturalGuardLoadoutCommandContract.class',
+                    'com/gamergaming/villagerguardgunners/command/NaturalGuardLoadoutCommandService.class',
+                    'com/gamergaming/villagerguardgunners/command/NaturalGuardLoadoutCommands.class',
+                    'com/gamergaming/villagerguardgunners/command/SquadRegistryCommands.class',
                     'com/gamergaming/villagerguardgunners/init/ModConfigs.class',
+                    'com/gamergaming/villagerguardgunners/init/ModBlocks.class',
+                    'com/gamergaming/villagerguardgunners/init/ModBlockEntities.class',
                     'com/gamergaming/villagerguardgunners/init/ModItems.class',
+                    'com/gamergaming/villagerguardgunners/init/ModMenus.class',
+                    'com/gamergaming/villagerguardgunners/menu/ArmoryMenu.class',
                     'com/gamergaming/villagerguardgunners/item/OrdersLedgerItem.class',
+                    'com/gamergaming/villagerguardgunners/item/SquadCommandLedgerItem.class',
                     'com/gamergaming/villagerguardgunners/api/GuardNaturalLoadoutAccess.class',
+                    'com/gamergaming/villagerguardgunners/api/GuardSquadAccess.class',
+                    'com/gamergaming/villagerguardgunners/api/GuardSquadCommandAccess.class',
+                    'com/gamergaming/villagerguardgunners/ai/SquadCommandMovementController.class',
+                    'com/gamergaming/villagerguardgunners/ai/SquadCommandMovementGoal.class',
                     'com/gamergaming/villagerguardgunners/orders/GuardOrderPermissions.class',
                     'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplate.class',
                     'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplateInteractions.class',
                     'com/gamergaming/villagerguardgunners/orders/GuardOrderTemplateService.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadLedgerBinding.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadLedgerBindingCodec.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadLedgerInteractions.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadLedgerService.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadCommand.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadCommandCodec.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadCommandDispatcher.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadCommandRuntime.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadCommandType.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadLedgerModeCodec.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadMembership.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadMembershipCodec.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadMetadata.class',
+                    'com/gamergaming/villagerguardgunners/squad/SquadRegistrySavedData.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutConditionSpec.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutContextCapture.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutFormat.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutMatchContext.class',
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutPool.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutParser.class',
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutPools.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutReloadSnapshot.class',
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutDiagnostics.class',
+                    'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutCompatibilityAnalyzer.class',
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutIssuance.class',
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutProvenance.class',
                     'com/gamergaming/villagerguardgunners/spawn/NaturalGuardLoadoutProvenanceCodec.class',
@@ -320,6 +380,7 @@ tasks.register('verifyReleaseArtifact') {
 
             List<String> prohibitedMarkers = [
                     '/gametest/',
+                    'villagerguardgunners_gametest',
                     'GuardBullet',
                     'GunMechanicsHandler',
                     'FireModeStrategy',
@@ -477,7 +538,26 @@ tasks.register('verifyPhase8PerformanceReports') {
                                                minimumPersistentDroppedAmmo: 100],
                 'dry-sharing-pressure-50'  : [guards: 50, weapon: 'tacz:glock_17',
                                                workload: 'dry_sharing_pressure', minimumShotEvidence: 0,
-                                               minimumAmmoSharingAttempts: 50]
+                                               minimumAmmoSharingAttempts: 50],
+                'dry-primary-sidearm-switch-50': [guards: 50, weapon: 'tacz:ak47',
+                                               workload: 'dry_primary_sidearm_switch',
+                                               minimumShotEvidence: 50,
+                                               expectedSidearmLoadouts: 50,
+                                               minimumSidearmActive: 40,
+                                               maximumSidearmActive: 50,
+                                               sidearmActivationTriggerTick: 200],
+                'mixed-explosive-standoff-sidearm-20': [guards: 20, weapon: 'tacz:rpg7',
+                                               workload: 'mixed_explosive_standoff_sidearm',
+                                               minimumShotEvidence: 20,
+                                               expectedSidearmLoadouts: 20,
+                                               minimumSidearmActive: 10,
+                                               maximumSidearmActive: 10],
+                'idle-armed-sidearms-100'  : [guards: 100, weapon: 'tacz:glock_17',
+                                               workload: 'idle_with_sidearms',
+                                               minimumShotEvidence: 0,
+                                               expectedSidearmLoadouts: 100,
+                                               minimumSidearmActive: 0,
+                                               maximumSidearmActive: 0]
         ]
         Map<String, Object> expectedConfig = [
                 'enabled'                                      : true,
@@ -572,7 +652,7 @@ tasks.register('verifyPhase8PerformanceReports') {
                 'performance.unsafeShotCacheTicks'             : 2,
                 'performance.repositionProgressCheckTicks'     : 10
         ]
-        Map<String, Map<String, Double>> relativeTimingBudgets = [
+        Map<String, Map<String, Object>> relativeTimingBudgets = [
                 'idle-armed-100'        : [p95Multiplier: 2.0D, p95Allowance: 2.0D,
                                            p99Multiplier: 3.0D, p99Allowance: 3.0D],
                 'semi-10'               : [p95Multiplier: 2.0D, p95Allowance: 2.0D,
@@ -589,7 +669,11 @@ tasks.register('verifyPhase8PerformanceReports') {
                                            p99Multiplier: 4.0D, p99Allowance: 4.0D],
                 'automatic-shotgun-10'  : [p95Multiplier: 2.5D, p95Allowance: 2.0D,
                                            p99Multiplier: 3.5D, p99Allowance: 3.0D],
-                'explosive-10'          : [p95Multiplier: 3.0D, p95Allowance: 2.0D,
+                // Explosion scripts have a fixed per-shot floor. Keep an
+                // explicit p95 allowance large enough for the documented
+                // stable RPG envelope even when unrelated unarmed fast paths
+                // make the same-run denominator exceptionally small.
+                'explosive-10'          : [p95Multiplier: 3.0D, p95Allowance: 5.0D,
                                            p99Multiplier: 6.0D, p99Allowance: 4.0D],
                 // Forge does not guarantee batch order. Navigation may be the
                 // first profiled workload and must absorb one-time pathfinding
@@ -601,7 +685,17 @@ tasks.register('verifyPhase8PerformanceReports') {
                 'dropped-ammo-pressure-100': [p95Multiplier: 3.0D, p95Allowance: 3.0D,
                                            p99Multiplier: 5.0D, p99Allowance: 5.0D],
                 'dry-sharing-pressure-50': [p95Multiplier: 4.0D, p95Allowance: 4.0D,
-                                           p99Multiplier: 7.0D, p99Allowance: 6.0D]
+                                           p99Multiplier: 7.0D, p99Allowance: 6.0D],
+                'dry-primary-sidearm-switch-50': [p95Multiplier: 3.0D, p95Allowance: 3.0D,
+                                           p99Multiplier: 4.0D, p99Allowance: 4.0D],
+                'mixed-explosive-standoff-sidearm-20': [p95Multiplier: 4.0D, p95Allowance: 5.0D,
+                                           p99Multiplier: 8.0D, p99Allowance: 5.0D],
+                // This pair uses the same 100 idle Glock guards. The only
+                // workload difference is one configured, inactive sidearm per
+                // guard, so it receives a much tighter direct comparison.
+                'idle-armed-sidearms-100': [baselineScenario: 'idle-armed-100',
+                                           p95Multiplier: 1.25D, p95Allowance: 0.5D,
+                                           p99Multiplier: 1.25D, p99Allowance: 1.0D]
         ]
         if (!reportDirectory.isDirectory()) {
             throw new GradleException(
@@ -659,6 +753,8 @@ tasks.register('verifyPhase8PerformanceReports') {
             int minimumAcceptedShotEvidence = (int) expectedScenario.minimumShotEvidence
             boolean firingWorkload = expectedScenario.workload == 'clear_lanes'
                     || expectedScenario.workload == 'protected_lanes'
+                    || expectedScenario.workload == 'dry_primary_sidearm_switch'
+                    || expectedScenario.workload == 'mixed_explosive_standoff_sidearm'
             int minimumAcceptedFiringGuards = firingWorkload
                     ? Math.max(1, (((int) expectedScenario.guards) * 4 + 4).intdiv(5))
                     : 0
@@ -667,14 +763,22 @@ tasks.register('verifyPhase8PerformanceReports') {
                     (int) expectedScenario.getOrDefault('minimumAmmoSharingAttempts', 0)
             int minimumPersistentDroppedAmmo =
                     (int) expectedScenario.getOrDefault('minimumPersistentDroppedAmmo', 0)
+            int expectedSidearmLoadouts =
+                    (int) expectedScenario.getOrDefault('expectedSidearmLoadouts', 0)
+            int minimumSidearmActive =
+                    (int) expectedScenario.getOrDefault('minimumSidearmActive', 0)
+            int maximumSidearmActive =
+                    (int) expectedScenario.getOrDefault('maximumSidearmActive', 0)
+            int sidearmActivationTriggerTick =
+                    (int) expectedScenario.getOrDefault('sidearmActivationTriggerTick', -1)
             if (report.scenario != scenario
                     || report.guards != expectedScenario.guards
                     || report.weapon != expectedScenario.weapon
                     || report.workload != expectedScenario.workload
-                    || report.warmupTicks != 100
+                    || report.warmupTicks != 200
                     || report.sampleTicks != 1000
-                    || report.configProfile != 'default-v7'
-                    || report.configVersion != 7
+                    || report.configProfile != 'default-v8'
+                    || report.configVersion != 8
                     || report.jfrProfile != "${scenario}.jfr"
                     || report.minimumAcceptedShotEvidence != minimumAcceptedShotEvidence
                     || report.minimumAcceptedFiringGuards != minimumAcceptedFiringGuards
@@ -682,6 +786,10 @@ tasks.register('verifyPhase8PerformanceReports') {
                             != minimumAcceptedPerActiveGuardShotEvidence
                     || report.minimumAmmoSharingAttempts != minimumAmmoSharingAttempts
                     || report.minimumPersistentDroppedAmmo != minimumPersistentDroppedAmmo
+                    || report.expectedSidearmLoadouts != expectedSidearmLoadouts
+                    || report.minimumSidearmActiveGuards != minimumSidearmActive
+                    || report.maximumSidearmActiveGuards != maximumSidearmActive
+                    || report.sidearmActivationTriggerTick != sidearmActivationTriggerTick
                     || report.absoluteTimingGateApplied != false
                     || report.relativeTimingGateApplied != true
                     || report.productionArtifactSha256 != productionArtifactSha256) {
@@ -701,7 +809,7 @@ tasks.register('verifyPhase8PerformanceReports') {
                 if (!matches) {
                     throw new GradleException(
                             "Phase 8 scenario ${scenario} used ${path}=${actualValue}; "
-                                    + "the default-v7 profile requires ${expectedValue}")
+                                    + "the default-v8 profile requires ${expectedValue}")
                 }
             }
 
@@ -722,17 +830,24 @@ tasks.register('verifyPhase8PerformanceReports') {
 
             List<String> nonNegativeEvidenceFields = [
                     'nativeTaCZShootCount',
+                    'acceptedServerGunShootEvents',
                     'nativeAmmoConsumed',
                     'liveTaCZBulletsAtEnd',
                     'garbageCollectionsDuringSample',
                     'ammoSharingAttemptsObserved',
-                    'persistentDroppedAmmoEntities'
+                    'persistentDroppedAmmoEntities',
+                    'sidearmLoadoutsObserved',
+                    'sidearmActiveGuardsAtEnd'
             ]
             nonNegativeEvidenceFields.each { field ->
                 Object value = report[field]
                 if (!(value instanceof Number) || ((Number) value).longValue() < 0L) {
                     throw new GradleException("Phase 8 scenario ${scenario} has invalid ${field}")
                 }
+            }
+            if (report.acceptedServerGunShootEvents != report.nativeTaCZShootCount) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has contradictory native shot-event evidence")
             }
             if (!(report.usedHeapDeltaBytes instanceof Number)) {
                 throw new GradleException("Phase 8 scenario ${scenario} has invalid usedHeapDeltaBytes")
@@ -745,6 +860,152 @@ tasks.register('verifyPhase8PerformanceReports') {
                         "Phase 8 scenario ${scenario} lacks ammunition workload evidence: "
                                 + "sharing=${report.ammoSharingAttemptsObserved}/${minimumAmmoSharingAttempts}, "
                                 + "drops=${report.persistentDroppedAmmoEntities}/${minimumPersistentDroppedAmmo}")
+            }
+            if (((Number) report.sidearmLoadoutsObserved).intValue()
+                            != expectedSidearmLoadouts
+                    || ((Number) report.sidearmActiveGuardsAtEnd).intValue()
+                            < minimumSidearmActive
+                    || ((Number) report.sidearmActiveGuardsAtEnd).intValue()
+                            > maximumSidearmActive) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has invalid sidearm evidence: "
+                                + "loadouts=${report.sidearmLoadoutsObserved}/${expectedSidearmLoadouts}, "
+                                + "active=${report.sidearmActiveGuardsAtEnd}/"
+                                + "${minimumSidearmActive}-${maximumSidearmActive}")
+            }
+            Set<String> validFinalSidearmStates = [
+                    'PRIMARY_ACTIVE',
+                    'SIDEARM_ACTIVE',
+                    'RECOVERY_REQUIRED'
+            ] as Set
+            if (!(report.perGuardFinalState instanceof List)
+                    || report.perGuardFinalState.size() != expectedScenario.guards
+                    || report.perGuardFinalState.any {
+                        !(it instanceof Map)
+                                || !(it.guardIndex instanceof Number)
+                                || !(it.sidearmState instanceof String)
+                                || !validFinalSidearmStates.contains(it.sidearmState)
+                                || !(it.activeGunId instanceof String)
+                                || !(it.expectedGunId instanceof String)
+                                || !(it.expectedSidearmActive instanceof Boolean)
+                                || !(it.expectedTargetDistance instanceof Number)
+                                || !(it.acceptedShotEvidence instanceof Number)
+                                || !(it.firstSidearmActivationTick instanceof Number)
+                    }) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has invalid per-guard final-state evidence")
+            }
+            int finalActiveSidearms = report.perGuardFinalState.count {
+                it.sidearmState == 'SIDEARM_ACTIVE'
+            }
+            int finalRecoveryRequired = report.perGuardFinalState.count {
+                it.sidearmState == 'RECOVERY_REQUIRED'
+            }
+            if (finalActiveSidearms != ((Number) report.sidearmActiveGuardsAtEnd).intValue()
+                    || finalRecoveryRequired != 0) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has contradictory final sidearm state: "
+                                + "active=${finalActiveSidearms}/${report.sidearmActiveGuardsAtEnd}, "
+                                + "recoveryRequired=${finalRecoveryRequired}")
+            }
+
+            if (!(report.perGuardFirstSidearmActivationTick instanceof List)
+                    || report.perGuardFirstSidearmActivationTick.size()
+                            != expectedScenario.guards
+                    || report.perGuardFirstSidearmActivationTick.any {
+                        !(it instanceof Number) || ((Number) it).intValue() < -1
+                    }) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has invalid observed activation timing")
+            }
+            List<Integer> observedActivationTicks =
+                    report.perGuardFirstSidearmActivationTick.collect {
+                        ((Number) it).intValue()
+                    }
+            List<Integer> nonNegativeActivationTicks = observedActivationTicks.findAll {
+                it >= 0
+            }
+            int firstObservedActivationTick = nonNegativeActivationTicks.isEmpty()
+                    ? -1
+                    : nonNegativeActivationTicks.min() as int
+            int lastObservedActivationTick = nonNegativeActivationTicks.isEmpty()
+                    ? -1
+                    : nonNegativeActivationTicks.max() as int
+            if (report.firstObservedSidearmActivationTick != firstObservedActivationTick
+                    || report.lastObservedSidearmActivationTick
+                            != lastObservedActivationTick
+                    || report.perGuardFinalState.withIndex().any { entry, index ->
+                        ((Number) entry.guardIndex).intValue() != index
+                                || ((Number) entry.firstSidearmActivationTick).intValue()
+                                        != observedActivationTicks[index]
+                    }) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has contradictory per-guard evidence")
+            }
+
+            int expectedMinimumPerRole = scenario == 'mixed-explosive-standoff-sidearm-20'
+                    ? 8
+                    : 0
+            int observedSidearmRoleFiring = 0
+            int observedPrimaryRoleFiring = 0
+            boolean finalRoleMappingValid = true
+            if (scenario == 'mixed-explosive-standoff-sidearm-20') {
+                report.perGuardFinalState.eachWithIndex { entry, index ->
+                    boolean expectedSidearm = index % 2 == 0
+                    String expectedState = expectedSidearm
+                            ? 'SIDEARM_ACTIVE'
+                            : 'PRIMARY_ACTIVE'
+                    String expectedGun = expectedSidearm
+                            ? 'tacz:glock_17'
+                            : 'tacz:rpg7'
+                    double expectedDistance = expectedSidearm ? 4.0D : 20.0D
+                    finalRoleMappingValid &= entry.expectedSidearmActive == expectedSidearm
+                            && entry.sidearmState == expectedState
+                            && entry.expectedGunId == expectedGun
+                            && entry.activeGunId == expectedGun
+                            && Double.compare(
+                                    ((Number) entry.expectedTargetDistance).doubleValue(),
+                                    expectedDistance) == 0
+                            && entry.targetDistance instanceof Number
+                            && Math.abs(((Number) entry.targetDistance).doubleValue()
+                                    - expectedDistance) <= 0.5D
+                    if (((Number) entry.acceptedShotEvidence).intValue() > 0) {
+                        if (expectedSidearm) {
+                            observedSidearmRoleFiring++
+                        } else {
+                            observedPrimaryRoleFiring++
+                        }
+                    }
+                }
+            }
+            boolean activationTimingValid = true
+            if (scenario == 'dry-primary-sidearm-switch-50') {
+                report.perGuardFinalState.eachWithIndex { entry, index ->
+                    int activationTick = observedActivationTicks[index]
+                    activationTimingValid &= activationTick < 0
+                            || (activationTick >= sidearmActivationTriggerTick
+                                    && activationTick
+                                            <= sidearmActivationTriggerTick + 200)
+                    if (entry.sidearmState == 'SIDEARM_ACTIVE') {
+                        activationTimingValid &= activationTick
+                                >= sidearmActivationTriggerTick
+                    }
+                }
+            }
+            if (report.sidearmRoleFiringGuards != observedSidearmRoleFiring
+                    || report.primaryRoleFiringGuards != observedPrimaryRoleFiring
+                    || report.minimumFiringGuardsPerRole != expectedMinimumPerRole
+                    || report.finalSidearmRoleMappingValid != finalRoleMappingValid
+                    || report.sidearmActivationTimingValid != activationTimingValid
+                    || !finalRoleMappingValid
+                    || !activationTimingValid
+                    || observedSidearmRoleFiring < expectedMinimumPerRole
+                    || observedPrimaryRoleFiring < expectedMinimumPerRole) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} failed role/timing evidence: "
+                                + "sidearmRoleFiring=${observedSidearmRoleFiring}/${expectedMinimumPerRole}, "
+                                + "primaryRoleFiring=${observedPrimaryRoleFiring}/${expectedMinimumPerRole}, "
+                                + "mapping=${finalRoleMappingValid}, timing=${activationTimingValid}")
             }
 
             int acceptedShotEvidence = Math.max(
@@ -763,6 +1024,13 @@ tasks.register('verifyPhase8PerformanceReports') {
                     }) {
                 throw new GradleException(
                         "Phase 8 scenario ${scenario} has invalid per-guard shot evidence")
+            }
+            if (report.perGuardFinalState.withIndex().any { entry, index ->
+                ((Number) entry.acceptedShotEvidence).intValue()
+                        != ((Number) report.perGuardAcceptedShotEvidence[index]).intValue()
+            }) {
+                throw new GradleException(
+                        "Phase 8 scenario ${scenario} has contradictory per-guard shot evidence")
             }
             int activeFiringGuards = report.perGuardAcceptedShotEvidence.count {
                 ((Number) it).intValue() > 0
@@ -791,9 +1059,12 @@ tasks.register('verifyPhase8PerformanceReports') {
             }
         }
 
-        Object baseline = parsedReports['unarmed-idle-baseline-100']
         relativeTimingBudgets.each { scenario, budget ->
             Object report = parsedReports[scenario]
+            String baselineScenario = budget.getOrDefault(
+                    'baselineScenario',
+                    'unarmed-idle-baseline-100') as String
+            Object baseline = parsedReports[baselineScenario]
             double p95Limit = ((Number) baseline.p95Mspt).doubleValue()
                     * budget.p95Multiplier + budget.p95Allowance
             double p99Limit = ((Number) baseline.p99Mspt).doubleValue()
@@ -801,7 +1072,7 @@ tasks.register('verifyPhase8PerformanceReports') {
             if (((Number) report.p95Mspt).doubleValue() > p95Limit
                     || ((Number) report.p99Mspt).doubleValue() > p99Limit) {
                 throw new GradleException(
-                        "Phase 8 scenario ${scenario} exceeded its same-run baseline budget: "
+                        "Phase 8 scenario ${scenario} exceeded its ${baselineScenario} budget: "
                                 + "p95=${report.p95Mspt}/${p95Limit}, "
                                 + "p99=${report.p99Mspt}/${p99Limit}")
             }
@@ -838,7 +1109,7 @@ tasks.register('assembleReleaseCandidateEvidence') {
                 .count { it.isFile() && it.name.endsWith('.jfr') }
 
         Map<String, Object> manifest = [
-                schemaVersion  : 3,
+                schemaVersion  : 4,
                 mod            : [
                         id     : mod_id,
                         name   : mod_name,
@@ -868,7 +1139,16 @@ tasks.register('assembleReleaseCandidateEvidence') {
                             file  : file.name,
                             bytes : file.length(),
                             sha256: sha256OfFile(file)
-                    ]
+                        ]
+                },
+                naturalLoadoutAuthoring: naturalLoadoutAuthoringPaths.collect {
+                    String relativePath ->
+                        File file = layout.projectDirectory.file(relativePath).asFile
+                        [
+                                file  : relativePath,
+                                bytes : file.length(),
+                                sha256: sha256OfFile(file)
+                        ]
                 },
                 separateEvidence: [
                         correctnessGameTests: './gradlew runGameTestServer',
@@ -917,19 +1197,23 @@ tasks.register('verifyAmmunitionReleaseCandidate') {
                 .file('docs/ammunition-quality-of-life.md').asFile
         File naturalLoadoutGuide = layout.projectDirectory
                 .file('docs/natural-guard-loadouts.md').asFile
+        List<File> naturalLoadoutAuthoringFiles = naturalLoadoutAuthoringPaths.collect {
+            relativePath -> layout.projectDirectory.file(relativePath).asFile
+        }
         if (!manifestFile.isFile() || !manualMatrix.isFile()
-                || !ammunitionGuide.isFile() || !naturalLoadoutGuide.isFile()) {
+                || !ammunitionGuide.isFile() || !naturalLoadoutGuide.isFile()
+                || naturalLoadoutAuthoringFiles.any { file -> !file.isFile() }) {
             throw new GradleException(
                     'Release evidence or a required manual validation document is missing')
         }
 
         Object manifest = new groovy.json.JsonSlurper().parse(manifestFile)
-        if (manifest.schemaVersion != 3
+        if (manifest.schemaVersion != 4
                 || manifest.artifact.sha256 != sha256OfFile(archive)
                 || manifest.verifiedEvidence.releaseArtifactGate != 'passed'
                 || manifest.verifiedEvidence.performanceReportGate != 'passed'
-                || manifest.verifiedEvidence.performanceJsonReports != 14
-                || manifest.verifiedEvidence.performanceJfrProfiles != 14
+                || manifest.verifiedEvidence.performanceJsonReports != 17
+                || manifest.verifiedEvidence.performanceJfrProfiles != 17
                 || manifest.separateEvidence.correctnessGameTests
                         != './gradlew runGameTestServer'
                 || manifest.separateEvidence.manualCompatibility
@@ -942,6 +1226,22 @@ tasks.register('verifyAmmunitionReleaseCandidate') {
                         != './gradlew verifyAmmunitionReleaseCandidate') {
             throw new GradleException(
                     'Release manifest does not bind the complete verified evidence set')
+        }
+        if (!(manifest.naturalLoadoutAuthoring instanceof List)
+                || manifest.naturalLoadoutAuthoring.size()
+                        != naturalLoadoutAuthoringPaths.size()) {
+            throw new GradleException(
+                    'Release manifest does not bind every natural-loadout authoring file')
+        }
+        naturalLoadoutAuthoringPaths.eachWithIndex { relativePath, index ->
+            File file = layout.projectDirectory.file(relativePath).asFile
+            Object evidence = manifest.naturalLoadoutAuthoring[index]
+            if (evidence.file != relativePath
+                    || evidence.bytes != file.length()
+                    || evidence.sha256 != sha256OfFile(file)) {
+                throw new GradleException(
+                        "Natural-loadout authoring evidence is stale: ${relativePath}")
+            }
         }
 
         String checklist = manualMatrix.getText('UTF-8')
@@ -957,6 +1257,17 @@ tasks.register('verifyAmmunitionReleaseCandidate') {
                 'AMMO-LIFE-01',
                 'AMMO-CFG-01'
         ]
+        List<String> requiredSidearmCases = [
+                'SIDEARM-VISUAL-01',
+                'SIDEARM-RELOAD-01',
+                'SIDEARM-SHIELD-01',
+                'SIDEARM-LIFE-01',
+                'SIDEARM-AMMO-01',
+                'SIDEARM-AMMO-02',
+                'SIDEARM-PACK-01',
+                'SIDEARM-CONFIG-01',
+                'SIDEARM-RECOVERY-01'
+        ]
         List<String> requiredNaturalLoadoutCases = [
                 'NATURAL-LIFE-01',
                 'NATURAL-LIFE-02',
@@ -966,14 +1277,17 @@ tasks.register('verifyAmmunitionReleaseCandidate') {
                 'NATURAL-SOURCE-01',
                 'NATURAL-AMMO-01',
                 'NATURAL-EXPLOSIVE-01',
-                'NATURAL-CAP-01'
+                'NATURAL-CAP-01',
+                'NATURAL-SIDEARM-01'
         ]
         if (requiredManualCases.any { id -> !checklist.contains(id) }
+                || requiredSidearmCases.any { id -> !checklist.contains(id) }
                 || requiredNaturalLoadoutCases.any { id -> !checklist.contains(id) }
                 || !guide.contains('Intentionally deferred')
                 || !guide.contains('pickupDroppedAmmo')
                 || !guide.contains('shareAmmoBetweenGuards')
                 || !naturalGuide.contains('Step 8 balance and release guidance')
+                || !naturalGuide.contains('Copy-ready examples and migration')
                 || !naturalGuide.contains('naturalLoadouts.enabled = false')
                 || !naturalGuide.contains('/vgg inspect <guard>')) {
             throw new GradleException(

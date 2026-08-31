@@ -2,6 +2,132 @@
 
 All notable Villager Guard Gunners changes are recorded here.
 
+## Unreleased
+
+## 1.2 - 2026-08-30
+
+### Added
+
+- Added the isolated, allocation-free sidearm eligibility and transition
+  contracts, including non-bypassable explosive rejection, native-state gates,
+  return hysteresis, rollback postconditions, and lossless recovery states.
+- Added private versioned sidearm and stowed-primary storage with active switch
+  context, read-only preservation of corrupt or future data, normal death-drop
+  handling, and lossless zombie and lightning conversion recovery. The storage
+  is deliberately excluded from TaCZ's equipment/ammunition capability.
+- Added server-authoritative primary/sidearm transactions with complete-stack
+  verification, native-action safety gating, exact rollback snapshots,
+  persistent lossless recovery, and natural-loadout provenance preservation.
+- Added bounded automatic sidearm switching for confirmed-dry primaries,
+  prohibited explosive primaries, and explosive standoff violations, with
+  native-action deferral, time-and-distance return hysteresis, lifecycle
+  cleanup, revision-cached readiness assessment, and version-1 save migration.
+- Extended manual ammunition handoff and item-driven dropped-ammo pickup to
+  both the effective primary and configured sidearm. Emergency sharing now
+  supports an active sidearm while retaining the configured reserve floor for
+  every compatible donor weapon, and diagnostics report primary and sidearm
+  reserves separately.
+- Added opt-in natural-loadout format 3 with explicit pistol sidearms, strict
+  non-explosive/native compatibility checks, one full ammo stack per weapon,
+  transactional primary/sidearm/ammo/provenance issuance, role-aware nearby-cap
+  authentication, and sidearm-aware loadout diagnostics.
+- Added an authorized sidearm slot to the Guard Villagers inventory with
+  eligibility-aware placement, safe shift-click routing, and active-transaction
+  equipment locks while keeping the internal stowed primary private.
+- Added schema-3 active-sidearm ownership tokens and integration coverage for
+  shield preservation, target replacement, both-weapons-dry behavior, active
+  save/death ownership, and player/mod main-hand replacement.
+- Stable named guard squads managed through a reusable Squad Command Ledger.
+- Temporary Rally, Defend, Hold, Focus Target, Fall Back, and Resume Orders
+  with bounded loaded-member dispatch, persistent expiry, deterministic caps,
+  and independent per-guard anchors.
+- Command-aware guard movement that retains native TaCZ firing, constrains
+  Defend navigation, safety-validates Focus Target, and restores unchanged
+  Guard Villagers patrol/follow behavior after completion or expiry.
+- A craftable Village Armory block with nine ammunition-only slots, a compact
+  inventory screen, hopper/pipe-compatible Forge item access, comparator
+  output, safe content drops, and optional Squad Command Ledger locking.
+- Permission-gated `/vgg squads list` and `/vgg squads unregister` maintenance
+  commands for inspecting and safely reclaiming abandoned registry metadata.
+
+### Fixed
+
+- Deferred natural-loadout eligibility until after Guard Villagers completes
+  its native one-time sword/crossbow equipment pass, so structure-spawned
+  guards no longer reject valid upgrades merely because their main hand was
+  still empty during the entity-join event.
+- Added an authorized, explicit **Recover Weapons** action for contradictory,
+  corrupt, and future-version sidearm records. Recovery keeps the equipped item
+  equipped, returns every recognized private weapon through vanilla inventory
+  insertion/overflow handling, removes only this mod's internal ownership token,
+  and clears the combat lock only after the storage reaches a stable state.
+- Prevented malformed or empty configured sidearms from reaching active-token
+  generation before their complete-stack TaCZ gun validation.
+- Extended natural-loadout issuance rollback across ammunition insertion,
+  sidearm configuration, main-hand replacement, and provenance mutation so an
+  unexpected runtime failure cannot leave a partially issued loadout.
+- Bound every sidearm release-checklist identity to the automated release gate,
+  including recovery, lifecycle, ammunition, configuration, and pack-reload
+  cases.
+- Prevented Forge's modifiable-handler slot assumption from crashing the
+  deliberately non-modifiable public sidearm view.
+- Prevented another gun placed into the main hand during an active sidearm
+  transaction from being mistaken for the original sidearm and overwriting a
+  weapon on return.
+- Kept combat and positional squad movement suppressed for every contradictory
+  recovery layout rather than allowing whichever weapon remained visible to
+  continue acting.
+- Prevented active sidearm returns from being starved by new shots or
+  higher-priority positional squad movement after an engagement ends.
+- Prevented guards that had already raised an offhand shield from becoming stuck tracking a target without ever entering TaCZ's native aiming and firing state.
+- Preserved damaged and future-version armory locks across saves so fail-closed
+  access cannot silently become public after a restart.
+- Cleared temporary commands and Focus-owned targets whenever a guard leaves or
+  changes squads.
+- Applied Focus Target safely to unarmed and conventional Guard Villagers as
+  well as TaCZ gunners.
+- Invalidated menus that still reference an armory block entity after the block
+  is replaced.
+
+### Safety and performance
+
+- Kept every command subordinate to rules of engagement, ally and per-round
+  friendly-fire protection, explosive restrictions, ammunition policy, and
+  TaCZ's native weapon state.
+- Added constant-time active-command validation, one loaded-entity UUID lookup
+  for Focus Target, loaded-chunk-only navigation, the existing staggered path
+  cadence, and a fail-closed runtime distance limit without recurring scans or
+  chunk forcing.
+- Hard-bounded squad candidate collection and sorting to 128 loaded members in
+  addition to the existing configurable 64-guard mutation cap.
+- Kept armories entirely unticked. Their fixed-size inventory rejects
+  non-ammunition, malformed squad locks fail closed for guard access, and block
+  break, persistence, capability, and comparator updates are event driven.
+- Removed redundant armory block-entity packets from ordinary inventory
+  mutations and cleaned transient reassignment confirmations on expiry, player
+  logout, and server shutdown.
+- Doubled the performance-harness warmup while retaining its existing timing
+  budgets, preventing first-batch JVM startup work from masquerading as steady-
+  state guard cost.
+- Anchored invulnerable performance targets inside their prepared firing lanes
+  and added post-sample per-guard diagnostics, removing displacement-driven
+  participation flakes without weakening any evidence threshold.
+- Switched performance captures to JFR's default preset with explicit 5 ms
+  execution sampling, retaining CPU attribution while avoiding an intermittent
+  JDK 17 recording-finalization race in the broader profile preset.
+- Expanded the release performance matrix from 14 to 17 workloads with a
+  simultaneous 50-guard dry-primary switch, an exact mixed RPG-standoff split,
+  and 100 armed-idle guards carrying configured sidearms.
+- Added artifact-bound sidearm evidence for configured loadouts, active-state
+  ranges, observed transition timing, exact per-role weapon mapping, per-role
+  firing participation, and each guard's final sidearm state while retaining
+  every existing performance threshold.
+- Compared the 100-guard configured-sidearm idle workload directly with the
+  otherwise identical Glock-armed idle workload under a tighter 1.25x latency
+  budget, instead of relying on the broader unarmed baseline.
+- Kept sidearm performance validation event-driven and cache-backed without
+  introducing guard scans, schedulers, worker threads, or pathfinding work.
+
 ## 1.1 - 2026-08-29
 
 ### Added
@@ -17,6 +143,11 @@ All notable Villager Guard Gunners changes are recorded here.
 - Difficulty-scaled natural guard loadouts with one full compatible ammunition
   stack, reloadable datapack pools, configurable spawn sources and caps, and
   authenticated guard/gun provenance.
+- Conditional format-2 loadout entries for dimension, biome, structure,
+  difficulty, spawn source, raid-state, and guard-tag contexts, including a
+  copy-ready example datapack and lossless format-1 migration guide.
+- Read-only `/vgg loadouts validate`, `/vgg loadouts inspect`, and
+  `/vgg loadouts preview` administrator diagnostics.
 
 ### Changed
 
@@ -26,6 +157,12 @@ All notable Villager Guard Gunners changes are recorded here.
   per-guard orders, blast standoff, and shot-time safety.
 - Added deduplicated warnings for unavailable TaCZ gun IDs selected from
   datapack loadout pools.
+- Bounded datapack pool sizes and contextual selector collections so malformed
+  modpack data cannot create unbounded spawn-selection or validation work.
+- Reported guard-dependent explosive compatibility separately from actionable
+  loadout warnings, reducing false-positive administrator noise.
+- Avoided biome and guard-tag reads for conditional pools that do not reference
+  those context categories.
 - Expanded `/vgg inspect <guard>` with per-guard orders, combat status, and
   natural-loadout selection and provenance details.
 
@@ -134,7 +271,7 @@ All notable Villager Guard Gunners changes are recorded here.
 - On-demand natural-loadout authentication and provenance in `/vgg inspect`,
   plus an end-to-end save/reload test proving restored guards enforce the live
   nearby population cap without mutating the rejected guard.
-- Plain JUnit contracts, 44 transformed Forge correctness GameTests, a 14-case
+- Plain JUnit contracts, 47 transformed Forge correctness GameTests, a 14-case
   opt-in performance/JFR matrix, reproducible artifacts, and a CI release gate.
 - A recordable ammunition multiplayer matrix, user-facing logistics and
   troubleshooting guide, dedicated-server bytecode boundary check, and

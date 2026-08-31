@@ -1,0 +1,21 @@
+{
+  "format": 3,
+  "entries": [
+    {
+      "gun": "tacz:m4a1",
+      "sidearm": "tacz:glock_17",
+      "weight": 1,
+      "conditions": {
+        "difficulties": ["hard"]
+      }
+    },
+    {
+      "gun": "tacz:ak47",
+      "sidearm": "tacz:m1911",
+      "weight": 1,
+      "conditions": {
+        "difficulties": ["hard"]
+      }
+    }
+  ]
+}

@@ -1,39 +1,20 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
-import com.gamergaming.villagerguardgunners.ammunition.AmmoCompatibility;
-import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoTransactions;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
-import com.gamergaming.villagerguardgunners.combat.TaCZExplosionResolver;
+import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
-import com.tacz.guns.api.TimelessAPI;
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IGun;
-import com.tacz.guns.api.item.builder.AmmoItemBuilder;
-import com.tacz.guns.api.item.builder.GunItemBuilder;
-import com.tacz.guns.api.item.gun.FireMode;
-import com.tacz.guns.resource.index.CommonAmmoIndex;
-import com.tacz.guns.resource.modifier.AttachmentCacheProperty;
-import com.tacz.guns.resource.pojo.data.gun.GunData;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmTransactions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import tallestegg.guardvillagers.entities.Guard;
 
-/**
- * Resolves and atomically issues one selected natural guard loadout.
- *
- * <p>All TaCZ and item-handler callbacks are treated as untrusted reloadable
- * boundaries. The candidate is resolved only at the moment of issuance, every
- * result is validated through TaCZ's public item APIs, and no equipment is
- * changed unless the complete physical ammunition stack can be accepted.</p>
- */
+/** Resolves and atomically issues one selected natural guard loadout. */
 public final class NaturalGuardLoadoutIssuance {
     private NaturalGuardLoadoutIssuance() {
     }
@@ -46,7 +27,9 @@ public final class NaturalGuardLoadoutIssuance {
                 || candidate == null
                 || guard.level().isClientSide
                 || !guard.isAlive()
-                || guard.isRemoved()) {
+                || guard.isRemoved()
+                || guard.getServer() == null
+                || !guard.getServer().isSameThread()) {
             return Result.failed(IssuanceStatus.INVALID_REQUEST);
         }
 
@@ -60,15 +43,8 @@ public final class NaturalGuardLoadoutIssuance {
             return Result.failed(preparation.failure());
         }
         try {
-            return commit(
-                    guard,
-                    preparation.gunStack(),
-                    preparation.ammoStack(),
-                    preparation.provenance());
+            return commit(guard, preparation);
         } catch (RuntimeException exception) {
-            // All mutations inside commit have their own snapshot boundary.
-            // Reaching this catch means the failure occurred before that
-            // boundary or after its rollback path had completed.
             return Result.failed(IssuanceStatus.TRANSACTION_FAILED);
         }
     }
@@ -77,104 +53,37 @@ public final class NaturalGuardLoadoutIssuance {
             Guard guard,
             NaturalGuardLoadoutCandidate candidate,
             boolean allowExplosiveWeapons) {
-        GunData gunData;
-        try {
-            var resolvedGun = TimelessAPI.getCommonGunIndex(candidate.gunId());
-            if (resolvedGun.isEmpty()) {
-                return Preparation.failed(IssuanceStatus.GUN_DEFINITION_UNAVAILABLE);
+        NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy primaryExplosivePolicy =
+                allowExplosiveWeapons
+                        ? NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy.IGNORE
+                        : NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy.REJECT;
+        NaturalGuardLoadoutCompatibilityAnalyzer.Analysis primary =
+                NaturalGuardLoadoutCompatibilityAnalyzer.analyze(
+                        guard,
+                        candidate.gunId(),
+                        primaryExplosivePolicy);
+        if (!primary.compatible()) {
+            return Preparation.failed(mapPrimaryFailure(primary.status()));
+        }
+
+        ItemStack primaryGun = primary.preparedGun();
+        ItemStack primaryAmmo = primary.preparedAmmunition();
+        ItemStack sidearmGun = ItemStack.EMPTY;
+        ItemStack sidearmAmmo = ItemStack.EMPTY;
+        if (candidate.sidearmId() != null) {
+            NaturalGuardSidearmCompatibility.Analysis sidearm =
+                    NaturalGuardSidearmCompatibility.analyze(
+                            guard,
+                            candidate.sidearmId(),
+                            NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy.REJECT);
+            if (!sidearm.weapon().compatible()) {
+                return Preparation.failed(mapSidearmFailure(sidearm.weapon().status()));
             }
-            gunData = resolvedGun.get().getGunData();
-        } catch (RuntimeException exception) {
-            return Preparation.failed(IssuanceStatus.GUN_DATA_UNREADABLE);
-        }
-
-        if (!hasRequiredGunData(gunData)) {
-            return Preparation.failed(IssuanceStatus.GUN_DATA_UNREADABLE);
-        }
-
-        FireMode initialFireMode = gunData.getFireModeSet().get(0);
-        ItemStack gunStack;
-        try {
-            gunStack = GunItemBuilder.create()
-                    .setCount(1)
-                    .setId(candidate.gunId())
-                    .setFireMode(initialFireMode)
-                    .setAmmoCount(gunData.getAmmoAmount())
-                    .setAmmoInBarrel(true)
-                    .setHeatData(gunData.hasHeatData())
-                    .build();
-        } catch (RuntimeException exception) {
-            return Preparation.failed(IssuanceStatus.GUN_BUILD_FAILED);
-        }
-
-        IGun gun = validateGun(gunStack, candidate.gunId(), initialFireMode, gunData);
-        if (gun == null) {
-            return Preparation.failed(IssuanceStatus.GUN_BUILD_FAILED);
-        }
-
-        GuardAmmoSummary.Snapshot ammoUse = GuardAmmoSummary.capture(
-                gunStack.copy(),
-                gunData,
-                null);
-        if (!ammoUse.isReady()) {
-            return Preparation.failed(IssuanceStatus.GUN_DATA_UNREADABLE);
-        }
-        if (ammoUse.reserveSource() != GuardAmmoSummary.ReserveSource.PHYSICAL) {
-            return Preparation.failed(IssuanceStatus.PHYSICAL_AMMUNITION_UNSUPPORTED);
-        }
-
-        ResourceLocation ammoId = gunData.getAmmoId();
-        CommonAmmoIndex ammoIndex;
-        try {
-            Optional<CommonAmmoIndex> resolvedAmmo = TimelessAPI.getCommonAmmoIndex(ammoId);
-            if (resolvedAmmo.isEmpty()) {
-                return Preparation.failed(IssuanceStatus.AMMO_DEFINITION_UNAVAILABLE);
+            if (!sidearm.eligible()) {
+                return Preparation.failed(IssuanceStatus.SIDEARM_INELIGIBLE);
             }
-            ammoIndex = resolvedAmmo.get();
-        } catch (RuntimeException exception) {
-            return Preparation.failed(IssuanceStatus.AMMO_DEFINITION_UNAVAILABLE);
-        }
-
-        int fullStackSize;
-        ItemStack ammoStack;
-        try {
-            fullStackSize = ammoIndex.getStackSize();
-            if (fullStackSize <= 0) {
-                return Preparation.failed(IssuanceStatus.AMMO_STACK_INVALID);
-            }
-            ammoStack = AmmoItemBuilder.create()
-                    .setId(ammoId)
-                    .setCount(fullStackSize)
-                    .build();
-        } catch (RuntimeException exception) {
-            return Preparation.failed(IssuanceStatus.AMMO_BUILD_FAILED);
-        }
-
-        if (!isValidFullAmmoStack(ammoStack, ammoId, fullStackSize)) {
-            return Preparation.failed(IssuanceStatus.AMMO_STACK_INVALID);
-        }
-        AmmoCompatibility.Assessment compatibility =
-                AmmoCompatibility.assess(gunStack, ammoStack);
-        if (compatibility.compatibility() == AmmoCompatibility.Compatibility.UNKNOWN) {
-            return Preparation.failed(IssuanceStatus.AMMO_COMPATIBILITY_UNREADABLE);
-        }
-        if (!compatibility.isCompatible()
-                || compatibility.kind() != AmmoCompatibility.AmmoKind.LOOSE
-                || compatibility.infinite()
-                || compatibility.units() != fullStackSize) {
-            return Preparation.failed(IssuanceStatus.AMMO_INCOMPATIBLE);
-        }
-
-        if (!allowExplosiveWeapons) {
-            final boolean explosive;
-            try {
-                explosive = isExplosive(guard, gunStack, gun, gunData);
-            } catch (RuntimeException exception) {
-                return Preparation.failed(IssuanceStatus.EXPLOSIVE_STATE_UNREADABLE);
-            }
-            if (explosive) {
-                return Preparation.failed(IssuanceStatus.EXPLOSIVE_DISALLOWED);
-            }
+            sidearmGun = sidearm.weapon().preparedGun();
+            sidearmAmmo = sidearm.weapon().preparedAmmunition();
         }
 
         final NaturalGuardLoadoutProvenance provenance;
@@ -185,103 +94,70 @@ public final class NaturalGuardLoadoutIssuance {
                     UUID.randomUUID(),
                     candidate.difficulty(),
                     candidate.spawnSource());
-            if (!NaturalGuardLoadoutProvenanceCodec.stampGun(gunStack, provenance)) {
+            if (!NaturalGuardLoadoutProvenanceCodec.stampGun(primaryGun, provenance)) {
                 return Preparation.failed(IssuanceStatus.PROVENANCE_WRITE_FAILED);
             }
         } catch (RuntimeException exception) {
             return Preparation.failed(IssuanceStatus.PROVENANCE_WRITE_FAILED);
         }
 
-        return Preparation.ready(gunStack, ammoStack, provenance);
+        return Preparation.ready(
+                primaryGun,
+                primaryAmmo,
+                sidearmGun,
+                sidearmAmmo,
+                provenance);
     }
 
-    private static boolean hasRequiredGunData(@Nullable GunData gunData) {
-        if (gunData == null
-                || gunData.getAmmoId() == null
-                || gunData.getAmmoAmount() < 1
-                || gunData.getFireModeSet() == null
-                || gunData.getFireModeSet().isEmpty()) {
-            return false;
-        }
-        for (FireMode fireMode : gunData.getFireModeSet()) {
-            if (fireMode == null || fireMode == FireMode.UNKNOWN) {
-                return false;
-            }
-        }
-        return true;
+    private static IssuanceStatus mapPrimaryFailure(
+            NaturalGuardLoadoutCompatibilityAnalyzer.CompatibilityStatus status) {
+        return switch (status) {
+            case INVALID_REQUEST -> IssuanceStatus.INVALID_REQUEST;
+            case GUN_DEFINITION_UNAVAILABLE -> IssuanceStatus.GUN_DEFINITION_UNAVAILABLE;
+            case GUN_DATA_UNREADABLE -> IssuanceStatus.GUN_DATA_UNREADABLE;
+            case GUN_BUILD_FAILED -> IssuanceStatus.GUN_BUILD_FAILED;
+            case PHYSICAL_AMMUNITION_UNSUPPORTED ->
+                    IssuanceStatus.PHYSICAL_AMMUNITION_UNSUPPORTED;
+            case AMMO_DEFINITION_UNAVAILABLE -> IssuanceStatus.AMMO_DEFINITION_UNAVAILABLE;
+            case AMMO_BUILD_FAILED -> IssuanceStatus.AMMO_BUILD_FAILED;
+            case AMMO_STACK_INVALID -> IssuanceStatus.AMMO_STACK_INVALID;
+            case AMMO_COMPATIBILITY_UNREADABLE ->
+                    IssuanceStatus.AMMO_COMPATIBILITY_UNREADABLE;
+            case AMMO_INCOMPATIBLE -> IssuanceStatus.AMMO_INCOMPATIBLE;
+            case EXPLOSIVE_CONTEXT_REQUIRED, EXPLOSIVE_STATE_UNREADABLE ->
+                    IssuanceStatus.EXPLOSIVE_STATE_UNREADABLE;
+            case EXPLOSIVE_DISALLOWED -> IssuanceStatus.EXPLOSIVE_DISALLOWED;
+            case COMPATIBLE -> throw new IllegalArgumentException(
+                    "A compatible loadout cannot be mapped to an issuance failure");
+        };
     }
 
-    private static @Nullable IGun validateGun(
-            @Nullable ItemStack gunStack,
-            ResourceLocation expectedGunId,
-            FireMode expectedFireMode,
-            GunData gunData) {
-        if (gunStack == null
-                || gunStack.isEmpty()
-                || gunStack.getCount() != 1
-                || !(gunStack.getItem() instanceof IGun gun)) {
-            return null;
-        }
-        try {
-            if (!expectedGunId.equals(gun.getGunId(gunStack))
-                    || gun.getFireMode(gunStack) != expectedFireMode
-                    || gun.getCurrentAmmoCount(gunStack) != gunData.getAmmoAmount()) {
-                return null;
-            }
-            return gun;
-        } catch (RuntimeException exception) {
-            return null;
-        }
+    private static IssuanceStatus mapSidearmFailure(
+            NaturalGuardLoadoutCompatibilityAnalyzer.CompatibilityStatus status) {
+        return switch (status) {
+            case GUN_DEFINITION_UNAVAILABLE ->
+                    IssuanceStatus.SIDEARM_DEFINITION_UNAVAILABLE;
+            case EXPLOSIVE_CONTEXT_REQUIRED, EXPLOSIVE_STATE_UNREADABLE ->
+                    IssuanceStatus.SIDEARM_EXPLOSIVE_STATE_UNREADABLE;
+            case EXPLOSIVE_DISALLOWED -> IssuanceStatus.SIDEARM_EXPLOSIVE_DISALLOWED;
+            case COMPATIBLE -> throw new IllegalArgumentException(
+                    "A compatible sidearm cannot be mapped to an issuance failure");
+            default -> IssuanceStatus.SIDEARM_COMPATIBILITY_FAILED;
+        };
     }
 
-    private static boolean isValidFullAmmoStack(
-            @Nullable ItemStack ammoStack,
-            ResourceLocation expectedAmmoId,
-            int expectedCount) {
-        if (ammoStack == null
-                || ammoStack.isEmpty()
-                || ammoStack.getCount() != expectedCount
-                || expectedCount > ammoStack.getMaxStackSize()
-                || !(ammoStack.getItem() instanceof IAmmo ammo)) {
-            return false;
-        }
-        try {
-            return expectedAmmoId.equals(ammo.getAmmoId(ammoStack));
-        } catch (RuntimeException exception) {
-            return false;
-        }
-    }
-
-    /**
-     * Reproduces TaCZ's native attachment-cache and runtime-script resolution
-     * without publishing the proposed gun to the guard first.
-     */
-    private static boolean isExplosive(
-            Guard guard,
-            ItemStack gunStack,
-            IGun gun,
-            GunData gunData) {
-        ItemStack checkedGun = gunStack.copy();
-        AttachmentCacheProperty cache = new AttachmentCacheProperty();
-        cache.eval(checkedGun, gunData);
-        return TaCZExplosionResolver.resolve(
-                guard,
-                checkedGun,
-                gun,
-                gunData,
-                cache).enabled();
-    }
-
-    private static Result commit(
-            Guard guard,
-            ItemStack gunStack,
-            ItemStack ammoStack,
-            NaturalGuardLoadoutProvenance provenance) {
+    private static Result commit(Guard guard, Preparation preparation) {
         final GuardAmmoHandler ammoHandler;
         final AmmoSnapshot ammoBefore;
+        final GuardNaturalLoadoutAccess naturalAccess;
+        final NaturalGuardLoadoutProvenance provenanceBefore;
+        final NaturalGuardLoadoutCandidate candidateBefore;
         try {
             ammoHandler = GuardAmmoAccess.getAmmoHandler(guard);
             ammoBefore = AmmoSnapshot.capture(ammoHandler);
+            naturalAccess = (GuardNaturalLoadoutAccess) guard;
+            provenanceBefore = naturalAccess.villagerGuardGunners$getNaturalLoadoutProvenance();
+            candidateBefore = naturalAccess.villagerGuardGunners$getNaturalLoadoutCandidate();
         } catch (RuntimeException exception) {
             return Result.failed(IssuanceStatus.TRANSACTION_FAILED);
         }
@@ -289,61 +165,109 @@ public final class NaturalGuardLoadoutIssuance {
             return Result.failed(IssuanceStatus.TRANSACTION_FAILED);
         }
 
-        GuardAmmoTransactions.InsertionPlan plan =
-                GuardAmmoTransactions.planInsertion(ammoHandler, ammoStack.copy());
-        if (!plan.valid()) {
-            if (plan.status() == GuardAmmoTransactions.PlanStatus.INVALID_HANDLER) {
-                return Result.failed(IssuanceStatus.TRANSACTION_FAILED);
-            }
-            // GuardAmmoTransactions already attempts this restoration. The
-            // service owns the concrete three-slot handler and retains its own
-            // snapshot as a second recovery layer if a simulation misbehaves.
-            return Result.failed(ammoBefore.restoreSafely(ammoHandler)
-                    ? IssuanceStatus.TRANSACTION_ROLLED_BACK
-                    : IssuanceStatus.TRANSACTION_ROLLBACK_FAILED);
-        }
-        if (plan.accepted() != ammoStack.getCount() || !plan.remainder().isEmpty()) {
-            return Result.failed(IssuanceStatus.AMMO_CAPACITY_UNAVAILABLE);
+        List<ItemStack> ammunition = preparation.ammunitionStacks();
+        IssuanceStatus planningFailure = planAllAmmunition(ammoBefore, ammunition);
+        if (planningFailure != null) {
+            return Result.failed(planningFailure);
         }
 
         ItemStack mainHandBefore = guard.getMainHandItem().copy();
-        GuardAmmoTransactions.InsertionResult insertion =
-                GuardAmmoTransactions.insert(ammoHandler, ammoStack.copy());
-        if (!insertion.committed()
-                || insertion.inserted() != ammoStack.getCount()
-                || !insertion.remainder().isEmpty()) {
-            return Result.failed(ammoBefore.restoreSafely(ammoHandler)
-                    ? IssuanceStatus.TRANSACTION_ROLLED_BACK
-                    : IssuanceStatus.TRANSACTION_ROLLBACK_FAILED);
-        }
-
+        boolean sidearmConfigured = false;
+        boolean mainHandMutationAttempted = false;
+        ItemStack sidearmGun = preparation.sidearmGun();
         try {
+            for (ItemStack ammoStack : ammunition) {
+                GuardAmmoTransactions.InsertionResult insertion =
+                        GuardAmmoTransactions.insert(ammoHandler, ammoStack.copy());
+                if (!insertion.committed()
+                        || insertion.inserted() != ammoStack.getCount()
+                        || !insertion.remainder().isEmpty()) {
+                    return rollback(
+                            guard, mainHandBefore, ammoHandler, ammoBefore,
+                            false, sidearmGun, naturalAccess,
+                            provenanceBefore, candidateBefore, false);
+                }
+            }
+
+            if (!sidearmGun.isEmpty()) {
+                GuardSidearmTransactions.NaturalSidearmResult sidearmResult =
+                        GuardSidearmTransactions.configureNaturalSidearm(
+                                guard,
+                                sidearmGun.copy());
+                if (!sidearmResult.configured()) {
+                    boolean ammoRestored = ammoBefore.restoreSafely(ammoHandler);
+                    IssuanceStatus failure = switch (sidearmResult.status()) {
+                        case SLOT_UNAVAILABLE -> IssuanceStatus.SIDEARM_SLOT_UNAVAILABLE;
+                        case RECOVERY_REQUIRED -> IssuanceStatus.SIDEARM_STORAGE_UNREADABLE;
+                        case ROLLBACK_FAILED -> IssuanceStatus.TRANSACTION_ROLLBACK_FAILED;
+                        default -> ammoRestored
+                                ? IssuanceStatus.TRANSACTION_ROLLED_BACK
+                                : IssuanceStatus.TRANSACTION_ROLLBACK_FAILED;
+                    };
+                    if (!ammoRestored) {
+                        failure = IssuanceStatus.TRANSACTION_ROLLBACK_FAILED;
+                    }
+                    return Result.failed(failure);
+                }
+                sidearmConfigured = true;
+            }
+
             if (!stacksMatch(mainHandBefore, guard.getMainHandItem())) {
                 return rollback(
-                        guard,
-                        mainHandBefore,
-                        ammoHandler,
-                        ammoBefore,
-                        false);
+                        guard, mainHandBefore, ammoHandler, ammoBefore,
+                        sidearmConfigured, sidearmGun, naturalAccess,
+                        provenanceBefore, candidateBefore, false);
             }
-            guard.setItemSlot(EquipmentSlot.MAINHAND, gunStack.copy());
-            if (!stacksMatch(gunStack, guard.getMainHandItem())) {
+            mainHandMutationAttempted = true;
+            guard.setItemSlot(EquipmentSlot.MAINHAND, preparation.primaryGun());
+            if (!stacksMatch(preparation.primaryGun(), guard.getMainHandItem())) {
                 return rollback(
-                        guard,
-                        mainHandBefore,
-                        ammoHandler,
-                        ammoBefore,
-                        true);
+                        guard, mainHandBefore, ammoHandler, ammoBefore,
+                        sidearmConfigured, sidearmGun, naturalAccess,
+                        provenanceBefore, candidateBefore, true);
             }
-            return new Result(IssuanceStatus.ISSUED, ammoStack.getCount(), provenance);
+            naturalAccess.villagerGuardGunners$setNaturalLoadoutProvenance(
+                    preparation.provenance());
+            if (!preparation.provenance().equals(
+                            naturalAccess.villagerGuardGunners$getNaturalLoadoutProvenance())
+                    || !NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                            guard,
+                            preparation.provenance())) {
+                return rollback(
+                        guard, mainHandBefore, ammoHandler, ammoBefore,
+                        sidearmConfigured, sidearmGun, naturalAccess,
+                        provenanceBefore, candidateBefore, true);
+            }
+            return new Result(
+                    IssuanceStatus.ISSUED,
+                    preparation.primaryAmmo().getCount(),
+                    preparation.sidearmAmmo().getCount(),
+                    preparation.provenance());
         } catch (RuntimeException exception) {
             return rollback(
-                    guard,
-                    mainHandBefore,
-                    ammoHandler,
-                    ammoBefore,
-                    true);
+                    guard, mainHandBefore, ammoHandler, ammoBefore,
+                    sidearmConfigured, sidearmGun, naturalAccess,
+                    provenanceBefore, candidateBefore, mainHandMutationAttempted);
         }
+    }
+
+    private static @Nullable IssuanceStatus planAllAmmunition(
+            AmmoSnapshot ammoBefore,
+            List<ItemStack> ammunition) {
+        GuardAmmoHandler planningHandler = ammoBefore.planningCopy();
+        if (planningHandler == null) {
+            return IssuanceStatus.TRANSACTION_FAILED;
+        }
+        for (ItemStack ammoStack : ammunition) {
+            GuardAmmoTransactions.InsertionResult insertion =
+                    GuardAmmoTransactions.insert(planningHandler, ammoStack.copy());
+            if (!insertion.committed()
+                    || insertion.inserted() != ammoStack.getCount()
+                    || !insertion.remainder().isEmpty()) {
+                return IssuanceStatus.AMMO_CAPACITY_UNAVAILABLE;
+            }
+        }
+        return null;
     }
 
     private static Result rollback(
@@ -351,6 +275,11 @@ public final class NaturalGuardLoadoutIssuance {
             ItemStack mainHandBefore,
             GuardAmmoHandler ammoHandler,
             AmmoSnapshot ammoBefore,
+            boolean sidearmConfigured,
+            ItemStack sidearmGun,
+            GuardNaturalLoadoutAccess naturalAccess,
+            @Nullable NaturalGuardLoadoutProvenance provenanceBefore,
+            @Nullable NaturalGuardLoadoutCandidate candidateBefore,
             boolean restoreMainHand) {
         boolean mainHandRestored = !restoreMainHand;
         if (restoreMainHand) {
@@ -361,10 +290,37 @@ public final class NaturalGuardLoadoutIssuance {
                 mainHandRestored = false;
             }
         }
+        boolean sidearmRestored = !sidearmConfigured
+                || GuardSidearmTransactions.rollbackNaturalSidearm(guard, sidearmGun);
         boolean ammoRestored = ammoBefore.restoreSafely(ammoHandler);
-        return Result.failed(mainHandRestored && ammoRestored
+        boolean provenanceRestored = restoreNaturalState(
+                naturalAccess,
+                provenanceBefore,
+                candidateBefore);
+        return Result.failed(mainHandRestored
+                        && sidearmRestored
+                        && ammoRestored
+                        && provenanceRestored
                 ? IssuanceStatus.TRANSACTION_ROLLED_BACK
                 : IssuanceStatus.TRANSACTION_ROLLBACK_FAILED);
+    }
+
+    private static boolean restoreNaturalState(
+            GuardNaturalLoadoutAccess naturalAccess,
+            @Nullable NaturalGuardLoadoutProvenance provenance,
+            @Nullable NaturalGuardLoadoutCandidate candidate) {
+        try {
+            naturalAccess.villagerGuardGunners$setNaturalLoadoutProvenance(provenance);
+            naturalAccess.villagerGuardGunners$setNaturalLoadoutCandidate(candidate);
+            return Objects.equals(
+                            provenance,
+                            naturalAccess.villagerGuardGunners$getNaturalLoadoutProvenance())
+                    && Objects.equals(
+                            candidate,
+                            naturalAccess.villagerGuardGunners$getNaturalLoadoutCandidate());
+        } catch (RuntimeException exception) {
+            return false;
+        }
     }
 
     private static boolean stacksMatch(@Nullable ItemStack first, @Nullable ItemStack second) {
@@ -392,6 +348,13 @@ public final class NaturalGuardLoadoutIssuance {
         AMMO_INCOMPATIBLE,
         EXPLOSIVE_STATE_UNREADABLE,
         EXPLOSIVE_DISALLOWED,
+        SIDEARM_DEFINITION_UNAVAILABLE,
+        SIDEARM_COMPATIBILITY_FAILED,
+        SIDEARM_EXPLOSIVE_STATE_UNREADABLE,
+        SIDEARM_EXPLOSIVE_DISALLOWED,
+        SIDEARM_INELIGIBLE,
+        SIDEARM_SLOT_UNAVAILABLE,
+        SIDEARM_STORAGE_UNREADABLE,
         PROVENANCE_WRITE_FAILED,
         AMMO_CAPACITY_UNAVAILABLE,
         TRANSACTION_ROLLED_BACK,
@@ -401,51 +364,105 @@ public final class NaturalGuardLoadoutIssuance {
 
     public record Result(
             IssuanceStatus status,
-            int ammunitionItems,
+            int primaryAmmunitionItems,
+            int sidearmAmmunitionItems,
             @Nullable NaturalGuardLoadoutProvenance provenance) {
         public Result {
             status = Objects.requireNonNull(status, "status");
-            if (ammunitionItems < 0
-                    || (status == IssuanceStatus.ISSUED) != (ammunitionItems > 0)
+            if (primaryAmmunitionItems < 0
+                    || sidearmAmmunitionItems < 0
+                    || (status == IssuanceStatus.ISSUED)
+                            != (primaryAmmunitionItems > 0)
                     || (status == IssuanceStatus.ISSUED) != (provenance != null)) {
-                throw new IllegalArgumentException("Issuance result has inconsistent ammunition");
+                throw new IllegalArgumentException(
+                        "Issuance result has inconsistent ammunition");
             }
+        }
+
+        public int ammunitionItems() {
+            return primaryAmmunitionItems + sidearmAmmunitionItems;
         }
 
         public boolean issued() {
             return status == IssuanceStatus.ISSUED;
         }
 
+        public boolean issuedSidearm() {
+            return issued() && sidearmAmmunitionItems > 0;
+        }
+
         private static Result failed(IssuanceStatus status) {
-            return new Result(status, 0, null);
+            return new Result(status, 0, 0, null);
         }
     }
 
     private record Preparation(
-            @Nullable ItemStack gunStack,
-            @Nullable ItemStack ammoStack,
+            @Nullable ItemStack primaryGun,
+            @Nullable ItemStack primaryAmmo,
+            @Nullable ItemStack sidearmGun,
+            @Nullable ItemStack sidearmAmmo,
             @Nullable NaturalGuardLoadoutProvenance provenance,
             @Nullable IssuanceStatus failure) {
         private boolean ready() {
-            return gunStack != null
-                    && ammoStack != null
+            return primaryGun != null
+                    && !primaryGun.isEmpty()
+                    && primaryAmmo != null
+                    && !primaryAmmo.isEmpty()
+                    && sidearmGun != null
+                    && sidearmAmmo != null
+                    && (sidearmGun.isEmpty() == sidearmAmmo.isEmpty())
                     && provenance != null
                     && failure == null;
         }
 
+        private List<ItemStack> ammunitionStacks() {
+            List<ItemStack> ammunition = new ArrayList<>(2);
+            ammunition.add(primaryAmmo());
+            if (!sidearmAmmo().isEmpty()) {
+                ammunition.add(sidearmAmmo());
+            }
+            return List.copyOf(ammunition);
+        }
+
+        @Override
+        public ItemStack primaryGun() {
+            return primaryGun == null ? ItemStack.EMPTY : primaryGun.copy();
+        }
+
+        @Override
+        public ItemStack primaryAmmo() {
+            return primaryAmmo == null ? ItemStack.EMPTY : primaryAmmo.copy();
+        }
+
+        @Override
+        public ItemStack sidearmGun() {
+            return sidearmGun == null ? ItemStack.EMPTY : sidearmGun.copy();
+        }
+
+        @Override
+        public ItemStack sidearmAmmo() {
+            return sidearmAmmo == null ? ItemStack.EMPTY : sidearmAmmo.copy();
+        }
+
         private static Preparation ready(
-                ItemStack gunStack,
-                ItemStack ammoStack,
+                ItemStack primaryGun,
+                ItemStack primaryAmmo,
+                ItemStack sidearmGun,
+                ItemStack sidearmAmmo,
                 NaturalGuardLoadoutProvenance provenance) {
             return new Preparation(
-                    gunStack.copy(),
-                    ammoStack.copy(),
+                    primaryGun.copy(),
+                    primaryAmmo.copy(),
+                    sidearmGun.copy(),
+                    sidearmAmmo.copy(),
                     Objects.requireNonNull(provenance, "provenance"),
                     null);
         }
 
         private static Preparation failed(IssuanceStatus status) {
             return new Preparation(
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -473,6 +490,30 @@ public final class NaturalGuardLoadoutIssuance {
             }
         }
 
+        private @Nullable GuardAmmoHandler planningCopy() {
+            try {
+                GuardAmmoHandler copy = new GuardAmmoHandler();
+                for (int slot = 0; slot < stacks.size(); slot++) {
+                    copy.setStackInSlot(slot, stacks.get(slot).copy());
+                }
+                return matches(copy) ? copy : null;
+            } catch (RuntimeException exception) {
+                return null;
+            }
+        }
+
+        private boolean matches(GuardAmmoHandler handler) {
+            if (handler.getSlots() != stacks.size()) {
+                return false;
+            }
+            for (int slot = 0; slot < stacks.size(); slot++) {
+                if (!stacksMatch(stacks.get(slot), handler.getStackInSlot(slot))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private boolean restoreSafely(GuardAmmoHandler handler) {
             try {
                 if (handler.getSlots() != stacks.size()) {
@@ -481,12 +522,7 @@ public final class NaturalGuardLoadoutIssuance {
                 for (int slot = 0; slot < stacks.size(); slot++) {
                     handler.setStackInSlot(slot, stacks.get(slot).copy());
                 }
-                for (int slot = 0; slot < stacks.size(); slot++) {
-                    if (!stacksMatch(stacks.get(slot), handler.getStackInSlot(slot))) {
-                        return false;
-                    }
-                }
-                return true;
+                return matches(handler);
             } catch (RuntimeException exception) {
                 return false;
             }

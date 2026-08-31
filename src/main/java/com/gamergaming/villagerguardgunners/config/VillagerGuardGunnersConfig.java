@@ -35,13 +35,16 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 7;
+    public static final int CONFIG_VERSION = 8;
 
     @Comment("Enables Guard Villagers to use TaCZ guns. The server controls this setting.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
 
     @Comment("Controls one-time TaCZ loadouts for newly spawned Guard Villagers. Existing guards and manually equipped weapons are not changed.")
     public NaturalLoadoutSettings naturalLoadouts = new NaturalLoadoutSettings();
+
+    @Comment("Bounded, event-driven dispatch settings for temporary squad commands.")
+    public SquadSettings squads = new SquadSettings();
 
     @Comment("Target acquisition, range, and aiming settings. TaCZ remains authoritative for weapon statistics.")
     public CombatSettings combat = new CombatSettings();
@@ -109,6 +112,58 @@ public final class VillagerGuardGunnersConfig extends Config {
             // intentional values for this section, so initialize conservative,
             // structure-only defaults without changing existing guard behavior.
             naturalLoadouts.restoreVersionSevenDefaults();
+        }
+        if (previousVersion < 8) {
+            // Version 8 introduces temporary squad-command dispatch. These
+            // defaults do not alter a guard until a player deliberately issues
+            // a command with a bound Squad Command Ledger.
+            squads.restoreVersionEightDefaults();
+        }
+    }
+
+    @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.squads")
+    public static final class SquadSettings extends ConfigSection {
+
+        @Comment("Maximum distance from the issuing player used for the one-time loaded-guard query. Range: 8 to 128 blocks.")
+        public ValidatedDouble commandDispatchRadius = new ValidatedDouble(
+                48.0D,
+                128.0D,
+                8.0D);
+
+        @Comment("Maximum authorized guards changed by one command dispatch. Range: 1 to 64 guards.")
+        public ValidatedInt maximumAffectedGuards = new ValidatedInt(32, 64, 1);
+
+        @Comment("Lifetime of Rally, Defend, Hold, and Fall Back commands. Range: 20 to 72000 ticks.")
+        public ValidatedInt positionalCommandDurationTicks = new ValidatedInt(
+                1200,
+                72000,
+                20);
+
+        @Comment("Lifetime of Focus Target commands. Range: 20 to 12000 ticks.")
+        public ValidatedInt focusCommandDurationTicks = new ValidatedInt(
+                400,
+                12000,
+                20);
+
+        @Comment("Maximum distance a Defend command allows from its designated point. Range: 2 to 64 blocks.")
+        public ValidatedDouble defendRadius = new ValidatedDouble(
+                12.0D,
+                64.0D,
+                2.0D);
+
+        @Comment("Maximum projection distance for positional commands issued while looking into the air. Range: 4 to 64 blocks.")
+        public ValidatedDouble airCommandRange = new ValidatedDouble(
+                32.0D,
+                64.0D,
+                4.0D);
+
+        private void restoreVersionEightDefaults() {
+            restoreDefault(commandDispatchRadius);
+            restoreDefault(maximumAffectedGuards);
+            restoreDefault(positionalCommandDurationTicks);
+            restoreDefault(focusCommandDurationTicks);
+            restoreDefault(defendRadius);
+            restoreDefault(airCommandRange);
         }
     }
 

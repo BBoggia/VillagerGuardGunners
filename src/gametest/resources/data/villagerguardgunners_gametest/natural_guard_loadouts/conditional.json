@@ -1,0 +1,16 @@
+{
+  "format": 2,
+  "entries": [
+    {
+      "gun": "tacz:glock_17",
+      "weight": 1,
+      "conditions": {
+        "dimensions": {
+          "include": ["minecraft:overworld"]
+        },
+        "difficulties": ["normal"],
+        "spawn_sources": ["structure"]
+      }
+    }
+  ]
+}

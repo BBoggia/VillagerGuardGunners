@@ -58,6 +58,22 @@ final class GuardInventoryCompatibilityContractTest {
                 () -> assertTrue(container.contains(
                         "!GuardOrderPermissions.mayManage(player, guard)")),
                 () -> assertTrue(container.contains("current.cycle(field)")),
+                () -> assertTrue(container.contains("SIDEARM_SLOT_INDEX")),
+                () -> assertTrue(container.contains(
+                        "GuardSidearmAccess.getConfiguredSidearmInventory(guard)")),
+                () -> assertTrue(container.contains("replaceConfiguredSidearm(")),
+                () -> assertFalse(container.contains(
+                        "import net.minecraftforge.items.IItemHandlerModifiable;")),
+                () -> assertTrue(container.contains(
+                        "SidearmRuntimeAssessment.assessEligibility(guard, stack)")),
+                () -> assertTrue(container.contains(
+                        "getSidearmState() == SidearmState.PRIMARY_ACTIVE")),
+                () -> assertTrue(container.contains("RECOVER_SIDEARM_BUTTON_ID")),
+                () -> assertTrue(container.contains("GuardSidearmRecovery.recover(guard, player)")),
+                () -> assertTrue(container.contains("SidearmState.fromNetworkId(")),
+                () -> assertTrue(container.contains("getMaxStackSize()")),
+                () -> assertTrue(screen.contains("renderEmptySidearmTooltip(")),
+                () -> assertTrue(screen.contains("sendRecoveryButton()")),
                 () -> assertFalse(container.contains("captureDiagnostics()")),
                 () -> assertTrue(translations.contains(
                         "container.villagerguardgunners.ammo.tooltip.title")),
@@ -65,6 +81,8 @@ final class GuardInventoryCompatibilityContractTest {
                         "container.villagerguardgunners.ammo.tooltip.incompatible")),
                 () -> assertTrue(translations.contains(
                         "container.villagerguardgunners.ammo.tooltip.incomplete")),
+                () -> assertTrue(translations.contains(
+                        "container.villagerguardgunners.sidearm.tooltip")),
                 () -> assertTrue(translations.contains(
                         "container.villagerguardgunners.combat_status.ready.description")),
                 () -> assertTrue(translations.contains(

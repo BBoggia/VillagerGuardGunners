@@ -2,11 +2,14 @@ package com.gamergaming.villagerguardgunners;
 
 import com.gamergaming.villagerguardgunners.command.GuardGunnerCommands;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
+import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
+import com.gamergaming.villagerguardgunners.init.ModBlocks;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import com.gamergaming.villagerguardgunners.init.ModMenus;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutPools;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardPopulationIndex;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnIntegration;
+import com.gamergaming.villagerguardgunners.squad.SquadLedgerService;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -22,11 +25,15 @@ public class VillagerGuardGunners {
         IEventBus modEventBus = context.getModEventBus();
 
         ModConfigs.init();
+        ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
         ModMenus.register(modEventBus);
         MinecraftForge.EVENT_BUS.addListener(GuardGunnerCommands::register);
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardLoadoutPools::registerReloadListener);
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardSpawnIntegration::onEntityJoin);
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardPopulationIndex::onEntityLeave);
+        MinecraftForge.EVENT_BUS.addListener(SquadLedgerService::onServerStopping);
+        MinecraftForge.EVENT_BUS.addListener(SquadLedgerService::onPlayerLoggedOut);
     }
 }

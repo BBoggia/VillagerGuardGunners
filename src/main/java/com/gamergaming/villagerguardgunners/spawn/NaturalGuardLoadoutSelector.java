@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 /** Pure selection pipeline; all world queries and randomness are supplied lazily. */
@@ -19,9 +20,32 @@ public final class NaturalGuardLoadoutSelector {
             IntSupplier nearbyNaturalGunners,
             @Nullable NaturalGuardLoadoutPool pool,
             IntUnaryOperator weightedRoll) {
+        return select(
+                context,
+                rules,
+                null,
+                difficulty,
+                () -> null,
+                chanceRoll,
+                nearbyNaturalGunners,
+                pool,
+                weightedRoll);
+    }
+
+    public static Decision select(
+            Context context,
+            NaturalGuardSpawnRules rules,
+            @Nullable NaturalGuardDifficulty difficultyKey,
+            NaturalGuardDifficultySettings difficulty,
+            Supplier<NaturalGuardLoadoutMatchContext> matchContext,
+            DoubleSupplier chanceRoll,
+            IntSupplier nearbyNaturalGunners,
+            @Nullable NaturalGuardLoadoutPool pool,
+            IntUnaryOperator weightedRoll) {
         Objects.requireNonNull(context, "context");
         Objects.requireNonNull(rules, "rules");
         Objects.requireNonNull(difficulty, "difficulty");
+        Objects.requireNonNull(matchContext, "matchContext");
         Objects.requireNonNull(chanceRoll, "chanceRoll");
         Objects.requireNonNull(nearbyNaturalGunners, "nearbyNaturalGunners");
         Objects.requireNonNull(weightedRoll, "weightedRoll");
@@ -43,6 +67,28 @@ public final class NaturalGuardLoadoutSelector {
             return Decision.rejected(DecisionStatus.POOL_UNAVAILABLE);
         }
 
+        NaturalGuardLoadoutMatchContext capturedContext = null;
+        int eligibleWeight = pool.totalWeight();
+        if (pool.hasConditionalEntries()) {
+            if (difficultyKey == null) {
+                return Decision.rejected(DecisionStatus.CONTEXT_UNAVAILABLE);
+            }
+            try {
+                capturedContext = matchContext.get();
+            } catch (RuntimeException exception) {
+                return Decision.rejected(DecisionStatus.CONTEXT_UNAVAILABLE);
+            }
+            if (capturedContext == null
+                    || capturedContext.difficulty() != difficultyKey
+                    || capturedContext.spawnSource() != context.spawnSource()) {
+                return Decision.rejected(DecisionStatus.CONTEXT_UNAVAILABLE);
+            }
+            eligibleWeight = pool.matchingWeight(capturedContext);
+            if (eligibleWeight == 0) {
+                return Decision.rejected(DecisionStatus.NO_MATCHING_ENTRIES);
+            }
+        }
+
         int nearbyCount = nearbyNaturalGunners.getAsInt();
         if (nearbyCount < 0) {
             throw new IllegalArgumentException("Nearby natural gunner count cannot be negative");
@@ -51,8 +97,10 @@ public final class NaturalGuardLoadoutSelector {
             return Decision.rejected(DecisionStatus.NEARBY_CAP_REACHED);
         }
 
-        int weightedIndex = weightedRoll.applyAsInt(pool.totalWeight());
-        return Decision.selected(pool.select(weightedIndex));
+        int weightedIndex = weightedRoll.applyAsInt(eligibleWeight);
+        return Decision.selected(capturedContext == null
+                ? pool.select(weightedIndex)
+                : pool.selectMatching(capturedContext, weightedIndex));
     }
 
     private static @Nullable DecisionStatus preflight(
@@ -106,6 +154,8 @@ public final class NaturalGuardLoadoutSelector {
         DIFFICULTY_DISABLED,
         CHANCE_MISSED,
         POOL_UNAVAILABLE,
+        CONTEXT_UNAVAILABLE,
+        NO_MATCHING_ENTRIES,
         NEARBY_CAP_REACHED
     }
 

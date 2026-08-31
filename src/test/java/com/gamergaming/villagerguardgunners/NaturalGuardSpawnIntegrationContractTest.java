@@ -36,9 +36,16 @@ final class NaturalGuardSpawnIntegrationContractTest {
         assertAll(
                 () -> assertTrue(mod.contains("NaturalGuardSpawnIntegration::onEntityJoin")),
                 () -> assertTrue(guardMixin.contains("method = \"finalizeSpawn\"")),
+                () -> assertTrue(guardMixin.contains("method = \"aiStep\"")),
+                () -> assertTrue(guardMixin.contains("getItemsFromLootTable")),
+                () -> assertTrue(guardMixin.contains("shift = At.Shift.AFTER")),
+                () -> assertTrue(guardMixin.contains(
+                        "NaturalGuardSpawnIntegration.onInitialEquipmentReady")),
                 () -> assertTrue(guardMixin.contains(
                         "VILLAGER_GUARD_GUNNERS_PENDING_NATURAL_SPAWN_TAG")),
                 () -> assertTrue(conversionMixin.contains("NaturalGuardSpawnSource.CONVERSION")),
+                () -> assertTrue(integration.contains(
+                        "if (!guard.getMainHandItem().isEmpty())")),
                 () -> assertTrue(integration.contains("level.getServer().tell(new TickTask(")),
                 () -> assertTrue(integration.contains("getEntitiesOfClass(")),
                 () -> assertTrue(integration.contains("nearby.distanceToSqr(origin)")),

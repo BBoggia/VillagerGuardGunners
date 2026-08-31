@@ -12,7 +12,7 @@ rebalance are not part of the current implementation.
 
 ## Supported versions
 
-The 1.1 branch is deliberately locked to this reviewed combination:
+The 1.2 branch is deliberately locked to this reviewed combination:
 
 | Component | Version |
 | --- | --- |
@@ -57,12 +57,40 @@ issuance is authenticated across chunk unloads and server restarts so nearby
 population caps remain accurate; manually replacing or moving the issued gun
 does not leave a stale guard counted against the cap.
 
+Format-2 datapack pools can filter entries by dimension, biome, structure,
+difficulty, spawn source, raid state, and guard scoreboard tags while retaining
+an unconditional fallback. Permission-level-2 operators can validate TaCZ
+compatibility, inspect parsed weights and conditions, and preview a pool at a
+world position through `/vgg loadouts validate`, `/vgg loadouts inspect`, and
+`/vgg loadouts preview` without issuing items or consuming spawn random state.
+
 Craft an **Orders Ledger** shapelessly from a Book and Quill and an Emerald to
 reuse a setup across guards. Use a blank ledger on a guard to capture its seven
 orders, use the written ledger on another guard to apply them, or sneak-use it
 to overwrite the stored template. It copies behavior parameters only—never
 equipment, ammunition, ownership, patrol positions, or other guard data—and
 all operations recheck Guard Villagers permissions and distance on the server.
+
+The separate **Squad Command Ledger** assigns authorized guards to a stable
+squad and issues temporary Rally, Defend, Hold, Focus Target, Fall Back, and
+Resume Orders commands. Crouch-right-click in the air to select a mode, then
+use the ledger in the air, on a block, or directly on a Focus target. Commands
+affect only nearby loaded squad members, are deterministically capped, and
+expire across chunk unloads and restarts. They can override movement but never
+bypass rules of engagement, ally protection, explosive restrictions, or
+TaCZ's native firing and ammunition state. Rally clears on arrival; Resume
+Orders restores the unchanged Guard Villagers patrol/follow behavior.
+
+The craftable **Village Armory** provides nine dedicated slots for TaCZ loose
+ammunition and ammo boxes. Players can stock it directly, and hoppers, pipes,
+and other Forge item-handler integrations can insert or extract from every
+side. A public armory accepts any guard for future resupply; sneak-use a bound
+Squad Command Ledger on it to assign that squad, and repeat with the same
+ledger to return it to public access. Inventory and lock identity persist,
+contents drop when the block is broken, and comparator output reports
+fullness. The block has no ticker or world scan. Guard travel and automatic
+withdrawal are intentionally introduced by the following bounded-resupply
+step rather than this storage foundation.
 
 Once a guard has a TaCZ gun equipped, an authorized player may crouch-right-
 click it while holding compatible loose ammunition or an ammo box. Quick
@@ -171,10 +199,21 @@ Individual guard policy, override precedence, authorization, persistence, and
 performance behavior are documented in
 [docs/per-guard-orders.md](docs/per-guard-orders.md).
 
+Squad identity, ledger interaction, temporary command behavior, precedence,
+persistence, and performance boundaries are documented in
+[docs/squad-commands.md](docs/squad-commands.md).
+
+Armory crafting, inventory, automation, squad locking, comparator behavior,
+and the boundary between the storage foundation and guard resupply are
+documented in [docs/village-armories.md](docs/village-armories.md).
+
 Natural spawn eligibility, difficulty progression, datapack pool format,
 atomic gun/ammunition issuance, versioned save identity, lifecycle behavior,
 world-generation handoff, and bounded population-cap behavior are documented
 in [docs/natural-guard-loadouts.md](docs/natural-guard-loadouts.md).
+The repository also includes a copy-ready
+[example datapack](docs/examples/natural-loadout-datapack/README.md) and a
+[format-1 migration guide](docs/natural-loadout-migration.md).
 
 ## Diagnosing a guard
 
@@ -235,7 +274,7 @@ for the reference measurements and interpretation. Headless tests cannot prove
 client animation or observer synchronization, so a release candidate must also
 complete [docs/release-checklist.md](docs/release-checklist.md).
 
-The final command verifies the release JAR and exact 14-report/14-JFR set, parses
+The final command verifies the release JAR and exact 17-report/17-JFR set, parses
 each JFR, enforces same-run baseline-relative p95/p99 budgets, and requires every
 JSON report to name the SHA-256 of that exact production JAR. It then writes a
 deterministic artifact manifest containing the byte size and SHA-256 of the JAR
@@ -245,7 +284,7 @@ correctness and manual-validation boundaries instead of claiming they ran as
 part of the bundle task.
 
 The final aggregate task must be run without `-Pphase8Performance`. It consumes
-the separately generated performance reports, runs the normal 44-case
+the separately generated performance reports, runs the normal 73-case
 correctness GameTest server, and verifies the complete ammunition release
 evidence boundary. It does not replace the recordable multiplayer rows in the
 release checklist.
@@ -266,6 +305,10 @@ remains unchecked.
 Continuous integration runs `./gradlew check` on pushes and pull requests. It
 does not claim to replace the client, multiplayer-observer, or third-party gun
 pack checks in the manual release matrix.
+
+Version numbers, immutable annotated tags, GitHub Actions artifacts, and the
+GitHub/CurseForge publishing sequence are documented in
+[docs/github-release-process.md](docs/github-release-process.md).
 
 ## License
 

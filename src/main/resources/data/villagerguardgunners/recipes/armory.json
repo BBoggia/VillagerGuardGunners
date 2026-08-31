@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "CBC",
+    "III"
+  ],
+  "key": {
+    "I": { "item": "minecraft:iron_ingot" },
+    "C": { "item": "minecraft:chest" },
+    "B": { "item": "minecraft:barrel" }
+  },
+  "result": {
+    "item": "villagerguardgunners:armory",
+    "count": 1
+  }
+}

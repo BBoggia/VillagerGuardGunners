@@ -1,4 +1,4 @@
-name: Verify
+name: Build
 
 on:
   push:
@@ -9,12 +9,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: verify-${{ github.workflow }}-${{ github.ref }}
+  group: build-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   check:
-    name: Java 17 release gate
+    name: Java 17 build and release gate
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -22,21 +22,40 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Set up Gradle
+      - name: Set up Gradle cache
         uses: gradle/actions/setup-gradle@v4
 
       - name: Run unit, source, build, and artifact gates
-        run: ./gradlew --no-daemon check
+        run: ./gradlew --no-daemon clean check --warning-mode all
+
+      - name: Verify release tag matches the embedded version
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          version="$(sed -n 's/^mod_version=//p' gradle.properties)"
+          test "${GITHUB_REF_NAME}" = "v${version}"
+
+      - name: Certify tagged or manually dispatched artifact
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        run: ./gradlew --no-daemon verifyReleaseArtifact --warning-mode all
+
+      - name: Record release checksum
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: sha256sum build/libs/villagerguardgunners-*.jar > build/libs/SHA256SUMS.txt
 
       - name: Upload verified release candidate
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: villagerguardgunners-${{ github.sha }}
-          path: build/libs/*.jar
+          path: |
+            build/libs/villagerguardgunners-*.jar
+            build/libs/SHA256SUMS.txt
           if-no-files-found: error

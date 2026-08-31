@@ -2,7 +2,9 @@ package com.gamergaming.villagerguardgunners.init;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
+import com.gamergaming.villagerguardgunners.menu.ArmoryMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
@@ -32,6 +34,18 @@ public final class ModMenus {
             throw new IllegalStateException("Guard gunner menu opened for missing guard entity " + entityId);
         })
     );
+
+    public static final RegistryObject<MenuType<ArmoryMenu>> ARMORY = MENUS.register(
+            "armory",
+            () -> IForgeMenuType.create((windowId, inventory, data) -> {
+                var position = data.readBlockPos();
+                var blockEntity = inventory.player.level().getBlockEntity(position);
+                if (blockEntity instanceof ArmoryBlockEntity armory) {
+                    return new ArmoryMenu(windowId, inventory, armory);
+                }
+                throw new IllegalStateException(
+                        "Armory menu opened for missing block entity at " + position);
+            }));
 
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);

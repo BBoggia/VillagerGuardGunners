@@ -31,7 +31,7 @@ Run the cheapest checks first:
 
 1. `./gradlew test` — fast, deterministic unit and project-contract tests.
 2. `./gradlew build` — compilation, resources, mixin processing, packaging, and reobfuscation.
-3. `./gradlew runGameTestServer` — 19 Forge integration tests covering real guard construction, capabilities, save/migration/conversion, authorized menu behavior, TaCZ gun/operator initialization and firing (including the preferred-versus-maximum range boundary), registered administrator diagnostics, native per-round burst cancellation, lifecycle edge cases, melee fallback, shield-goal compatibility, and direct/explosive friendly-fire backstops.
+3. `./gradlew runGameTestServer` — 24 Forge integration tests covering real guard construction, capabilities, save/migration/conversion, authorized menu behavior, TaCZ gun/operator initialization, tactical metadata caching, profile-driven movement, visibility, aim, maximum-cap and explosive-standoff firing gates, the preferred-versus-maximum range boundary, registered administrator diagnostics, native per-round burst cancellation, lifecycle edge cases, melee fallback, shield-goal compatibility, and direct/explosive friendly-fire backstops.
 4. `./gradlew runServer` — dedicated-server smoke test for side-only classloading and multiplayer behavior.
 5. `./gradlew runClient` — menu, animation, sound, and observed combat validation.
 
@@ -85,6 +85,6 @@ The addon-specific target is to remain a small minority of total combat cost (ap
 - no delayed-shot catch-up after a lag spike;
 - at most one visibility sample per active guard every two ticks in steady combat;
 - at most one path recalculation per moving guard every 20 ticks in steady combat;
-- no more than one friendly-fire corridor query per guard in a due-shot or active-burst tick; a safe result is reused only within the same unmoved tick, while an unsafe result may be retained for two ticks.
+- no more than one friendly-fire corridor query per guard for an initial due shot or an actually scheduled native burst round; a safe result is reused only within the same unmoved tick, while an unsafe result may be retained for two ticks.
 
 Numeric runtime results should be recorded only after the native controller creates a stable, representative combat scenario. Profiling the legacy custom projectile as the future baseline would compare two different gameplay implementations and produce misleading conclusions.

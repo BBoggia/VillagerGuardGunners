@@ -14,11 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ai.SquadCommandMovementGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoDeposits;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoMigration;
@@ -32,6 +36,14 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardPopulationIndex;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutSelector;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnIntegration;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmStorage;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmStorageAccessKey;
+import com.gamergaming.villagerguardgunners.squad.SquadMembership;
+import com.gamergaming.villagerguardgunners.squad.SquadMembershipCodec;
+import com.gamergaming.villagerguardgunners.squad.SquadLedgerInteractions;
+import com.gamergaming.villagerguardgunners.squad.SquadCommand;
+import com.gamergaming.villagerguardgunners.squad.SquadCommandCodec;
 import com.tacz.guns.api.entity.IGunOperator;
 
 import net.minecraft.ChatFormatting;
@@ -68,7 +80,8 @@ import tallestegg.guardvillagers.entities.Guard;
 
 @Mixin(Guard.class)
 public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBurstSafetyAccess,
-        GuardNaturalLoadoutAccess, GuardOrdersAccess {
+        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardSidearmAccess, GuardSquadAccess,
+        GuardSquadCommandAccess {
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_AMMO_TAG = "villagerguardgunners:ammo_inventory";
 
@@ -84,6 +97,9 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Unique
     private GuardAmmoHandler villagerGuardGunners$ammoHandler;
+
+    @Unique
+    private GuardSidearmStorage villagerGuardGunners$sidearmStorage;
 
     @Unique
     private LazyOptional<IItemHandler> villagerGuardGunners$combinedItemHandler;
@@ -106,6 +122,20 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Unique
     private int villagerGuardGunners$ordersRevision;
+
+    @Unique
+    @Nullable
+    private SquadMembership villagerGuardGunners$squadMembership;
+
+    @Unique
+    private int villagerGuardGunners$squadRevision;
+
+    @Unique
+    @Nullable
+    private SquadCommand villagerGuardGunners$squadCommand;
+
+    @Unique
+    private int villagerGuardGunners$squadCommandRevision;
 
     @Unique
     @Nullable
@@ -139,6 +169,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     @Inject(method = "<init>", at = @At("RETURN"))
     private void initializeAddonState(EntityType<? extends Guard> entityType, Level level, CallbackInfo ci) {
         villagerGuardGunners$ensureAmmoStorage();
+        villagerGuardGunners$ensureSidearmStorage();
         if (!level.isClientSide) {
             IGunOperator.fromLivingEntity((Guard) (Object) this).initialData();
         }
@@ -155,6 +186,25 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
         NaturalGuardSpawnIntegration.markInitialSpawn((Guard) (Object) this, spawnType);
     }
 
+    /*
+     * Guard Villagers deliberately postpones its sword/crossbow loot roll from
+     * finalizeSpawn until the first AI step. Natural loadout eligibility must
+     * observe that result, especially while replaceCrossbowsOnly is enabled.
+     */
+    @Inject(
+            method = "aiStep",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ltallestegg/guardvillagers/entities/Guard;"
+                            + "getItemsFromLootTable(Lnet/minecraft/world/entity/LivingEntity;)"
+                            + "Ljava/util/List;",
+                    shift = At.Shift.AFTER,
+                    remap = false),
+            require = 1)
+    private void selectNaturalLoadoutAfterInitialEquipment(CallbackInfo ci) {
+        NaturalGuardSpawnIntegration.onInitialEquipmentReady((Guard) (Object) this);
+    }
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void flushMigrationOverflow(CallbackInfo ci) {
         if (!level().isClientSide && !villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
@@ -167,6 +217,16 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
             Player player,
             InteractionHand hand,
             CallbackInfoReturnable<InteractionResult> cir) {
+        InteractionHand squadLedgerHand =
+                SquadLedgerInteractions.findLedgerHand(player, hand);
+        if (squadLedgerHand != null) {
+            cir.setReturnValue(SquadLedgerInteractions.interact(
+                    player,
+                    (Guard) (Object) this,
+                    squadLedgerHand));
+            return;
+        }
+
         InteractionHand ledgerHand =
                 GuardOrderTemplateInteractions.findLedgerHand(player, hand);
         if (ledgerHand != null) {
@@ -236,18 +296,25 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Inject(method = "registerGoals", at = @At("RETURN"))
     private void addNativeGunGoal(CallbackInfo ci) {
+        goalSelector.addGoal(1, new SquadCommandMovementGoal((Guard) (Object) this));
         goalSelector.addGoal(2, new GuardGunCombatGoal((Guard) (Object) this));
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("HEAD"))
     private void readAmmoStorage(CompoundTag compound, CallbackInfo ci) {
         villagerGuardGunners$ensureAmmoStorage();
+        villagerGuardGunners$ensureSidearmStorage();
+        villagerGuardGunners$sidearmStorage.loadFrom(compound);
         villagerGuardGunners$readPendingNaturalLoadoutSpawn(compound);
         villagerGuardGunners$setOrders(compound.contains(
                 VILLAGER_GUARD_GUNNERS_ORDERS_TAG,
                 Tag.TAG_COMPOUND)
                 ? GuardOrders.load(compound.getCompound(VILLAGER_GUARD_GUNNERS_ORDERS_TAG))
                 : GuardOrders.DEFAULT);
+        villagerGuardGunners$setSquadMembership(
+                SquadMembershipCodec.readGuardRecord(compound));
+        villagerGuardGunners$setSquadCommand(
+                SquadCommandCodec.readGuardRecord(compound));
         villagerGuardGunners$pendingMigrationDrops.clear();
 
         List<CompoundTag> legacyAmmo = GuardAmmoMigration.extractLegacyAmmoSlots(compound);
@@ -283,13 +350,28 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     private void authenticateNaturalLoadoutAfterRead(CompoundTag compound, CallbackInfo ci) {
         // Vanilla equipment is not available at HEAD. Authenticate only after
         // Guard Villagers has restored the main-hand item.
+        villagerGuardGunners$sidearmStorage.authenticateActiveSidearm(getMainHandItem());
         villagerGuardGunners$reconcileNaturalLoadoutProvenance();
+    }
+
+    @Inject(method = "addAdditionalSaveData", at = @At("HEAD"))
+    private void authenticateActiveSidearmBeforeEquipmentSave(
+            CompoundTag compound,
+            CallbackInfo ci) {
+        // Vanilla serializes HandItems before the TAIL injection writes our
+        // private record. Bind legacy active layouts first so both halves save
+        // the same ownership token.
+        villagerGuardGunners$ensureSidearmStorage();
+        villagerGuardGunners$sidearmStorage.authenticateActiveSidearm(
+                getMainHandItem());
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void saveAmmoStorage(CompoundTag compound, CallbackInfo ci) {
         villagerGuardGunners$ensureAmmoStorage();
+        villagerGuardGunners$ensureSidearmStorage();
         compound.put(VILLAGER_GUARD_GUNNERS_AMMO_TAG, villagerGuardGunners$ammoHandler.serializeNBT());
+        villagerGuardGunners$sidearmStorage.saveTo(compound, getMainHandItem());
 
         // Do not preserve a stale identity after a player or another mod has
         // removed/replaced the naturally issued main-hand gun.
@@ -316,6 +398,12 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
         } else {
             compound.put(VILLAGER_GUARD_GUNNERS_ORDERS_TAG, orders.save());
         }
+        SquadMembershipCodec.writeGuardRecord(
+                compound,
+                villagerGuardGunners$getSquadMembership());
+        SquadCommandCodec.writeGuardRecord(
+                compound,
+                villagerGuardGunners$getSquadCommand());
 
         if (villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             compound.remove(VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG);
@@ -382,17 +470,17 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     }
 
     @Inject(method = "dropCustomDeathLoot", at = @At("TAIL"))
-    private void dropAmmoStorage(DamageSource source, int looting, boolean recentlyHit, CallbackInfo ci) {
+    private void dropAddonStorage(DamageSource source, int looting, boolean recentlyHit, CallbackInfo ci) {
         villagerGuardGunners$ensureAmmoStorage();
+        villagerGuardGunners$ensureSidearmStorage();
         villagerGuardGunners$dropPendingMigrationItems();
 
         for (int slot = 0; slot < villagerGuardGunners$ammoHandler.getSlots(); slot++) {
-            ItemStack stack = villagerGuardGunners$ammoHandler.getStackInSlot(slot);
-            if (!stack.isEmpty()
-                    && !EnchantmentHelper.hasVanishingCurse(stack)
-                    && getRandom().nextFloat() < GuardConfig.COMMON.chanceToDropEquipment.get()) {
-                spawnAtLocation(stack.copy());
-            }
+            villagerGuardGunners$dropStoredItemByChance(
+                    villagerGuardGunners$ammoHandler.getStackInSlot(slot));
+        }
+        for (ItemStack stack : villagerGuardGunners$sidearmStorage.recoverableStacks()) {
+            villagerGuardGunners$dropStoredItemByChance(stack);
         }
     }
 
@@ -431,6 +519,42 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     }
 
     @Override
+    public GuardSidearmStorage villagerGuardGunners$getSidearmStorage(
+            SidearmStorageAccessKey accessKey) {
+        if (!SidearmStorageAccessKey.authorizes(accessKey)) {
+            throw new SecurityException("Complete sidearm storage is internal");
+        }
+        villagerGuardGunners$ensureSidearmStorage();
+        return villagerGuardGunners$sidearmStorage;
+    }
+
+    @Override
+    public IItemHandler villagerGuardGunners$getConfiguredSidearmInventory() {
+        villagerGuardGunners$ensureSidearmStorage();
+        return villagerGuardGunners$sidearmStorage.configuredSidearmView();
+    }
+
+    @Override
+    public SidearmState villagerGuardGunners$getSidearmState() {
+        villagerGuardGunners$ensureSidearmStorage();
+        return villagerGuardGunners$sidearmStorage.stateAgainst(getMainHandItem());
+    }
+
+    @Override
+    public ItemStack villagerGuardGunners$getEffectivePrimaryCopy() {
+        villagerGuardGunners$ensureSidearmStorage();
+        SidearmState state = villagerGuardGunners$sidearmStorage.stateAgainst(
+                getMainHandItem());
+        if (state == SidearmState.RECOVERY_REQUIRED) {
+            return ItemStack.EMPTY;
+        }
+        return (state == SidearmState.SIDEARM_ACTIVE
+                ? villagerGuardGunners$sidearmStorage.getStackInSlot(
+                        GuardSidearmStorage.STOWED_PRIMARY_SLOT)
+                : getMainHandItem()).copy();
+    }
+
+    @Override
     public GuardOrders villagerGuardGunners$getOrders() {
         if (villagerGuardGunners$orders == null) {
             villagerGuardGunners$orders = GuardOrders.DEFAULT;
@@ -450,6 +574,50 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     @Override
     public int villagerGuardGunners$getOrdersRevision() {
         return villagerGuardGunners$ordersRevision;
+    }
+
+    @Override
+    @Nullable
+    public SquadMembership villagerGuardGunners$getSquadMembership() {
+        return villagerGuardGunners$squadMembership;
+    }
+
+    @Override
+    public void villagerGuardGunners$setSquadMembership(
+            @Nullable SquadMembership membership) {
+        if (!java.util.Objects.equals(
+                membership,
+                villagerGuardGunners$squadMembership)) {
+            villagerGuardGunners$squadMembership = membership;
+            villagerGuardGunners$squadRevision++;
+        }
+    }
+
+    @Override
+    public int villagerGuardGunners$getSquadRevision() {
+        return villagerGuardGunners$squadRevision;
+    }
+
+    @Override
+    @Nullable
+    public SquadCommand villagerGuardGunners$getSquadCommand() {
+        return villagerGuardGunners$squadCommand;
+    }
+
+    @Override
+    public void villagerGuardGunners$setSquadCommand(
+            @Nullable SquadCommand command) {
+        if (!java.util.Objects.equals(
+                command,
+                villagerGuardGunners$squadCommand)) {
+            villagerGuardGunners$squadCommand = command;
+            villagerGuardGunners$squadCommandRevision++;
+        }
+    }
+
+    @Override
+    public int villagerGuardGunners$getSquadCommandRevision() {
+        return villagerGuardGunners$squadCommandRevision;
     }
 
     @Override
@@ -565,7 +733,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
                 villagerGuardGunners$naturalLoadoutProvenance;
         Guard guard = (Guard) (Object) this;
         if (NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
-                guard.getMainHandItem(),
+                guard,
                 provenance)) {
             villagerGuardGunners$naturalLoadoutSelectionAttempted = true;
             villagerGuardGunners$naturalLoadoutCandidate =
@@ -626,6 +794,22 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     }
 
     @Unique
+    private void villagerGuardGunners$ensureSidearmStorage() {
+        if (villagerGuardGunners$sidearmStorage == null) {
+            villagerGuardGunners$sidearmStorage = new GuardSidearmStorage();
+        }
+    }
+
+    @Unique
+    private void villagerGuardGunners$dropStoredItemByChance(ItemStack stack) {
+        if (!stack.isEmpty()
+                && !EnchantmentHelper.hasVanishingCurse(stack)
+                && getRandom().nextFloat() < GuardConfig.COMMON.chanceToDropEquipment.get()) {
+            spawnAtLocation(stack.copy());
+        }
+    }
+
+    @Unique
     private void villagerGuardGunners$dropPendingMigrationItems() {
         if (level().isClientSide || villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             return;
@@ -645,9 +829,15 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
         }
 
         villagerGuardGunners$ensureAmmoStorage();
+        villagerGuardGunners$ensureSidearmStorage();
         villagerGuardGunners$dropPendingMigrationItems();
         for (int slot = 0; slot < villagerGuardGunners$ammoHandler.getSlots(); slot++) {
             ItemStack stack = villagerGuardGunners$ammoHandler.extractItem(slot, Integer.MAX_VALUE, false);
+            if (!stack.isEmpty()) {
+                spawnAtLocation(stack);
+            }
+        }
+        for (ItemStack stack : villagerGuardGunners$sidearmStorage.drainRecoverableStacks()) {
             if (!stack.isEmpty()) {
                 spawnAtLocation(stack);
             }

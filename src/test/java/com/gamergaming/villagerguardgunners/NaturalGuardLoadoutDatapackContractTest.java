@@ -30,9 +30,13 @@ final class NaturalGuardLoadoutDatapackContractTest {
                 () -> assertTrue(mod.contains(
                         "NaturalGuardLoadoutPools::registerReloadListener")),
                 () -> assertTrue(listener.contains("AddReloadListenerEvent")),
-                () -> assertTrue(listener.contains("SimpleJsonResourceReloadListener")),
-                () -> assertTrue(listener.contains("private volatile Map<")),
-                () -> assertTrue(listener.contains("pools = result.pools()")),
+                () -> assertTrue(listener.contains("SimplePreparableReloadListener")),
+                () -> assertTrue(listener.contains("FileToIdConverter.json(DIRECTORY)")),
+                () -> assertTrue(listener.contains(
+                        "private volatile PublishedState publishedState")),
+                () -> assertTrue(listener.contains(
+                        "publishedState = PublishedState.create(snapshot)")),
+                () -> assertFalse(listener.contains("SimpleJsonResourceReloadListener")),
                 () -> assertFalse(listener.contains("getEntitiesOfClass(")),
                 () -> assertFalse(listener.contains("TimelessAPI")),
                 () -> assertFalse(listener.contains("GunItemBuilder")),

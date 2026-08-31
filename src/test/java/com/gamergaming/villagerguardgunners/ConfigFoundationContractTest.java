@@ -33,10 +33,11 @@ final class ConfigFoundationContractTest {
         assertAll(
                 () -> assertTrue(config.contains(
                         "@Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)")),
-                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 7;")),
+                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 8;")),
                 () -> assertTrue(config.contains("public void update(int previousVersion)")),
                 () -> assertTrue(config.contains("previousVersion < 2")),
                 () -> assertTrue(config.contains("previousVersion < 3")),
+                () -> assertTrue(config.contains("previousVersion < 8")),
                 () -> assertTrue(config.contains("previousVersion < 4")),
                 () -> assertTrue(config.contains("previousVersion < 5")),
                 () -> assertTrue(config.contains("previousVersion < 6")),
@@ -66,6 +67,7 @@ final class ConfigFoundationContractTest {
         assertAll(
                 () -> assertTrue(config.contains("public ValidatedBoolean enabled")),
                 () -> assertTrue(config.contains("public NaturalLoadoutSettings naturalLoadouts")),
+                () -> assertTrue(config.contains("public SquadSettings squads")),
                 () -> assertTrue(config.contains("public CombatSettings combat")),
                 () -> assertTrue(config.contains("public MovementSettings movement")),
                 () -> assertTrue(config.contains("public TacticalSettings tactics")),
@@ -98,6 +100,12 @@ final class ConfigFoundationContractTest {
                 "naturalLoadouts.hard.upgradeChance",
                 "naturalLoadouts.hard.maximumNearby",
                 "naturalLoadouts.hard.poolId",
+                "squads.commandDispatchRadius",
+                "squads.maximumAffectedGuards",
+                "squads.positionalCommandDurationTicks",
+                "squads.focusCommandDurationTicks",
+                "squads.defendRadius",
+                "squads.airCommandRange",
                 "combat.requiredVisibleTicks",
                 "combat.maximumEngagementRange",
                 "combat.closeRangeDistance",

@@ -16,7 +16,7 @@ The project no longer contains:
 - the Fzzy Config implementation, Kotlin for Forge bridge, rebalance registration, or config metadata; or
 - commented-out implementations and debug logging from the old firing path.
 
-There is no replacement balance configuration. Damage, projectile behavior, spread, recoil, sounds, magazine/chamber rules, reload duration, fire rate, burst behavior, heat, and synchronization come from TaCZ and the selected gun data. The remaining private timing/range constants are AI scheduling, bounded retry, movement, and friendly-fire safety limits; they do not alter a gun's native combat values.
+There is no replacement balance configuration. Hostile damage, projectile behavior, spread, recoil, sounds, magazine/chamber rules, reload duration, fire rate, burst behavior, heat, and synchronization come from TaCZ and the selected gun data. Optional guard-explosion block preservation filters Forge's final affected-block list; it does not replace or rebalance the weapon or projectile. The remaining private timing/range constants are AI scheduling, bounded retry, movement, and friendly-fire safety limits; they do not alter a gun's native combat values.
 
 ## Retained ownership
 
@@ -28,13 +28,13 @@ The addon's runtime code now has five narrow responsibilities:
 4. prevent native guard shots and explosions from harming protected entities; and
 5. restore TaCZ's native pose after the two Guard-specific model animations.
 
-`VillagerGuardGunners` registers the supported Fzzy configuration and the combined menu. `GuardMixin` owns the goal attachment, TaCZ operator initialization, ammo capability/persistence/migration lifecycle, death drops, authorized menu replacement, and transient native-burst safety state. The common mixin list contains only `GuardMixin` and `RaiseShieldGoalMixin`; the two model mixins remain in the client-only list.
+`VillagerGuardGunners` registers the supported Fzzy configuration and the combined menu. `GuardMixin` owns the goal attachment, TaCZ operator initialization, ammo capability/persistence/migration lifecycle, death drops, authorized menu replacement, and transient native-burst safety state. The common mixin list contains `GuardMixin`, the staggered dropped-ammunition hook in `ItemEntityMixin`, and `RaiseShieldGoalMixin`; the two model mixins remain in the client-only list.
 
 ## Build cleanup
 
 The build retains ForgeGradle 6, MixinGradle, Java 17, Forge, Guard Villagers, TaCZ, Fzzy Config, Kotlin for Forge, and the JUnit test layer. Phase 7 removed the old Fzzy-backed rebalance configuration; the later supported configuration integration deliberately restored current Fzzy/Kotlin repositories and dependencies without restoring any rebalance code. The build also removes the redundant ForgeGradle 5 buildscript dependency, unused Parchment Librarian plugin, Maven publishing example, duplicate resource/JAR blocks, stale template commentary, and timestamped manifest entry. Archive ordering and timestamps are normalized for stable artifacts.
 
-The metadata is reduced to the mod declaration plus exact reviewed dependencies for Minecraft 1.20.1, Forge 47.4.23, Guard Villagers 1.20.1-1.6.19, TaCZ 1.1.8-hotfix, Fzzy Config 0.7.6, and Kotlin for Forge 4.11.0.
+The metadata is reduced to the mod declaration plus exact reviewed dependencies for Minecraft 1.20.1, Forge 47.4.23, Guard Villagers 1.20.1-1.6.19, TaCZ 1.1.8-hotfix, Fzzy Config 0.7.6, and Kotlin for Forge 4.12.0.
 
 ## Regression and packaging gates
 

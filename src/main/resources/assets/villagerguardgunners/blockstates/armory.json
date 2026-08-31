@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "villagerguardgunners:block/armory" },
+    "facing=east": { "model": "villagerguardgunners:block/armory", "y": 90 },
+    "facing=south": { "model": "villagerguardgunners:block/armory", "y": 180 },
+    "facing=west": { "model": "villagerguardgunners:block/armory", "y": 270 }
+  }
+}

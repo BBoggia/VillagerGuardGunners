@@ -2,6 +2,8 @@ package com.gamergaming.villagerguardgunners.gametest;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ai.SquadCommandMovementController;
+import com.gamergaming.villagerguardgunners.ai.SquadCommandMovementGoal;
 import com.gamergaming.villagerguardgunners.ammunition.AmmoCompatibility;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoDeposits;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoMaintenance;
@@ -9,12 +11,20 @@ import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSharing;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoTransactions;
 import com.gamergaming.villagerguardgunners.ammunition.GuardDroppedAmmoPickup;
+import com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition;
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection;
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection.ProtectionReason;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
+import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
+import com.gamergaming.villagerguardgunners.armory.ArmoryLockInteractions;
+import com.gamergaming.villagerguardgunners.armory.ArmorySquadLock;
+import com.gamergaming.villagerguardgunners.armory.ArmorySquadLockCodec;
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
@@ -24,6 +34,7 @@ import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
 import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticalResolver;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
+import com.gamergaming.villagerguardgunners.menu.ArmoryMenu;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplate;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplateInteractions;
@@ -38,16 +49,39 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDiagnostics;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutCandidate;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutCompatibilityAnalyzer;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutConditionSpec;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutContextCapture;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutFormat;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutIssuance;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutPool;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutPools;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutReloadSnapshot;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutProvenance;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutProvenanceCodec;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutSelector;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnIntegration;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmStorage;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmGameTestAccess;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmRecovery;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmTransactions;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmActivationReason;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmTransitionStatus;
+import com.gamergaming.villagerguardgunners.squad.SquadMembership;
+import com.gamergaming.villagerguardgunners.squad.SquadMembershipCodec;
+import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
+import com.gamergaming.villagerguardgunners.squad.SquadLedgerBindingCodec;
+import com.gamergaming.villagerguardgunners.squad.SquadRegistrySavedData;
+import com.gamergaming.villagerguardgunners.squad.SquadCommand;
+import com.gamergaming.villagerguardgunners.squad.SquadCommandDispatcher;
+import com.gamergaming.villagerguardgunners.squad.SquadCommandRuntime;
+import com.gamergaming.villagerguardgunners.squad.SquadCommandType;
+import com.gamergaming.villagerguardgunners.squad.SquadLedgerModeCodec;
 import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.entity.IGunOperator;
+import com.tacz.guns.api.entity.ReloadState;
 import com.tacz.guns.api.entity.ShootResult;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
 import com.tacz.guns.api.event.common.GunFireEvent;
@@ -70,6 +104,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -80,6 +115,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntityType;
@@ -97,10 +133,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
@@ -153,57 +191,366 @@ public final class GuardGunnerGameTests {
                 "The bundled Normal natural-loadout pool was not published");
         helper.assertTrue(hard != null && hard.totalWeight() == 10,
                 "The bundled Hard natural-loadout pool was not published");
-        helper.assertTrue(NaturalGuardLoadoutPools.snapshot().size() >= 3,
-                "The live natural-loadout snapshot omitted a bundled pool");
+        NaturalGuardLoadoutReloadSnapshot reloadSnapshot =
+                NaturalGuardLoadoutPools.reloadSnapshot();
+        ResourceLocation malformedTestPool = ResourceLocation.fromNamespaceAndPath(
+                "villagerguardgunners_gametest",
+                "malformed");
+        ResourceLocation conditionalTestPool = ResourceLocation.fromNamespaceAndPath(
+                "villagerguardgunners_gametest",
+                "conditional");
+        ResourceLocation sidearmTestPool = ResourceLocation.fromNamespaceAndPath(
+                "villagerguardgunners_gametest",
+                "sidearm");
+        NaturalGuardLoadoutPool conditional = NaturalGuardLoadoutPools.get(
+                conditionalTestPool);
+        NaturalGuardLoadoutPool sidearm = NaturalGuardLoadoutPools.get(sidearmTestPool);
+        helper.assertTrue(NaturalGuardLoadoutPools.snapshot().size() >= 3
+                        && reloadSnapshot.generation() > 0L
+                        && reloadSnapshot.publishedPools().size() >= 3
+                        && conditional != null
+                        && conditional.format() == 2
+                        && conditional.hasConditionalEntries()
+                        && sidearm != null
+                        && sidearm.format() == NaturalGuardLoadoutFormat.SIDEARM_VERSION
+                        && GLOCK_17.equals(sidearm.entries().get(0).sidearmId())
+                        && conditional.entries().get(0).conditions().difficulties()
+                                .contains(NaturalGuardDifficulty.NORMAL)
+                        && reloadSnapshot.publishedPools().stream()
+                                .anyMatch(publication -> publication.id().equals(conditionalTestPool)
+                                        && publication.format() == 2)
+                        && reloadSnapshot.rejectedPools().stream()
+                                .anyMatch(rejected -> rejected.id().equals(malformedTestPool)),
+                "The live natural-loadout publication snapshot was incomplete");
         helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void naturalLoadoutAdministratorCommandsAreRegisteredAndReadOnly(
+            GameTestHelper helper) {
+        var dispatcher = helper.getLevel().getServer().getCommands().getDispatcher();
+        var administrator = helper.getLevel()
+                .getServer()
+                .createCommandSourceStack()
+                .withLevel(helper.getLevel())
+                .withPosition(Vec3.atCenterOf(helper.absolutePos(new BlockPos(0, 1, 0))))
+                .withPermission(4);
+        try {
+            int validate = dispatcher.execute(
+                    "vgg loadouts validate villagerguardgunners:normal",
+                    administrator);
+            int inspect = dispatcher.execute(
+                    "vgg loadouts inspect villagerguardgunners:normal 1",
+                    administrator);
+            int preview = dispatcher.execute(
+                    "vgg loadouts preview normal structure "
+                            + "villagerguardgunners_gametest:conditional",
+                    administrator);
+            int invalidPage = dispatcher.execute(
+                    "vgg loadouts inspect villagerguardgunners:normal 999",
+                    administrator);
+            helper.assertTrue(validate == 1 && inspect == 1 && preview == 1,
+                    "One or more registered natural-loadout diagnostic commands failed");
+            helper.assertTrue(invalidPage == 0,
+                    "Out-of-range inspection emitted partial success");
+
+            boolean permissionDenied = false;
+            try {
+                dispatcher.execute(
+                        "vgg loadouts validate",
+                        administrator.withPermission(1));
+            } catch (com.mojang.brigadier.exceptions.CommandSyntaxException expected) {
+                permissionDenied = true;
+            }
+            helper.assertTrue(permissionDenied,
+                    "Natural-loadout diagnostics were available below permission level 2");
+            helper.succeed();
+        } catch (com.mojang.brigadier.exceptions.CommandSyntaxException exception) {
+            helper.fail("Natural-loadout diagnostics could not be parsed: "
+                    + exception.getMessage());
+        }
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void conditionalNaturalLoadoutMatchesLiveSpawnContext(GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        guard.addTag("vgg_context_fixture");
+        ResourceLocation dimension = helper.getLevel().dimension().location();
+        ResourceLocation biome = helper.getLevel()
+                .getBiome(guard.blockPosition())
+                .unwrapKey()
+                .orElseThrow()
+                .location();
+        NaturalGuardLoadoutConditionSpec matchingConditions =
+                new NaturalGuardLoadoutConditionSpec(
+                        new NaturalGuardLoadoutConditionSpec.SelectorGroup<>(
+                                Set.of(dimension), Set.of()),
+                        new NaturalGuardLoadoutConditionSpec.SelectorGroup<>(
+                                Set.of(NaturalGuardLoadoutConditionSpec.RegistrySelector.exact(
+                                        biome)),
+                                Set.of()),
+                        NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                        Set.of(NaturalGuardDifficulty.NORMAL),
+                        Set.of(NaturalGuardSpawnSource.STRUCTURE),
+                        NaturalGuardLoadoutConditionSpec.RaidRequirement.ANY,
+                        Set.of("vgg_context_fixture"),
+                        Set.of());
+        NaturalGuardLoadoutConditionSpec hardOnly =
+                new NaturalGuardLoadoutConditionSpec(
+                        NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                        NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                        NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                        Set.of(NaturalGuardDifficulty.HARD),
+                        Set.of(),
+                        NaturalGuardLoadoutConditionSpec.RaidRequirement.ANY,
+                        Set.of(),
+                        Set.of());
+        NaturalGuardLoadoutPool.Entry matching =
+                new NaturalGuardLoadoutPool.Entry(GLOCK_17, 2, matchingConditions);
+        NaturalGuardLoadoutPool pool = new NaturalGuardLoadoutPool(
+                NaturalGuardLoadoutDefaults.NORMAL_POOL,
+                NaturalGuardLoadoutFormat.CONDITIONAL_VERSION,
+                List.of(
+                        new NaturalGuardLoadoutPool.Entry(AK_47, 100, hardOnly),
+                        matching));
+
+        NaturalGuardLoadoutSelector.Decision decision = NaturalGuardLoadoutSelector.select(
+                new NaturalGuardLoadoutSelector.Context(
+                        true,
+                        true,
+                        true,
+                        NaturalGuardSpawnSource.STRUCTURE,
+                        true,
+                        false),
+                NaturalGuardLoadoutDefaults.SPAWN_RULES,
+                NaturalGuardDifficulty.NORMAL,
+                NaturalGuardLoadoutDefaults.settingsFor(NaturalGuardDifficulty.NORMAL),
+                () -> NaturalGuardLoadoutContextCapture.capture(
+                        helper.getLevel(),
+                        guard,
+                        pool,
+                        NaturalGuardDifficulty.NORMAL,
+                        NaturalGuardSpawnSource.STRUCTURE),
+                () -> 0.0D,
+                () -> 0,
+                pool,
+                bound -> bound - 1);
+
+        helper.assertTrue(decision.selected() && decision.entry().equals(matching),
+                "Format-2 selection did not match the live dimension, biome, and guard tag");
+        helper.succeed();
+    }
+
+    @GameTest(
+            batch = "conditional_natural_loadout_integration",
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 100)
+    public static void publishedConditionalPoolIssuesThroughDeferredEntityJoin(
+            GameTestHelper helper) {
+        ResourceLocation conditionalPoolId = ResourceLocation.fromNamespaceAndPath(
+                "villagerguardgunners_gametest",
+                "conditional");
+        NaturalGuardLoadoutPool pool = NaturalGuardLoadoutPools.get(conditionalPoolId);
+        helper.assertTrue(pool != null
+                        && pool.format() == NaturalGuardLoadoutFormat.CONDITIONAL_VERSION
+                        && pool.hasConditionalEntries(),
+                "The published format-2 integration pool is unavailable");
+
+        NaturalLoadoutConfigSnapshot original = NaturalLoadoutConfigSnapshot.capture(helper);
+        try {
+            helper.getLevel().getServer().setDifficulty(Difficulty.NORMAL, true);
+            ModConfigs.GUARD_GUNNERS.enabled.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.enabled.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.enabledSpawnSources.accept(
+                    Set.of(NaturalGuardSpawnSource.STRUCTURE));
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.replaceCrossbowsOnly.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.upgradeChance.accept(1.0D);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.maximumNearby.accept(32);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.poolId.accept(conditionalPoolId);
+
+            Guard guard = newNaturalSpawnGuard(helper, new BlockPos(0, 1, 0));
+            helper.assertTrue(helper.getLevel().addFreshEntity(guard),
+                    "Could not add the format-2 entity-join fixture");
+            helper.runAfterDelay(2, () -> {
+                try {
+                    GuardNaturalLoadoutAccess access = (GuardNaturalLoadoutAccess) guard;
+                    NaturalGuardLoadoutProvenance provenance =
+                            access.villagerGuardGunners$getNaturalLoadoutProvenance();
+                    helper.assertTrue(
+                            access.villagerGuardGunners$getNaturalLoadoutDecisionStatus()
+                                            == NaturalGuardLoadoutSelector.DecisionStatus.SELECTED
+                                    && access.villagerGuardGunners$getNaturalLoadoutIssuanceStatus()
+                                            == NaturalGuardLoadoutIssuance.IssuanceStatus.ISSUED,
+                            "The deferred entity-join pipeline did not select and issue format 2");
+                    helper.assertTrue(provenance != null
+                                    && provenance.poolId().equals(conditionalPoolId)
+                                    && provenance.gunId().equals(GLOCK_17)
+                                    && provenance.difficulty() == NaturalGuardDifficulty.NORMAL
+                                    && provenance.spawnSource()
+                                            == NaturalGuardSpawnSource.STRUCTURE
+                                    && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                                            guard.getMainHandItem(), provenance),
+                            "Format-2 issuance did not publish authentic pool/gun provenance");
+                    helper.succeed();
+                } finally {
+                    original.restore(helper);
+                }
+            });
+        } catch (RuntimeException | Error exception) {
+            original.restore(helper);
+            throw exception;
+        }
+    }
+
+    @GameTest(
+            batch = "format_three_natural_loadout_integration",
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 100)
+    public static void publishedFormatThreePoolIssuesThroughDeferredEntityJoin(
+            GameTestHelper helper) {
+        ResourceLocation poolId = ResourceLocation.fromNamespaceAndPath(
+                "villagerguardgunners_gametest",
+                "sidearm");
+        NaturalGuardLoadoutPool pool = NaturalGuardLoadoutPools.get(poolId);
+        helper.assertTrue(pool != null
+                        && pool.format() == NaturalGuardLoadoutFormat.SIDEARM_VERSION
+                        && GLOCK_17.equals(pool.entries().get(0).sidearmId()),
+                "The published format-3 integration pool is unavailable");
+
+        NaturalLoadoutConfigSnapshot original = NaturalLoadoutConfigSnapshot.capture(helper);
+        try {
+            helper.getLevel().getServer().setDifficulty(Difficulty.NORMAL, true);
+            ModConfigs.GUARD_GUNNERS.enabled.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.enabled.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.enabledSpawnSources.accept(
+                    Set.of(NaturalGuardSpawnSource.STRUCTURE));
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.replaceCrossbowsOnly.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.upgradeChance.accept(1.0D);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.maximumNearby.accept(32);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.poolId.accept(poolId);
+
+            Guard guard = newNaturalSpawnGuard(helper, new BlockPos(0, 1, 0));
+            helper.assertTrue(helper.getLevel().addFreshEntity(guard),
+                    "Could not add the format-3 entity-join fixture");
+            helper.runAfterDelay(2, () -> {
+                try {
+                    GuardNaturalLoadoutAccess access = (GuardNaturalLoadoutAccess) guard;
+                    NaturalGuardLoadoutCandidate candidate =
+                            access.villagerGuardGunners$getNaturalLoadoutCandidate();
+                    helper.assertTrue(
+                            access.villagerGuardGunners$getNaturalLoadoutDecisionStatus()
+                                            == NaturalGuardLoadoutSelector.DecisionStatus.SELECTED
+                                    && access.villagerGuardGunners$getNaturalLoadoutIssuanceStatus()
+                                            == NaturalGuardLoadoutIssuance.IssuanceStatus.ISSUED
+                                    && candidate != null
+                                    && AK_47.equals(candidate.gunId())
+                                    && GLOCK_17.equals(candidate.sidearmId()),
+                            "Deferred format-3 selection did not preserve both weapon IDs");
+                    helper.assertTrue(
+                            AK_47.equals(gunId(guard.getMainHandItem()))
+                                    && GLOCK_17.equals(gunId(
+                                            GuardSidearmAccess
+                                                    .getConfiguredSidearmInventory(guard)
+                                                    .getStackInSlot(0)))
+                                    && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                                            guard,
+                                            access.villagerGuardGunners$getNaturalLoadoutProvenance()),
+                            "Deferred format-3 issuance did not commit both roles authentically");
+                    helper.succeed();
+                } finally {
+                    original.restore(helper);
+                }
+            });
+        } catch (RuntimeException | Error exception) {
+            original.restore(helper);
+            throw exception;
+        }
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
     public static void naturalLoadoutStructureMarkerSurvivesDeferredWorldgenJoin(
             GameTestHelper helper) {
-        BlockPos position = helper.absolutePos(new BlockPos(0, 1, 0));
-        Guard worldgenGuard = GuardEntityType.GUARD.get().create(helper.getLevel());
-        helper.assertTrue(worldgenGuard != null, "Could not create the worldgen guard fixture");
-        worldgenGuard.moveTo(position, 0.0F, 0.0F);
-        worldgenGuard.finalizeSpawn(
-                helper.getLevel(),
-                helper.getLevel().getCurrentDifficultyAt(position),
-                MobSpawnType.STRUCTURE,
-                null,
-                null);
+        NaturalLoadoutConfigSnapshot original = NaturalLoadoutConfigSnapshot.capture(helper);
+        try {
+            helper.getLevel().getServer().setDifficulty(Difficulty.NORMAL, true);
+            ModConfigs.GUARD_GUNNERS.enabled.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.enabled.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.enabledSpawnSources.accept(
+                    Set.of(NaturalGuardSpawnSource.STRUCTURE));
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.replaceCrossbowsOnly.accept(true);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.upgradeChance.accept(1.0D);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.maximumNearby.accept(32);
+            ModConfigs.GUARD_GUNNERS.naturalLoadouts.normal.poolId.accept(
+                    NaturalGuardLoadoutDefaults.NORMAL_POOL);
 
-        GuardNaturalLoadoutAccess worldgenAccess = (GuardNaturalLoadoutAccess) worldgenGuard;
-        helper.assertFalse(
-                worldgenAccess.villagerGuardGunners$hasNaturalLoadoutSelectionAttempted(),
-                "Structure selection ran before the guard joined a live server level");
+            BlockPos position = helper.absolutePos(new BlockPos(0, 1, 0));
+            Guard worldgenGuard = GuardEntityType.GUARD.get().create(helper.getLevel());
+            helper.assertTrue(worldgenGuard != null,
+                    "Could not create the worldgen guard fixture");
+            worldgenGuard.moveTo(position, 0.0F, 0.0F);
+            worldgenGuard.finalizeSpawn(
+                    helper.getLevel(),
+                    helper.getLevel().getCurrentDifficultyAt(position),
+                    MobSpawnType.STRUCTURE,
+                    null,
+                    null);
 
-        CompoundTag serialized = new CompoundTag();
-        helper.assertTrue(worldgenGuard.save(serialized),
-                "Could not serialize the structure guard's protochunk handoff");
-        helper.assertTrue(serialized.contains(
-                        "villagerguardgunners:pending_natural_loadout_spawn",
-                        Tag.TAG_STRING),
-                "Structure source marker was not preserved through protochunk NBT");
+            GuardNaturalLoadoutAccess worldgenAccess =
+                    (GuardNaturalLoadoutAccess) worldgenGuard;
+            helper.assertFalse(
+                    worldgenAccess.villagerGuardGunners$hasNaturalLoadoutSelectionAttempted(),
+                    "Structure selection ran before the guard joined a live server level");
 
-        Guard restored = GuardEntityType.GUARD.get().create(helper.getLevel());
-        helper.assertTrue(restored != null, "Could not restore the structure guard fixture");
-        restored.load(serialized);
-        helper.assertTrue(helper.getLevel().addFreshEntity(restored),
-                "Could not add the restored structure guard to the live level");
-        helper.assertTrue(
-                ((GuardNaturalLoadoutAccess) restored)
-                        .villagerGuardGunners$hasNaturalLoadoutSelectionAttempted(),
-                "Live entity join did not claim the one-time natural-loadout selection");
+            CompoundTag serialized = new CompoundTag();
+            helper.assertTrue(worldgenGuard.save(serialized),
+                    "Could not serialize the structure guard's protochunk handoff");
+            helper.assertTrue(serialized.contains(
+                            "villagerguardgunners:pending_natural_loadout_spawn",
+                            Tag.TAG_STRING),
+                    "Structure source marker was not preserved through protochunk NBT");
 
-        helper.runAfterDelay(1, () -> {
-            helper.assertTrue(restored.isAddedToWorld() && !restored.isRemoved(),
-                    "Deferred selection did not retain a valid live guard");
-            helper.assertTrue(
+            Guard restored = GuardEntityType.GUARD.get().create(helper.getLevel());
+            helper.assertTrue(restored != null,
+                    "Could not restore the structure guard fixture");
+            restored.load(serialized);
+            helper.assertTrue(restored.getMainHandItem().isEmpty(),
+                    "The lifecycle fixture unexpectedly began with a weapon");
+            helper.assertTrue(helper.getLevel().addFreshEntity(restored),
+                    "Could not add the restored structure guard to the live level");
+            helper.assertFalse(
                     ((GuardNaturalLoadoutAccess) restored)
-                            .villagerGuardGunners$getNaturalLoadoutDecisionStatus() != null,
-                    "Queued natural-loadout policy selection did not execute");
-            helper.succeed();
-        });
+                            .villagerGuardGunners$hasNaturalLoadoutSelectionAttempted(),
+                    "Entity join consumed the marker before native equipment was ready");
+
+            helper.runAfterDelay(2, () -> {
+                try {
+                    GuardNaturalLoadoutAccess restoredAccess =
+                            (GuardNaturalLoadoutAccess) restored;
+                    helper.assertTrue(restored.isAddedToWorld() && !restored.isRemoved(),
+                            "Deferred selection did not retain a valid live guard");
+                    helper.assertTrue(
+                            restoredAccess.villagerGuardGunners$getNaturalLoadoutDecisionStatus()
+                                            == NaturalGuardLoadoutSelector.DecisionStatus.SELECTED
+                                    && restoredAccess
+                                            .villagerGuardGunners$getNaturalLoadoutIssuanceStatus()
+                                            == NaturalGuardLoadoutIssuance.IssuanceStatus.ISSUED
+                                    && gunId(restored.getMainHandItem()) != null
+                                    && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                                            restored,
+                                            restoredAccess
+                                                    .villagerGuardGunners$getNaturalLoadoutProvenance()),
+                            "The real native equipment lifecycle did not issue a natural loadout");
+                    helper.succeed();
+                } finally {
+                    original.restore(helper);
+                }
+            });
+        } catch (RuntimeException | Error exception) {
+            original.restore(helper);
+            throw exception;
+        }
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
@@ -216,6 +563,23 @@ public final class GuardGunnerGameTests {
                 GLOCK_17,
                 NaturalGuardDifficulty.NORMAL,
                 NaturalGuardSpawnSource.STRUCTURE);
+
+        NaturalGuardLoadoutCompatibilityAnalyzer.Analysis analysis =
+                NaturalGuardLoadoutCompatibilityAnalyzer.analyze(
+                        guard,
+                        GLOCK_17,
+                        NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy.REJECT);
+        helper.assertTrue(analysis.compatible()
+                        && analysis.explosionState()
+                                == NaturalGuardLoadoutCompatibilityAnalyzer.ExplosionState.NON_EXPLOSIVE,
+                "Read-only Glock compatibility analysis failed: " + analysis.status());
+        helper.assertTrue(stacksMatch(new ItemStack(Items.CROSSBOW), guard.getMainHandItem())
+                        && isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(guard)),
+                "Compatibility analysis changed the guard before issuance");
+        ItemStack exposedPreparedGun = analysis.preparedGun();
+        exposedPreparedGun.setCount(0);
+        helper.assertTrue(analysis.preparedGun().getCount() == 1,
+                "Compatibility analysis exposed its mutable prepared gun");
 
         NaturalGuardLoadoutIssuance.Result result =
                 NaturalGuardLoadoutIssuance.issue(guard, candidate, false);
@@ -247,6 +611,158 @@ public final class GuardGunnerGameTests {
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void formatThreeNaturalLoadoutIssuesSidearmAndBothAmmoStacks(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        ItemStack originalWeapon = new ItemStack(Items.CROSSBOW);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, originalWeapon.copy());
+        NaturalGuardLoadoutCandidate candidate = new NaturalGuardLoadoutCandidate(
+                ResourceLocation.fromNamespaceAndPath(
+                        VillagerGuardGunners.MODID, "gametest/format_three"),
+                AK_47,
+                GLOCK_17,
+                NaturalGuardDifficulty.HARD,
+                NaturalGuardSpawnSource.STRUCTURE);
+        GuardNaturalLoadoutAccess naturalAccess = (GuardNaturalLoadoutAccess) guard;
+        naturalAccess.villagerGuardGunners$setNaturalLoadoutCandidate(candidate);
+
+        NaturalGuardLoadoutIssuance.Result result =
+                NaturalGuardLoadoutIssuance.issue(guard, candidate, false);
+        helper.assertTrue(result.issued() && result.issuedSidearm(),
+                "Format-3 primary and sidearm were not issued atomically: " + result.status());
+        helper.assertTrue(AK_47.equals(gunId(guard.getMainHandItem())),
+                "Format-3 issuance equipped the wrong natural primary");
+        IItemHandler sidearms = GuardSidearmAccess.getConfiguredSidearmInventory(guard);
+        helper.assertTrue(sidearms.getSlots() == 1
+                        && GLOCK_17.equals(gunId(sidearms.getStackInSlot(0))),
+                "Format-3 issuance did not place the validated pistol in the configured slot");
+
+        ResourceLocation primaryAmmoId = TimelessAPI.getCommonGunIndex(AK_47)
+                .orElseThrow().getGunData().getAmmoId();
+        ResourceLocation sidearmAmmoId = TimelessAPI.getCommonGunIndex(GLOCK_17)
+                .orElseThrow().getGunData().getAmmoId();
+        int primaryStack = TimelessAPI.getCommonAmmoIndex(primaryAmmoId)
+                .orElseThrow().getStackSize();
+        int sidearmStack = TimelessAPI.getCommonAmmoIndex(sidearmAmmoId)
+                .orElseThrow().getStackSize();
+        GuardAmmoHandler reserves = GuardAmmoAccess.getAmmoHandler(guard);
+        helper.assertTrue(result.primaryAmmunitionItems() == primaryStack
+                        && result.sidearmAmmunitionItems() == sidearmStack
+                        && result.ammunitionItems() == primaryStack + sidearmStack
+                        && countAmmo(reserves, primaryAmmoId) == primaryStack
+                        && countAmmo(reserves, sidearmAmmoId) == sidearmStack,
+                "Format-3 issuance did not supply one complete compatible stack per weapon");
+        helper.assertTrue(result.provenance() != null
+                        && result.provenance().equals(
+                                naturalAccess.villagerGuardGunners$getNaturalLoadoutProvenance())
+                        && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                                guard, result.provenance()),
+                "Format-3 commit did not authenticate its natural primary");
+
+        UUID targetId = UUID.fromString("70000000-0000-0000-0000-000000000106");
+        var activated = GuardSidearmTransactions.activate(
+                guard,
+                SidearmActivationReason.PRIMARY_DRY,
+                300L,
+                targetId,
+                true);
+        helper.assertTrue(activated.status() == SidearmTransitionStatus.ACTIVATED
+                        && GLOCK_17.equals(gunId(guard.getMainHandItem()))
+                        && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                                guard, result.provenance()),
+                "Activating the naturally issued sidearm lost primary provenance");
+        helper.assertTrue(
+                GuardSidearmTransactions.returnPrimary(guard, true).status()
+                        == SidearmTransitionStatus.RETURNED,
+                "Naturally issued sidearm could not return its primary");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void formatThreeNaturalLoadoutCapacityFailureIsAllOrNothing(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        ItemStack originalWeapon = new ItemStack(Items.CROSSBOW);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, originalWeapon.copy());
+        GuardAmmoHandler reserves = GuardAmmoAccess.getAmmoHandler(guard);
+        int nineMillimeterStack = TimelessAPI.getCommonAmmoIndex(NINE_MILLIMETER)
+                .orElseThrow().getStackSize();
+        ItemStack existing = AmmoItemBuilder.create()
+                .setId(NINE_MILLIMETER)
+                .setCount(nineMillimeterStack)
+                .build();
+        reserves.setStackInSlot(0, existing.copy());
+        reserves.setStackInSlot(1, existing.copy());
+        NaturalGuardLoadoutCandidate candidate = new NaturalGuardLoadoutCandidate(
+                ResourceLocation.fromNamespaceAndPath(
+                        VillagerGuardGunners.MODID, "gametest/format_three_capacity"),
+                AK_47,
+                GLOCK_17,
+                NaturalGuardDifficulty.HARD,
+                NaturalGuardSpawnSource.STRUCTURE);
+        GuardNaturalLoadoutAccess naturalAccess = (GuardNaturalLoadoutAccess) guard;
+        naturalAccess.villagerGuardGunners$setNaturalLoadoutCandidate(candidate);
+
+        NaturalGuardLoadoutIssuance.Result result =
+                NaturalGuardLoadoutIssuance.issue(guard, candidate, false);
+        helper.assertTrue(
+                result.status()
+                        == NaturalGuardLoadoutIssuance.IssuanceStatus
+                                .AMMO_CAPACITY_UNAVAILABLE,
+                "Two-stack capacity failure returned the wrong result: " + result.status());
+        helper.assertTrue(stacksMatch(originalWeapon, guard.getMainHandItem())
+                        && countAmmo(reserves, NINE_MILLIMETER)
+                                == nineMillimeterStack * 2
+                        && reserves.getStackInSlot(2).isEmpty()
+                        && GuardSidearmAccess.getConfiguredSidearmInventory(guard)
+                                .getStackInSlot(0).isEmpty()
+                        && naturalAccess.villagerGuardGunners$getNaturalLoadoutProvenance()
+                                == null
+                        && candidate.equals(
+                                naturalAccess.villagerGuardGunners$getNaturalLoadoutCandidate()),
+                "A failed format-3 preflight partially changed weapon, ammo, or provenance state");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void formatThreeNaturalLoadoutNeverDisplacesExistingSidearm(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        ItemStack originalWeapon = new ItemStack(Items.CROSSBOW);
+        ItemStack existingSidearm = gun(M16_A4, FireMode.SEMI, 7, true);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, originalWeapon.copy());
+        GuardSidearmGameTestAccess.getStorage(guard).setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                existingSidearm.copy());
+        NaturalGuardLoadoutCandidate candidate = new NaturalGuardLoadoutCandidate(
+                ResourceLocation.fromNamespaceAndPath(
+                        VillagerGuardGunners.MODID, "gametest/format_three_occupied"),
+                AK_47,
+                GLOCK_17,
+                NaturalGuardDifficulty.HARD,
+                NaturalGuardSpawnSource.STRUCTURE);
+
+        NaturalGuardLoadoutIssuance.Result result =
+                NaturalGuardLoadoutIssuance.issue(guard, candidate, false);
+        helper.assertTrue(
+                result.status()
+                        == NaturalGuardLoadoutIssuance.IssuanceStatus
+                                .SIDEARM_SLOT_UNAVAILABLE,
+                "Occupied sidearm slot returned the wrong result: " + result.status());
+        helper.assertTrue(stacksMatch(originalWeapon, guard.getMainHandItem())
+                        && stacksMatch(
+                                existingSidearm,
+                                GuardSidearmAccess.getConfiguredSidearmInventory(guard)
+                                        .getStackInSlot(0))
+                        && isAmmoHandlerEmpty(GuardAmmoAccess.getAmmoHandler(guard))
+                        && ((GuardNaturalLoadoutAccess) guard)
+                                        .villagerGuardGunners$getNaturalLoadoutProvenance()
+                                == null,
+                "Natural issuance displaced an existing sidearm or retained a partial commit");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
     public static void naturalLoadoutIssuanceRejectsExplosivesWithoutMutation(
             GameTestHelper helper) {
         Guard guard = spawnGuard(helper);
@@ -263,6 +779,27 @@ public final class GuardGunnerGameTests {
                 RPG_7,
                 NaturalGuardDifficulty.HARD,
                 NaturalGuardSpawnSource.STRUCTURE);
+
+        NaturalGuardLoadoutCompatibilityAnalyzer.Analysis reported =
+                NaturalGuardLoadoutCompatibilityAnalyzer.analyze(
+                        guard,
+                        RPG_7,
+                        NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy.REPORT);
+        NaturalGuardLoadoutCompatibilityAnalyzer.Analysis rejected =
+                NaturalGuardLoadoutCompatibilityAnalyzer.analyze(
+                        guard,
+                        RPG_7,
+                        NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy.REJECT);
+        helper.assertTrue(reported.compatible()
+                        && reported.explosionState()
+                                == NaturalGuardLoadoutCompatibilityAnalyzer.ExplosionState.EXPLOSIVE
+                        && rejected.status()
+                                == NaturalGuardLoadoutCompatibilityAnalyzer.CompatibilityStatus
+                                        .EXPLOSIVE_DISALLOWED,
+                "RPG report/reject compatibility policies disagreed");
+        helper.assertTrue(stacksMatch(originalWeapon, guard.getMainHandItem())
+                        && stacksMatch(existingAmmo, reserves.getStackInSlot(0)),
+                "RPG compatibility analysis changed the guard before issuance");
 
         NaturalGuardLoadoutIssuance.Result result =
                 NaturalGuardLoadoutIssuance.issue(guard, candidate, false);
@@ -879,6 +1416,184 @@ public final class GuardGunnerGameTests {
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void sidearmAmmoQualityOfLifeRecognizesBothWeaponRoles(
+            GameTestHelper helper) {
+        boolean originalHotvRequirement = GuardConfig.giveGuardStuffHOTV;
+        boolean originalPickup =
+                ModConfigs.GUARD_GUNNERS.ammunition.pickupDroppedAmmo.get();
+        double originalPickupRadius =
+                ModConfigs.GUARD_GUNNERS.ammunition.droppedAmmoPickupRadius.get();
+        boolean originalSharing =
+                ModConfigs.GUARD_GUNNERS.ammunition.shareAmmoBetweenGuards.get();
+        double originalSharingRadius =
+                ModConfigs.GUARD_GUNNERS.ammunition.ammoSharingRadius.get();
+        int originalRetainedMagazines =
+                ModConfigs.GUARD_GUNNERS.ammunition.donorReserveMagazines.get();
+        boolean originalOwnerMatching =
+                ModConfigs.GUARD_GUNNERS.ammunition.requireMatchingOwnerForSharing.get();
+        boolean originalMobGriefing = helper.getLevel().getGameRules()
+                .getBoolean(GameRules.RULE_MOBGRIEFING);
+
+        Guard recipient = spawnGuard(helper, new BlockPos(0, 1, 0));
+        Guard donor = spawnGuard(helper, new BlockPos(3, 1, 0));
+        Player player = helper.makeMockPlayer();
+        player.setShiftKeyDown(true);
+        UUID owner = UUID.randomUUID();
+        recipient.setOwnerId(owner);
+        donor.setOwnerId(owner);
+        recipient.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.SEMI, 0, false));
+        donor.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.SEMI, 0, false));
+        GuardSidearmGameTestAccess.getStorage(recipient).setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(GLOCK_17, FireMode.SEMI, 0, false));
+        GuardSidearmGameTestAccess.getStorage(donor).setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(GLOCK_17, FireMode.SEMI, 0, false));
+        GuardAmmoHandler recipientReserves = GuardAmmoAccess.getAmmoHandler(recipient);
+        GuardAmmoHandler donorReserves = GuardAmmoAccess.getAmmoHandler(donor);
+
+        try {
+            GuardConfig.giveGuardStuffHOTV = false;
+            ModConfigs.GUARD_GUNNERS.ammunition.pickupDroppedAmmo.accept(true);
+            ModConfigs.GUARD_GUNNERS.ammunition.droppedAmmoPickupRadius.accept(1.5D);
+            ModConfigs.GUARD_GUNNERS.ammunition.shareAmmoBetweenGuards.accept(true);
+            ModConfigs.GUARD_GUNNERS.ammunition.ammoSharingRadius.accept(8.0D);
+            ModConfigs.GUARD_GUNNERS.ammunition.donorReserveMagazines.accept(1);
+            ModConfigs.GUARD_GUNNERS.ammunition.requireMatchingOwnerForSharing.accept(true);
+            helper.getLevel().getGameRules().getRule(GameRules.RULE_MOBGRIEFING)
+                    .set(true, helper.getLevel().getServer());
+
+            player.setItemInHand(
+                    InteractionHand.MAIN_HAND,
+                    AmmoItemBuilder.create()
+                            .setId(NINE_MILLIMETER)
+                            .setCount(7)
+                            .build());
+            GuardAmmoDeposits.DepositResult sidearmDeposit =
+                    GuardAmmoDeposits.deposit(
+                            player,
+                            recipient,
+                            InteractionHand.MAIN_HAND);
+            helper.assertTrue(
+                    sidearmDeposit.deposited()
+                            && countAmmo(recipientReserves, NINE_MILLIMETER) == 7,
+                    "Manual handoff did not recognize the configured sidearm caliber");
+
+            recipientReserves.clear();
+            ItemEntity droppedSidearmAmmo = droppedAmmo(
+                    helper,
+                    recipient.position(),
+                    NINE_MILLIMETER,
+                    5);
+            droppedSidearmAmmo.setNoPickUpDelay();
+            GuardDroppedAmmoPickup.PickupResult sidearmPickup =
+                    GuardDroppedAmmoPickup.tryPickup(droppedSidearmAmmo);
+            helper.assertTrue(
+                    sidearmPickup.pickedUp()
+                            && countAmmo(recipientReserves, NINE_MILLIMETER) == 5,
+                    "Dropped-ammo pickup ignored the configured sidearm caliber");
+
+            GuardWeaponAmmunition.LoadoutSummary inactiveSummary =
+                    GuardWeaponAmmunition.captureSummary(
+                            recipient,
+                            GuardAmmoAccess.getTaCZInventoryHandler(recipient));
+            helper.assertTrue(
+                    inactiveSummary.activeRole()
+                                    == GuardWeaponAmmunition.ActiveRole.PRIMARY
+                            && AK_47.equals(inactiveSummary.primary().gunId())
+                            && GLOCK_17.equals(inactiveSummary.sidearm().gunId())
+                            && inactiveSummary.sidearm().reserveUnits() == 5L,
+                    "Primary and sidearm ammunition summaries were not separated");
+
+            recipientReserves.clear();
+            int sidearmMagazine = inactiveSummary.sidearm().magazineCapacity();
+            helper.assertTrue(sidearmMagazine > 0,
+                    "Reviewed sidearm magazine capacity was not positive");
+            donorReserves.setStackInSlot(
+                    0,
+                    AmmoItemBuilder.create()
+                            .setId(NINE_MILLIMETER)
+                            .setCount(sidearmMagazine * 2)
+                            .build());
+
+            SidearmTransitionStatus activation = GuardSidearmTransactions.activate(
+                    recipient,
+                    SidearmActivationReason.PRIMARY_DRY,
+                    helper.getLevel().getGameTime(),
+                    UUID.randomUUID(),
+                    0.0D,
+                    true).status();
+            helper.assertTrue(
+                    activation == SidearmTransitionStatus.ACTIVATED,
+                    "Sidearm sharing fixture could not activate its configured sidearm");
+
+            GuardAmmoSharing.SharingResult sidearmSharing =
+                    GuardAmmoSharing.tryShare(recipient);
+            helper.assertTrue(
+                    sidearmSharing.shared()
+                            && sidearmSharing.transferred() == sidearmMagazine
+                            && countAmmo(recipientReserves, NINE_MILLIMETER)
+                                    == sidearmMagazine
+                            && countAmmo(donorReserves, NINE_MILLIMETER)
+                                    == sidearmMagazine,
+                    "Active sidearm sharing did not preserve the donor sidearm reserve");
+
+            recipientReserves.clear();
+            donorReserves.clear();
+            donor.setItemSlot(
+                    EquipmentSlot.MAINHAND,
+                    gun(GLOCK_17, FireMode.SEMI, 0, false));
+            donorReserves.setStackInSlot(
+                    0,
+                    AmmoItemBuilder.create()
+                            .setId(NINE_MILLIMETER)
+                            .setCount(sidearmMagazine * 3)
+                            .build());
+            GuardAmmoSharing.SharingResult sharedCaliber =
+                    GuardAmmoSharing.tryShare(recipient);
+            helper.assertTrue(
+                    sharedCaliber.shared()
+                            && sharedCaliber.transferred() == sidearmMagazine
+                            && countAmmo(donorReserves, NINE_MILLIMETER)
+                                    == sidearmMagazine * 2,
+                    "Donor did not retain one magazine for each compatible weapon role");
+
+            GuardWeaponAmmunition.LoadoutSummary activeSummary =
+                    GuardWeaponAmmunition.captureSummary(
+                            recipient,
+                            GuardAmmoAccess.getTaCZInventoryHandler(recipient));
+            helper.assertTrue(
+                    activeSummary.activeRole()
+                                    == GuardWeaponAmmunition.ActiveRole.SIDEARM
+                            && AK_47.equals(activeSummary.primary().gunId())
+                            && GLOCK_17.equals(activeSummary.sidearm().gunId()),
+                    "Active-sidearm summary lost either stable weapon role");
+            helper.succeed();
+        } finally {
+            GuardConfig.giveGuardStuffHOTV = originalHotvRequirement;
+            ModConfigs.GUARD_GUNNERS.ammunition.pickupDroppedAmmo
+                    .accept(originalPickup);
+            ModConfigs.GUARD_GUNNERS.ammunition.droppedAmmoPickupRadius
+                    .accept(originalPickupRadius);
+            ModConfigs.GUARD_GUNNERS.ammunition.shareAmmoBetweenGuards
+                    .accept(originalSharing);
+            ModConfigs.GUARD_GUNNERS.ammunition.ammoSharingRadius
+                    .accept(originalSharingRadius);
+            ModConfigs.GUARD_GUNNERS.ammunition.donorReserveMagazines
+                    .accept(originalRetainedMagazines);
+            ModConfigs.GUARD_GUNNERS.ammunition.requireMatchingOwnerForSharing
+                    .accept(originalOwnerMatching);
+            helper.getLevel().getGameRules().getRule(GameRules.RULE_MOBGRIEFING)
+                    .set(originalMobGriefing, helper.getLevel().getServer());
+            player.setShiftKeyDown(false);
+        }
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
     public static void droppedAmmoPickupIsBoundedCompatibleAndConservative(
             GameTestHelper helper) {
         boolean originalPickup =
@@ -1157,6 +1872,11 @@ public final class GuardGunnerGameTests {
         GuardAmmoHandler fartherDonorReserves = GuardAmmoAccess.getAmmoHandler(fartherDonor);
         ItemStack recipientGun = gun(GLOCK_17, FireMode.SEMI, 0, false);
         recipient.setItemSlot(EquipmentSlot.MAINHAND, recipientGun);
+        GuardSidearmStorage recipientSidearms =
+                GuardSidearmGameTestAccess.getStorage(recipient);
+        recipientSidearms.setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(GLOCK_17, FireMode.SEMI, 7, true));
         donor.setItemSlot(EquipmentSlot.MAINHAND, gun(GLOCK_17, FireMode.SEMI, 0, false));
         fartherDonor.setItemSlot(
                 EquipmentSlot.MAINHAND,
@@ -1221,6 +1941,13 @@ public final class GuardGunnerGameTests {
                     "Emergency sharing did not select the nearest donor or conserve ammunition");
             helper.assertTrue(sharingDiagnostics.dryRetryTicks() == 0L,
                     "Successful emergency sharing left the recipient in dry cooldown");
+            helper.assertTrue(
+                    recipientSidearms.stateAgainst(recipient.getMainHandItem())
+                                    == SidearmState.PRIMARY_ACTIVE
+                            && gunId(recipient.getMainHandItem()).equals(GLOCK_17)
+                            && gunId(recipientSidearms.getStackInSlot(
+                                    GuardSidearmStorage.SIDEARM_SLOT)).equals(GLOCK_17),
+                    "Successful sharing allowed a premature sidearm switch");
             goal.stop();
             goal = null;
             fartherDonor.discard();
@@ -1457,6 +2184,1701 @@ public final class GuardGunnerGameTests {
                         && expectedOrders.equals(decodedLedger.orders()),
                 "The registered Orders Ledger did not preserve all raw guard orders");
         helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void configuredSidearmInventoryCannotExposeTheStowedPrimary(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        ItemStack primary = gun(AK_47, FireMode.AUTO, 17, true);
+        ItemStack sidearm = gun(GLOCK_17, FireMode.SEMI, 9, true);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, primary.copy());
+
+        IItemHandler configured = GuardSidearmAccess.getConfiguredSidearmInventory(guard);
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        helper.assertTrue(configured.getSlots() == 1,
+                "The public sidearm inventory exposed more than its configured slot");
+        helper.assertTrue(configured.insertItem(0, sidearm.copy(), false).isEmpty()
+                        && stacksMatch(sidearm, storage.getStackInSlot(
+                                GuardSidearmStorage.SIDEARM_SLOT)),
+                "The public sidearm slot did not map to the configured weapon");
+
+        ItemStack defensiveCopy = configured.getStackInSlot(0);
+        defensiveCopy.setCount(0);
+        helper.assertTrue(!storage.getStackInSlot(
+                        GuardSidearmStorage.SIDEARM_SLOT).isEmpty(),
+                "Mutating a public sidearm snapshot changed private storage");
+        try {
+            configured.getStackInSlot(GuardSidearmStorage.STOWED_PRIMARY_SLOT);
+            helper.fail("The public sidearm inventory exposed the stowed-primary slot");
+            return;
+        } catch (IndexOutOfBoundsException expected) {
+            // The private transaction slot must not be addressable.
+        }
+
+        var activated = GuardSidearmTransactions.activate(
+                guard,
+                SidearmActivationReason.PRIMARY_DRY,
+                helper.getLevel().getGameTime(),
+                UUID.fromString("70000000-0000-0000-0000-000000000098"),
+                0.0D,
+                true);
+        ItemStack rejectedWhileActive = configured.insertItem(
+                0,
+                sidearm.copy(),
+                false);
+        ItemStack extractedWhileActive = configured.extractItem(0, 1, false);
+        helper.assertTrue(
+                activated.status() == SidearmTransitionStatus.ACTIVATED
+                        && stacksMatch(sidearm, rejectedWhileActive)
+                        && extractedWhileActive.isEmpty()
+                        && gunId(storage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT)).equals(AK_47),
+                "The public sidearm inventory mutated an active transaction layout");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void privateSidearmStoragePersistsAnActiveLayout(GameTestHelper helper) {
+        Guard original = spawnGuard(helper);
+        ItemStack primary = gun(AK_47, FireMode.AUTO, 17, true);
+        ItemStack sidearm = gun(GLOCK_17, FireMode.SEMI, 9, true);
+        original.setItemSlot(EquipmentSlot.MAINHAND, primary.copy());
+
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(original);
+        storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, sidearm.copy());
+        helper.assertTrue(storage.stateAgainst(original.getMainHandItem())
+                        == SidearmState.PRIMARY_ACTIVE,
+                "Configured sidearm did not retain the ordinary primary-active layout");
+
+        storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, ItemStack.EMPTY);
+        storage.setStackInSlot(GuardSidearmStorage.STOWED_PRIMARY_SLOT, primary.copy());
+        original.setItemSlot(EquipmentSlot.MAINHAND, sidearm.copy());
+        UUID activationTarget = UUID.fromString(
+                "70000000-0000-0000-0000-000000000099");
+        storage.markSidearmActive(
+                SidearmActivationReason.PRIMARY_DRY,
+                100L,
+                activationTarget,
+                6.5D);
+
+        CompoundTag serialized = new CompoundTag();
+        helper.assertTrue(original.save(serialized),
+                "Could not serialize a guard with an active sidearm layout");
+        helper.assertTrue(serialized.contains(
+                        GuardSidearmStorage.STORAGE_TAG,
+                        Tag.TAG_COMPOUND),
+                "Guard save omitted the versioned private sidearm record");
+
+        Guard restored = Objects.requireNonNull(
+                GuardEntityType.GUARD.get().create(helper.getLevel()));
+        restored.load(serialized);
+        GuardSidearmStorage restoredStorage = GuardSidearmGameTestAccess.getStorage(restored);
+
+        helper.assertTrue(
+                restoredStorage.getLoadStatus() == GuardSidearmStorage.LoadStatus.VALID,
+                "A valid sidearm record did not decode successfully");
+        helper.assertTrue(
+                restoredStorage.stateAgainst(restored.getMainHandItem())
+                        == SidearmState.SIDEARM_ACTIVE,
+                "Active sidearm ownership changed across save/load");
+        helper.assertTrue(
+                restoredStorage.getActivationReason()
+                                == SidearmActivationReason.PRIMARY_DRY
+                        && activationTarget.equals(restoredStorage.getActivationTargetId())
+                        && restoredStorage.getActivatedAtGameTick() == 100L
+                        && restoredStorage.getPrimaryStandoffDistance() == 6.5D,
+                "Active sidearm switch context changed across save/load");
+        helper.assertTrue(
+                gunId(restored.getMainHandItem()).equals(GLOCK_17)
+                        && gunId(restoredStorage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT)).equals(AK_47)
+                        && restoredStorage.getStackInSlot(
+                                GuardSidearmStorage.SIDEARM_SLOT).isEmpty(),
+                "Primary or sidearm ItemStack state moved into the wrong restored role");
+
+        IItemHandler taczInventory = GuardAmmoAccess.getTaCZInventoryHandler(restored);
+        helper.assertTrue(
+                taczInventory.getSlots()
+                        == restored.guardInventory.getContainerSize() + GuardAmmoHandler.SLOT_COUNT,
+                "Private weapon storage changed TaCZ's established inventory capability size");
+        for (int slot = 0; slot < taczInventory.getSlots(); slot++) {
+            helper.assertFalse(
+                    gunId(taczInventory.getStackInSlot(slot)).equals(AK_47),
+                    "Stowed primary leaked into TaCZ's equipment/ammunition capability");
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void sidearmTransactionRoundTripPreservesCompleteWeaponStacks(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        ItemStack primary = gun(AK_47, FireMode.AUTO, 17, true);
+        primary.getOrCreateTag().putString("Step3Marker", "primary");
+        ItemStack sidearm = gun(GLOCK_17, FireMode.SEMI, 9, true);
+        sidearm.getOrCreateTag().putString("Step3Marker", "sidearm");
+        guard.setItemSlot(EquipmentSlot.MAINHAND, primary.copy());
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, sidearm.copy());
+        UUID targetId = UUID.fromString("70000000-0000-0000-0000-000000000101");
+
+        var activated = GuardSidearmTransactions.activate(
+                guard,
+                SidearmActivationReason.PRIMARY_DRY,
+                240L,
+                targetId,
+                true);
+        helper.assertTrue(activated.status() == SidearmTransitionStatus.ACTIVATED,
+                "A valid primary-to-sidearm transaction did not activate: "
+                        + activated.status());
+        helper.assertTrue(
+                storage.stateAgainst(guard.getMainHandItem()) == SidearmState.SIDEARM_ACTIVE
+                        && gunId(guard.getMainHandItem()).equals(GLOCK_17)
+                        && "sidearm".equals(guard.getMainHandItem()
+                                .getOrCreateTag().getString("Step3Marker"))
+                        && stacksMatch(
+                                primary,
+                                storage.getStackInSlot(
+                                        GuardSidearmStorage.STOWED_PRIMARY_SLOT))
+                        && storage.getStackInSlot(
+                                GuardSidearmStorage.SIDEARM_SLOT).isEmpty()
+                        && storage.getActivationReason()
+                                == SidearmActivationReason.PRIMARY_DRY
+                        && storage.getActivatedAtGameTick() == 240L
+                        && targetId.equals(storage.getActivationTargetId()),
+                "Activation did not retain complete stacks and exact engagement context");
+
+        var returned = GuardSidearmTransactions.returnPrimary(guard, true);
+        helper.assertTrue(returned.status() == SidearmTransitionStatus.RETURNED,
+                "A valid sidearm-to-primary transaction did not return: "
+                        + returned.status());
+        helper.assertTrue(
+                storage.stateAgainst(guard.getMainHandItem()) == SidearmState.PRIMARY_ACTIVE
+                        && stacksMatch(primary, guard.getMainHandItem())
+                        && stacksMatch(
+                                sidearm,
+                                storage.getStackInSlot(GuardSidearmStorage.SIDEARM_SLOT))
+                        && storage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT).isEmpty()
+                        && !storage.isSidearmActive()
+                        && storage.getActivationReason() == SidearmActivationReason.NONE
+                        && storage.getActivationTargetId() == null,
+                "Return did not restore the complete primary/sidearm layout");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void sidearmTransactionsFailClosedWithoutChangingWeapons(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        ItemStack primary = gun(AK_47, FireMode.AUTO, 17, true);
+        ItemStack sidearm = gun(GLOCK_17, FireMode.SEMI, 9, true);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, primary.copy());
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        UUID targetId = UUID.fromString("70000000-0000-0000-0000-000000000102");
+
+        var noConfiguredSidearm = GuardSidearmTransactions.activate(
+                guard,
+                SidearmActivationReason.PRIMARY_DRY,
+                259L,
+                targetId,
+                true);
+        helper.assertTrue(
+                noConfiguredSidearm.status() == SidearmTransitionStatus.ROLLED_BACK
+                        && stacksMatch(primary, guard.getMainHandItem())
+                        && storage.getStackInSlot(
+                                GuardSidearmStorage.SIDEARM_SLOT).isEmpty()
+                        && storage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT).isEmpty(),
+                "Activating an empty configured slot threw or changed weapon ownership");
+
+        storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, sidearm.copy());
+
+        var deferred = GuardSidearmTransactions.activate(
+                guard,
+                SidearmActivationReason.PRIMARY_DRY,
+                260L,
+                targetId,
+                false);
+        helper.assertTrue(
+                deferred.status() == SidearmTransitionStatus.ROLLED_BACK
+                        && stacksMatch(primary, guard.getMainHandItem())
+                        && stacksMatch(
+                                sidearm,
+                                storage.getStackInSlot(GuardSidearmStorage.SIDEARM_SLOT))
+                        && storage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT).isEmpty(),
+                "An unsafe native action state changed the weapon layout");
+
+        ItemStack unexpectedStowedPrimary = gun(M16_A4, FireMode.SEMI, 11, true);
+        storage.setStackInSlot(
+                GuardSidearmStorage.STOWED_PRIMARY_SLOT,
+                unexpectedStowedPrimary.copy());
+        var contradictory = GuardSidearmTransactions.activate(
+                guard,
+                SidearmActivationReason.PRIMARY_DRY,
+                261L,
+                targetId,
+                true);
+        helper.assertTrue(
+                contradictory.status() == SidearmTransitionStatus.RECOVERY_REQUIRED
+                        && storage.stateAgainst(guard.getMainHandItem())
+                                == SidearmState.RECOVERY_REQUIRED
+                        && stacksMatch(primary, guard.getMainHandItem())
+                        && stacksMatch(
+                                sidearm,
+                                storage.getStackInSlot(GuardSidearmStorage.SIDEARM_SLOT))
+                        && stacksMatch(
+                                unexpectedStowedPrimary,
+                                storage.getStackInSlot(
+                                        GuardSidearmStorage.STOWED_PRIMARY_SLOT)),
+                "A contradictory layout was mutated or reported as stable");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void authorizedSidearmRecoveryReturnsPrivateWeaponsWithoutGuessing(
+            GameTestHelper helper) {
+        boolean originalHotvRequirement = GuardConfig.giveGuardStuffHOTV;
+        Guard guard = spawnGuard(helper);
+        Player player = helper.makeMockPlayer();
+        player.setPos(guard.getX(), guard.getY(), guard.getZ());
+        ItemStack equipped = gun(AK_47, FireMode.AUTO, 17, true);
+        ItemStack sidearm = gun(GLOCK_17, FireMode.SEMI, 9, true);
+        ItemStack unexpectedStowed = gun(M16_A4, FireMode.BURST, 11, true);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, equipped.copy());
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, sidearm.copy());
+        storage.setStackInSlot(
+                GuardSidearmStorage.STOWED_PRIMARY_SLOT,
+                unexpectedStowed.copy());
+
+        try {
+            GuardConfig.giveGuardStuffHOTV = false;
+            GuardSidearmRecovery.RecoveryResult result =
+                    GuardSidearmRecovery.recover(guard, player);
+            helper.assertTrue(
+                    result.recovered()
+                            && result.recoveredStackCount() == 2
+                            && storage.stateAgainst(guard.getMainHandItem())
+                                    == SidearmState.PRIMARY_ACTIVE
+                            && storage.getStackInSlot(
+                                    GuardSidearmStorage.SIDEARM_SLOT).isEmpty()
+                            && storage.getStackInSlot(
+                                    GuardSidearmStorage.STOWED_PRIMARY_SLOT).isEmpty()
+                            && stacksMatch(equipped, guard.getMainHandItem()),
+                    "Authorized recovery guessed a role, lost a private stack, or stayed locked");
+            Set<ResourceLocation> recoveredGunIds = new java.util.HashSet<>();
+            for (ItemStack stack : player.getInventory().items) {
+                if (!stack.isEmpty() && stack.getItem() instanceof IGun) {
+                    recoveredGunIds.add(gunId(stack));
+                }
+            }
+            helper.assertTrue(
+                    recoveredGunIds.contains(GLOCK_17)
+                            && recoveredGunIds.contains(M16_A4),
+                    "Recovered private weapons were not returned to the player");
+            helper.succeed();
+        } finally {
+            GuardConfig.giveGuardStuffHOTV = originalHotvRequirement;
+        }
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void activeSidearmPreservesNaturalPrimaryProvenance(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+        NaturalGuardLoadoutCandidate candidate = new NaturalGuardLoadoutCandidate(
+                NaturalGuardLoadoutDefaults.NORMAL_POOL,
+                GLOCK_17,
+                NaturalGuardDifficulty.NORMAL,
+                NaturalGuardSpawnSource.STRUCTURE);
+        NaturalGuardLoadoutIssuance.Result issuance =
+                NaturalGuardLoadoutIssuance.issue(guard, candidate, false);
+        helper.assertTrue(issuance.issued() && issuance.provenance() != null,
+                "Could not create the natural-primary sidearm fixture");
+        GuardNaturalLoadoutAccess naturalAccess = (GuardNaturalLoadoutAccess) guard;
+        naturalAccess.villagerGuardGunners$setNaturalLoadoutCandidate(candidate);
+        naturalAccess.villagerGuardGunners$setNaturalLoadoutProvenance(issuance.provenance());
+
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(AK_47, FireMode.AUTO, 13, true));
+        UUID targetId = UUID.fromString("70000000-0000-0000-0000-000000000103");
+        var activated = GuardSidearmTransactions.activate(
+                guard,
+                SidearmActivationReason.EXPLOSIVE_DISALLOWED,
+                280L,
+                targetId,
+                true);
+        helper.assertTrue(activated.status() == SidearmTransitionStatus.ACTIVATED,
+                "Could not activate the natural-primary sidearm fixture");
+
+        CompoundTag serialized = new CompoundTag();
+        helper.assertTrue(guard.save(serialized),
+                "Could not serialize a natural primary while its sidearm was active");
+        helper.assertTrue(serialized.contains(
+                        NaturalGuardLoadoutProvenanceCodec.GUARD_PROVENANCE_TAG,
+                        Tag.TAG_COMPOUND),
+                "Temporarily stowing the natural primary erased its provenance");
+
+        Guard restored = Objects.requireNonNull(
+                GuardEntityType.GUARD.get().create(helper.getLevel()));
+        restored.load(serialized);
+        GuardNaturalLoadoutAccess restoredNatural = (GuardNaturalLoadoutAccess) restored;
+        helper.assertTrue(
+                issuance.provenance().equals(
+                        restoredNatural.villagerGuardGunners$getNaturalLoadoutProvenance())
+                        && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
+                                restored,
+                                restoredNatural.villagerGuardGunners$getNaturalLoadoutProvenance())
+                        && NaturalGuardLoadoutDiagnostics.capture(restored).active(),
+                "Reload did not authenticate the issued primary in private storage");
+
+        var returned = GuardSidearmTransactions.returnPrimary(restored, true);
+        helper.assertTrue(returned.status() == SidearmTransitionStatus.RETURNED,
+                "Reloaded natural primary could not return from private storage");
+        CompoundTag returnedSave = new CompoundTag();
+        restored.addAdditionalSaveData(returnedSave);
+        helper.assertTrue(returnedSave.contains(
+                        NaturalGuardLoadoutProvenanceCodec.GUARD_PROVENANCE_TAG,
+                        Tag.TAG_COMPOUND),
+                "Returning the natural primary erased its provenance");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void unreadableSidearmStorageIsPreservedAndRecoverable(
+            GameTestHelper helper) {
+        boolean originalHotvRequirement = GuardConfig.giveGuardStuffHOTV;
+        ItemStack recoverableSidearm = gun(GLOCK_17, FireMode.SEMI, 7, true);
+        CompoundTag futureRecord = new CompoundTag();
+        futureRecord.putInt("Version", 99);
+        futureRecord.putBoolean("SidearmActive", false);
+        futureRecord.put("Sidearm", recoverableSidearm.save(new CompoundTag()));
+        futureRecord.putString("FutureField", "preserve-me");
+        CompoundTag serialized = new CompoundTag();
+        serialized.put(GuardSidearmStorage.STORAGE_TAG, futureRecord.copy());
+
+        Guard guard = spawnGuard(helper);
+        guard.readAdditionalSaveData(serialized);
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        helper.assertTrue(
+                storage.getLoadStatus() == GuardSidearmStorage.LoadStatus.UNSUPPORTED_VERSION
+                        && storage.getStoredVersion() == 99
+                        && storage.stateAgainst(guard.getMainHandItem())
+                                == SidearmState.RECOVERY_REQUIRED,
+                "Future sidearm data did not enter the fail-closed recovery state");
+        helper.assertTrue(
+                storage.recoverableStacks().size() == 1
+                        && gunId(storage.recoverableStacks().get(0)).equals(GLOCK_17),
+                "The known weapon in a future record was not recoverable for entity removal");
+
+        boolean mutationRejected = false;
+        try {
+            storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, ItemStack.EMPTY);
+        } catch (IllegalStateException expected) {
+            mutationRejected = true;
+        }
+        helper.assertTrue(mutationRejected,
+                "Unreadable sidearm storage accepted a destructive mutation");
+
+        CompoundTag resaved = new CompoundTag();
+        guard.addAdditionalSaveData(resaved);
+        helper.assertTrue(
+                futureRecord.equals(resaved.getCompound(GuardSidearmStorage.STORAGE_TAG)),
+                "Future sidearm data was rewritten by an older schema");
+        helper.assertTrue(
+                GuardAmmoAccess.getTaCZInventoryHandler(guard).getSlots()
+                        == guard.guardInventory.getContainerSize() + GuardAmmoHandler.SLOT_COUNT,
+                "Unreadable private storage leaked into the TaCZ capability");
+        Player player = helper.makeMockPlayer();
+        player.setPos(guard.getX(), guard.getY(), guard.getZ());
+        try {
+            GuardConfig.giveGuardStuffHOTV = false;
+            GuardSidearmRecovery.RecoveryResult recovery =
+                    GuardSidearmRecovery.recover(guard, player);
+            boolean playerReceivedSidearm = player.getInventory().items.stream()
+                    .anyMatch(stack -> !stack.isEmpty()
+                            && stack.getItem() instanceof IGun
+                            && GLOCK_17.equals(gunId(stack)));
+            helper.assertTrue(
+                    recovery.recovered()
+                            && recovery.recoveredStackCount() == 1
+                            && playerReceivedSidearm
+                            && storage.getLoadStatus() == GuardSidearmStorage.LoadStatus.BLANK
+                            && storage.stateAgainst(guard.getMainHandItem())
+                                    == SidearmState.PRIMARY_ACTIVE,
+                    "Authorized recovery did not safely resolve the future-version record");
+            helper.succeed();
+        } finally {
+            GuardConfig.giveGuardStuffHOTV = originalHotvRequirement;
+        }
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void blankAndCorruptSidearmRecordsRemainLossless(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        CompoundTag blankSave = new CompoundTag();
+        guard.addAdditionalSaveData(blankSave);
+        helper.assertTrue(
+                storage.getLoadStatus() == GuardSidearmStorage.LoadStatus.BLANK
+                        && storage.isWritable()
+                        && !blankSave.contains(GuardSidearmStorage.STORAGE_TAG),
+                "Blank private storage created unnecessary or unwritable save data");
+
+        CompoundTag corruptRecord = new CompoundTag();
+        corruptRecord.putInt("Version", GuardSidearmStorage.CURRENT_SCHEMA_VERSION);
+        corruptRecord.putBoolean("SidearmActive", false);
+        corruptRecord.putString("Unexpected", "preserve-me");
+        CompoundTag corruptSave = new CompoundTag();
+        corruptSave.put(GuardSidearmStorage.STORAGE_TAG, corruptRecord.copy());
+        guard.readAdditionalSaveData(corruptSave);
+
+        helper.assertTrue(
+                storage.getLoadStatus() == GuardSidearmStorage.LoadStatus.CORRUPT
+                        && !storage.isWritable()
+                        && storage.stateAgainst(guard.getMainHandItem())
+                                == SidearmState.RECOVERY_REQUIRED,
+                "Malformed current sidearm data did not fail closed");
+        CompoundTag resaved = new CompoundTag();
+        guard.addAdditionalSaveData(resaved);
+        helper.assertTrue(
+                corruptRecord.equals(resaved.getCompound(GuardSidearmStorage.STORAGE_TAG)),
+                "Malformed current sidearm data was not preserved byte-for-byte");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void sidearmVersionOneMigratesWithoutGuessingAStandoff(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        ItemStack primary = gun(RPG_7, FireMode.SEMI, 1, true);
+        ItemStack sidearm = gun(GLOCK_17, FireMode.SEMI, 7, true);
+        UUID targetId = UUID.fromString("70000000-0000-0000-0000-000000000104");
+
+        CompoundTag versionOne = new CompoundTag();
+        versionOne.putInt("Version", 1);
+        versionOne.putBoolean("SidearmActive", true);
+        versionOne.put("StowedPrimary", primary.save(new CompoundTag()));
+        versionOne.putString(
+                "ActivationReason",
+                SidearmActivationReason.EXPLOSIVE_STANDOFF.name());
+        versionOne.putLong("ActivatedAt", 300L);
+        versionOne.putUUID("Target", targetId);
+        CompoundTag parent = new CompoundTag();
+        parent.put(GuardSidearmStorage.STORAGE_TAG, versionOne);
+
+        guard.setItemSlot(EquipmentSlot.MAINHAND, sidearm);
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        helper.assertTrue(
+                storage.loadFrom(parent) == GuardSidearmStorage.LoadStatus.VALID
+                        && storage.getStoredVersion() == 1
+                        && storage.stateAgainst(guard.getMainHandItem())
+                                == SidearmState.SIDEARM_ACTIVE
+                        && storage.getPrimaryStandoffDistance() == Double.MAX_VALUE,
+                "A version-one active sidearm did not migrate with a fail-closed standoff");
+
+        CompoundTag upgradedParent = new CompoundTag();
+        storage.saveTo(upgradedParent, guard.getMainHandItem());
+        CompoundTag upgraded = upgradedParent.getCompound(
+                GuardSidearmStorage.STORAGE_TAG);
+        helper.assertTrue(
+                upgraded.getInt("Version") == GuardSidearmStorage.CURRENT_SCHEMA_VERSION
+                        && upgraded.contains("PrimaryStandoff", Tag.TAG_DOUBLE)
+                        && upgraded.getDouble("PrimaryStandoff") == Double.MAX_VALUE,
+                "Saving a version-one sidearm did not upgrade its complete hysteresis context");
+        helper.succeed();
+    }
+
+    @GameTest(batch = "sidearm_lifecycle", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 80)
+    public static void dryPrimaryActivatesSidearmAndLifecycleRestoresIt(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        Ravager target = helper.spawnWithNoFreeWill(
+                EntityType.RAVAGER,
+                new BlockPos(8, 1, 0));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(target);
+        ItemStack primary = gun(AK_47, FireMode.AUTO, 0, false);
+        ItemStack sidearm = gun(GLOCK_17, FireMode.SEMI, 7, true);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, primary.copy());
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, sidearm.copy());
+        guard.setTarget(target);
+
+        GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
+        helper.assertTrue(goal.canUse(),
+                "The dry-primary sidearm fixture could not enter the gun goal");
+        goal.start();
+        IGunOperator operator = IGunOperator.fromLivingEntity(guard);
+        forceNativeSwapFixtureIdle(operator);
+        goal.tick();
+
+        helper.assertTrue(
+                storage.stateAgainst(guard.getMainHandItem()) == SidearmState.SIDEARM_ACTIVE
+                        && gunId(guard.getMainHandItem()).equals(GLOCK_17)
+                        && gunId(storage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT)).equals(AK_47)
+                        && storage.getActivationReason()
+                                == SidearmActivationReason.PRIMARY_DRY
+                        && target.getUUID().equals(storage.getActivationTargetId()),
+                "A confirmed dry primary did not activate its ready pistol sidearm");
+
+        // Remove both the mob target and the goal's retained target reference
+        // as an eligible engagement. Merely clearing Guard#getTarget can be
+        // repopulated by another selector tick in the integrated fixture.
+        target.discard();
+        guard.setTarget(null);
+        helper.onEachTick(() -> {
+            forceNativeSwapFixtureIdle(operator);
+            goal.tick();
+            if (storage.stateAgainst(guard.getMainHandItem())
+                    == SidearmState.PRIMARY_ACTIVE) {
+                helper.assertTrue(
+                        gunId(guard.getMainHandItem()).equals(AK_47)
+                                && gunId(storage.getStackInSlot(
+                                        GuardSidearmStorage.SIDEARM_SLOT)).equals(GLOCK_17)
+                                && storage.getStackInSlot(
+                                        GuardSidearmStorage.STOWED_PRIMARY_SLOT).isEmpty(),
+                        "Ending the engagement did not restore both complete weapon roles");
+                goal.stop();
+                helper.succeed();
+            }
+        });
+        helper.runAtTickTime(60, () -> {
+            GuardGunCombatGoal.Diagnostics diagnostics = goal.captureDiagnostics();
+            goal.stop();
+            helper.fail("The active sidearm did not return after its engagement ended; "
+                    + "storage="
+                    + storage.stateAgainst(guard.getMainHandItem())
+                    + ", reload="
+                    + diagnostics.nativeState().reloadState()
+                    + ", bolting="
+                    + diagnostics.nativeState().bolting()
+                    + ", drawCooldownMs="
+                    + diagnostics.nativeState().drawCooldownMillis()
+                    + ", shootCooldownMs="
+                    + diagnostics.nativeState().shootCooldownMillis());
+        });
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE, timeoutTicks = 120)
+    public static void explosiveSidearmReturnHonorsTimeAndDistanceHysteresis(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        Ravager target = helper.spawnWithNoFreeWill(
+                EntityType.RAVAGER,
+                new BlockPos(8, 1, 0));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(target);
+        ItemStack primary = gun(RPG_7, FireMode.SEMI, 1, true);
+        ItemStack sidearm = gun(GLOCK_17, FireMode.SEMI, 7, true);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, primary.copy());
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, sidearm.copy());
+        guard.setTarget(target);
+
+        GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
+        helper.assertTrue(goal.canUse(),
+                "The explosive sidearm-hysteresis fixture could not enter the gun goal");
+        goal.start();
+        IGunOperator operator = IGunOperator.fromLivingEntity(guard);
+        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        goal.tick();
+
+        helper.assertTrue(
+                storage.stateAgainst(guard.getMainHandItem()) == SidearmState.SIDEARM_ACTIVE
+                        && storage.getActivationReason()
+                                == SidearmActivationReason.EXPLOSIVE_STANDOFF
+                        && storage.getPrimaryStandoffDistance() == 10.0D
+                        && gunId(guard.getMainHandItem()).equals(GLOCK_17),
+                "The close RPG target did not activate a sidearm with its cached standoff");
+
+        long activatedAt = storage.getActivatedAtGameTick();
+        double guardX = guard.getX();
+        double guardY = guard.getY();
+        double guardZ = guard.getZ();
+        helper.onEachTick(() -> {
+            pinEntity(guard, guardX, guardY, guardZ);
+            pinEntity(target, guardX + 13.0D, target.getY(), target.getZ());
+            guard.setTarget(target);
+            operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+            operator.getDataHolder().shootTimestamp = -10_000L;
+            operator.getDataHolder().lastShootTimestamp = -10_000L;
+            goal.tick();
+
+            long activeTicks = helper.getLevel().getGameTime() - activatedAt;
+            SidearmState state = storage.stateAgainst(guard.getMainHandItem());
+            if (activeTicks < 40L) {
+                helper.assertTrue(state == SidearmState.SIDEARM_ACTIVE,
+                        "The explosive sidearm returned before its minimum active time");
+            } else if (state == SidearmState.PRIMARY_ACTIVE) {
+                helper.assertTrue(
+                        gunId(guard.getMainHandItem()).equals(RPG_7)
+                                && gunId(storage.getStackInSlot(
+                                        GuardSidearmStorage.SIDEARM_SLOT)).equals(GLOCK_17),
+                        "The hysteresis return did not restore the RPG and sidearm roles");
+                goal.stop();
+                helper.succeed();
+            }
+        });
+        helper.runAtTickTime(100, () -> {
+            goal.stop();
+            helper.fail("The RPG did not return after clearing time and distance hysteresis");
+        });
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void activeSidearmDeathDropsEachOwnedWeaponExactlyOnce(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.AUTO, 17, true));
+        GuardSidearmGameTestAccess.getStorage(guard).setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(GLOCK_17, FireMode.SEMI, 7, true));
+        helper.assertTrue(
+                GuardSidearmTransactions.activate(
+                                guard,
+                                SidearmActivationReason.PRIMARY_DRY,
+                                helper.getLevel().getGameTime(),
+                                UUID.fromString("70000000-0000-0000-0000-000000000106"),
+                                0.0D,
+                                true)
+                        .status() == SidearmTransitionStatus.ACTIVATED,
+                "The active-sidearm death fixture could not activate");
+        Vec3 dropCenter = guard.position();
+        double originalDropChance = GuardConfig.COMMON.chanceToDropEquipment.get();
+        try {
+            GuardConfig.COMMON.chanceToDropEquipment.set(1.0D);
+            guard.die(helper.getLevel().damageSources().generic());
+        } finally {
+            GuardConfig.COMMON.chanceToDropEquipment.set(originalDropChance);
+        }
+
+        helper.succeedWhen(() -> {
+            int droppedSidearms = countDroppedGuns(helper, dropCenter, GLOCK_17);
+            int droppedPrimaries = countDroppedGuns(helper, dropCenter, AK_47);
+            helper.assertTrue(droppedSidearms == 1 && droppedPrimaries == 1,
+                    "Active-sidearm death expected one drop per weapon but found sidearms="
+                            + droppedSidearms + ", primaries=" + droppedPrimaries);
+        });
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void guardMenuConfiguresOnlyEligibleAuthorizedSidearms(
+            GameTestHelper helper) {
+        boolean originalHotvRequirement = GuardConfig.giveGuardStuffHOTV;
+        int originalReputationRequirement = GuardConfig.reputationRequirement;
+        Guard guard = spawnGuard(helper);
+        Player player = helper.makeMockPlayer();
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.SEMI, 7, true));
+        GuardGunnerContainer menu = new GuardGunnerContainer(
+                7,
+                player.getInventory(),
+                guard.guardInventory,
+                GuardAmmoAccess.getAmmoHandler(guard),
+                guard);
+        IItemHandler configuredSidearm =
+                GuardSidearmAccess.getConfiguredSidearmInventory(guard);
+        try {
+            GuardConfig.giveGuardStuffHOTV = false;
+            player.getInventory().setItem(
+                    9,
+                    gun(GLOCK_17, FireMode.SEMI, 7, true));
+            helper.assertTrue(
+                    !menu.quickMoveStack(
+                            player,
+                            GuardGunnerContainer.ADDON_SLOT_COUNT).isEmpty()
+                            && gunId(configuredSidearm.getStackInSlot(0)).equals(GLOCK_17)
+                            && gunId(guard.getMainHandItem()).equals(AK_47),
+                    "Authorized shift-click did not fill the sidearm after the occupied primary");
+            helper.assertFalse(
+                    menu.getSlot(GuardGunnerContainer.SIDEARM_SLOT_INDEX)
+                            .mayPlace(gun(RPG_7, FireMode.SEMI, 1, true)),
+                    "The player-facing sidearm slot accepted an explosive weapon");
+            helper.assertFalse(
+                    menu.getSlot(GuardGunnerContainer.SIDEARM_SLOT_INDEX)
+                            .mayPlace(new ItemStack(Items.IRON_SWORD)),
+                    "The player-facing sidearm slot accepted a non-TaCZ weapon");
+
+            GuardConfig.giveGuardStuffHOTV = true;
+            GuardConfig.reputationRequirement = Integer.MAX_VALUE;
+            ItemStack configuredBefore = configuredSidearm.getStackInSlot(0);
+            helper.assertFalse(
+                    menu.getSlot(GuardGunnerContainer.SIDEARM_SLOT_INDEX)
+                            .mayPickup(player),
+                    "An unauthorized player could pick up the configured sidearm");
+            helper.assertTrue(
+                    menu.quickMoveStack(
+                            player,
+                            GuardGunnerContainer.SIDEARM_SLOT_INDEX).isEmpty()
+                            && stacksMatch(
+                                    configuredBefore,
+                                    configuredSidearm.getStackInSlot(0)),
+                    "Unauthorized shift-click changed the configured sidearm");
+
+            GuardConfig.giveGuardStuffHOTV = false;
+            helper.assertTrue(
+                    !menu.quickMoveStack(
+                            player,
+                            GuardGunnerContainer.SIDEARM_SLOT_INDEX).isEmpty()
+                            && configuredSidearm.getStackInSlot(0).isEmpty(),
+                    "An authorized player could not remove an inactive configured sidearm");
+            player.getInventory().clearContent();
+            guard.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            player.getInventory().setItem(
+                    9,
+                    gun(GLOCK_17, FireMode.SEMI, 7, true));
+            helper.assertTrue(
+                    !menu.quickMoveStack(
+                            player,
+                            GuardGunnerContainer.ADDON_SLOT_COUNT).isEmpty()
+                            && gunId(guard.getMainHandItem()).equals(GLOCK_17)
+                            && configuredSidearm.getStackInSlot(0).isEmpty(),
+                    "Shift-click did not prefer an empty primary before the sidearm slot");
+            helper.succeed();
+        } finally {
+            GuardConfig.giveGuardStuffHOTV = originalHotvRequirement;
+            GuardConfig.reputationRequirement = originalReputationRequirement;
+            menu.removed(player);
+        }
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void explosiveOrdersActivateAReadyNonExplosiveSidearm(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        Ravager target = helper.spawnWithNoFreeWill(
+                EntityType.RAVAGER,
+                new BlockPos(13, 1, 0));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(target);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(RPG_7, FireMode.SEMI, 1, true));
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(GLOCK_17, FireMode.SEMI, 7, true));
+        GuardOrdersAccess.setOrders(
+                guard,
+                GuardOrders.DEFAULT.withExplosives(GuardOrders.ToggleOrder.DISABLED));
+        guard.setTarget(target);
+
+        GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
+        helper.assertTrue(goal.canUse(),
+                "An explosive-order fallback could not retain the gun goal");
+        goal.start();
+        forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(guard));
+        goal.tick();
+
+        helper.assertTrue(
+                storage.stateAgainst(guard.getMainHandItem())
+                                == SidearmState.SIDEARM_ACTIVE
+                        && storage.getActivationReason()
+                                == SidearmActivationReason.EXPLOSIVE_DISALLOWED
+                        && gunId(guard.getMainHandItem()).equals(GLOCK_17)
+                        && gunId(storage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT)).equals(RPG_7),
+                "Explosive Deny did not replace the RPG with its safe sidearm");
+        goal.stop();
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE,
+            timeoutTicks = 40)
+    public static void sidearmSwitchPreservesShieldAndTargetChangeReturnsPrimary(
+            GameTestHelper helper) {
+        boolean originalHotvRequirement = GuardConfig.giveGuardStuffHOTV;
+        Guard guard = spawnGuard(helper);
+        Ravager firstTarget = helper.spawnWithNoFreeWill(
+                EntityType.RAVAGER,
+                new BlockPos(8, 1, 0));
+        Ravager secondTarget = helper.spawnWithNoFreeWill(
+                EntityType.RAVAGER,
+                new BlockPos(8, 1, 3));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(firstTarget);
+        configureFixedCombatant(secondTarget);
+        ItemStack shield = new ItemStack(Items.SHIELD);
+        shield.getOrCreateTag().putString("Step7Marker", "preserved-shield");
+        guard.setItemSlot(EquipmentSlot.OFFHAND, shield.copy());
+        guard.startUsingItem(InteractionHand.OFF_HAND);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.AUTO, 0, false));
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(GLOCK_17, FireMode.SEMI, 7, true));
+        guard.setTarget(firstTarget);
+
+        GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
+        helper.assertTrue(goal.canUse(),
+                "The shield/target-change sidearm fixture could not enter the gun goal");
+        goal.start();
+        IGunOperator operator = IGunOperator.fromLivingEntity(guard);
+        forceNativeSwapFixtureIdle(operator);
+        goal.tick();
+        helper.assertTrue(
+                storage.stateAgainst(guard.getMainHandItem())
+                                == SidearmState.SIDEARM_ACTIVE
+                        && stacksMatch(shield, guard.getOffhandItem())
+                        && !guard.isUsingItem(),
+                "Sidearm activation changed the shield stack or left it raised");
+
+        Player player = helper.makeMockPlayer();
+        GuardGunnerContainer menu = new GuardGunnerContainer(
+                8,
+                player.getInventory(),
+                guard.guardInventory,
+                GuardAmmoAccess.getAmmoHandler(guard),
+                guard);
+        try {
+            GuardConfig.giveGuardStuffHOTV = false;
+            helper.assertFalse(menu.getSlot(5).mayPickup(player),
+                    "The active sidearm could be removed through the primary slot");
+            helper.assertTrue(menu.quickMoveStack(player, 5).isEmpty()
+                            && gunId(guard.getMainHandItem()).equals(GLOCK_17),
+                    "Shift-click broke an active sidearm transaction");
+        } finally {
+            GuardConfig.giveGuardStuffHOTV = originalHotvRequirement;
+            menu.removed(player);
+        }
+
+        guard.setTarget(secondTarget);
+        // The runtime controller intentionally evaluates at most once per game
+        // tick. Also clear the fixture before TaCZ's next entity-data sync so
+        // both native and synchronized draw cooldowns settle before the return.
+        forceNativeSwapFixtureIdle(operator);
+        helper.succeedWhen(() -> {
+            forceNativeSwapFixtureIdle(operator);
+            goal.tick();
+            GuardGunCombatGoal.Diagnostics diagnostics = goal.captureDiagnostics();
+            helper.assertTrue(
+                    storage.stateAgainst(guard.getMainHandItem())
+                                    == SidearmState.PRIMARY_ACTIVE
+                            && gunId(guard.getMainHandItem()).equals(AK_47)
+                            && gunId(storage.getStackInSlot(
+                                    GuardSidearmStorage.SIDEARM_SLOT)).equals(GLOCK_17)
+                            && stacksMatch(shield, guard.getOffhandItem()),
+                    "Changing targets did not restore the primary and preserve the shield; "
+                            + "state=" + storage.stateAgainst(guard.getMainHandItem())
+                            + ", reload=" + diagnostics.nativeState().reloadState()
+                            + ", bolting=" + diagnostics.nativeState().bolting()
+                            + ", drawCooldownMs="
+                            + diagnostics.nativeState().drawCooldownMillis()
+                            + ", shootCooldownMs="
+                            + diagnostics.nativeState().shootCooldownMillis());
+            goal.stop();
+        });
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void drySidearmAndExternalReplacementFailClosed(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        Ravager target = helper.spawnWithNoFreeWill(
+                EntityType.RAVAGER,
+                new BlockPos(8, 1, 0));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(target);
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(AK_47, FireMode.AUTO, 0, false));
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(GLOCK_17, FireMode.SEMI, 0, false));
+        guard.setTarget(target);
+
+        GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
+        helper.assertTrue(goal.canUse(),
+                "The both-weapons-dry fixture could not enter the gun goal");
+        goal.start();
+        IGunOperator operator = IGunOperator.fromLivingEntity(guard);
+        forceNativeSwapFixtureIdle(operator);
+        goal.tick();
+        helper.assertTrue(
+                storage.stateAgainst(guard.getMainHandItem())
+                                == SidearmState.PRIMARY_ACTIVE
+                        && gunId(guard.getMainHandItem()).equals(AK_47)
+                        && gunId(storage.getStackInSlot(
+                                GuardSidearmStorage.SIDEARM_SLOT)).equals(GLOCK_17)
+                        && storage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT).isEmpty(),
+                "A dry primary switched to a sidearm with no loaded or reserve ammunition");
+
+        helper.assertTrue(
+                GuardSidearmTransactions.activate(
+                                guard,
+                                SidearmActivationReason.PRIMARY_DRY,
+                                helper.getLevel().getGameTime(),
+                                target.getUUID(),
+                                0.0D,
+                                true)
+                        .status() == SidearmTransitionStatus.ACTIVATED,
+                "The external-replacement recovery fixture could not activate");
+        ItemStack displacedSidearm = guard.getMainHandItem().copy();
+        ItemStack replacement = gun(M16_A4, FireMode.BURST, 5, true);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, replacement.copy());
+        helper.assertTrue(goal.canContinueToUse(),
+                "Recovery-required ownership did not retain protective goal control");
+        goal.tick();
+        helper.assertTrue(
+                storage.stateAgainst(guard.getMainHandItem())
+                                == SidearmState.RECOVERY_REQUIRED
+                        && gunId(displacedSidearm).equals(GLOCK_17)
+                        && stacksMatch(replacement, guard.getMainHandItem())
+                        && gunId(storage.getStackInSlot(
+                                GuardSidearmStorage.STOWED_PRIMARY_SLOT)).equals(AK_47),
+                "External replacement overwrote the retained primary or escaped recovery suppression");
+        goal.stop();
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void squadMembershipPersistsIndependentlyThroughGuardSaveAndLoad(
+            GameTestHelper helper) {
+        UUID squadId = UUID.fromString("60000000-0000-0000-0000-000000000001");
+        SquadMembership expected = SquadMembership.assigned(squadId);
+        Guard original = spawnGuard(helper);
+
+        helper.assertTrue(GuardSquadAccess.getMembership(original) == null,
+                "A new guard did not default to an unassigned squad state");
+        int revisionBeforeAssignment = GuardSquadAccess.getRevision(original);
+        GuardSquadAccess.setMembership(original, expected);
+        GuardSquadAccess.setMembership(original, expected);
+        helper.assertTrue(
+                GuardSquadAccess.getRevision(original) == revisionBeforeAssignment + 1,
+                "A squad assignment did not invalidate exactly once");
+
+        CompoundTag saved = new CompoundTag();
+        original.addAdditionalSaveData(saved);
+        helper.assertTrue(saved.contains(
+                        SquadMembershipCodec.GUARD_MEMBERSHIP_TAG,
+                        Tag.TAG_COMPOUND),
+                "Guard save omitted its non-default squad membership");
+        helper.assertTrue(!saved.contains("villagerguardgunners:orders"),
+                "Squad membership was incorrectly serialized as a behavior order");
+
+        Guard restored = Objects.requireNonNull(
+                GuardEntityType.GUARD.get().create(helper.getLevel()));
+        restored.readAdditionalSaveData(saved);
+        helper.assertTrue(expected.equals(GuardSquadAccess.getMembership(restored))
+                        && squadId.equals(GuardSquadAccess.getSquadId(restored)),
+                "Squad identity changed across guard save/load");
+
+        Zombie focusTarget = helper.spawnWithNoFreeWill(
+                EntityType.ZOMBIE,
+                new BlockPos(3, 1, 0));
+        SquadCommand staleFocus = SquadCommand.focusTarget(
+                UUID.randomUUID(),
+                helper.getLevel().getGameTime(),
+                helper.getLevel().getGameTime() + 100L,
+                helper.getLevel().dimension().location(),
+                focusTarget.getUUID());
+        GuardSquadCommandAccess.setCommand(restored, staleFocus);
+        restored.setTarget(focusTarget);
+        GuardSquadAccess.setMembership(restored, null);
+        CompoundTag unassignedSave = new CompoundTag();
+        restored.addAdditionalSaveData(unassignedSave);
+        helper.assertTrue(!unassignedSave.contains(
+                                SquadMembershipCodec.GUARD_MEMBERSHIP_TAG)
+                        && GuardSquadCommandAccess.getCommand(restored) == null
+                        && restored.getTarget() == null,
+                "Removing squad membership retained stale membership, command, or Focus state");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void squadCommandLedgerManagesStableMembershipSafely(
+            GameTestHelper helper) {
+        int originalReputationRequirement = GuardConfig.reputationRequirement;
+        Guard first = spawnGuard(helper);
+        Guard second = spawnGuard(helper, new BlockPos(2, 1, 0));
+        Guard third = spawnGuard(helper, new BlockPos(4, 1, 0));
+        Guard fourth = spawnGuard(helper, new BlockPos(6, 1, 0));
+        Guard unauthorizedGuard = spawnGuard(helper, new BlockPos(8, 1, 0));
+        Player player = helper.makeMockPlayer();
+        player.setShiftKeyDown(true);
+        first.setOwnerId(player.getUUID());
+        second.setOwnerId(player.getUUID());
+        third.setOwnerId(player.getUUID());
+        fourth.setOwnerId(player.getUUID());
+        ItemStack preservedWeapon = new ItemStack(Items.CROSSBOW);
+        first.setItemSlot(EquipmentSlot.MAINHAND, preservedWeapon.copy());
+
+        SquadRegistrySavedData registry = SquadRegistrySavedData.get(
+                Objects.requireNonNull(helper.getLevel().getServer()));
+        ItemStack alphaLedger = new ItemStack(
+                com.gamergaming.villagerguardgunners.init.ModItems
+                        .SQUAD_COMMAND_LEDGER.get());
+        alphaLedger.setHoverName(
+                net.minecraft.network.chat.Component.literal("Alpha Team"));
+        player.setItemInHand(InteractionHand.MAIN_HAND, alphaLedger);
+
+        try {
+            player.setPos(first.getX(), first.getY(), first.getZ());
+            InteractionResult created = first.interact(
+                    player,
+                    InteractionHand.MAIN_HAND);
+            SquadLedgerBindingCodec.DecodeResult createdBinding =
+                    SquadLedgerBindingCodec.readFrom(alphaLedger.getTag());
+            SquadLedgerBinding alpha = Objects.requireNonNull(
+                    createdBinding.binding());
+            UUID alphaId = alpha.squadId();
+            helper.assertTrue(created.consumesAction()
+                            && createdBinding.isValid()
+                            && alphaLedger.getCount() == 1
+                            && alphaLedger.getMaxStackSize() == 1
+                            && alphaLedger.hasFoil()
+                            && alphaId.equals(GuardSquadAccess.getSquadId(first))
+                            && "Alpha Team".equals(registry.find(alphaId)
+                                    .orElseThrow()
+                                    .displayName()),
+                    "A named blank Squad Command Ledger did not create and bind one stable squad");
+            ItemStack neverUsedStaleCopy = alphaLedger.copy();
+            ItemStack workingCopy = alphaLedger.copy();
+
+            player.setPos(second.getX(), second.getY(), second.getZ());
+            player.setItemInHand(InteractionHand.MAIN_HAND, workingCopy);
+            InteractionResult assigned = second.interact(
+                    player,
+                    InteractionHand.MAIN_HAND);
+            helper.assertTrue(assigned.consumesAction()
+                            && alphaId.equals(GuardSquadAccess.getSquadId(second))
+                            && workingCopy.getCount() == 1,
+                    "A copied bound ledger did not add another authorized guard to the same squad");
+            second.interact(player, InteractionHand.MAIN_HAND);
+            helper.assertTrue(GuardSquadAccess.getMembership(second) == null,
+                    "Sneak-using the same squad ledger did not remove an existing member");
+
+            helper.assertTrue(registry.remove(alphaId)
+                            && registry.find(alphaId).isEmpty(),
+                    "The metadata-recovery fixture could not remove its temporary registry entry");
+            ItemStack recoveryLedger = new ItemStack(
+                    com.gamergaming.villagerguardgunners.init.ModItems
+                            .SQUAD_COMMAND_LEDGER.get());
+            recoveryLedger.setHoverName(
+                    net.minecraft.network.chat.Component.literal("Recovered Alpha"));
+            player.setItemInHand(InteractionHand.MAIN_HAND, recoveryLedger);
+            player.setPos(first.getX(), first.getY(), first.getZ());
+            first.interact(player, InteractionHand.MAIN_HAND);
+            SquadLedgerBinding recovered = Objects.requireNonNull(
+                    SquadLedgerBindingCodec.readFrom(recoveryLedger.getTag()).binding());
+            helper.assertTrue(alphaId.equals(recovered.squadId())
+                            && alphaId.equals(GuardSquadAccess.getSquadId(first))
+                            && "Recovered Alpha".equals(registry.find(alphaId)
+                                    .orElseThrow()
+                                    .displayName()),
+                    "A blank ledger did not recover missing metadata from an assigned guard's stable ID");
+
+            player.setItemInHand(InteractionHand.MAIN_HAND, workingCopy);
+            player.setPos(second.getX(), second.getY(), second.getZ());
+            second.interact(player, InteractionHand.MAIN_HAND);
+            SquadLedgerBinding refreshedWorkingCopy = Objects.requireNonNull(
+                    SquadLedgerBindingCodec.readFrom(workingCopy.getTag()).binding());
+            helper.assertTrue(alphaId.equals(GuardSquadAccess.getSquadId(second))
+                            && "Recovered Alpha".equals(
+                                    refreshedWorkingCopy.cachedDisplayName())
+                            && "Recovered Alpha".equals(
+                                    workingCopy.getHoverName().getString()),
+                    "A stale copied ledger did not refresh from authoritative recovered metadata");
+            second.interact(player, InteractionHand.MAIN_HAND);
+
+            ItemStack bravoLedger = new ItemStack(
+                    com.gamergaming.villagerguardgunners.init.ModItems
+                            .SQUAD_COMMAND_LEDGER.get());
+            bravoLedger.setHoverName(
+                    net.minecraft.network.chat.Component.literal("Bravo Team"));
+            player.setItemInHand(InteractionHand.MAIN_HAND, bravoLedger);
+            player.setPos(third.getX(), third.getY(), third.getZ());
+            third.interact(player, InteractionHand.MAIN_HAND);
+            UUID bravoId = Objects.requireNonNull(
+                    SquadLedgerBindingCodec.readFrom(bravoLedger.getTag()).binding())
+                    .squadId();
+            helper.assertTrue(!alphaId.equals(bravoId)
+                            && bravoId.equals(GuardSquadAccess.getSquadId(third)),
+                    "A second blank ledger did not create an independent squad identity");
+
+            player.setItemInHand(InteractionHand.MAIN_HAND, recoveryLedger);
+            InteractionResult warning = third.interact(
+                    player,
+                    InteractionHand.MAIN_HAND);
+            helper.assertTrue(warning.consumesAction()
+                            && bravoId.equals(GuardSquadAccess.getSquadId(third)),
+                    "The first cross-squad use moved a guard without explicit confirmation");
+            InteractionResult reassigned = third.interact(
+                    player,
+                    InteractionHand.MAIN_HAND);
+            helper.assertTrue(reassigned.consumesAction()
+                            && alphaId.equals(GuardSquadAccess.getSquadId(third)),
+                    "Repeating the exact cross-squad use did not confirm reassignment");
+
+            recoveryLedger.setHoverName(
+                    net.minecraft.network.chat.Component.literal("Alpha Renamed"));
+            player.setPos(second.getX(), second.getY(), second.getZ());
+            recoveryLedger = player.getMainHandItem();
+            second.interact(player, InteractionHand.MAIN_HAND);
+            SquadLedgerBinding renamed = Objects.requireNonNull(
+                    SquadLedgerBindingCodec.readFrom(recoveryLedger.getTag()).binding());
+            helper.assertTrue(alphaId.equals(GuardSquadAccess.getSquadId(second))
+                            && "Alpha Renamed".equals(renamed.cachedDisplayName())
+                            && "Alpha Renamed".equals(registry.find(alphaId)
+                                    .orElseThrow()
+                                    .displayName()),
+                    "An authorized anvil-style ledger rename did not update authoritative metadata");
+
+            player.setItemInHand(InteractionHand.MAIN_HAND, neverUsedStaleCopy);
+            second.interact(player, InteractionHand.MAIN_HAND);
+            SquadLedgerBinding refreshedStaleCopy = Objects.requireNonNull(
+                    SquadLedgerBindingCodec.readFrom(neverUsedStaleCopy.getTag()).binding());
+            helper.assertTrue(GuardSquadAccess.getMembership(second) == null
+                            && "Alpha Renamed".equals(
+                                    refreshedStaleCopy.cachedDisplayName())
+                            && "Alpha Renamed".equals(registry.find(alphaId)
+                                    .orElseThrow()
+                                    .displayName()),
+                    "An old copied ledger renamed authoritative squad metadata back to its stale cache");
+
+            player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            player.setItemInHand(InteractionHand.OFF_HAND, neverUsedStaleCopy);
+            player.setPos(fourth.getX(), fourth.getY(), fourth.getZ());
+            InteractionResult offhand = fourth.interact(
+                    player,
+                    InteractionHand.MAIN_HAND);
+            helper.assertTrue(offhand.consumesAction()
+                            && alphaId.equals(GuardSquadAccess.getSquadId(fourth))
+                            && player.getOffhandItem().getCount() == 1,
+                    "An offhand squad ledger with an empty main hand did not manage membership");
+
+            GuardConfig.reputationRequirement = Integer.MAX_VALUE;
+            ItemStack deniedLedger = new ItemStack(
+                    com.gamergaming.villagerguardgunners.init.ModItems
+                            .SQUAD_COMMAND_LEDGER.get());
+            player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+            player.setItemInHand(InteractionHand.MAIN_HAND, deniedLedger);
+            player.setPos(
+                    unauthorizedGuard.getX(),
+                    unauthorizedGuard.getY(),
+                    unauthorizedGuard.getZ());
+            int registrySizeBeforeDenial = registry.size();
+            InteractionResult denied = unauthorizedGuard.interact(
+                    player,
+                    InteractionHand.MAIN_HAND);
+            helper.assertTrue(denied.consumesAction()
+                            && GuardSquadAccess.getMembership(unauthorizedGuard) == null
+                            && deniedLedger.getTag() == null
+                            && registry.size() == registrySizeBeforeDenial,
+                    "An unauthorized ledger use changed a guard, item, or world registry");
+            helper.assertTrue(ItemStack.isSameItemSameTags(
+                            preservedWeapon,
+                            first.getMainHandItem()),
+                    "Squad membership management changed a guard's equipment");
+            helper.succeed();
+        } finally {
+            GuardConfig.reputationRequirement = originalReputationRequirement;
+            player.setShiftKeyDown(false);
+        }
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void squadCommandsDispatchBoundedlyAndPersistIndependently(
+            GameTestHelper helper) {
+        double originalDispatchRadius =
+                ModConfigs.GUARD_GUNNERS.squads.commandDispatchRadius.get();
+        int originalMaximumAffected =
+                ModConfigs.GUARD_GUNNERS.squads.maximumAffectedGuards.get();
+        int originalPositionalDuration = ModConfigs.GUARD_GUNNERS.squads
+                .positionalCommandDurationTicks.get();
+        int originalFocusDuration =
+                ModConfigs.GUARD_GUNNERS.squads.focusCommandDurationTicks.get();
+        double originalDefendRadius =
+                ModConfigs.GUARD_GUNNERS.squads.defendRadius.get();
+        double originalAirRange =
+                ModConfigs.GUARD_GUNNERS.squads.airCommandRange.get();
+        int originalReputationRequirement = GuardConfig.reputationRequirement;
+
+        Guard nearest = spawnGuard(helper);
+        Guard second = spawnGuard(helper, new BlockPos(2, 1, 0));
+        Guard unauthorized = spawnGuard(helper, new BlockPos(4, 1, 0));
+        Guard otherSquad = spawnGuard(helper, new BlockPos(6, 1, 0));
+        Guard distant = spawnGuard(helper, new BlockPos(12, 1, 0));
+        Player player = helper.makeMockPlayer();
+        player.setPos(nearest.getX(), nearest.getY(), nearest.getZ());
+        nearest.setOwnerId(player.getUUID());
+        second.setOwnerId(player.getUUID());
+        distant.setOwnerId(player.getUUID());
+        GuardConfig.reputationRequirement = Integer.MAX_VALUE;
+
+        UUID squadId = UUID.randomUUID();
+        UUID otherSquadId = UUID.randomUUID();
+        SquadRegistrySavedData registry = SquadRegistrySavedData.get(
+                Objects.requireNonNull(helper.getLevel().getServer()));
+        registry.register(
+                squadId,
+                "Dispatch Test",
+                player.getUUID(),
+                helper.getLevel().getGameTime()).orElseThrow();
+        registry.register(
+                otherSquadId,
+                "Other Squad",
+                player.getUUID(),
+                helper.getLevel().getGameTime()).orElseThrow();
+        GuardSquadAccess.setMembership(nearest, SquadMembership.assigned(squadId));
+        GuardSquadAccess.setMembership(second, SquadMembership.assigned(squadId));
+        GuardSquadAccess.setMembership(unauthorized, SquadMembership.assigned(squadId));
+        GuardSquadAccess.setMembership(distant, SquadMembership.assigned(squadId));
+        GuardSquadAccess.setMembership(
+                otherSquad,
+                SquadMembership.assigned(otherSquadId));
+
+        ItemStack ledger = new ItemStack(
+                com.gamergaming.villagerguardgunners.init.ModItems
+                        .SQUAD_COMMAND_LEDGER.get());
+        SquadLedgerBindingCodec.writeTo(
+                ledger.getOrCreateTag(),
+                SquadLedgerBinding.bound(squadId, "Dispatch Test"));
+        player.setItemInHand(InteractionHand.MAIN_HAND, ledger);
+        ItemStack preservedWeapon = new ItemStack(Items.CROSSBOW);
+        nearest.setItemSlot(EquipmentSlot.MAINHAND, preservedWeapon.copy());
+        GuardOrders preservedOrders = GuardOrdersAccess.getOrders(nearest);
+
+        try {
+            ModConfigs.GUARD_GUNNERS.squads.commandDispatchRadius.accept(8.0D);
+            ModConfigs.GUARD_GUNNERS.squads.maximumAffectedGuards.accept(1);
+            ModConfigs.GUARD_GUNNERS.squads
+                    .positionalCommandDurationTicks.accept(100);
+            ModConfigs.GUARD_GUNNERS.squads.focusCommandDurationTicks.accept(80);
+            ModConfigs.GUARD_GUNNERS.squads.defendRadius.accept(6.0D);
+            ModConfigs.GUARD_GUNNERS.squads.airCommandRange.accept(16.0D);
+
+            BlockPos rallyPoint = nearest.blockPosition().offset(3, 0, 0);
+            int revisionBeforeRally =
+                    GuardSquadCommandAccess.getRevision(nearest);
+            SquadCommandDispatcher.DispatchResult bounded =
+                    SquadCommandDispatcher.dispatch(
+                            player,
+                            ledger,
+                            SquadCommandType.RALLY,
+                            rallyPoint,
+                            null);
+            SquadCommand nearestRally =
+                    GuardSquadCommandAccess.getCommand(nearest);
+            helper.assertTrue(bounded.completed()
+                            && bounded.applied() == 1
+                            && bounded.unauthorized() == 1
+                            && bounded.capped() == 1
+                            && bounded.matched() == 3,
+                    "A bounded dispatch did not report applied, unauthorized, and capped members exactly");
+            helper.assertTrue(nearestRally != null
+                            && nearestRally.type() == SquadCommandType.RALLY
+                            && rallyPoint.equals(nearestRally.position())
+                            && nearestRally.issuedBy().equals(player.getUUID())
+                            && nearestRally.dimension().equals(
+                                    helper.getLevel().dimension().location())
+                            && nearestRally.expiresGameTime()
+                                    - nearestRally.issuedGameTime() == 100L
+                            && GuardSquadCommandAccess.getRevision(nearest)
+                                    == revisionBeforeRally + 1,
+                    "The deterministic nearest member did not receive complete versioned Rally data");
+            GuardSquadCommandAccess.setCommand(nearest, nearestRally);
+            helper.assertTrue(
+                    GuardSquadCommandAccess.getRevision(nearest)
+                            == revisionBeforeRally + 1,
+                    "Writing an identical temporary command caused a redundant revision");
+            helper.assertTrue(GuardSquadCommandAccess.getCommand(second) == null
+                            && GuardSquadCommandAccess.getCommand(unauthorized) == null
+                            && GuardSquadCommandAccess.getCommand(distant) == null
+                            && GuardSquadCommandAccess.getCommand(otherSquad) == null,
+                    "A capped, unauthorized, distant, or different-squad guard received Rally");
+
+            ModConfigs.GUARD_GUNNERS.squads.maximumAffectedGuards.accept(64);
+            SquadCommandDispatcher.DispatchResult expanded =
+                    SquadCommandDispatcher.dispatch(
+                            player,
+                            ledger,
+                            SquadCommandType.RALLY,
+                            rallyPoint,
+                            null);
+            helper.assertTrue(expanded.applied() == 2
+                            && expanded.unauthorized() == 1
+                            && expanded.capped() == 0
+                            && GuardSquadCommandAccess.getCommand(second) != null
+                            && GuardSquadCommandAccess.getCommand(distant) == null
+                            && GuardSquadCommandAccess.getCommand(otherSquad) == null,
+                    "Expanding the hard-bounded cap changed the wrong squad or radius boundary");
+
+            BlockPos ignoredHoldPoint = nearest.blockPosition().offset(1, 0, 0);
+            SquadCommandDispatcher.dispatch(
+                    player,
+                    ledger,
+                    SquadCommandType.HOLD,
+                    ignoredHoldPoint,
+                    null);
+            helper.assertTrue(nearest.blockPosition().equals(
+                                    Objects.requireNonNull(
+                                            GuardSquadCommandAccess.getCommand(nearest))
+                                            .position())
+                            && second.blockPosition().equals(
+                                    Objects.requireNonNull(
+                                            GuardSquadCommandAccess.getCommand(second))
+                                            .position()),
+                    "Hold did not capture a separate anchor for each affected guard");
+
+            player.setShiftKeyDown(true);
+            InteractionResultHolder<ItemStack> cycled = ledger.getItem().use(
+                    helper.getLevel(),
+                    player,
+                    InteractionHand.MAIN_HAND);
+            player.setShiftKeyDown(false);
+            helper.assertTrue(cycled.getResult().consumesAction()
+                            && SquadLedgerModeCodec.readFrom(ledger.getTag()).mode()
+                                    == SquadCommandType.DEFEND,
+                    "Sneak-use in air did not cycle the default Rally mode to Defend");
+            InteractionResultHolder<ItemStack> airDispatch = ledger.getItem().use(
+                    helper.getLevel(),
+                    player,
+                    InteractionHand.MAIN_HAND);
+            SquadCommand defend = GuardSquadCommandAccess.getCommand(nearest);
+            helper.assertTrue(airDispatch.getResult().consumesAction()
+                            && defend != null
+                            && defend.type() == SquadCommandType.DEFEND
+                            && defend.radius() == 6.0D,
+                    "Normal air use did not dispatch the selected Defend command");
+
+            SquadLedgerModeCodec.writeTo(
+                    ledger.getOrCreateTag(),
+                    SquadCommandType.RALLY);
+            BlockPos blockPoint = nearest.blockPosition().offset(2, 0, 1);
+            InteractionResult blockDispatch = ledger.getItem().useOn(
+                    new UseOnContext(
+                            player,
+                            InteractionHand.MAIN_HAND,
+                            new BlockHitResult(
+                                    Vec3.atCenterOf(blockPoint),
+                                    Direction.UP,
+                                    blockPoint,
+                                    false)));
+            helper.assertTrue(blockDispatch.consumesAction()
+                            && blockPoint.equals(Objects.requireNonNull(
+                                    GuardSquadCommandAccess.getCommand(nearest))
+                                    .position()),
+                    "Block use did not dispatch Rally to the clicked command point");
+
+            Zombie target = helper.spawnWithNoFreeWill(
+                    EntityType.ZOMBIE,
+                    new BlockPos(3, 1, 2));
+            SquadLedgerModeCodec.writeTo(
+                    ledger.getOrCreateTag(),
+                    SquadCommandType.FOCUS_TARGET);
+            InteractionResult focusInteraction = ledger.getItem().interactLivingEntity(
+                    ledger,
+                    player,
+                    target,
+                    InteractionHand.MAIN_HAND);
+            SquadCommand focus = GuardSquadCommandAccess.getCommand(nearest);
+            helper.assertTrue(focusInteraction.consumesAction()
+                            && focus != null
+                            && focus.type() == SquadCommandType.FOCUS_TARGET
+                            && target.getUUID().equals(focus.targetId())
+                            && focus.position() == null
+                            && focus.expiresGameTime() - focus.issuedGameTime() == 80L,
+                    "Entity use did not dispatch a bounded Focus Target identity");
+
+            SquadLedgerModeCodec.writeTo(
+                    ledger.getOrCreateTag(),
+                    SquadCommandType.RESUME_ORDERS);
+            InteractionResultHolder<ItemStack> resumed = ledger.getItem().use(
+                    helper.getLevel(),
+                    player,
+                    InteractionHand.MAIN_HAND);
+            helper.assertTrue(resumed.getResult().consumesAction()
+                            && GuardSquadCommandAccess.getCommand(nearest) == null
+                            && GuardSquadCommandAccess.getCommand(second) == null,
+                    "Resume Orders did not clear temporary commands from authorized loaded members");
+
+            SquadCommandDispatcher.dispatch(
+                    player,
+                    ledger,
+                    SquadCommandType.FALL_BACK,
+                    rallyPoint,
+                    null);
+            SquadCommand savedCommand = Objects.requireNonNull(
+                    GuardSquadCommandAccess.getCommand(nearest));
+            CompoundTag savedGuard = new CompoundTag();
+            nearest.addAdditionalSaveData(savedGuard);
+            Guard restored = Objects.requireNonNull(
+                    GuardEntityType.GUARD.get().create(helper.getLevel()));
+            restored.readAdditionalSaveData(savedGuard);
+            helper.assertTrue(savedCommand.equals(
+                                    GuardSquadCommandAccess.getCommand(restored))
+                            && squadId.equals(GuardSquadAccess.getSquadId(restored)),
+                    "Temporary command or squad identity changed across guard save/load");
+
+            ItemStack corruptLedger = ledger.copy();
+            corruptLedger.getOrCreateTag().put(
+                    SquadLedgerBindingCodec.BINDING_TAG,
+                    new CompoundTag());
+            SquadCommand beforeCorruptDispatch =
+                    GuardSquadCommandAccess.getCommand(nearest);
+            SquadCommandDispatcher.DispatchResult rejected =
+                    SquadCommandDispatcher.dispatch(
+                            player,
+                            corruptLedger,
+                            SquadCommandType.RALLY,
+                            rallyPoint,
+                            null);
+            helper.assertTrue(rejected.status()
+                                    == SquadCommandDispatcher.DispatchStatus.CORRUPT_LEDGER
+                            && Objects.equals(
+                                    beforeCorruptDispatch,
+                                    GuardSquadCommandAccess.getCommand(nearest)),
+                    "A corrupt ledger changed an existing temporary command");
+            helper.assertTrue(ItemStack.isSameItemSameTags(
+                                    preservedWeapon,
+                                    nearest.getMainHandItem())
+                            && preservedOrders.equals(
+                                    GuardOrdersAccess.getOrders(nearest)),
+                    "Squad command dispatch changed permanent orders or equipment");
+            helper.succeed();
+        } finally {
+            ModConfigs.GUARD_GUNNERS.squads.commandDispatchRadius
+                    .accept(originalDispatchRadius);
+            ModConfigs.GUARD_GUNNERS.squads.maximumAffectedGuards
+                    .accept(originalMaximumAffected);
+            ModConfigs.GUARD_GUNNERS.squads.positionalCommandDurationTicks
+                    .accept(originalPositionalDuration);
+            ModConfigs.GUARD_GUNNERS.squads.focusCommandDurationTicks
+                    .accept(originalFocusDuration);
+            ModConfigs.GUARD_GUNNERS.squads.defendRadius
+                    .accept(originalDefendRadius);
+            ModConfigs.GUARD_GUNNERS.squads.airCommandRange
+                    .accept(originalAirRange);
+            GuardConfig.reputationRequirement = originalReputationRequirement;
+            player.setShiftKeyDown(false);
+        }
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 40)
+    public static void temporarySquadCommandsControlMovementFocusAndExpiry(
+            GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        guard.setPatrolling(true);
+        guard.setFollowing(false);
+        boolean preservedPatrolling = guard.isPatrolling();
+        boolean preservedFollowing = guard.isFollowing();
+        long gameTime = helper.getLevel().getGameTime();
+        ResourceLocation dimension = helper.getLevel().dimension().location();
+        UUID issuer = UUID.randomUUID();
+        SquadCommandMovementGoal movementGoal = new SquadCommandMovementGoal(guard);
+        SquadCommandMovementController movement =
+                new SquadCommandMovementController(guard);
+        GuardSquadAccess.setMembership(
+                guard,
+                SquadMembership.assigned(UUID.randomUUID()));
+
+        SquadCommand rally = SquadCommand.positional(
+                SquadCommandType.RALLY,
+                issuer,
+                gameTime,
+                gameTime + 100L,
+                dimension,
+                guard.blockPosition(),
+                0.0D);
+        GuardSquadCommandAccess.setCommand(guard, rally);
+        helper.assertTrue(movementGoal.canUse(),
+                "An in-range Rally command did not activate the outside-combat movement goal");
+        movementGoal.tick();
+        helper.assertTrue(GuardSquadCommandAccess.getCommand(guard) == null,
+                "Rally did not clear itself after the guard reached its command point");
+
+        SquadCommand hold = SquadCommand.positional(
+                SquadCommandType.HOLD,
+                issuer,
+                gameTime,
+                gameTime + 100L,
+                dimension,
+                guard.blockPosition(),
+                0.0D);
+        GuardSquadCommandAccess.setCommand(guard, hold);
+        movementGoal.tick();
+        helper.assertTrue(GuardSquadCommandAccess.getCommand(guard) == hold,
+                "Hold cleared instead of retaining the guard's per-command anchor");
+
+        SquadCommand defendOutside = SquadCommand.positional(
+                SquadCommandType.DEFEND,
+                issuer,
+                gameTime,
+                gameTime + 100L,
+                dimension,
+                guard.blockPosition().offset(4, 0, 0),
+                2.0D);
+        GuardSquadCommandAccess.setCommand(guard, defendOutside);
+        movement.synchronize(false);
+        helper.assertTrue(movement.apply(
+                                defendOutside,
+                                false,
+                                true,
+                                ModConfigs.GUARD_GUNNERS.movement.approachSpeed.get())
+                        == SquadCommandMovementController.MovementOutcome.MOVING_TO_COMMAND,
+                "Defend did not return a guard that was outside its safe command radius");
+
+        SquadCommand defendInside = SquadCommand.positional(
+                SquadCommandType.DEFEND,
+                issuer,
+                gameTime,
+                gameTime + 100L,
+                dimension,
+                guard.blockPosition(),
+                6.0D);
+        GuardSquadCommandAccess.setCommand(guard, defendInside);
+        movement.synchronize(false);
+        helper.assertTrue(movement.apply(
+                                defendInside,
+                                false,
+                                true,
+                                ModConfigs.GUARD_GUNNERS.movement.approachSpeed.get())
+                        == SquadCommandMovementController.MovementOutcome.NOT_HANDLED,
+                "Defend suppressed ordinary combat tactics while already inside its radius");
+
+        SquadCommand fallBack = SquadCommand.positional(
+                SquadCommandType.FALL_BACK,
+                issuer,
+                gameTime,
+                gameTime + 100L,
+                dimension,
+                guard.blockPosition().offset(3, 0, 0),
+                0.0D);
+        GuardSquadCommandAccess.setCommand(guard, fallBack);
+        movement.synchronize(false);
+        helper.assertTrue(movement.apply(
+                                fallBack,
+                                false,
+                                true,
+                                ModConfigs.GUARD_GUNNERS.movement.approachSpeed.get())
+                        == SquadCommandMovementController.MovementOutcome.MOVING_TO_COMMAND,
+                "Fall Back did not override tactical movement toward its retreat point");
+
+        Zombie hostile = helper.spawnWithNoFreeWill(
+                EntityType.ZOMBIE,
+                new BlockPos(3, 1, 0));
+        guard.setItemSlot(
+                EquipmentSlot.MAINHAND,
+                gun(GLOCK_17, FireMode.SEMI, 10, false));
+        guard.setTarget(null);
+        SquadCommand focus = SquadCommand.focusTarget(
+                issuer,
+                gameTime,
+                gameTime + 100L,
+                dimension,
+                hostile.getUUID());
+        GuardSquadCommandAccess.setCommand(guard, focus);
+        GuardGunCombatGoal gunGoal = new GuardGunCombatGoal(guard);
+        gunGoal.canUse();
+        helper.assertTrue(guard.getTarget() == hostile
+                        && GuardSquadCommandAccess.getCommand(guard) == focus,
+                "A permitted loaded Focus Target was not prioritized by the gun goal");
+        SquadCommandRuntime.replaceCommand(guard, null);
+        helper.assertTrue(guard.getTarget() == null,
+                "Resume/replacement did not release the target installed by Focus Target");
+
+        guard.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+        GuardSquadCommandAccess.setCommand(guard, focus);
+        helper.assertTrue(!movementGoal.canUse()
+                        && guard.getTarget() == hostile
+                        && GuardSquadCommandAccess.getCommand(guard) == focus,
+                "The shared squad goal did not synchronize Focus for a non-TaCZ guard");
+        SquadCommandRuntime.replaceCommand(guard, null);
+
+        Villager protectedVillager = helper.spawnWithNoFreeWill(
+                EntityType.VILLAGER,
+                new BlockPos(2, 1, 2));
+        guard.setTarget(null);
+        SquadCommand protectedFocus = SquadCommand.focusTarget(
+                issuer,
+                gameTime,
+                gameTime + 100L,
+                dimension,
+                protectedVillager.getUUID());
+        GuardSquadCommandAccess.setCommand(guard, protectedFocus);
+        helper.assertTrue(SquadCommandRuntime.synchronizeFocusTarget(
+                                guard,
+                                Objects.requireNonNull(
+                                        SquadCommandRuntime.activeCommand(guard)))
+                                == null
+                        && guard.getTarget() == null
+                        && GuardSquadCommandAccess.getCommand(guard) == null,
+                "Focus Target bypassed ally protection for a villager");
+
+        GuardOrders originalOrders = GuardOrdersAccess.getOrders(guard);
+        GuardOrdersAccess.setOrders(
+                guard,
+                originalOrders.withEngagement(EngagementOrder.HOLD_FIRE));
+        SquadCommand heldFireFocus = SquadCommand.focusTarget(
+                issuer,
+                gameTime,
+                gameTime + 100L,
+                dimension,
+                hostile.getUUID());
+        GuardSquadCommandAccess.setCommand(guard, heldFireFocus);
+        helper.assertTrue(SquadCommandRuntime.synchronizeFocusTarget(
+                                guard,
+                                Objects.requireNonNull(
+                                        SquadCommandRuntime.activeCommand(guard)))
+                                == null
+                        && guard.getTarget() == null
+                        && GuardSquadCommandAccess.getCommand(guard) == null,
+                "Focus Target bypassed the guard's hold-fire rule of engagement");
+        GuardOrdersAccess.setOrders(guard, originalOrders);
+
+        helper.assertTrue(guard.isPatrolling() == preservedPatrolling
+                        && guard.isFollowing() == preservedFollowing,
+                "Temporary commands changed Guard Villagers' permanent patrol or follow state");
+
+        SquadCommand expiring = SquadCommand.focusTarget(
+                issuer,
+                gameTime,
+                gameTime + 1L,
+                dimension,
+                hostile.getUUID());
+        GuardSquadCommandAccess.setCommand(guard, expiring);
+        CompoundTag saved = new CompoundTag();
+        guard.addAdditionalSaveData(saved);
+        Guard restored = Objects.requireNonNull(
+                GuardEntityType.GUARD.get().create(helper.getLevel()));
+        restored.moveTo(guard.getX(), guard.getY(), guard.getZ());
+        restored.readAdditionalSaveData(saved);
+        helper.assertTrue(GuardSquadCommandAccess.getCommand(restored) != null,
+                "A still-current temporary command was lost while reloading a guard");
+        SquadCommandRuntime.synchronizeFocusTarget(
+                restored,
+                Objects.requireNonNull(SquadCommandRuntime.activeCommand(restored)));
+        helper.assertTrue(restored.getTarget() == hostile,
+                "A restored current Focus Target could not recover its loaded target");
+
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(SquadCommandRuntime.activeCommand(restored) == null
+                            && GuardSquadCommandAccess.getCommand(restored) == null
+                            && restored.getTarget() == null,
+                    "A Focus command or its owned target survived expiry after guard restoration");
+            helper.succeed();
+        });
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
@@ -1907,6 +4329,9 @@ public final class GuardGunnerGameTests {
                     "Zombie conversion did not remove the original guard");
             helper.assertTrue(countAmmo(GuardAmmoAccess.getAmmoHandler(zombieGuard), DEFAULT_AMMO) == 0,
                     "Zombie conversion left ammunition in the discarded guard");
+            helper.assertTrue(
+                    GuardSidearmGameTestAccess.getStorage(zombieGuard).recoverableStacks().isEmpty(),
+                    "Zombie conversion left a sidearm in the discarded guard");
             Vec3 zombieDropCenter = zombieGuard.position();
 
             Guard lightningGuard = helper.spawnWithNoFreeWill(
@@ -1921,6 +4346,9 @@ public final class GuardGunnerGameTests {
                     "Lightning conversion did not remove the original guard");
             helper.assertTrue(countAmmo(GuardAmmoAccess.getAmmoHandler(lightningGuard), DEFAULT_AMMO) == 0,
                     "Lightning conversion left ammunition in the discarded guard");
+            helper.assertTrue(
+                    GuardSidearmGameTestAccess.getStorage(lightningGuard).recoverableStacks().isEmpty(),
+                    "Lightning conversion left a sidearm in the discarded guard");
             Vec3 lightningDropCenter = lightningGuard.position();
 
             // Forge may finish publishing captured conversion drops after the
@@ -1933,6 +4361,12 @@ public final class GuardGunnerGameTests {
                 int lightningDrops = countDroppedAmmo(helper, lightningDropCenter, DEFAULT_AMMO);
                 helper.assertTrue(lightningDrops == 12,
                         "Lightning conversion expected 12 dropped rounds but found " + lightningDrops);
+                int zombieSidearms = countDroppedGuns(helper, zombieDropCenter, GLOCK_17);
+                helper.assertTrue(zombieSidearms == 1,
+                        "Zombie conversion expected one dropped sidearm but found " + zombieSidearms);
+                int lightningSidearms = countDroppedGuns(helper, lightningDropCenter, GLOCK_17);
+                helper.assertTrue(lightningSidearms == 1,
+                        "Lightning conversion expected one dropped sidearm but found " + lightningSidearms);
             });
         } finally {
             helper.getLevel().getServer().setDifficulty(originalDifficulty, true);
@@ -3027,6 +5461,10 @@ public final class GuardGunnerGameTests {
         guard.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
         helper.assertTrue(shieldGoal.canUse(),
                 "Phase 4 compatibility unexpectedly disabled ordinary shield behavior");
+        shieldGoal.start();
+        helper.assertTrue(guard.isUsingItem()
+                        && guard.getUsedItemHand() == InteractionHand.OFF_HAND,
+                "The shield fixture did not enter the raised offhand state");
 
         ItemStack gun = GunItemBuilder.create()
                 .setId(GLOCK_17)
@@ -3038,13 +5476,20 @@ public final class GuardGunnerGameTests {
         helper.assertTrue(shieldGoal.canUse(),
                 "A non-aiming gun unexpectedly disabled shield/melee fallback");
 
-        NativeGunController controller = new NativeGunController(guard);
-        controller.startAiming();
+        GuardGunCombatGoal gunGoal = new GuardGunCombatGoal(guard);
+        helper.assertTrue(gunGoal.canUse(),
+                "An engageable gun could not take over from a raised shield");
+        gunGoal.start();
+        helper.assertFalse(guard.isUsingItem(),
+                "Gun-goal startup left the guard trapped behind its raised shield");
         helper.assertFalse(shieldGoal.canUse(),
                 "Guard Villagers' priority-zero shield goal still preempted an aimed TaCZ gun");
         helper.assertFalse(shieldGoal.canContinueToUse(),
                 "An active shield goal did not yield after the guard aimed a TaCZ gun");
-        controller.stopAiming();
+        helper.assertTrue(IGunOperator.fromLivingEntity(guard).getDataHolder().isAiming,
+                "TaCZ did not enter its native aiming state after the shield was released");
+        gunGoal.stop();
+        shieldGoal.stop();
         helper.succeed();
     }
 
@@ -3506,6 +5951,167 @@ public final class GuardGunnerGameTests {
         }
     }
 
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void armoryStoresAutomatesLocksPersistsAndDropsSafely(
+            GameTestHelper helper) {
+        BlockPos localPosition = new BlockPos(2, 1, 2);
+        helper.setBlock(
+                localPosition,
+                com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get());
+        BlockPos absolutePosition = helper.absolutePos(localPosition);
+        ArmoryBlockEntity armory = (ArmoryBlockEntity) Objects.requireNonNull(
+                helper.getLevel().getBlockEntity(absolutePosition));
+        IItemHandler inventory = armory.getInventory();
+
+        IItemHandler firstCapability = null;
+        for (Direction direction : Direction.values()) {
+            IItemHandler sidedCapability = armory
+                    .getCapability(ForgeCapabilities.ITEM_HANDLER, direction)
+                    .orElse(null);
+            helper.assertTrue(
+                    sidedCapability != null
+                            && sidedCapability.getSlots() == 9
+                            && !(sidedCapability instanceof net.minecraftforge.items.IItemHandlerModifiable)
+                            && (firstCapability == null || firstCapability == sidedCapability),
+                    "The armory did not expose the same non-modifiable bounded item handler on "
+                            + direction.getName());
+            firstCapability = sidedCapability;
+        }
+        ItemStack ammunition = AmmoItemBuilder.create()
+                .setId(DEFAULT_AMMO)
+                .setCount(24)
+                .build();
+        ItemStack paper = new ItemStack(Items.PAPER, 5);
+        helper.assertTrue(inventory.insertItem(0, ammunition.copy(), false).isEmpty(),
+                "The armory rejected real TaCZ loose ammunition");
+        helper.assertTrue(inventory.insertItem(1, paper.copy(), false).getCount() == 5
+                        && armory.comparatorOutput() > 0,
+                "The armory accepted a non-ammunition item or failed to update comparator output");
+
+        Player player = helper.makeMockPlayer();
+        player.setPos(
+                absolutePosition.getX() + 0.5D,
+                absolutePosition.getY() + 0.5D,
+                absolutePosition.getZ() + 0.5D);
+        player.setShiftKeyDown(true);
+        UUID squadId = UUID.randomUUID();
+        SquadRegistrySavedData registry = SquadRegistrySavedData.get(
+                Objects.requireNonNull(helper.getLevel().getServer()));
+        registry.register(
+                squadId,
+                "Armory Test Squad",
+                player.getUUID(),
+                helper.getLevel().getGameTime()).orElseThrow();
+        ItemStack ledger = new ItemStack(
+                com.gamergaming.villagerguardgunners.init.ModItems
+                        .SQUAD_COMMAND_LEDGER.get());
+        SquadLedgerBindingCodec.writeTo(
+                ledger.getOrCreateTag(),
+                SquadLedgerBinding.bound(squadId, "Armory Test Squad"));
+        player.setItemInHand(InteractionHand.MAIN_HAND, ledger);
+
+        try {
+            InteractionResult lockUse = ledger.getItem().useOn(new UseOnContext(
+                    player,
+                    InteractionHand.MAIN_HAND,
+                    new BlockHitResult(
+                            Vec3.atCenterOf(absolutePosition),
+                            Direction.UP,
+                            absolutePosition,
+                            false)));
+            helper.assertTrue(lockUse.consumesAction()
+                            && armory.maySupply(squadId)
+                            && !armory.maySupply(UUID.randomUUID())
+                            && !armory.maySupply(null),
+                    "Crouch-use through the bound ledger item did not apply a fail-closed squad restriction");
+            helper.assertTrue(
+                    ArmoryLockInteractions.interact(player, ledger, armory)
+                            == ArmoryLockInteractions.InteractionResult.UNLOCKED
+                            && armory.maySupply(null),
+                    "Repeating the same ledger interaction did not restore public armory access");
+            ArmoryLockInteractions.interact(player, ledger, armory);
+
+            CompoundTag saved = armory.saveWithoutMetadata();
+            ArmoryBlockEntity restored = new ArmoryBlockEntity(
+                    absolutePosition,
+                    armory.getBlockState());
+            restored.load(saved);
+            ItemStack restoredAmmo = restored.getInventory().getStackInSlot(0);
+            ArmorySquadLock restoredLock = restored.getSquadLock();
+            helper.assertTrue(restoredAmmo.getCount() == 24
+                            && restoredAmmo.getItem() instanceof IAmmo restoredType
+                            && DEFAULT_AMMO.equals(restoredType.getAmmoId(restoredAmmo))
+                            && restoredLock != null
+                            && squadId.equals(restoredLock.squadId())
+                            && restored.maySupply(squadId),
+                    "Armory inventory or squad-lock identity changed across NBT save/load");
+
+            CompoundTag corruptLock = new CompoundTag();
+            corruptLock.putString(ArmorySquadLockCodec.LOCK_TAG, "damaged");
+            ArmoryBlockEntity corrupt = new ArmoryBlockEntity(
+                    absolutePosition,
+                    armory.getBlockState());
+            corrupt.load(corruptLock);
+            CompoundTag corruptResaved = corrupt.saveWithoutMetadata();
+            ArmoryBlockEntity corruptRestored = new ArmoryBlockEntity(
+                    absolutePosition,
+                    armory.getBlockState());
+            corruptRestored.load(corruptResaved);
+            helper.assertTrue(
+                    corruptRestored.getLockStatus()
+                                    == ArmorySquadLockCodec.DecodeStatus.CORRUPT
+                            && !corruptRestored.maySupply(null)
+                            && corruptResaved.contains(
+                                    ArmorySquadLockCodec.LOCK_TAG,
+                                    Tag.TAG_STRING),
+                    "A damaged armory lock became public after save/load");
+
+            CompoundTag futureLock = new CompoundTag();
+            CompoundTag futureRecord = new CompoundTag();
+            futureRecord.putInt("Version", 99);
+            futureLock.put(ArmorySquadLockCodec.LOCK_TAG, futureRecord);
+            ArmoryBlockEntity future = new ArmoryBlockEntity(
+                    absolutePosition,
+                    armory.getBlockState());
+            future.load(futureLock);
+            CompoundTag futureResaved = future.saveWithoutMetadata();
+            ArmoryBlockEntity futureRestored = new ArmoryBlockEntity(
+                    absolutePosition,
+                    armory.getBlockState());
+            futureRestored.load(futureResaved);
+            helper.assertTrue(
+                    futureRestored.getLockStatus()
+                                    == ArmorySquadLockCodec.DecodeStatus.UNSUPPORTED_VERSION
+                            && !futureRestored.maySupply(squadId)
+                            && futureResaved.getCompound(
+                                            ArmorySquadLockCodec.LOCK_TAG)
+                                    .getInt("Version") == 99,
+                    "A future armory lock was erased or downgraded after save/load");
+
+            ArmoryMenu menu = new ArmoryMenu(1, player.getInventory(), armory);
+            helper.assertTrue(menu.slots.size() == 45 && menu.stillValid(player),
+                    "The armory menu did not expose nine storage and thirty-six player slots");
+
+            armory.dropContents();
+            helper.assertTrue(armory.comparatorOutput() == 0
+                            && countDroppedAmmo(
+                                    helper,
+                                    Vec3.atCenterOf(absolutePosition),
+                                    DEFAULT_AMMO) == 24,
+                    "Breaking/ejecting the armory did not preserve its physical ammunition exactly once");
+            helper.setBlock(localPosition, Blocks.AIR);
+            helper.setBlock(
+                    localPosition,
+                    com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get());
+            helper.assertTrue(!menu.stillValid(player),
+                    "An open armory menu remained attached to a replaced block entity");
+            helper.succeed();
+        } finally {
+            player.setShiftKeyDown(false);
+            registry.remove(squadId);
+        }
+    }
+
     private static Guard spawnGuard(GameTestHelper helper) {
         return spawnGuard(helper, new BlockPos(0, 1, 0));
     }
@@ -3542,6 +6148,21 @@ public final class GuardGunnerGameTests {
     private static void configureFixedCombatant(LivingEntity entity) {
         entity.setInvulnerable(true);
         entity.setNoGravity(true);
+    }
+
+    /** Clears wall-clock TaCZ actions that are irrelevant to swap-lifecycle fixtures. */
+    private static void forceNativeSwapFixtureIdle(IGunOperator operator) {
+        var data = operator.getDataHolder();
+        data.reloadStateType = ReloadState.StateType.NOT_RELOADING;
+        data.reloadTimestamp = -1L;
+        data.isBolting = false;
+        data.boltTimestamp = -1L;
+        data.meleePrepTickCount = -1;
+        data.meleeTimestamp = -1L;
+        data.chargeProgress = 0.0F;
+        data.drawTimestamp = -1L;
+        data.shootTimestamp = -1L;
+        data.lastShootTimestamp = -1L;
     }
 
     private static void pinEntity(
@@ -3638,6 +6259,15 @@ public final class GuardGunnerGameTests {
         return count;
     }
 
+    private static boolean isAmmoHandlerEmpty(GuardAmmoHandler handler) {
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            if (!handler.getStackInSlot(slot).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static boolean stacksMatch(ItemStack first, ItemStack second) {
         if (first.isEmpty() || second.isEmpty()) {
             return first.isEmpty() && second.isEmpty();
@@ -3659,6 +6289,9 @@ public final class GuardGunnerGameTests {
         GuardAmmoAccess.getAmmoHandler(guard).setStackInSlot(
                 0,
                 AmmoItemBuilder.create().setId(DEFAULT_AMMO).setCount(storedCount).build());
+        GuardSidearmGameTestAccess.getStorage(guard).setStackInSlot(
+                GuardSidearmStorage.SIDEARM_SLOT,
+                gun(GLOCK_17, FireMode.SEMI, 7, true));
     }
 
     private static int countDroppedAmmo(
@@ -3673,6 +6306,25 @@ public final class GuardGunnerGameTests {
                 .filter(stack -> stack.getItem() instanceof IAmmo ammo && ammoId.equals(ammo.getAmmoId(stack)))
                 .mapToInt(ItemStack::getCount)
                 .sum();
+    }
+
+    private static int countDroppedGuns(
+            GameTestHelper helper,
+            Vec3 center,
+            ResourceLocation gunId) {
+        return (int) helper.getLevel().getEntitiesOfClass(
+                        ItemEntity.class,
+                        new AABB(center, center).inflate(2.0D))
+                .stream()
+                .map(ItemEntity::getItem)
+                .filter(stack -> gunId.equals(gunId(stack)))
+                .count();
+    }
+
+    private static ResourceLocation gunId(ItemStack stack) {
+        return stack.getItem() instanceof IGun gun
+                ? gun.getGunId(stack)
+                : ResourceLocation.fromNamespaceAndPath("minecraft", "empty");
     }
 
     private record NaturalLoadoutConfigSnapshot(

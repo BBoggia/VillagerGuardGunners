@@ -26,7 +26,7 @@ final class RulesOfEngagementContractTest {
                 () -> assertTrue(goal.contains(
                         "!GuardRulesOfEngagement.mayEngage(guard, expectedTarget)")),
                 () -> assertTrue(goal.contains(
-                        "updateMovement(gameTime, distanceSquared, mayEngage)")),
+                        "updateMovement(gameTime, distanceSquared, mayEngage, activeCommand)")),
                 () -> assertTrue(goal.contains("engagementReason.releaseTarget()")),
                 () -> assertTrue(goal.contains("EngagementReason.HOLD_FIRE")),
                 () -> assertTrue(goal.contains("reason.releaseTarget()")),

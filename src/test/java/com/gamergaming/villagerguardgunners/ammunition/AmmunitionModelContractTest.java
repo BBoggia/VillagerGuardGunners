@@ -87,6 +87,33 @@ final class AmmunitionModelContractTest {
                 () -> assertFalse(maintenance.contains("getEntities")));
     }
 
+    @Test
+    void sidearmAmmoViewIsRoleStableBoundedAndFailClosed() throws IOException {
+        String loadout = read("GuardWeaponAmmunition.java");
+
+        assertAll(
+                () -> assertTrue(loadout.contains("GuardSidearmAccess.getState(guard)")),
+                () -> assertTrue(loadout.contains(
+                        "GuardSidearmAccess.getEffectivePrimaryCopy(guard)")),
+                () -> assertTrue(loadout.contains(
+                        "GuardSidearmAccess.getConfiguredSidearmInventory(guard)")),
+                () -> assertTrue(loadout.contains("state == SidearmState.SIDEARM_ACTIVE")),
+                () -> assertTrue(loadout.contains("Loadout.recovery()")),
+                () -> assertTrue(loadout.contains("assessPhysicalSupply(")),
+                () -> assertTrue(loadout.contains("assessDonorReserve(")),
+                () -> assertTrue(loadout.contains("compatibleWeapons++")),
+                () -> assertTrue(loadout.contains("captureSummary(")),
+                () -> assertFalse(loadout.contains("getEntities")),
+                () -> assertFalse(loadout.contains("TickEvent")),
+                () -> assertFalse(loadout.contains("getNavigation")),
+                () -> assertEquals(
+                        Long.MAX_VALUE,
+                        GuardWeaponAmmunition.retainedReserveUnits(-1, 1)),
+                () -> assertEquals(
+                        34L,
+                        GuardWeaponAmmunition.retainedReserveUnits(17, 2)));
+    }
+
     private static String read(String fileName) throws IOException {
         return Files.readString(
                 projectDirectory.resolve(

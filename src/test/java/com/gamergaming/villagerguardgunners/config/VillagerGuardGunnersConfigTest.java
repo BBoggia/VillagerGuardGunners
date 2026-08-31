@@ -28,7 +28,7 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(7, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(8, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertTrue(config.enabled.get()),
                 () -> assertTrue(config.naturalLoadouts.enabled.get()),
                 () -> assertEquals(
@@ -38,6 +38,12 @@ final class VillagerGuardGunnersConfigTest {
                         .map(difficulty -> () -> assertEquals(
                                 NaturalGuardLoadoutDefaults.settingsFor(difficulty),
                                 config.naturalLoadouts.settingsFor(difficulty)))),
+                () -> assertEquals(48.0D, config.squads.commandDispatchRadius.get()),
+                () -> assertEquals(32, config.squads.maximumAffectedGuards.get()),
+                () -> assertEquals(1200, config.squads.positionalCommandDurationTicks.get()),
+                () -> assertEquals(400, config.squads.focusCommandDurationTicks.get()),
+                () -> assertEquals(12.0D, config.squads.defendRadius.get()),
+                () -> assertEquals(32.0D, config.squads.airCommandRange.get()),
                 () -> assertEquals(5, config.combat.requiredVisibleTicks.get()),
                 () -> assertEquals(32.0D, config.combat.maximumEngagementRange.get()),
                 () -> assertEquals(4.0D, config.combat.closeRangeDistance.get()),
@@ -122,8 +128,14 @@ final class VillagerGuardGunnersConfigTest {
         config.naturalLoadouts.easy.maximumNearby.accept(7);
         config.naturalLoadouts.easy.poolId.accept(ResourceLocation.fromNamespaceAndPath(
                 "example", "custom_easy"));
+        config.squads.commandDispatchRadius.accept(96.0D);
+        config.squads.maximumAffectedGuards.accept(48);
+        config.squads.positionalCommandDurationTicks.accept(2400);
+        config.squads.focusCommandDurationTicks.accept(800);
+        config.squads.defendRadius.accept(24.0D);
+        config.squads.airCommandRange.accept(48.0D);
 
-        config.update(7);
+        config.update(8);
 
         assertAll(
                 () -> assertFalse(config.safety.preserveBlocksFromGuardExplosions.get()),
@@ -164,7 +176,36 @@ final class VillagerGuardGunnersConfigTest {
                                 7,
                                 ResourceLocation.fromNamespaceAndPath(
                                         "example", "custom_easy")),
-                        config.naturalLoadouts.settingsFor(NaturalGuardDifficulty.EASY)));
+                        config.naturalLoadouts.settingsFor(NaturalGuardDifficulty.EASY)),
+                () -> assertEquals(96.0D, config.squads.commandDispatchRadius.get()),
+                () -> assertEquals(48, config.squads.maximumAffectedGuards.get()),
+                () -> assertEquals(2400, config.squads.positionalCommandDurationTicks.get()),
+                () -> assertEquals(800, config.squads.focusCommandDurationTicks.get()),
+                () -> assertEquals(24.0D, config.squads.defendRadius.get()),
+                () -> assertEquals(48.0D, config.squads.airCommandRange.get()));
+    }
+
+    @Test
+    void versionSevenConfigAddsBoundedSquadCommandDefaults() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.squads.commandDispatchRadius.accept(128.0D);
+        config.squads.maximumAffectedGuards.accept(64);
+        config.squads.positionalCommandDurationTicks.accept(72000);
+        config.squads.focusCommandDurationTicks.accept(12000);
+        config.squads.defendRadius.accept(64.0D);
+        config.squads.airCommandRange.accept(64.0D);
+
+        config.update(7);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertEquals(48.0D, config.squads.commandDispatchRadius.get()),
+                () -> assertEquals(32, config.squads.maximumAffectedGuards.get()),
+                () -> assertEquals(1200, config.squads.positionalCommandDurationTicks.get()),
+                () -> assertEquals(400, config.squads.focusCommandDurationTicks.get()),
+                () -> assertEquals(12.0D, config.squads.defendRadius.get()),
+                () -> assertEquals(32.0D, config.squads.airCommandRange.get()));
     }
 
     @Test
@@ -359,6 +400,30 @@ final class VillagerGuardGunnersConfigTest {
                         .correctEntry(-1, ValidationType.STRONG).get()),
                 () -> assertEquals(32, config.naturalLoadouts.easy.maximumNearby
                         .correctEntry(33, ValidationType.STRONG).get()),
+                () -> assertEquals(8.0D, config.squads.commandDispatchRadius
+                        .correctEntry(7.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(128.0D, config.squads.commandDispatchRadius
+                        .correctEntry(129.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(1, config.squads.maximumAffectedGuards
+                        .correctEntry(0, ValidationType.STRONG).get()),
+                () -> assertEquals(64, config.squads.maximumAffectedGuards
+                        .correctEntry(65, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.squads.positionalCommandDurationTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(72000, config.squads.positionalCommandDurationTicks
+                        .correctEntry(72001, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.squads.focusCommandDurationTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(12000, config.squads.focusCommandDurationTicks
+                        .correctEntry(12001, ValidationType.STRONG).get()),
+                () -> assertEquals(2.0D, config.squads.defendRadius
+                        .correctEntry(1.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(64.0D, config.squads.defendRadius
+                        .correctEntry(65.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(4.0D, config.squads.airCommandRange
+                        .correctEntry(3.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(64.0D, config.squads.airCommandRange
+                        .correctEntry(65.0D, ValidationType.STRONG).get()),
                 () -> assertEquals(1, config.performance.visibilitySampleIntervalTicks
                         .correctEntry(0, ValidationType.STRONG).get()),
                 () -> assertEquals(200, config.performance.gunDataRefreshIntervalTicks

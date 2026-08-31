@@ -8,6 +8,7 @@ import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderText;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.OrderField;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,10 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
     private static final int AMMO_HEADER_X = 96;
     private static final int AMMO_HEADER_Y = 33;
     private static final int AMMO_HEADER_HEIGHT = 11;
+    private static final int SIDEARM_SLOT_X = 153;
+    private static final int SIDEARM_SLOT_Y = 44;
+    private static final int SLOT_BACKGROUND_SOURCE_X = 98;
+    private static final int SLOT_BACKGROUND_SOURCE_Y = 43;
     private static final int COMBAT_STATUS_X = 98;
     private static final int COMBAT_STATUS_Y = 69;
     private static final int COMBAT_STATUS_WIDTH = 72;
@@ -63,6 +68,7 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
     private static final int ORDER_BUTTON_WIDTH = ORDER_PANEL_WIDTH - ORDER_BUTTON_X_PADDING * 2;
     private static final int ORDER_BUTTON_HEIGHT = 16;
     private static final int ORDER_BUTTON_SPACING = 19;
+    private static final int RECOVERY_BUTTON_Y = 150;
     private static final int AMMO_STATUS_REFRESH_TICKS = 20;
     private static final int MAX_CACHED_INVENTORY_SLOTS = 1_024;
 
@@ -82,6 +88,7 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
     private float mousePosY;
     private boolean buttonPressed;
     private final Button[] orderButtons = new Button[OrderField.COUNT];
+    private Button recoveryButton;
     private GuardOrders displayedOrders;
 
     public GuardGunnerInventoryScreen(GuardGunnerContainer container, Inventory playerInventory, Component title) {
@@ -132,8 +139,22 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
             orderButtons[field.buttonId()] = orderButton;
             addRenderableWidget(orderButton);
         }
+        recoveryButton = Button.builder(
+                        Component.translatable(
+                                "container.villagerguardgunners.sidearm.recover"),
+                        button -> sendRecoveryButton())
+                .bounds(
+                        panelX + ORDER_BUTTON_X_PADDING,
+                        this.topPos + RECOVERY_BUTTON_Y,
+                        ORDER_BUTTON_WIDTH,
+                        14)
+                .tooltip(Tooltip.create(Component.translatable(
+                        "container.villagerguardgunners.sidearm.recover.tooltip")))
+                .build();
+        addRenderableWidget(recoveryButton);
         displayedOrders = null;
         refreshOrderButtons();
+        refreshRecoveryButton();
     }
 
     @Override
@@ -143,6 +164,7 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         if (!orders.equals(displayedOrders)) {
             refreshOrderButtons();
         }
+        refreshRecoveryButton();
     }
 
     @Override
@@ -153,6 +175,14 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         int i = this.leftPos;
         int j = this.topPos;
         graphics.blit(GUARD_GUI_TEXTURES, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        graphics.blit(
+                GUARD_GUI_TEXTURES,
+                i + SIDEARM_SLOT_X - 1,
+                j + SIDEARM_SLOT_Y - 1,
+                SLOT_BACKGROUND_SOURCE_X,
+                SLOT_BACKGROUND_SOURCE_Y,
+                18,
+                18);
         InventoryScreen.renderEntityInInventoryFollowsMouse(graphics,i + 51, j + 75, 30, (float) (i + 51) - this.mousePosX, (float) (j + 75 - 50) - this.mousePosY, this.guard);
 
         int panelX = orderPanelX();
@@ -247,13 +277,15 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
                 6,
                 0xFFFFFF,
                 false);
-        graphics.drawString(
-                font,
-                Component.translatable("container.villagerguardgunners.orders.hint"),
-                panelLabelX,
-                154,
-                ChatFormatting.GRAY.getColor(),
-                false);
+        if (menu.getSidearmState() != SidearmState.RECOVERY_REQUIRED) {
+            graphics.drawString(
+                    font,
+                    Component.translatable("container.villagerguardgunners.orders.hint"),
+                    panelLabelX,
+                    154,
+                    ChatFormatting.GRAY.getColor(),
+                    false);
+        }
     }
 
     private int orderPanelX() {
@@ -263,6 +295,23 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
     private void sendOrderButton(OrderField field) {
         if (minecraft != null && minecraft.gameMode != null) {
             minecraft.gameMode.handleInventoryButtonClick(menu.containerId, field.buttonId());
+        }
+    }
+
+    private void sendRecoveryButton() {
+        if (minecraft != null && minecraft.gameMode != null) {
+            minecraft.gameMode.handleInventoryButtonClick(
+                    menu.containerId,
+                    GuardGunnerContainer.RECOVER_SIDEARM_BUTTON_ID);
+        }
+    }
+
+    private void refreshRecoveryButton() {
+        if (recoveryButton != null) {
+            boolean recoveryRequired =
+                    menu.getSidearmState() == SidearmState.RECOVERY_REQUIRED;
+            recoveryButton.visible = recoveryRequired;
+            recoveryButton.active = recoveryRequired;
         }
     }
 
@@ -306,8 +355,36 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         this.mousePosY = (float) mouseY;
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
+        renderEmptySidearmTooltip(graphics, mouseX, mouseY);
         renderAmmunitionTooltip(graphics, mouseX, mouseY);
         renderCombatStatusTooltip(graphics, mouseX, mouseY);
+    }
+
+    private void renderEmptySidearmTooltip(
+            GuiGraphics graphics,
+            int mouseX,
+            int mouseY) {
+        if (menu.getSlot(GuardGunnerContainer.SIDEARM_SLOT_INDEX).hasItem()
+                || !isHovering(
+                        SIDEARM_SLOT_X,
+                        SIDEARM_SLOT_Y,
+                        16,
+                        16,
+                        mouseX,
+                        mouseY)) {
+            return;
+        }
+        graphics.renderComponentTooltip(
+                font,
+                List.of(
+                        Component.translatable(
+                                "container.villagerguardgunners.sidearm")
+                                .withStyle(ChatFormatting.AQUA),
+                        Component.translatable(
+                                "container.villagerguardgunners.sidearm.tooltip")
+                                .withStyle(ChatFormatting.GRAY)),
+                mouseX,
+                mouseY);
     }
 
     private void renderCombatStatusTooltip(
@@ -551,7 +628,8 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
                     OUT_OF_RANGE, REPOSITIONING -> ChatFormatting.GOLD.getColor();
             case UNARMED, WEAPON_DATA_NOT_READY, INVALID_FIRING_WINDOW,
                     UNSAFE_SHOT -> ChatFormatting.YELLOW.getColor();
-            case WEAPON_ERROR, OUT_OF_AMMO, WEAPON_RESTRICTED -> ChatFormatting.RED.getColor();
+            case WEAPON_ERROR, OUT_OF_AMMO, WEAPON_RESTRICTED,
+                    RECOVERY_REQUIRED -> ChatFormatting.RED.getColor();
         };
     }
 

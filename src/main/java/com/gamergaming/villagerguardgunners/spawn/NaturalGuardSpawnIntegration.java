@@ -20,10 +20,11 @@ import tallestegg.guardvillagers.entities.Guard;
  * loadout selector.
  *
  * <p>Spawn hooks only attach a source marker. The marker survives a worldgen
- * protochunk handoff, and selection is queued from the eventual live
- * entity-join event. Structure generation therefore never performs a
- * live-entity query from a world-generation worker. There is no recurring tick
- * scan.</p>
+ * protochunk handoff. Already-equipped conversion guards can be selected from
+ * the eventual live entity-join event; ordinary spawned guards wait until
+ * Guard Villagers has completed its one-time native equipment pass. Structure
+ * generation therefore never performs a live-entity query from a
+ * world-generation worker, and the integration adds no recurring tick scan.</p>
  */
 public final class NaturalGuardSpawnIntegration {
     private NaturalGuardSpawnIntegration() {
@@ -50,6 +51,26 @@ public final class NaturalGuardSpawnIntegration {
         }
 
         NaturalGuardPopulationIndex.synchronize(guard);
+
+        // Guard Villagers' player conversion path copies its conversion weapon
+        // before adding the new guard and never runs finalizeSpawn. Ordinary
+        // spawned guards, however, are still empty-handed here and receive
+        // their sword/crossbow during the first Guard#aiStep. Leave their marker
+        // unclaimed until the precise post-equipment hook below.
+        if (!guard.getMainHandItem().isEmpty()) {
+            queueSelection(level, guard);
+        }
+    }
+
+    /** Called once, immediately after Guard Villagers' native spawn equipment pass. */
+    public static void onInitialEquipmentReady(Guard guard) {
+        Objects.requireNonNull(guard, "guard");
+        if (guard.level() instanceof ServerLevel level) {
+            queueSelection(level, guard);
+        }
+    }
+
+    private static void queueSelection(ServerLevel level, Guard guard) {
         GuardNaturalLoadoutAccess access = (GuardNaturalLoadoutAccess) guard;
         NaturalGuardSpawnSource source =
                 access.villagerGuardGunners$claimNaturalLoadoutSpawnSource();
@@ -58,8 +79,10 @@ public final class NaturalGuardSpawnIntegration {
         }
 
         // Queue explicitly: MinecraftServer#execute runs inline on the server
-        // thread, which would still be inside EntityJoinLevelEvent and before
-        // Entity#onAddedToWorld. TickTask also safely crosses from async loads.
+        // thread. At entity join that would be before Entity#onAddedToWorld;
+        // after native equipment it would mutate equipment in the middle of
+        // Guard#aiStep. The atomic source claim makes both readiness paths safe
+        // if another mod creates an already-equipped finalized guard.
         level.getServer().tell(new TickTask(
                 level.getServer().getTickCount(),
                 () -> selectAfterJoin(level, guard, source)));
@@ -114,7 +137,7 @@ public final class NaturalGuardSpawnIntegration {
         NaturalGuardLoadoutProvenance existingProvenance =
                 access.villagerGuardGunners$getNaturalLoadoutProvenance();
         boolean alreadyIssued = NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
-                guard.getMainHandItem(),
+                guard,
                 existingProvenance);
         if (existingProvenance != null && !alreadyIssued) {
             access.villagerGuardGunners$setNaturalLoadoutProvenance(null);
@@ -130,7 +153,14 @@ public final class NaturalGuardSpawnIntegration {
                         guard.getMainHandItem().is(Items.CROSSBOW),
                         alreadyIssued),
                 rules,
+                difficultyKey,
                 difficulty,
+                () -> NaturalGuardLoadoutContextCapture.capture(
+                        level,
+                        guard,
+                        pool,
+                        difficultyKey,
+                        source),
                 guard.getRandom()::nextDouble,
                 () -> countNearbyCandidates(level, guard, rules.nearbyCapRadius()),
                 pool,
@@ -140,6 +170,7 @@ public final class NaturalGuardSpawnIntegration {
             NaturalGuardLoadoutCandidate candidate = new NaturalGuardLoadoutCandidate(
                     difficulty.poolId(),
                     decision.entry().gunId(),
+                    decision.entry().sidearmId(),
                     difficultyKey,
                     source);
             access.villagerGuardGunners$setNaturalLoadoutCandidate(candidate);
@@ -150,13 +181,16 @@ public final class NaturalGuardSpawnIntegration {
                             rules.allowExplosiveWeapons());
             access.villagerGuardGunners$setNaturalLoadoutIssuanceStatus(issuance.status());
             if (issuance.issued()) {
-                access.villagerGuardGunners$setNaturalLoadoutProvenance(
-                        issuance.provenance());
                 NaturalGuardPopulationIndex.synchronize(guard);
             } else {
                 if (issuance.status()
                         == NaturalGuardLoadoutIssuance.IssuanceStatus.GUN_DEFINITION_UNAVAILABLE) {
                     NaturalGuardLoadoutPools.reportUnavailableGun(candidate);
+                }
+                if (issuance.status()
+                        == NaturalGuardLoadoutIssuance.IssuanceStatus
+                                .SIDEARM_DEFINITION_UNAVAILABLE) {
+                    NaturalGuardLoadoutPools.reportUnavailableSidearm(candidate);
                 }
                 // Only fully issued gunner guards reserve a nearby population
                 // slot. A rejected or rolled-back candidate remains a
@@ -192,7 +226,7 @@ public final class NaturalGuardSpawnIntegration {
     private static boolean hasActiveNaturalLoadout(Guard guard) {
         GuardNaturalLoadoutAccess access = (GuardNaturalLoadoutAccess) guard;
         return NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
-                guard.getMainHandItem(),
+                guard,
                 access.villagerGuardGunners$getNaturalLoadoutProvenance());
     }
 }

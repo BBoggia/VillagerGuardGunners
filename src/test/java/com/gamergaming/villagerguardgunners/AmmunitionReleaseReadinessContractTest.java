@@ -119,8 +119,8 @@ final class AmmunitionReleaseReadinessContractTest {
         assertAll(
                 () -> assertTrue(gate.contains("runGameTestServer")),
                 () -> assertTrue(gate.contains("assembleReleaseCandidateEvidence")),
-                () -> assertTrue(gate.contains("performanceJsonReports != 14")),
-                () -> assertTrue(gate.contains("performanceJfrProfiles != 14")),
+                () -> assertTrue(gate.contains("performanceJsonReports != 17")),
+                () -> assertTrue(gate.contains("performanceJfrProfiles != 17")),
                 () -> assertTrue(gate.contains("sha256OfFile(archive)")),
                 () -> assertTrue(gate.contains("docs/release-checklist.md")),
                 () -> assertTrue(gate.contains("docs/ammunition-quality-of-life.md")),

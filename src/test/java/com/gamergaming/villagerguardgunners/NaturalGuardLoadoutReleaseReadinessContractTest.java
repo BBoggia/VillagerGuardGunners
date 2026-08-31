@@ -57,10 +57,14 @@ final class NaturalGuardLoadoutReleaseReadinessContractTest {
                         "<strong>Difficulty-scaled natural guard loadouts</strong>")),
                 () -> assertTrue(description.contains("one complete stack")),
                 () -> assertTrue(description.contains("Reloadable datapack weapon pools")),
+                () -> assertTrue(description.contains("Conditional datapack")),
+                () -> assertTrue(description.contains("/vgg loadouts validate")),
                 () -> assertTrue(description.contains("guard/gun provenance mismatch")),
                 () -> assertTrue(releaseNotes.contains(
                         "Difficulty-scaled natural guard loadouts")),
                 () -> assertTrue(releaseNotes.contains("one full compatible ammunition stack")),
+                () -> assertTrue(releaseNotes.contains("Conditional format-2 entries")),
+                () -> assertTrue(releaseNotes.contains("/vgg loadouts validate")),
                 () -> assertTrue(upload.contains("difficulty-scaled loadouts")),
                 () -> assertTrue(upload.contains("datapack-defined pools")));
     }
@@ -72,11 +76,32 @@ final class NaturalGuardLoadoutReleaseReadinessContractTest {
 
         assertAll(
                 () -> assertTrue(build.contains("api/GuardNaturalLoadoutAccess.class")),
+                () -> assertTrue(build.contains(
+                        "command/NaturalGuardLoadoutCommandService.class")),
+                () -> assertTrue(build.contains(
+                        "command/NaturalGuardLoadoutCommands.class")),
+                () -> assertTrue(build.contains(
+                        "spawn/NaturalGuardLoadoutConditionSpec.class")),
+                () -> assertTrue(build.contains(
+                        "spawn/NaturalGuardLoadoutContextCapture.class")),
+                () -> assertTrue(build.contains("spawn/NaturalGuardLoadoutFormat.class")),
+                () -> assertTrue(build.contains(
+                        "spawn/NaturalGuardLoadoutMatchContext.class")),
+                () -> assertTrue(build.contains(
+                        "spawn/NaturalGuardLoadoutReloadSnapshot.class")),
+                () -> assertTrue(build.contains("spawn/NaturalGuardLoadoutParser.class")),
+                () -> assertTrue(build.contains(
+                        "spawn/NaturalGuardLoadoutCompatibilityAnalyzer.class")),
                 () -> assertTrue(build.contains("spawn/NaturalGuardLoadoutIssuance.class")),
                 () -> assertTrue(build.contains("spawn/NaturalGuardLoadoutProvenanceCodec.class")),
                 () -> assertTrue(build.contains("spawn/NaturalGuardLoadoutDiagnostics.class")),
                 () -> assertTrue(build.contains("naturalLoadoutGuide")),
                 () -> assertTrue(build.contains("docs/natural-guard-loadouts.md")),
+                () -> assertTrue(build.contains("naturalLoadoutAuthoringPaths")),
+                () -> assertTrue(build.contains("docs/natural-loadout-migration.md")),
+                () -> assertTrue(build.contains(
+                        "docs/examples/natural-loadout-datapack/pack.mcmeta")),
+                () -> assertTrue(build.contains("naturalLoadoutAuthoring:")),
                 () -> assertTrue(build.contains("requiredNaturalLoadoutCases")),
                 () -> assertTrue(build.contains("NATURAL-CAP-01")));
     }

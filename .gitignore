@@ -16,9 +16,18 @@ out
 # gradle
 build
 .gradle
+/distributions/
+/src/generated/resources/.cache/
+
+# generated IDE/compiler output
+/.apt_generated/
+/.apt_generated_tests/
+/com/
 
 # other
 .DS_Store
+.DS_Store?
+/**/.DS_Store
 eclipse
 run
 run-gametest
@@ -30,3 +39,4 @@ tempCodeRunnerFile.*
 
 # Files from Forge MDK
 forge*changelog.txt
+/temp/

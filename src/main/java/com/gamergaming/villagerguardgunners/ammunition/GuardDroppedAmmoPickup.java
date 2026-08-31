@@ -4,7 +4,6 @@ import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
-import com.tacz.guns.api.item.IGun;
 import java.util.List;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.GameRules;
@@ -69,11 +68,9 @@ public final class GuardDroppedAmmoPickup {
                 continue;
             }
 
-            ItemStack gunStack = guard.getMainHandItem();
-            if (gunStack.isEmpty()
-                    || !(gunStack.getItem() instanceof IGun)
-                    || !AmmoCompatibility.assess(gunStack, offered).isCompatible()
-                    || !usesPhysicalAmmunition(gunStack)) {
+            if (!GuardWeaponAmmunition
+                    .assessPhysicalSupply(guard, offered)
+                    .compatible()) {
                 continue;
             }
 
@@ -119,13 +116,6 @@ public final class GuardDroppedAmmoPickup {
                 PickupStatus.PICKED_UP,
                 insertion.inserted(),
                 insertion.remainder().copy());
-    }
-
-    private static boolean usesPhysicalAmmunition(ItemStack gunStack) {
-        GuardAmmoSummary.Snapshot ammunition =
-                GuardAmmoSummary.capture(gunStack.copy(), null);
-        return ammunition.isReady()
-                && ammunition.reserveSource() == GuardAmmoSummary.ReserveSource.PHYSICAL;
     }
 
     public enum PickupStatus {

@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.tacz.guns.api.GunProperties;
 import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.item.IGun;
+import com.tacz.guns.entity.shooter.ShooterDataHolder;
 import com.tacz.guns.resource.modifier.AttachmentCacheProperty;
 import com.tacz.guns.resource.pojo.data.gun.ExplosionData;
 import com.tacz.guns.resource.pojo.data.gun.GunData;
@@ -35,9 +36,30 @@ public final class TaCZExplosionResolver {
             IGun gun,
             GunData gunData,
             @Nullable AttachmentCacheProperty cache) {
+        return resolveWithDataHolder(
+                IGunOperator.fromLivingEntity(shooter).getDataHolder(),
+                shooter,
+                gunStack,
+                gun,
+                gunData,
+                cache);
+    }
+
+    /**
+     * Resolves runtime properties against an explicit operator context. Stored
+     * weapons use an isolated holder so scripts cannot accidentally inspect the
+     * currently equipped primary through {@code currentGunItem} or script data.
+     */
+    public static Traits resolveWithDataHolder(
+            ShooterDataHolder dataHolder,
+            LivingEntity shooter,
+            ItemStack gunStack,
+            IGun gun,
+            GunData gunData,
+            @Nullable AttachmentCacheProperty cache) {
         ExplosionData explosion = resolveBaseExplosionFromGun(gunData, cache);
         Boolean enabled = gun.modifyProperty(
-                IGunOperator.fromLivingEntity(shooter).getDataHolder(),
+                dataHolder,
                 gunStack,
                 shooter,
                 GunProperties.RuntimeOnly.EXPLODE_ENABLED,
@@ -51,7 +73,7 @@ public final class TaCZExplosionResolver {
         }
 
         Float radius = gun.modifyProperty(
-                IGunOperator.fromLivingEntity(shooter).getDataHolder(),
+                dataHolder,
                 gunStack,
                 shooter,
                 GunProperties.RuntimeOnly.EXPLOSION_RADIUS,

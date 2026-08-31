@@ -127,7 +127,8 @@ final class NativeCombatSourceContractTest {
                 () -> assertTrue(goal.contains("config.performance.movementDecisionIntervalTicks.get()")),
                 () -> assertTrue(goal.contains("config.performance.pathRecalculationIntervalTicks.get()")),
                 () -> assertTrue(goal.contains("GuardCombatMovement.firstDueTick")),
-                () -> assertTrue(goal.contains("navigation.moveTo(target, config.movement.approachSpeed.get())")),
+                () -> assertTrue(goal.contains("commandMovement.moveTowardCombatTarget(")),
+                () -> assertTrue(goal.contains("config.movement.approachSpeed.get()")),
                 () -> assertTrue(goal.contains("getMoveControl().strafe")),
                 () -> assertTrue(goal.contains("config.performance.repositionProgressCheckTicks.get()")),
                 () -> assertTrue(goal.contains("madeLateralProgress(")),
@@ -141,6 +142,8 @@ final class NativeCombatSourceContractTest {
                 () -> assertFalse(goal.contains("createPath(")),
                 () -> assertFalse(goal.contains("DefaultRandomPos")),
                 () -> assertTrue(controller.contains("GunProperties.EFFECTIVE_RANGE")),
+                () -> assertTrue(goal.contains("guard.getUsedItemHand() == InteractionHand.OFF_HAND")),
+                () -> assertTrue(goal.contains("guard.stopUsingItem()")),
                 () -> assertTrue(shieldMixin.contains("instanceof IGun")),
                 () -> assertTrue(shieldMixin.contains("getDataHolder().isAiming")),
                 () -> assertTrue(mixinConfig.contains("RaiseShieldGoalMixin")));

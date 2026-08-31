@@ -2,15 +2,20 @@ package com.gamergaming.villagerguardgunners.gametest;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ai.SquadCommandMovementGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSharing;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.tacz.guns.api.entity.IGunOperator;
+import com.tacz.guns.api.event.common.GunShootEvent;
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.api.item.builder.AmmoItemBuilder;
 import com.tacz.guns.api.item.builder.GunItemBuilder;
@@ -26,10 +31,13 @@ import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import jdk.jfr.Configuration;
 import jdk.jfr.Recording;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +53,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
@@ -64,7 +76,7 @@ import tallestegg.guardvillagers.entities.Guard;
 @PrefixGameTestTemplate(false)
 public final class PhaseEightPerformanceGameTests {
     private static final String EMPTY_TEMPLATE = "villagerguardgunners/gametest_arena";
-    private static final int WARMUP_TICKS = 100;
+    private static final int WARMUP_TICKS = 200;
     private static final int SAMPLE_TICKS = 1_000;
     private static final int FLOOR_Y = 4;
     private static final double ENTITY_Y = FLOOR_Y + 1.0D;
@@ -164,6 +176,27 @@ public final class PhaseEightPerformanceGameTests {
                 Workload.DRY_SHARING_PRESSURE);
     }
 
+    @GameTest(batch = "phase8_14_dry_sidearm_switch_50", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 1_600)
+    public static void simultaneousDryPrimarySidearmSwitch50(GameTestHelper helper) {
+        runScenario(helper, "dry-primary-sidearm-switch-50", 50, Weapon.DRY_AUTOMATIC,
+                Workload.DRY_PRIMARY_SIDEARM_SWITCH);
+    }
+
+    @GameTest(batch = "phase8_15_explosive_sidearm_20", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 1_600)
+    public static void mixedExplosiveStandoffAndSidearm20(GameTestHelper helper) {
+        runScenario(helper, "mixed-explosive-standoff-sidearm-20", 20, Weapon.EXPLOSIVE,
+                Workload.MIXED_EXPLOSIVE_STANDOFF_SIDEARM);
+    }
+
+    @GameTest(batch = "phase8_16_idle_sidearms_100", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 1_600)
+    public static void idleArmedGuardsWithSidearms100(GameTestHelper helper) {
+        runScenario(helper, "idle-armed-sidearms-100", 100, Weapon.SEMI,
+                Workload.IDLE_WITH_SIDEARMS);
+    }
+
     private static void runScenario(
             GameTestHelper helper,
             String name,
@@ -178,48 +211,50 @@ public final class PhaseEightPerformanceGameTests {
                 "The performance run was not bound to a production artifact SHA-256");
         List<Entity> cleanup = new ArrayList<>(guardCount * 3);
         List<Guard> guards = new ArrayList<>(guardCount);
+        List<Vec3> guardAnchors = new ArrayList<>(guardCount);
         List<IGunOperator> operators = new ArrayList<>(guardCount);
         List<ItemStack> gunStacks = new ArrayList<>(guardCount);
         List<GuardAmmoHandler> ammoHandlers = new ArrayList<>(guardCount);
         List<Ravager> targets = new ArrayList<>(guardCount);
+        List<Vec3> targetAnchors = new ArrayList<>(guardCount);
         List<MovingFriendly> movingFriendlies = new ArrayList<>(guardCount);
         List<ItemEntity> droppedAmmoEntities = new ArrayList<>(guardCount);
         double rowSpacing = rowSpacing(weapon, workload);
+        double columnSpacing = workload.columnSpacing();
         double scenarioZOffset = scenarioZOffset(name);
         List<ChunkPos> forcedChunks = forceScenarioChunks(
                 helper,
                 guardCount,
+                columnSpacing,
                 rowSpacing,
                 scenarioZOffset);
 
         for (int index = 0; index < guardCount; index++) {
             int column = index / 10;
             int row = index % 10;
-            double guardX = 2.5D + column * 20.0D;
+            double guardX = 2.5D + column * columnSpacing;
             double guardZ = scenarioZOffset + 2.5D + row * rowSpacing;
             prepareLane(helper, guardX, guardZ, workload);
             Guard guard = helper.spawn(
                     GuardEntityType.GUARD.get(),
                     new Vec3(guardX, ENTITY_Y, guardZ));
+            retainOnlyAddOnGoals(guard);
             guard.setPersistenceRequired();
-            if (workload == Workload.CLEAR_LANES
+            if (workload.anchorsGuards()
                     || workload == Workload.DROPPED_AMMO_PRESSURE
                     || workload == Workload.DRY_SHARING_PRESSURE) {
                 // These scenarios isolate firing and safety-query cost. The
                 // obstacle and protected-crossing workloads retain movement.
                 guard.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.0D);
             }
+            if (workload.anchorsGuards()) {
+                guard.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
+            }
             GuardAmmoHandler ammoHandler = GuardAmmoAccess.getAmmoHandler(guard);
             ammoHandlers.add(ammoHandler);
             ItemStack gun = ItemStack.EMPTY;
             if (weapon != Weapon.UNARMED) {
-                gun = GunItemBuilder.create()
-                        .setId(weapon.gunId)
-                        .setFireMode(weapon.fireMode)
-                        .setAmmoCount(weapon.ammoCount)
-                        .setAmmoInBarrel(weapon != Weapon.DRY_SEMI)
-                        .setHeatData(weapon.heatData)
-                        .build();
+                gun = createGunStack(weapon);
                 guard.setItemSlot(EquipmentSlot.MAINHAND, gun);
                 if (weapon.reloadAmmoId != null) {
                     for (int slot = 0; slot < ammoHandler.getSlots(); slot++) {
@@ -257,19 +292,39 @@ public final class PhaseEightPerformanceGameTests {
                     cleanup.add(droppedAmmo);
                 }
             }
+            if (workload.hasSidearmLoadout()) {
+                ItemStack sidearmRemainder = GuardSidearmAccess
+                        .getConfiguredSidearmInventory(guard)
+                        .insertItem(0, createGunStack(Weapon.SEMI), false);
+                helper.assertTrue(
+                        sidearmRemainder.isEmpty(),
+                        "Could not install the performance scenario sidearm");
+            }
             gunStacks.add(gun);
             cleanup.add(guard);
             guards.add(guard);
+            guardAnchors.add(guard.position());
             operators.add(IGunOperator.fromLivingEntity(guard));
 
             if (workload.hasTarget()) {
+                Vec3 targetRelativePosition = new Vec3(
+                        guardX + workload.targetDistance(index),
+                        ENTITY_Y,
+                        guardZ);
                 Ravager target = helper.spawnWithNoFreeWill(
                         EntityType.RAVAGER,
-                        new Vec3(guardX + 12.0D, ENTITY_Y, guardZ));
+                        targetRelativePosition);
+                Vec3 targetAnchor = target.position();
                 target.setInvulnerable(true);
+                target.setNoGravity(true);
+                target.setDeltaMovement(Vec3.ZERO);
+                target.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
                 target.setPersistenceRequired();
-                guard.setTarget(target);
+                if (!workload.delaysTargetUntilSample()) {
+                    guard.setTarget(target);
+                }
                 targets.add(target);
+                targetAnchors.add(targetAnchor);
                 cleanup.add(target);
 
                 if (workload == Workload.PROTECTED_LANES) {
@@ -300,12 +355,22 @@ public final class PhaseEightPerformanceGameTests {
         int[] sampleCount = {0};
         long[] gcCollectionsAtStart = {0L};
         long[] usedHeapAtStart = {0L};
-        int[] nativeShootCountsAtStart = new int[guardCount];
+        int[] acceptedShotEventsAtStart = new int[guardCount];
+        int[] acceptedShotEventsAtEnd = new int[guardCount];
         int[] ammoRemainingAtStart = new int[guardCount];
+        int[] firstSidearmActiveTick = new int[guardCount];
+        Arrays.fill(firstSidearmActiveTick, -1);
         boolean[] completed = {false};
+        boolean[] shotRecorderRegistered = {false};
+        AcceptedShotRecorder shotRecorder = new AcceptedShotRecorder(guards);
+        NominalShotClock nominalShotClock = new NominalShotClock(guardCount);
         Recording recording;
         try {
-            recording = new Recording(Configuration.getConfiguration("profile"));
+            // The default preset plus an explicit execution-sample period is
+            // sufficient for this focused attribution run. Avoid the broad
+            // profile preset: JDK 17's JFR TypeLibrary can race while many
+            // dynamically loaded mod classes/events are finalized.
+            recording = new Recording(Configuration.getConfiguration("default"));
             recording.setName("villagerguardgunners-" + name);
             recording.setToDisk(true);
             recording.setMaxSize(256L * 1024L * 1024L);
@@ -315,6 +380,8 @@ public final class PhaseEightPerformanceGameTests {
             helper.fail("Could not configure the Phase 8 JFR recording: " + exception.getMessage());
             return;
         }
+        MinecraftForge.EVENT_BUS.register(shotRecorder);
+        shotRecorderRegistered[0] = true;
 
         helper.onEachTick(() -> {
             if (completed[0]) {
@@ -322,20 +389,36 @@ public final class PhaseEightPerformanceGameTests {
             }
 
             long testTick = helper.getTick();
-            maintainScenarioTargets(guards, targets, workload);
+            maintainScenarioTargets(
+                    guards,
+                    guardAnchors,
+                    targets,
+                    targetAnchors,
+                    workload,
+                    weapon,
+                    testTick);
             moveProtectedFriendlies(movingFriendlies, testTick);
-            advanceUnthrottledTaCZClocks(operators, weapon, testTick);
+            advanceUnthrottledTaCZClocks(
+                    operators,
+                    weapon,
+                    testTick,
+                    shotRecorder,
+                    nominalShotClock);
+            observeSidearmActivationTicks(guards, firstSidearmActiveTick, testTick);
             if (testTick == WARMUP_TICKS - 1L) {
                 recording.start();
             }
             if (testTick == WARMUP_TICKS) {
+                // Warmup exists to initialize the same native firing paths,
+                // not to carry its already-measured projectile population into
+                // the sample. Only bullets owned by this scenario are removed.
+                discardScenarioBullets(helper, guards);
                 gcCollectionsAtStart[0] = garbageCollectionCount();
                 usedHeapAtStart[0] = usedHeapBytes();
-                capturePerGuardEvidence(
-                        operators,
+                shotRecorder.copyCountsTo(acceptedShotEventsAtStart);
+                captureAmmoEvidence(
                         gunStacks,
                         ammoHandlers,
-                        nativeShootCountsAtStart,
                         ammoRemainingAtStart);
             }
             if (testTick < WARMUP_TICKS || sampleCount[0] >= SAMPLE_TICKS) {
@@ -347,22 +430,28 @@ public final class PhaseEightPerformanceGameTests {
             samples[sampleCount[0]++] = serverTickTimes[previousTickIndex];
             if (sampleCount[0] == SAMPLE_TICKS) {
                 completed[0] = true;
+                shotRecorder.copyCountsTo(acceptedShotEventsAtEnd);
+                if (shotRecorderRegistered[0]) {
+                    MinecraftForge.EVENT_BUS.unregister(shotRecorder);
+                    shotRecorderRegistered[0] = false;
+                }
                 ShotEvidence shotEvidence = writeReport(
                         helper,
                         name,
                         guardCount,
                         weapon,
                         workload,
-                        operators,
                         gunStacks,
                         ammoHandlers,
                         samples,
                         gcCollectionsAtStart[0],
                         usedHeapAtStart[0],
-                        nativeShootCountsAtStart,
+                        acceptedShotEventsAtStart,
+                        acceptedShotEventsAtEnd,
                         ammoRemainingAtStart,
                         guards,
                         droppedAmmoEntities,
+                        firstSidearmActiveTick,
                         recording);
                 discardScenarioBullets(helper, guards);
                 cleanup.forEach(Entity::discard);
@@ -373,12 +462,24 @@ public final class PhaseEightPerformanceGameTests {
                         minimumAcceptedPerActiveGuardShotEvidence(workload);
                 int minimumSharingAttempts = minimumAmmoSharingAttempts(guardCount, workload);
                 int minimumPersistentDrops = minimumPersistentDroppedAmmo(guardCount, workload);
+                int expectedSidearmLoadouts = workload.expectedSidearmLoadouts(guardCount);
+                int minimumSidearmActive = workload.minimumSidearmActiveGuards(guardCount);
+                int maximumSidearmActive = workload.maximumSidearmActiveGuards(guardCount);
                 if (shotEvidence.acceptedTotal() < minimumShotEvidence
                         || shotEvidence.activeFiringGuards() < minimumFiringGuards
                         || shotEvidence.minimumPerActiveGuard()
                                 < minimumPerActiveGuardEvidence
                         || shotEvidence.ammoSharingAttemptsObserved() < minimumSharingAttempts
-                        || shotEvidence.persistentDroppedAmmoEntities() < minimumPersistentDrops) {
+                        || shotEvidence.persistentDroppedAmmoEntities() < minimumPersistentDrops
+                        || shotEvidence.sidearmLoadoutsObserved() != expectedSidearmLoadouts
+                        || shotEvidence.sidearmActiveGuardsAtEnd() < minimumSidearmActive
+                        || shotEvidence.sidearmActiveGuardsAtEnd() > maximumSidearmActive
+                        || !shotEvidence.sidearmRoleEvidence().finalRoleMappingValid()
+                        || !shotEvidence.sidearmRoleEvidence().activationTimingValid()
+                        || shotEvidence.sidearmRoleEvidence().sidearmRoleFiringGuards()
+                                < shotEvidence.sidearmRoleEvidence().minimumFiringGuardsPerRole()
+                        || shotEvidence.sidearmRoleEvidence().primaryRoleFiringGuards()
+                                < shotEvidence.sidearmRoleEvidence().minimumFiringGuardsPerRole()) {
                     helper.fail("The performance scenario recorded "
                             + shotEvidence.acceptedTotal()
                             + " accepted native TaCZ shots across "
@@ -398,7 +499,27 @@ public final class PhaseEightPerformanceGameTests {
                             + ", persistentDrops="
                             + shotEvidence.persistentDroppedAmmoEntities()
                             + "/"
-                            + minimumPersistentDrops);
+                            + minimumPersistentDrops
+                            + ", sidearmLoadouts="
+                            + shotEvidence.sidearmLoadoutsObserved()
+                            + "/"
+                            + expectedSidearmLoadouts
+                            + ", sidearmActive="
+                            + shotEvidence.sidearmActiveGuardsAtEnd()
+                            + "/"
+                            + minimumSidearmActive
+                            + "-"
+                            + maximumSidearmActive
+                            + ", roleMappingValid="
+                            + shotEvidence.sidearmRoleEvidence().finalRoleMappingValid()
+                            + ", activationTimingValid="
+                            + shotEvidence.sidearmRoleEvidence().activationTimingValid()
+                            + ", roleFiring="
+                            + shotEvidence.sidearmRoleEvidence().sidearmRoleFiringGuards()
+                            + "/"
+                            + shotEvidence.sidearmRoleEvidence().primaryRoleFiringGuards()
+                            + "/"
+                            + shotEvidence.sidearmRoleEvidence().minimumFiringGuardsPerRole());
                     return;
                 }
                 helper.succeed();
@@ -408,6 +529,7 @@ public final class PhaseEightPerformanceGameTests {
 
     private static double rowSpacing(Weapon weapon, Workload workload) {
         if (workload == Workload.IDLE
+                || workload == Workload.IDLE_WITH_SIDEARMS
                 || workload == Workload.DROPPED_AMMO_PRESSURE
                 || workload == Workload.DRY_SHARING_PRESSURE) {
             return 4.0D;
@@ -415,7 +537,7 @@ public final class PhaseEightPerformanceGameTests {
         return switch (weapon) {
             case SHOTGUN -> 16.0D;
             case EXPLOSIVE -> 40.0D;
-            default -> 12.0D;
+            default -> workload == Workload.PROTECTED_LANES ? 20.0D : 12.0D;
         };
     }
 
@@ -436,6 +558,9 @@ public final class PhaseEightPerformanceGameTests {
             case "protected-crossing-25" -> 11;
             case "dropped-ammo-pressure-100" -> 12;
             case "dry-sharing-pressure-50" -> 13;
+            case "dry-primary-sidearm-switch-50" -> 14;
+            case "mixed-explosive-standoff-sidearm-20" -> 15;
+            case "idle-armed-sidearms-100" -> 16;
             default -> throw new IllegalArgumentException("Unknown performance scenario: " + name);
         };
         return scenarioIndex * 512.0D;
@@ -444,6 +569,7 @@ public final class PhaseEightPerformanceGameTests {
     private static List<ChunkPos> forceScenarioChunks(
             GameTestHelper helper,
             int guardCount,
+            double columnSpacing,
             double rowSpacing,
             double scenarioZOffset) {
         int columnCount = Math.max(1, (guardCount + 9) / 10);
@@ -453,7 +579,7 @@ public final class PhaseEightPerformanceGameTests {
                 0,
                 (int) Math.floor(scenarioZOffset - 4.0D)));
         BlockPos maximum = helper.absolutePos(new BlockPos(
-                (int) Math.ceil(2.5D + (columnCount - 1) * 20.0D + 16.0D),
+                (int) Math.ceil(2.5D + (columnCount - 1) * columnSpacing + 24.0D),
                 0,
                 (int) Math.ceil(
                         scenarioZOffset + 2.5D + (rowCount - 1) * rowSpacing + 4.0D)));
@@ -501,31 +627,69 @@ public final class PhaseEightPerformanceGameTests {
     static double protectedFriendlyOffset(long testTick, int laneIndex) {
         long phase = Math.floorMod(testTick + laneIndex * 7L, 120L);
         if (phase < 30L) {
-            return -4.0D;
+            return -6.0D;
         }
         if (phase < 60L) {
-            return -4.0D + (phase - 30L) * (8.0D / 30.0D);
+            return -6.0D + (phase - 30L) * (12.0D / 30.0D);
         }
         if (phase < 90L) {
-            return 4.0D;
+            return 6.0D;
         }
-        return 4.0D - (phase - 90L) * (8.0D / 30.0D);
+        return 6.0D - (phase - 90L) * (12.0D / 30.0D);
     }
 
     private static void maintainScenarioTargets(
             List<Guard> guards,
+            List<Vec3> guardAnchors,
             List<Ravager> targets,
-            Workload workload) {
+            List<Vec3> targetAnchors,
+            Workload workload,
+            Weapon weapon,
+            long testTick) {
         if (!workload.hasTarget()) {
             return;
         }
         for (int index = 0; index < guards.size(); index++) {
             Guard guard = guards.get(index);
             Ravager target = targets.get(index);
-            if (guard.isAlive() && target.isAlive() && guard.getTarget() != target) {
-                guard.setTarget(target);
+            if (guard.isAlive() && target.isAlive()) {
+                if (workload.anchorsGuards()) {
+                    Vec3 guardAnchor = guardAnchors.get(index);
+                    if (!guard.position().equals(guardAnchor)) {
+                        guard.setPos(guardAnchor);
+                    }
+                    guard.setDeltaMovement(Vec3.ZERO);
+                    guard.setSprinting(false);
+                }
+                Vec3 anchor = targetAnchors.get(index);
+                if (!target.position().equals(anchor)) {
+                    target.setPos(anchor);
+                }
+                if (!target.getDeltaMovement().equals(Vec3.ZERO)) {
+                    target.setDeltaMovement(Vec3.ZERO);
+                }
+                boolean targetWithheld = (workload.delaysTargetUntilSample()
+                                && testTick < WARMUP_TICKS)
+                        || (weapon == Weapon.EXPLOSIVE
+                                && workload == Workload.CLEAR_LANES
+                                && testTick >= WARMUP_TICKS - 5L
+                                && testTick < WARMUP_TICKS);
+                if (targetWithheld) {
+                    if (guard.getTarget() != null) {
+                        guard.setTarget(null);
+                    }
+                } else if (guard.getTarget() != target) {
+                    guard.setTarget(target);
+                }
             }
         }
+    }
+
+    /** Removes unrelated Guard Villagers AI variance while retaining both add-on goals. */
+    private static void retainOnlyAddOnGoals(Guard guard) {
+        guard.goalSelector.removeAllGoals(goal -> !(goal instanceof GuardGunCombatGoal)
+                && !(goal instanceof SquadCommandMovementGoal));
+        guard.targetSelector.removeAllGoals(goal -> true);
     }
 
     private static void prepareLane(
@@ -534,8 +698,12 @@ public final class PhaseEightPerformanceGameTests {
             double guardZ,
             Workload workload) {
         int firstX = (int) guardX - 1;
-        int lastX = workload.hasTarget() ? (int) guardX + 13 : (int) guardX + 1;
-        int laneHalfWidth = workload == Workload.PROTECTED_LANES ? 5 : 1;
+        int lastX = workload.hasTarget()
+                ? (int) Math.ceil(guardX + workload.maximumTargetDistance()) + 1
+                : (int) guardX + 1;
+        int laneHalfWidth = workload == Workload.PROTECTED_LANES
+                ? 5
+                : workload.anchorsGuards() ? 4 : 1;
         for (int x = firstX; x <= lastX; x++) {
             for (int z = (int) guardZ - laneHalfWidth;
                     z <= (int) guardZ + laneHalfWidth;
@@ -551,13 +719,16 @@ public final class PhaseEightPerformanceGameTests {
     private static void advanceUnthrottledTaCZClocks(
             List<IGunOperator> operators,
             Weapon weapon,
-            long testTick) {
+            long testTick,
+            AcceptedShotRecorder shotRecorder,
+            NominalShotClock nominalShotClock) {
         if (weapon == Weapon.UNARMED) {
             return;
         }
         boolean triggerDue = testTick % weapon.nominalShotIntervalTicks == 0L;
         long currentTime = System.currentTimeMillis();
-        for (IGunOperator operator : operators) {
+        for (int index = 0; index < operators.size(); index++) {
+            IGunOperator operator = operators.get(index);
             var data = operator.getDataHolder();
             data.drawTimestamp = currentTime - 10_000L;
             if (data.reloadTimestamp >= 0L) {
@@ -566,7 +737,10 @@ public final class PhaseEightPerformanceGameTests {
                 // while keeping the unthrottled GameTest workload meaningful.
                 data.reloadTimestamp = currentTime - 10_000L;
             }
-            if (triggerDue) {
+            if (nominalShotClock.shouldAdvance(
+                    index,
+                    triggerDue,
+                    shotRecorder.count(index))) {
                 long relativeNow = currentTime - data.baseTimestamp;
                 data.shootTimestamp = relativeNow - 10_000L;
                 data.lastShootTimestamp = relativeNow - 10_000L;
@@ -580,16 +754,17 @@ public final class PhaseEightPerformanceGameTests {
             int guardCount,
             Weapon weapon,
             Workload workload,
-            List<IGunOperator> operators,
             List<ItemStack> gunStacks,
             List<GuardAmmoHandler> ammoHandlers,
             long[] samples,
             long gcCollectionsAtStart,
             long usedHeapAtStart,
-            int[] nativeShootCountsAtStart,
+            int[] acceptedShotEventsAtStart,
+            int[] acceptedShotEventsAtEnd,
             int[] ammoRemainingAtStart,
             List<Guard> guards,
             List<ItemEntity> droppedAmmoEntities,
+            int[] firstSidearmActiveTick,
             Recording recording) {
         long[] sorted = samples.clone();
         Arrays.sort(sorted);
@@ -602,23 +777,23 @@ public final class PhaseEightPerformanceGameTests {
                 liveBullets++;
             }
         }
-        int nativeShootCount = 0;
+        int acceptedShotEventCount = 0;
         int nativeAmmoConsumed = 0;
         int[] perGuardShotEvidence = new int[guardCount];
         for (int index = 0; index < guardCount; index++) {
-            int shootCount = Math.max(
+            int acceptedShotEvents = Math.max(
                     0,
-                    operators.get(index).getDataHolder().shootCount
-                            - nativeShootCountsAtStart[index]);
+                    acceptedShotEventsAtEnd[index]
+                            - acceptedShotEventsAtStart[index]);
             int ammoConsumed = Math.max(
                     0,
                     ammoRemainingAtStart[index]
                             - remainingAmmo(gunStacks.get(index), ammoHandlers.get(index)));
-            nativeShootCount += shootCount;
+            acceptedShotEventCount += acceptedShotEvents;
             nativeAmmoConsumed += ammoConsumed;
-            perGuardShotEvidence[index] = Math.max(shootCount, ammoConsumed);
+            perGuardShotEvidence[index] = Math.max(acceptedShotEvents, ammoConsumed);
         }
-        int acceptedShotEvidence = Math.max(nativeShootCount, nativeAmmoConsumed);
+        int acceptedShotEvidence = Math.max(acceptedShotEventCount, nativeAmmoConsumed);
         int activeFiringGuards = (int) Arrays.stream(perGuardShotEvidence)
                 .filter(value -> value > 0)
                 .count();
@@ -631,6 +806,11 @@ public final class PhaseEightPerformanceGameTests {
         int persistentDroppedAmmoEntities = (int) droppedAmmoEntities.stream()
                 .filter(ItemEntity::isAlive)
                 .count();
+        SidearmRoleEvidence sidearmRoleEvidence = sidearmRoleEvidence(
+                guards,
+                workload,
+                perGuardShotEvidence,
+                firstSidearmActiveTick);
         String reportDirectory = System.getProperty(REPORT_DIRECTORY_PROPERTY);
         helper.assertTrue(reportDirectory != null && !reportDirectory.isBlank(),
                 "Phase 8 performance report directory was not configured");
@@ -640,7 +820,7 @@ public final class PhaseEightPerformanceGameTests {
             recording.stop();
             Files.createDirectories(outputDirectory);
             recording.dump(outputDirectory.resolve(recordingFileName));
-        } catch (IOException exception) {
+        } catch (IOException | RuntimeException exception) {
             helper.fail("Could not write the Phase 8 JFR recording: " + exception.getMessage());
         } finally {
             recording.close();
@@ -653,7 +833,7 @@ public final class PhaseEightPerformanceGameTests {
         report.addProperty("workload", workload.name().toLowerCase());
         report.addProperty("warmupTicks", WARMUP_TICKS);
         report.addProperty("sampleTicks", samples.length);
-        report.addProperty("configProfile", "default-v7");
+        report.addProperty("configProfile", "default-v8");
         report.addProperty("configVersion", VillagerGuardGunnersConfig.CONFIG_VERSION);
         report.add("guardGunnerConfig", configSnapshot());
         report.addProperty("averageMspt", averageMspt);
@@ -661,7 +841,11 @@ public final class PhaseEightPerformanceGameTests {
         report.addProperty("p95Mspt", percentileMilliseconds(sorted, 0.95D));
         report.addProperty("p99Mspt", percentileMilliseconds(sorted, 0.99D));
         report.addProperty("maxMspt", sorted[sorted.length - 1] / 1_000_000.0D);
-        report.addProperty("nativeTaCZShootCount", nativeShootCount);
+        // Keep the established report key for verifier compatibility. Its value
+        // now comes from accepted server-side GunShootEvent instances instead
+        // of TaCZ's reload-resettable ShooterDataHolder.shootCount field.
+        report.addProperty("nativeTaCZShootCount", acceptedShotEventCount);
+        report.addProperty("acceptedServerGunShootEvents", acceptedShotEventCount);
         report.addProperty("nativeAmmoConsumed", nativeAmmoConsumed);
         report.addProperty(
                 "minimumAcceptedShotEvidence",
@@ -685,9 +869,57 @@ public final class PhaseEightPerformanceGameTests {
         report.addProperty(
                 "minimumPersistentDroppedAmmo",
                 minimumPersistentDroppedAmmo(guardCount, workload));
+        int sidearmLoadoutsObserved = sidearmLoadoutsObserved(guards);
+        int sidearmActiveGuardsAtEnd = sidearmActiveGuardsAtEnd(guards);
+        report.addProperty("sidearmLoadoutsObserved", sidearmLoadoutsObserved);
+        report.addProperty(
+                "expectedSidearmLoadouts",
+                workload.expectedSidearmLoadouts(guardCount));
+        report.addProperty("sidearmActiveGuardsAtEnd", sidearmActiveGuardsAtEnd);
+        report.addProperty(
+                "minimumSidearmActiveGuards",
+                workload.minimumSidearmActiveGuards(guardCount));
+        report.addProperty(
+                "maximumSidearmActiveGuards",
+                workload.maximumSidearmActiveGuards(guardCount));
+        report.addProperty(
+                "sidearmActivationTriggerTick",
+                workload.delaysTargetUntilSample() ? WARMUP_TICKS : -1);
+        report.addProperty(
+                "firstObservedSidearmActivationTick",
+                firstObservedActivationTick(firstSidearmActiveTick));
+        report.addProperty(
+                "lastObservedSidearmActivationTick",
+                lastObservedActivationTick(firstSidearmActiveTick));
+        report.addProperty(
+                "sidearmRoleFiringGuards",
+                sidearmRoleEvidence.sidearmRoleFiringGuards());
+        report.addProperty(
+                "primaryRoleFiringGuards",
+                sidearmRoleEvidence.primaryRoleFiringGuards());
+        report.addProperty(
+                "minimumFiringGuardsPerRole",
+                sidearmRoleEvidence.minimumFiringGuardsPerRole());
+        report.addProperty(
+                "finalSidearmRoleMappingValid",
+                sidearmRoleEvidence.finalRoleMappingValid());
+        report.addProperty(
+                "sidearmActivationTimingValid",
+                sidearmRoleEvidence.activationTimingValid());
         JsonArray perGuardEvidence = new JsonArray();
         Arrays.stream(perGuardShotEvidence).forEach(perGuardEvidence::add);
         report.add("perGuardAcceptedShotEvidence", perGuardEvidence);
+        JsonArray perGuardActivationTicks = new JsonArray();
+        Arrays.stream(firstSidearmActiveTick).forEach(perGuardActivationTicks::add);
+        report.add("perGuardFirstSidearmActivationTick", perGuardActivationTicks);
+        report.add(
+                "perGuardFinalState",
+                perGuardFinalState(
+                        guards,
+                        weapon,
+                        workload,
+                        perGuardShotEvidence,
+                        firstSidearmActiveTick));
         report.addProperty("liveTaCZBulletsAtEnd", liveBullets);
         report.addProperty("garbageCollectionsDuringSample",
                 Math.max(0L, garbageCollectionCount() - gcCollectionsAtStart));
@@ -717,7 +949,216 @@ public final class PhaseEightPerformanceGameTests {
                 minimumPerActiveGuard,
                 ammoSharingAttemptsObserved,
                 persistentDroppedAmmoEntities,
+                sidearmLoadoutsObserved,
+                sidearmActiveGuardsAtEnd,
+                sidearmRoleEvidence,
                 perGuardShotEvidence);
+    }
+
+    /**
+     * Captures an end-of-sample explanation for non-participating guards. This
+     * remains outside the timed sample and makes intermittent fixture failures
+     * actionable without adding allocations to the production combat loop.
+     */
+    private static JsonArray perGuardFinalState(
+            List<Guard> guards,
+            Weapon weapon,
+            Workload workload,
+            int[] perGuardShotEvidence,
+            int[] firstSidearmActiveTick) {
+        JsonArray states = new JsonArray();
+        for (int index = 0; index < guards.size(); index++) {
+            Guard guard = guards.get(index);
+            JsonObject state = new JsonObject();
+            state.addProperty("guardIndex", index);
+            state.addProperty("entityId", guard.getId());
+            state.addProperty(
+                    "mainHand",
+                    BuiltInRegistries.ITEM.getKey(guard.getMainHandItem().getItem()).toString());
+            state.addProperty(
+                    "offHand",
+                    BuiltInRegistries.ITEM.getKey(guard.getOffhandItem().getItem()).toString());
+            state.addProperty("usingItem", guard.isUsingItem());
+            state.addProperty("sidearmState", GuardSidearmAccess.getState(guard).name());
+            state.addProperty("activeGunId", activeGunId(guard.getMainHandItem()));
+            state.addProperty(
+                    "expectedGunId",
+                    workload.expectsSidearmActiveForRole(index)
+                            ? Weapon.SEMI.gunId.toString()
+                            : weapon.gunId == null ? "none" : weapon.gunId.toString());
+            state.addProperty(
+                    "expectedSidearmActive",
+                    workload.expectsSidearmActiveForRole(index));
+            state.addProperty(
+                    "expectedTargetDistance",
+                    workload.hasTarget() ? workload.targetDistance(index) : -1.0D);
+            state.addProperty("acceptedShotEvidence", perGuardShotEvidence[index]);
+            state.addProperty(
+                    "firstSidearmActivationTick",
+                    firstSidearmActiveTick[index]);
+            state.addProperty(
+                    "usedHand",
+                    guard.isUsingItem() ? guard.getUsedItemHand().name() : "NONE");
+            state.addProperty("hasTarget", guard.getTarget() != null);
+            state.addProperty("x", guard.getX());
+            state.addProperty("y", guard.getY());
+            state.addProperty("z", guard.getZ());
+            if (guard.getTarget() != null) {
+                state.addProperty("targetX", guard.getTarget().getX());
+                state.addProperty("targetY", guard.getTarget().getY());
+                state.addProperty("targetZ", guard.getTarget().getZ());
+                state.addProperty("targetDistance", guard.distanceTo(guard.getTarget()));
+            }
+            JsonArray runningGoals = new JsonArray();
+            guard.goalSelector.getAvailableGoals().stream()
+                    .filter(wrapped -> wrapped.isRunning())
+                    .map(wrapped -> wrapped.getGoal().getClass().getName())
+                    .sorted()
+                    .forEach(runningGoals::add);
+            state.add("runningGoals", runningGoals);
+            GuardGunCombatGoal goal = guard.goalSelector.getAvailableGoals().stream()
+                    .map(wrapped -> wrapped.getGoal())
+                    .filter(GuardGunCombatGoal.class::isInstance)
+                    .map(GuardGunCombatGoal.class::cast)
+                    .findFirst()
+                    .orElse(null);
+            if (goal != null) {
+                GuardGunCombatGoal.Diagnostics diagnostics = goal.captureDiagnostics();
+                state.addProperty("goalActive", diagnostics.goalActive());
+                state.addProperty("decision", diagnostics.decision().name());
+                state.addProperty("engagement", diagnostics.engagementReason().name());
+                state.addProperty("lineOfSight", diagnostics.cachedLineOfSight());
+                state.addProperty("visibleTicks", diagnostics.visibleTicks());
+                addFiniteProperty(state, "yawErrorDegrees", diagnostics.yawErrorDegrees());
+                addFiniteProperty(state, "pitchErrorDegrees", diagnostics.pitchErrorDegrees());
+                state.addProperty("safety", diagnostics.safety().status().name());
+                state.addProperty(
+                        "safetyBlockerId",
+                        diagnostics.safety().blocker() == null
+                                ? -1
+                                : diagnostics.safety().blocker().getId());
+                state.addProperty("nativeAiming", diagnostics.nativeState().aiming());
+                state.addProperty("nativeStateReady", diagnostics.nativeState().weaponDataReady());
+                state.addProperty("nativeSuspended", diagnostics.nativeState().suspended());
+                state.addProperty("loadedAmmo", diagnostics.nativeState().loadedAmmo());
+                state.addProperty("chambered", diagnostics.nativeState().chambered());
+                state.addProperty("reserveItems", diagnostics.nativeState().reserveItems());
+                state.addProperty("dryRetryTicks", diagnostics.nativeState().dryRetryTicks());
+                state.addProperty("reloadState", diagnostics.nativeState().reloadState());
+                state.addProperty("bolting", diagnostics.nativeState().bolting());
+                state.addProperty(
+                        "drawCooldownMillis",
+                        diagnostics.nativeState().drawCooldownMillis());
+                state.addProperty(
+                        "shootCooldownMillis",
+                        diagnostics.nativeState().shootCooldownMillis());
+                state.addProperty(
+                        "lastShootResult",
+                        diagnostics.nativeState().lastShootResult() == null
+                                ? "NONE"
+                                : diagnostics.nativeState().lastShootResult().name());
+            } else {
+                state.addProperty("goalActive", false);
+                state.addProperty("decision", "GOAL_MISSING");
+            }
+            states.add(state);
+        }
+        return states;
+    }
+
+    private static void observeSidearmActivationTicks(
+            List<Guard> guards,
+            int[] firstSidearmActiveTick,
+            long testTick) {
+        for (int index = 0; index < guards.size(); index++) {
+            if (firstSidearmActiveTick[index] < 0
+                    && GuardSidearmAccess.getState(guards.get(index))
+                            == SidearmState.SIDEARM_ACTIVE) {
+                firstSidearmActiveTick[index] = Math.toIntExact(testTick);
+            }
+        }
+    }
+
+    private static SidearmRoleEvidence sidearmRoleEvidence(
+            List<Guard> guards,
+            Workload workload,
+            int[] perGuardShotEvidence,
+            int[] firstSidearmActiveTick) {
+        int sidearmRoleFiringGuards = 0;
+        int primaryRoleFiringGuards = 0;
+        boolean finalRoleMappingValid = true;
+        boolean activationTimingValid = true;
+        for (int index = 0; index < guards.size(); index++) {
+            Guard guard = guards.get(index);
+            boolean expectedSidearm = workload.expectsSidearmActiveForRole(index);
+            if (workload == Workload.MIXED_EXPLOSIVE_STANDOFF_SIDEARM) {
+                if (expectedSidearm) {
+                    if (perGuardShotEvidence[index] > 0) {
+                        sidearmRoleFiringGuards++;
+                    }
+                } else if (perGuardShotEvidence[index] > 0) {
+                    primaryRoleFiringGuards++;
+                }
+                String expectedGunId = expectedSidearm
+                        ? Weapon.SEMI.gunId.toString()
+                        : Weapon.EXPLOSIVE.gunId.toString();
+                SidearmState expectedState = expectedSidearm
+                        ? SidearmState.SIDEARM_ACTIVE
+                        : SidearmState.PRIMARY_ACTIVE;
+                finalRoleMappingValid &= GuardSidearmAccess.getState(guard) == expectedState
+                        && activeGunId(guard.getMainHandItem()).equals(expectedGunId);
+            }
+            if (workload == Workload.DRY_PRIMARY_SIDEARM_SWITCH) {
+                int activationTick = firstSidearmActiveTick[index];
+                activationTimingValid &= activationTick < 0
+                        || (activationTick >= WARMUP_TICKS
+                                && activationTick <= WARMUP_TICKS + 200);
+                if (GuardSidearmAccess.getState(guard) == SidearmState.SIDEARM_ACTIVE) {
+                    activationTimingValid &= activationTick >= WARMUP_TICKS;
+                }
+            }
+        }
+        int minimumFiringGuardsPerRole = workload
+                        == Workload.MIXED_EXPLOSIVE_STANDOFF_SIDEARM
+                ? Math.max(1, ((guards.size() / 2) * 4 + 4) / 5)
+                : 0;
+        return new SidearmRoleEvidence(
+                sidearmRoleFiringGuards,
+                primaryRoleFiringGuards,
+                minimumFiringGuardsPerRole,
+                finalRoleMappingValid,
+                activationTimingValid);
+    }
+
+    private static int firstObservedActivationTick(int[] activationTicks) {
+        return Arrays.stream(activationTicks)
+                .filter(tick -> tick >= 0)
+                .min()
+                .orElse(-1);
+    }
+
+    private static int lastObservedActivationTick(int[] activationTicks) {
+        return Arrays.stream(activationTicks).max().orElse(-1);
+    }
+
+    private static String activeGunId(ItemStack stack) {
+        if (!(stack.getItem() instanceof IGun gun)) {
+            return "none";
+        }
+        try {
+            ResourceLocation gunId = gun.getGunId(stack);
+            return gunId == null ? "unreadable" : gunId.toString();
+        } catch (RuntimeException exception) {
+            return "unreadable";
+        }
+    }
+
+    private static void addFiniteProperty(JsonObject object, String name, double value) {
+        if (Double.isFinite(value)) {
+            object.addProperty(name, value);
+        } else {
+            object.add(name, JsonNull.INSTANCE);
+        }
     }
 
     private static int observedAmmoSharingAttempts(List<Guard> guards) {
@@ -735,6 +1176,30 @@ public final class PhaseEightPerformanceGameTests {
             }
         }
         return attempts;
+    }
+
+    private static int sidearmLoadoutsObserved(List<Guard> guards) {
+        int count = 0;
+        for (Guard guard : guards) {
+            SidearmState state = GuardSidearmAccess.getState(guard);
+            if (state == SidearmState.SIDEARM_ACTIVE
+                    || !GuardSidearmAccess.getConfiguredSidearmInventory(guard)
+                            .getStackInSlot(0)
+                            .isEmpty()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private static int sidearmActiveGuardsAtEnd(List<Guard> guards) {
+        int count = 0;
+        for (Guard guard : guards) {
+            if (GuardSidearmAccess.getState(guard) == SidearmState.SIDEARM_ACTIVE) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private static JsonObject configSnapshot() {
@@ -918,15 +1383,78 @@ public final class PhaseEightPerformanceGameTests {
         return snapshot;
     }
 
-    private static void capturePerGuardEvidence(
-            List<IGunOperator> operators,
+    private static void captureAmmoEvidence(
             List<ItemStack> gunStacks,
             List<GuardAmmoHandler> ammoHandlers,
-            int[] nativeShootCounts,
             int[] remainingAmmo) {
-        for (int index = 0; index < operators.size(); index++) {
-            nativeShootCounts[index] = operators.get(index).getDataHolder().shootCount;
+        for (int index = 0; index < gunStacks.size(); index++) {
             remainingAmmo[index] = remainingAmmo(gunStacks.get(index), ammoHandlers.get(index));
+        }
+    }
+
+    /** Counts completed, non-cancelled native TaCZ shots per scenario guard. */
+    private static final class AcceptedShotRecorder {
+        private final Map<Guard, Integer> guardIndices = new IdentityHashMap<>();
+        private final int[] counts;
+
+        private AcceptedShotRecorder(List<Guard> guards) {
+            counts = new int[guards.size()];
+            for (int index = 0; index < guards.size(); index++) {
+                guardIndices.put(guards.get(index), index);
+            }
+        }
+
+        @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+        public void onGunShoot(GunShootEvent event) {
+            if (event.getLogicalSide() != LogicalSide.SERVER
+                    || !(event.getShooter() instanceof Guard guard)) {
+                return;
+            }
+            Integer index = guardIndices.get(guard);
+            if (index != null) {
+                counts[index]++;
+            }
+        }
+
+        private void copyCountsTo(int[] destination) {
+            if (destination.length != counts.length) {
+                throw new IllegalArgumentException("Shot evidence length changed");
+            }
+            System.arraycopy(counts, 0, destination, 0, counts.length);
+        }
+
+        private int count(int index) {
+            return counts[index];
+        }
+    }
+
+    /**
+     * Keeps each guard's nominal trigger window open until that guard actually
+     * completes one TaCZ shot. This prevents a one-tick native retry from
+     * becoming permanently phase-locked outside a global three-tick window.
+     */
+    private static final class NominalShotClock {
+        private final boolean[] openWindows;
+        private final int[] countsAtOpen;
+
+        private NominalShotClock(int guardCount) {
+            openWindows = new boolean[guardCount];
+            countsAtOpen = new int[guardCount];
+        }
+
+        private boolean shouldAdvance(
+                int guardIndex,
+                boolean triggerDue,
+                int acceptedShotCount) {
+            if (openWindows[guardIndex]
+                    && acceptedShotCount > countsAtOpen[guardIndex]) {
+                openWindows[guardIndex] = false;
+            }
+            if (triggerDue && !openWindows[guardIndex]) {
+                openWindows[guardIndex] = true;
+                countsAtOpen[guardIndex] = acceptedShotCount;
+            }
+            return openWindows[guardIndex];
         }
     }
 
@@ -959,19 +1487,19 @@ public final class PhaseEightPerformanceGameTests {
             // dedicated-inventory reloads rather than only preloaded RPG shots.
             return guardCount * 2;
         }
-        return workload == Workload.CLEAR_LANES || workload == Workload.PROTECTED_LANES
+        return workload.expectsNativeShots()
                 ? guardCount
                 : 0;
     }
 
     private static int minimumAcceptedFiringGuards(int guardCount, Workload workload) {
-        return workload == Workload.CLEAR_LANES || workload == Workload.PROTECTED_LANES
+        return workload.expectsNativeShots()
                 ? Math.max(1, (guardCount * 4 + 4) / 5)
                 : 0;
     }
 
     private static int minimumAcceptedPerActiveGuardShotEvidence(Workload workload) {
-        return workload == Workload.CLEAR_LANES || workload == Workload.PROTECTED_LANES
+        return workload.expectsNativeShots()
                 ? 1
                 : 0;
     }
@@ -1006,14 +1534,88 @@ public final class PhaseEightPerformanceGameTests {
 
     private enum Workload {
         IDLE,
+        IDLE_WITH_SIDEARMS,
         CLEAR_LANES,
         OBSTACLES,
         PROTECTED_LANES,
         DROPPED_AMMO_PRESSURE,
-        DRY_SHARING_PRESSURE;
+        DRY_SHARING_PRESSURE,
+        DRY_PRIMARY_SIDEARM_SWITCH,
+        MIXED_EXPLOSIVE_STANDOFF_SIDEARM;
 
         private boolean hasTarget() {
-            return this != IDLE && this != DROPPED_AMMO_PRESSURE;
+            return this != IDLE
+                    && this != IDLE_WITH_SIDEARMS
+                    && this != DROPPED_AMMO_PRESSURE;
+        }
+
+        private boolean hasSidearmLoadout() {
+            return this == IDLE_WITH_SIDEARMS
+                    || this == DRY_PRIMARY_SIDEARM_SWITCH
+                    || this == MIXED_EXPLOSIVE_STANDOFF_SIDEARM;
+        }
+
+        private boolean delaysTargetUntilSample() {
+            return this == DRY_PRIMARY_SIDEARM_SWITCH;
+        }
+
+        private boolean anchorsGuards() {
+            return this == CLEAR_LANES
+                    || this == DRY_PRIMARY_SIDEARM_SWITCH
+                    || this == MIXED_EXPLOSIVE_STANDOFF_SIDEARM;
+        }
+
+        private boolean expectsNativeShots() {
+            return this == CLEAR_LANES
+                    || this == PROTECTED_LANES
+                    || this == DRY_PRIMARY_SIDEARM_SWITCH
+                    || this == MIXED_EXPLOSIVE_STANDOFF_SIDEARM;
+        }
+
+        private boolean expectsSidearmActiveForRole(int guardIndex) {
+            return this == DRY_PRIMARY_SIDEARM_SWITCH
+                    || (this == MIXED_EXPLOSIVE_STANDOFF_SIDEARM
+                            && guardIndex % 2 == 0);
+        }
+
+        private double targetDistance(int guardIndex) {
+            return this == MIXED_EXPLOSIVE_STANDOFF_SIDEARM
+                    ? guardIndex % 2 == 0 ? 4.0D : 20.0D
+                    : 12.0D;
+        }
+
+        private double maximumTargetDistance() {
+            return this == MIXED_EXPLOSIVE_STANDOFF_SIDEARM ? 20.0D : 12.0D;
+        }
+
+        private double columnSpacing() {
+            // A 20-block RPG target would otherwise occupy the next guard
+            // column and correctly trip explosive ally protection. The moving
+            // friendly workload also needs room for independent repositioning.
+            return this == MIXED_EXPLOSIVE_STANDOFF_SIDEARM
+                            || this == PROTECTED_LANES
+                    ? 32.0D
+                    : 20.0D;
+        }
+
+        private int expectedSidearmLoadouts(int guardCount) {
+            return hasSidearmLoadout() ? guardCount : 0;
+        }
+
+        private int minimumSidearmActiveGuards(int guardCount) {
+            return switch (this) {
+                case DRY_PRIMARY_SIDEARM_SWITCH -> Math.max(1, (guardCount * 4 + 4) / 5);
+                case MIXED_EXPLOSIVE_STANDOFF_SIDEARM -> guardCount / 2;
+                default -> 0;
+            };
+        }
+
+        private int maximumSidearmActiveGuards(int guardCount) {
+            return switch (this) {
+                case DRY_PRIMARY_SIDEARM_SWITCH -> guardCount;
+                case MIXED_EXPLOSIVE_STANDOFF_SIDEARM -> guardCount / 2;
+                default -> 0;
+            };
         }
     }
 
@@ -1027,7 +1629,18 @@ public final class PhaseEightPerformanceGameTests {
             int minimumPerActiveGuard,
             int ammoSharingAttemptsObserved,
             int persistentDroppedAmmoEntities,
+            int sidearmLoadoutsObserved,
+            int sidearmActiveGuardsAtEnd,
+            SidearmRoleEvidence sidearmRoleEvidence,
             int[] perGuard) {
+    }
+
+    private record SidearmRoleEvidence(
+            int sidearmRoleFiringGuards,
+            int primaryRoleFiringGuards,
+            int minimumFiringGuardsPerRole,
+            boolean finalRoleMappingValid,
+            boolean activationTimingValid) {
     }
 
     private enum Weapon {
@@ -1035,6 +1648,7 @@ public final class PhaseEightPerformanceGameTests {
         SEMI("tacz:glock_17", FireMode.SEMI, 10_000, false, 3, null, 0),
         DRY_SEMI("tacz:glock_17", FireMode.SEMI, 0, false, 3, null, 0),
         AUTOMATIC("tacz:ak47", FireMode.AUTO, 10_000, false, 2, null, 0),
+        DRY_AUTOMATIC("tacz:ak47", FireMode.AUTO, 0, false, 2, null, 0),
         SHOTGUN("tacz:aa12", FireMode.AUTO, 10_000, false, 4, null, 0),
         EXPLOSIVE("tacz:rpg7", FireMode.SEMI, 1, false, 8, "tacz:rpg_rocket", 64);
 
@@ -1062,5 +1676,15 @@ public final class PhaseEightPerformanceGameTests {
             this.reloadAmmoId = reloadAmmoId == null ? null : ResourceLocation.parse(reloadAmmoId);
             this.reloadAmmoPerSlot = reloadAmmoPerSlot;
         }
+    }
+
+    private static ItemStack createGunStack(Weapon weapon) {
+        return GunItemBuilder.create()
+                .setId(weapon.gunId)
+                .setFireMode(weapon.fireMode)
+                .setAmmoCount(weapon.ammoCount)
+                .setAmmoInBarrel(weapon.ammoCount > 0)
+                .setHeatData(weapon.heatData)
+                .build();
     }
 }

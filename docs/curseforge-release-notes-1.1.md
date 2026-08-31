@@ -27,14 +27,17 @@ Feature update for Minecraft 1.20.1 Forge.
     <strong>Difficulty-scaled natural guard loadouts</strong><br>
     Eligible guards can receive a loaded TaCZ gun and one full compatible ammunition stack.
     Easy, Normal, and Hard use conservative built-in pools, while datapacks can
-    replace the weighted gun pools for modpacks.<br><br>
+    replace the weighted gun pools for modpacks. Conditional format-2 entries
+    can respond to dimension, biome, structure, difficulty, spawn source, raid
+    state, and guard scoreboard tags.<br><br>
   </li>
   <li>
     <strong>Natural-loadout controls and diagnostics</strong><br>
     Configure eligible spawn sources, difficulty chances, nearby caps,
-    crossbow replacement, explosives, and datapack pool IDs. Issued guard/gun
-    provenance and selection results are available through
-    <code>/vgg inspect &lt;guard&gt;</code>.<br><br>
+    crossbow replacement, explosives, and datapack pool IDs. Use the read-only
+    <code>/vgg loadouts validate</code>, <code>inspect</code>, and
+    <code>preview</code> commands to verify pools, while issued guard/gun
+    provenance remains available through <code>/vgg inspect &lt;guard&gt;</code>.<br><br>
   </li>
 </ul>
 

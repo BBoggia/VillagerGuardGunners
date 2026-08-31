@@ -24,6 +24,9 @@ final class NaturalGuardLoadoutIssuanceContractTest {
         String issuance = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/spawn/"
                         + "NaturalGuardLoadoutIssuance.java");
+        String analyzer = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/spawn/"
+                        + "NaturalGuardLoadoutCompatibilityAnalyzer.java");
         String integration = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/spawn/"
                         + "NaturalGuardSpawnIntegration.java");
@@ -32,18 +35,22 @@ final class NaturalGuardLoadoutIssuanceContractTest {
                         + "TaCZExplosionResolver.java");
 
         assertAll(
-                () -> assertTrue(issuance.contains("TimelessAPI.getCommonGunIndex")),
-                () -> assertTrue(issuance.contains("GunItemBuilder.create()")),
-                () -> assertTrue(issuance.contains("TimelessAPI.getCommonAmmoIndex")),
-                () -> assertTrue(issuance.contains("AmmoItemBuilder.create()")),
-                () -> assertTrue(issuance.contains("GuardAmmoSummary.ReserveSource.PHYSICAL")),
-                () -> assertTrue(issuance.contains("AmmoCompatibility.assess")),
-                () -> assertTrue(issuance.contains("AttachmentCacheProperty")),
-                () -> assertTrue(issuance.contains("TaCZExplosionResolver.resolve(")),
+                () -> assertTrue(analyzer.contains("TimelessAPI.getCommonGunIndex")),
+                () -> assertTrue(analyzer.contains("GunItemBuilder.create()")),
+                () -> assertTrue(analyzer.contains("TimelessAPI.getCommonAmmoIndex")),
+                () -> assertTrue(analyzer.contains("AmmoItemBuilder.create()")),
+                () -> assertTrue(analyzer.contains(
+                        "GuardAmmoSummary.ReserveSource.PHYSICAL")),
+                () -> assertTrue(analyzer.contains("AmmoCompatibility.assess")),
+                () -> assertTrue(analyzer.contains("AttachmentCacheProperty")),
+                () -> assertTrue(analyzer.contains("TaCZExplosionResolver.resolve(")),
                 () -> assertTrue(explosionResolver.contains(
                         "GunProperties.RuntimeOnly.EXPLODE_ENABLED")),
                 () -> assertTrue(explosionResolver.contains("DEFAULT_EXPLOSION_DATA")),
-                () -> assertTrue(issuance.contains("GuardAmmoTransactions.planInsertion")),
+                () -> assertTrue(issuance.contains(
+                        "NaturalGuardLoadoutCompatibilityAnalyzer.analyze(")),
+                () -> assertTrue(issuance.contains("mapPrimaryFailure(")),
+                () -> assertTrue(issuance.contains("planAllAmmunition(")),
                 () -> assertTrue(issuance.contains("GuardAmmoTransactions.insert")),
                 () -> assertTrue(issuance.contains("AmmoSnapshot")),
                 () -> assertTrue(issuance.contains(
@@ -52,8 +59,15 @@ final class NaturalGuardLoadoutIssuanceContractTest {
                 () -> assertTrue(integration.contains("if (issuance.issued())")),
                 () -> assertTrue(integration.contains(
                         "NaturalGuardLoadoutPools.reportUnavailableGun(candidate)")),
-                () -> assertTrue(integration.contains(
+                () -> assertTrue(issuance.contains(
                         "villagerGuardGunners$setNaturalLoadoutProvenance(")),
+                () -> assertFalse(integration.contains(
+                        "issuance.provenance()")),
+                () -> assertFalse(issuance.contains("TimelessAPI")),
+                () -> assertFalse(issuance.contains("GunItemBuilder")),
+                () -> assertFalse(issuance.contains("AmmoItemBuilder")),
+                () -> assertFalse(analyzer.contains("GuardAmmoTransactions")),
+                () -> assertFalse(analyzer.contains("NaturalGuardLoadoutProvenance")),
                 () -> assertFalse(issuance.contains("TickEvent")),
                 () -> assertFalse(issuance.contains("getEntitiesOfClass(")));
     }

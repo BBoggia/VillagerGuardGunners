@@ -133,6 +133,154 @@ final class NaturalGuardLoadoutSelectorTest {
     }
 
     @Test
+    void formatTwoRejectsNoMatchingEntriesBeforePopulationAndWeightedWork() {
+        NaturalGuardDifficultySettings difficulty = settings(NaturalGuardDifficulty.NORMAL);
+        NaturalGuardLoadoutConditionSpec hardOnly = new NaturalGuardLoadoutConditionSpec(
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                Set.of(NaturalGuardDifficulty.HARD),
+                Set.of(),
+                NaturalGuardLoadoutConditionSpec.RaidRequirement.ANY,
+                Set.of(),
+                Set.of());
+        NaturalGuardLoadoutPool conditionalPool = new NaturalGuardLoadoutPool(
+                difficulty.poolId(),
+                NaturalGuardLoadoutFormat.CONDITIONAL_VERSION,
+                List.of(new Entry(id("pistol"), 1, hardOnly)));
+        AtomicInteger contextCalls = new AtomicInteger();
+        AtomicInteger nearbyCalls = new AtomicInteger();
+        AtomicInteger weightCalls = new AtomicInteger();
+
+        Decision decision = NaturalGuardLoadoutSelector.select(
+                validContext(),
+                NaturalGuardLoadoutDefaults.SPAWN_RULES,
+                NaturalGuardDifficulty.NORMAL,
+                difficulty,
+                () -> {
+                    contextCalls.incrementAndGet();
+                    return matchContext(NaturalGuardDifficulty.NORMAL);
+                },
+                () -> 0.0D,
+                () -> incrementAndReturn(nearbyCalls, 0),
+                conditionalPool,
+                bound -> incrementAndReturn(weightCalls, 0));
+
+        assertAll(
+                () -> assertEquals(DecisionStatus.NO_MATCHING_ENTRIES, decision.status()),
+                () -> assertEquals(1, contextCalls.get()),
+                () -> assertEquals(0, nearbyCalls.get()),
+                () -> assertEquals(0, weightCalls.get()));
+    }
+
+    @Test
+    void conditionalSelectionUsesEligibleWeightAndMatchingSecondPass() {
+        NaturalGuardDifficultySettings difficulty = settings(NaturalGuardDifficulty.NORMAL);
+        NaturalGuardLoadoutConditionSpec normalOnly = new NaturalGuardLoadoutConditionSpec(
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                Set.of(NaturalGuardDifficulty.NORMAL),
+                Set.of(),
+                NaturalGuardLoadoutConditionSpec.RaidRequirement.ANY,
+                Set.of(),
+                Set.of());
+        NaturalGuardLoadoutConditionSpec hardOnly = new NaturalGuardLoadoutConditionSpec(
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                Set.of(NaturalGuardDifficulty.HARD),
+                Set.of(),
+                NaturalGuardLoadoutConditionSpec.RaidRequirement.ANY,
+                Set.of(),
+                Set.of());
+        Entry unconditional = new Entry(id("pistol"), 2);
+        Entry matching = new Entry(id("rifle"), 3, normalOnly);
+        NaturalGuardLoadoutPool conditionalPool = new NaturalGuardLoadoutPool(
+                difficulty.poolId(),
+                NaturalGuardLoadoutFormat.CONDITIONAL_VERSION,
+                List.of(unconditional, new Entry(id("hard"), 100, hardOnly), matching));
+        AtomicInteger contextCalls = new AtomicInteger();
+        AtomicInteger nearbyCalls = new AtomicInteger();
+        AtomicInteger weightCalls = new AtomicInteger();
+
+        Decision decision = NaturalGuardLoadoutSelector.select(
+                validContext(),
+                NaturalGuardLoadoutDefaults.SPAWN_RULES,
+                NaturalGuardDifficulty.NORMAL,
+                difficulty,
+                () -> {
+                    contextCalls.incrementAndGet();
+                    return matchContext(NaturalGuardDifficulty.NORMAL);
+                },
+                () -> 0.0D,
+                () -> incrementAndReturn(nearbyCalls, 0),
+                conditionalPool,
+                bound -> {
+                    weightCalls.incrementAndGet();
+                    assertEquals(5, bound);
+                    return 4;
+                });
+
+        assertAll(
+                () -> assertTrue(decision.selected()),
+                () -> assertEquals(matching, decision.entry()),
+                () -> assertEquals(1, contextCalls.get()),
+                () -> assertEquals(1, nearbyCalls.get()),
+                () -> assertEquals(1, weightCalls.get()));
+    }
+
+    @Test
+    void contextCaptureIsLazyAndFailuresOrMismatchesFailClosed() {
+        NaturalGuardDifficultySettings difficulty = settings(NaturalGuardDifficulty.NORMAL);
+        NaturalGuardLoadoutConditionSpec conditional = new NaturalGuardLoadoutConditionSpec(
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                NaturalGuardLoadoutConditionSpec.SelectorGroup.unrestricted(),
+                Set.of(NaturalGuardDifficulty.NORMAL),
+                Set.of(),
+                NaturalGuardLoadoutConditionSpec.RaidRequirement.ANY,
+                Set.of(),
+                Set.of());
+        NaturalGuardLoadoutPool pool = new NaturalGuardLoadoutPool(
+                difficulty.poolId(),
+                NaturalGuardLoadoutFormat.CONDITIONAL_VERSION,
+                List.of(new Entry(id("pistol"), 1, conditional)));
+        AtomicInteger contextCalls = new AtomicInteger();
+
+        Decision missed = NaturalGuardLoadoutSelector.select(
+                validContext(), NaturalGuardLoadoutDefaults.SPAWN_RULES,
+                NaturalGuardDifficulty.NORMAL, difficulty,
+                () -> {
+                    contextCalls.incrementAndGet();
+                    return matchContext(NaturalGuardDifficulty.NORMAL);
+                },
+                () -> difficulty.upgradeChance(), () -> 0, pool, bound -> 0);
+        Decision failed = NaturalGuardLoadoutSelector.select(
+                validContext(), NaturalGuardLoadoutDefaults.SPAWN_RULES,
+                NaturalGuardDifficulty.NORMAL, difficulty,
+                () -> {
+                    contextCalls.incrementAndGet();
+                    throw new IllegalStateException("simulated capture failure");
+                },
+                () -> 0.0D, () -> 0, pool, bound -> 0);
+        Decision mismatched = NaturalGuardLoadoutSelector.select(
+                validContext(), NaturalGuardLoadoutDefaults.SPAWN_RULES,
+                NaturalGuardDifficulty.NORMAL, difficulty,
+                () -> {
+                    contextCalls.incrementAndGet();
+                    return matchContext(NaturalGuardDifficulty.HARD);
+                },
+                () -> 0.0D, () -> 0, pool, bound -> 0);
+
+        assertAll(
+                () -> assertEquals(DecisionStatus.CHANCE_MISSED, missed.status()),
+                () -> assertEquals(DecisionStatus.CONTEXT_UNAVAILABLE, failed.status()),
+                () -> assertEquals(DecisionStatus.CONTEXT_UNAVAILABLE, mismatched.status()),
+                () -> assertEquals(2, contextCalls.get()));
+    }
+
+    @Test
     void successfulSelectionUsesOneBoundedRollAndReturnsTheChosenEntry() {
         NaturalGuardDifficultySettings difficulty = settings(NaturalGuardDifficulty.HARD);
         Entry pistol = new Entry(id("pistol"), 2);
@@ -315,6 +463,18 @@ final class NaturalGuardLoadoutSelectorTest {
                 NaturalGuardSpawnSource.STRUCTURE,
                 true,
                 false);
+    }
+
+    private static NaturalGuardLoadoutMatchContext matchContext(
+            NaturalGuardDifficulty difficulty) {
+        return new NaturalGuardLoadoutMatchContext(
+                id("overworld"),
+                Set.of(),
+                Set.of(),
+                difficulty,
+                NaturalGuardSpawnSource.STRUCTURE,
+                false,
+                Set.of());
     }
 
     private static Context context(

@@ -29,6 +29,12 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `naturalLoadouts.hard.upgradeChance` | 0.65 | 0–1 | Chance that an eligible Hard guard advances to pool and population-cap evaluation. |
 | `naturalLoadouts.hard.maximumNearby` | 2 | 0–32 guards | Nearby cap for naturally equipped Hard guards. Zero disables Hard loadouts. |
 | `naturalLoadouts.hard.poolId` | `villagerguardgunners:hard` | resource ID | Datapack pool selected on Hard. |
+| `squads.commandDispatchRadius` | 48 | 8–128 blocks | Bounds the one-time loaded squad-member query performed only when a player issues a command. It does not create a recurring squad scan. |
+| `squads.maximumAffectedGuards` | 32 | 1–64 guards | Hard limit on authorized members changed by one command. Additional authorized matches are reported as capped. |
+| `squads.positionalCommandDurationTicks` | 1200 | 20–72000 ticks | Active lifetime of Rally, Defend, Hold, and Fall Back before unchanged permanent behavior resumes. |
+| `squads.focusCommandDurationTicks` | 400 | 20–12000 ticks | Active lifetime of a safety-validated Focus Target command. |
+| `squads.defendRadius` | 12 | 2–64 blocks | Area a Defend guard returns to and keeps combat navigation within. |
+| `squads.airCommandRange` | 32 | 4–64 blocks | Maximum projection distance for positional commands issued while looking into the air. |
 | `combat.requiredVisibleTicks` | 5 | 0–40 ticks | Base continuous visibility required before firing; the selected tactical profile may adjust the final cached requirement. |
 | `combat.maximumEngagementRange` | 32 | 8–64 blocks | Hard firing-distance cap. TaCZ's effective range remains the preferred distance used for movement and damage falloff. |
 | `combat.closeRangeDistance` | 4 | 1–8 blocks | Distance at which a guard tries to retreat. |
@@ -68,7 +74,14 @@ The performance defaults are the recommended starting point. Increasing an inter
 
 ## Natural loadout policy
 
-Config version 7 establishes the synchronized server policy for natural guard
+Config version 8 adds bounded temporary squad-command dispatch. A dispatch
+queries only loaded guards around the issuing player, applies only to matching
+stable squad identities, rechecks the existing owner/reputation/Hero
+authorization per guard, and stops at the configured member cap. Unloaded and
+distant members are deliberately unchanged. Command records are separate from
+permanent Guard Orders, equipment, patrol positions, and squad membership.
+
+Config version 7 established the synchronized server policy for natural guard
 loadouts. Peaceful is deliberately disabled and does not expose a pool setting.
 Easy, Normal, and Hard each select a namespaced datapack pool independently, so
 modpack authors can replace the built-in progression without editing code. The
@@ -244,7 +257,12 @@ For non-explosive weapons, a custom profile whose firing cap is narrower than it
 
 The firing window is inclusive at both boundaries. Missing, stale, unreadable, or contradictory tactical metadata cannot bypass it: the gun goal yields to Guard Villagers' lower-priority combat and retries only at the bounded gun-data refresh cadence. Unreadable effective-range properties also fail closed for profiles that derive their firing cap from that value. These checks are constant-time reads of cached values and do not invoke TaCZ property scripts or scan configuration maps from the combat tick.
 
-Config version 7 adds the `naturalLoadouts` section. Loading a version-6 file
+Config version 8 adds the `squads` section. Loading a version-7 file selects a
+48-block one-shot query, a 32-member hard cap, 1200-tick positional commands,
+400-tick Focus commands, a 12-block Defend radius, and a 32-block air projection.
+Existing natural-loadout, combat, movement, tactical, engagement, safety,
+ammunition, and performance values are retained. Config version 7 added the
+`naturalLoadouts` section. Loading a version-6 file
 selects structure spawns only, preserves non-crossbow equipment, disallows
 explosive natural weapons, uses a 64-block cap radius, and initializes the
 35%/1, 50%/2, and 65%/2 Easy/Normal/Hard defaults. Existing combat, movement,

@@ -3,12 +3,17 @@ package com.gamergaming.villagerguardgunners.entity;
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoMaintenance;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.combat.GuardCombatStatus;
 import com.gamergaming.villagerguardgunners.init.ModMenus;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.OrderField;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderPermissions;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmRuntimeAssessment;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmRecovery;
+import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
+import com.tacz.guns.api.item.IGun;
 import com.mojang.datafixers.util.Pair;
 import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +26,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import tallestegg.guardvillagers.GuardVillagers;
 import tallestegg.guardvillagers.entities.Guard;
@@ -28,8 +34,11 @@ import tallestegg.guardvillagers.entities.Guard;
 public class GuardGunnerContainer extends AbstractContainerMenu {
     public static final int GUARD_SLOT_COUNT = 6;
     public static final int AMMO_SLOT_COUNT = GuardAmmoHandler.SLOT_COUNT;
-    public static final int ADDON_SLOT_COUNT = GUARD_SLOT_COUNT + AMMO_SLOT_COUNT;
+    public static final int SIDEARM_SLOT_INDEX = GUARD_SLOT_COUNT + AMMO_SLOT_COUNT;
+    public static final int ADDON_SLOT_COUNT = SIDEARM_SLOT_INDEX + 1;
+    public static final int RECOVER_SIDEARM_BUTTON_ID = 100;
 
+    private static final int AMMO_SLOT_END = GUARD_SLOT_COUNT + AMMO_SLOT_COUNT;
     private static final int PLAYER_INVENTORY_START = ADDON_SLOT_COUNT;
     private static final int PLAYER_HOTBAR_START = PLAYER_INVENTORY_START + 27;
     private static final int PLAYER_SLOT_END = PLAYER_HOTBAR_START + 9;
@@ -40,6 +49,7 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
     @Nullable
     private final GuardGunCombatGoal statusGoal;
     private int synchronizedCombatStatusId = GuardCombatStatus.UNKNOWN.networkId();
+    private int synchronizedSidearmStateId = SidearmState.PRIMARY_ACTIVE.networkId();
     private GuardOrders synchronizedOrders = GuardOrders.DEFAULT;
 
     public GuardGunnerContainer(
@@ -70,6 +80,19 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
             @Override
             public void set(int value) {
                 synchronizedCombatStatusId = value;
+            }
+        });
+        addDataSlot(new DataSlot() {
+            @Override
+            public int get() {
+                return guard.level().isClientSide
+                        ? synchronizedSidearmStateId
+                        : GuardSidearmAccess.getState(guard).networkId();
+            }
+
+            @Override
+            public void set(int value) {
+                synchronizedSidearmStateId = value;
             }
         });
         for (OrderField field : OrderField.values()) {
@@ -119,7 +142,8 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
         addSlot(new Slot(guardInventory, 5, 77, 44) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return mayEditGuard(playerInventory.player);
+                return mayEditGuard(playerInventory.player)
+                        && mayConfigureMainHand();
             }
 
             @Override
@@ -130,7 +154,7 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
 
             @Override
             public boolean mayPickup(Player player) {
-                return mayEditGuard(player);
+                return mayEditGuard(player) && mayConfigureMainHand();
             }
         });
 
@@ -147,6 +171,51 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
                 }
             });
         }
+
+        IItemHandler configuredSidearm = GuardSidearmAccess.getConfiguredSidearmInventory(guard);
+        addSlot(new SlotItemHandler(configuredSidearm, 0, 153, 44) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                if (!mayEditGuard(playerInventory.player)
+                        || stack == null
+                        || stack.isEmpty()
+                        || stack.getCount() != 1
+                        || !(stack.getItem() instanceof IGun)) {
+                    return false;
+                }
+                // Client prediction remains structural. The authoritative
+                // server performs the complete non-explosive pistol check.
+                return guard.level().isClientSide
+                        || SidearmRuntimeAssessment.assessEligibility(guard, stack).eligible();
+            }
+
+            @Override
+            public boolean mayPickup(Player player) {
+                return mayEditGuard(player)
+                        && getSidearmState() == SidearmState.PRIMARY_ACTIVE;
+            }
+
+            @Override
+            public int getMaxStackSize() {
+                return 1;
+            }
+
+            /**
+             * SlotItemHandler#set assumes IItemHandlerModifiable. The public
+             * sidearm view deliberately is not modifiable, so route menu writes
+             * through its guarded extract/insert operations instead.
+             */
+            @Override
+            public void set(ItemStack stack) {
+                replaceConfiguredSidearm(configuredSidearm, stack);
+                setChanged();
+            }
+
+            @Override
+            public void initialize(ItemStack stack) {
+                set(stack);
+            }
+        });
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
@@ -199,6 +268,59 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
         return GuardVillagers.hotvChecker(player, guard);
     }
 
+    private boolean mayConfigureMainHand() {
+        return getSidearmState() == SidearmState.PRIMARY_ACTIVE;
+    }
+
+    private static void replaceConfiguredSidearm(
+            IItemHandler configuredSidearm,
+            ItemStack requestedStack) {
+        ItemStack replacement = requestedStack == null
+                ? ItemStack.EMPTY
+                : requestedStack.copy();
+        ItemStack existing = configuredSidearm.getStackInSlot(0);
+        if (stacksMatch(existing, replacement)) {
+            return;
+        }
+
+        ItemStack extracted = ItemStack.EMPTY;
+        if (!existing.isEmpty()) {
+            extracted = configuredSidearm.extractItem(0, existing.getCount(), false);
+            if (!stacksMatch(existing, extracted)) {
+                throw new IllegalStateException("Configured sidearm changed during menu update");
+            }
+        }
+
+        if (replacement.isEmpty()) {
+            return;
+        }
+        ItemStack remainder = configuredSidearm.insertItem(0, replacement, false);
+        if (remainder.isEmpty()) {
+            return;
+        }
+
+        // The server menu is single-threaded, but preserve the displaced weapon
+        // if a third-party handler changes state during the same click.
+        if (!extracted.isEmpty()) {
+            ItemStack restoreRemainder = configuredSidearm.insertItem(0, extracted, false);
+            if (!restoreRemainder.isEmpty()) {
+                throw new IllegalStateException("Could not restore displaced configured sidearm");
+            }
+        }
+        throw new IllegalStateException("Configured sidearm rejected an authorized menu update");
+    }
+
+    private static boolean stacksMatch(ItemStack first, ItemStack second) {
+        if (first == null || second == null) {
+            return false;
+        }
+        if (first.isEmpty() || second.isEmpty()) {
+            return first.isEmpty() && second.isEmpty();
+        }
+        return first.getCount() == second.getCount()
+                && ItemStack.isSameItemSameTags(first, second);
+    }
+
     public Guard getGuard() {
         return guard;
     }
@@ -208,7 +330,16 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
     }
 
     public GuardCombatStatus getCombatStatus() {
+        if (getSidearmState() == SidearmState.RECOVERY_REQUIRED) {
+            return GuardCombatStatus.RECOVERY_REQUIRED;
+        }
         return GuardCombatStatus.fromNetworkId(synchronizedCombatStatusId);
+    }
+
+    public SidearmState getSidearmState() {
+        return guard.level().isClientSide
+                ? SidearmState.fromNetworkId(synchronizedSidearmStateId)
+                : GuardSidearmAccess.getState(guard);
     }
 
     public GuardOrders getOrders() {
@@ -234,6 +365,29 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int buttonId) {
+        if (buttonId == RECOVER_SIDEARM_BUTTON_ID) {
+            if (player.level().isClientSide
+                    || !stillValid(player)
+                    || !mayEditGuard(player)) {
+                return false;
+            }
+            GuardSidearmRecovery.RecoveryResult recovery =
+                    GuardSidearmRecovery.recover(guard, player);
+            if (!recovery.recovered()) {
+                player.displayClientMessage(
+                        net.minecraft.network.chat.Component.translatable(
+                                "container.villagerguardgunners.sidearm.recover.failed"),
+                        true);
+                return false;
+            }
+            player.displayClientMessage(
+                    net.minecraft.network.chat.Component.translatable(
+                            "container.villagerguardgunners.sidearm.recover.success",
+                            recovery.recoveredStackCount()),
+                    true);
+            broadcastChanges();
+            return true;
+        }
         OrderField field = OrderField.fromButtonId(buttonId);
         if (field == null
                 || player.level().isClientSide
@@ -288,7 +442,7 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
     private boolean moveFromPlayerInventory(Player player, ItemStack stack, int sourceIndex) {
         if (GuardAmmoHandler.isAmmo(stack) && mayEditGuard(player)) {
             GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard);
-            if (moveItemStackTo(stack, GUARD_SLOT_COUNT, ADDON_SLOT_COUNT, false)) {
+            if (moveItemStackTo(stack, GUARD_SLOT_COUNT, AMMO_SLOT_END, false)) {
                 return true;
             }
         }
@@ -302,6 +456,15 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
         }
 
         if (!getSlot(5).hasItem() && getSlot(5).mayPlace(stack) && moveItemStackTo(stack, 5, 6, false)) {
+            return true;
+        }
+        if (!getSlot(SIDEARM_SLOT_INDEX).hasItem()
+                && getSlot(SIDEARM_SLOT_INDEX).mayPlace(stack)
+                && moveItemStackTo(
+                        stack,
+                        SIDEARM_SLOT_INDEX,
+                        SIDEARM_SLOT_INDEX + 1,
+                        false)) {
             return true;
         }
         if (!getSlot(4).hasItem() && getSlot(4).mayPlace(stack) && moveItemStackTo(stack, 4, 5, false)) {

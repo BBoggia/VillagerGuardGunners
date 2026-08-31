@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
+import com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
@@ -39,6 +40,8 @@ public final class GuardGunnerCommands {
     static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("vgg")
                 .requires(source -> source.hasPermission(REQUIRED_PERMISSION_LEVEL))
+                .then(NaturalGuardLoadoutCommands.build())
+                .then(SquadRegistryCommands.build())
                 .then(Commands.literal("inspect")
                         .then(Commands.argument("guard", EntityArgument.entity())
                                 .executes(context -> inspect(
@@ -67,9 +70,10 @@ public final class GuardGunnerCommands {
 
         GuardGunCombatGoal.Diagnostics snapshot = gunGoal.captureDiagnostics();
         NativeGunController.Diagnostics nativeState = snapshot.nativeState();
-        GuardAmmoSummary.Snapshot ammunition = GuardAmmoSummary.capture(
-                guard.getMainHandItem(),
-                GuardAmmoAccess.getTaCZInventoryHandler(guard));
+        GuardWeaponAmmunition.LoadoutSummary ammunition =
+                GuardWeaponAmmunition.captureSummary(
+                        guard,
+                        GuardAmmoAccess.getTaCZInventoryHandler(guard));
         GuardFriendlyFireSafety.DiagnosticResult safety = snapshot.safety();
         NaturalGuardLoadoutDiagnostics.Snapshot naturalLoadout =
                 NaturalGuardLoadoutDiagnostics.capture(guard);
@@ -198,9 +202,21 @@ public final class GuardGunnerCommands {
                         + ", validWindow=" + envelope.validFiringWindow(),
                 envelope.validFiringWindow() ? ChatFormatting.GRAY : ChatFormatting.YELLOW));
         send(source, line(
-                "Ammo",
-                ammunitionDetails(ammunition, nativeState),
-                ammunitionColor(ammunition)));
+                "Primary ammo",
+                ammunitionDetails(
+                        ammunition.primary(),
+                        ammunition.activeRole()
+                                == GuardWeaponAmmunition.ActiveRole.PRIMARY,
+                        nativeState),
+                ammunitionColor(ammunition.primary())));
+        send(source, line(
+                "Sidearm ammo",
+                ammunitionDetails(
+                        ammunition.sidearm(),
+                        ammunition.activeRole()
+                                == GuardWeaponAmmunition.ActiveRole.SIDEARM,
+                        nativeState),
+                ammunitionColor(ammunition.sidearm())));
         send(source, line(
                 "TaCZ",
                 "aiming=" + nativeState.aiming()
@@ -268,20 +284,22 @@ public final class GuardGunnerCommands {
 
     private static String ammunitionDetails(
             GuardAmmoSummary.Snapshot ammunition,
+            boolean active,
             NativeGunController.Diagnostics nativeState) {
+        String activeState = ", active=" + active;
         if (!ammunition.isReady()) {
             return "status=" + ammunition.status()
                     + ", gun=" + (ammunition.gunId() == null ? "none" : ammunition.gunId())
-                    + ", dryRetryTicks=" + nativeState.dryRetryTicks()
-                    + ", lastShare=" + nativeState.lastAmmoSharingStatus()
-                    + "(" + nativeState.lastAmmoSharedItems() + ")";
+                    + activeState
+                    + activeNativeDetails(active, nativeState);
         }
         String reserve = ammunition.infiniteReserve()
                 ? "infinite"
                 : Long.toString(ammunition.reserveUnits());
         return "status=" + ammunition.status()
+                + ", gun=" + ammunition.gunId()
+                + activeState
                 + ", feed=" + ammunition.feedType()
-                + ", inventoryFed=" + nativeState.inventoryFed()
                 + ", magazine=" + ammunition.loadedAmmo()
                 + "/" + ammunition.magazineCapacity()
                 + ", chamberSupported=" + ammunition.supportsChamber()
@@ -292,6 +310,16 @@ public final class GuardGunnerCommands {
                 + ", incompatibleStacks=" + ammunition.incompatibleAmmoStacks()
                 + ", unknownStacks=" + ammunition.unknownAmmoStacks()
                 + ", scanComplete=" + ammunition.reserveScanComplete()
+                + activeNativeDetails(active, nativeState);
+    }
+
+    private static String activeNativeDetails(
+            boolean active,
+            NativeGunController.Diagnostics nativeState) {
+        if (!active) {
+            return "";
+        }
+        return ", inventoryFed=" + nativeState.inventoryFed()
                 + ", dryRetryTicks=" + nativeState.dryRetryTicks()
                 + ", lastShare=" + nativeState.lastAmmoSharingStatus()
                 + "(" + nativeState.lastAmmoSharedItems() + ")";

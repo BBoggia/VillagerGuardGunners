@@ -16,7 +16,12 @@ public final class ClientEventHandler {
     @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
         event.enqueueWork(() ->
-                MenuScreens.register(ModMenus.GUARD_GUNNER_CONTAINER.get(), GuardGunnerInventoryScreen::new));
+                {
+                    MenuScreens.register(
+                            ModMenus.GUARD_GUNNER_CONTAINER.get(),
+                            GuardGunnerInventoryScreen::new);
+                    MenuScreens.register(ModMenus.ARMORY.get(), ArmoryScreen::new);
+                });
     }
 
     private ClientEventHandler() {}

@@ -2,7 +2,6 @@ package com.gamergaming.villagerguardgunners.ammunition;
 
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
-import com.tacz.guns.api.item.IGun;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,34 +44,18 @@ public final class GuardAmmoDeposits {
             return DepositResult.failed(DepositStatus.INACTIVE_GUARD);
         }
 
-        ItemStack gunStack = guard.getMainHandItem();
-        if (gunStack.isEmpty() || !(gunStack.getItem() instanceof IGun)) {
-            return DepositResult.failed(DepositStatus.NO_GUN);
-        }
-
-        GuardAmmoSummary.Snapshot ammoState = GuardAmmoSummary.capture(gunStack.copy(), null);
-        if (!ammoState.isReady()) {
-            return DepositResult.failed(DepositStatus.UNREADABLE_GUN);
-        }
-        switch (ammoState.reserveSource()) {
-            case PHYSICAL -> {
-                // Continue into TaCZ's item-level compatibility check below.
-            }
-            case DUMMY, NATIVE_INFINITE -> {
-                return DepositResult.failed(DepositStatus.GUN_DOES_NOT_USE_PHYSICAL_AMMO);
-            }
-            case NONE -> {
-                return DepositResult.failed(DepositStatus.UNREADABLE_GUN);
-            }
-        }
-
-        AmmoCompatibility.Assessment compatibility =
-                AmmoCompatibility.assess(gunStack, offered);
-        if (compatibility.compatibility() == AmmoCompatibility.Compatibility.UNKNOWN) {
-            return DepositResult.failed(DepositStatus.UNREADABLE_AMMUNITION);
-        }
-        if (!compatibility.isCompatible()) {
-            return DepositResult.failed(DepositStatus.INCOMPATIBLE_AMMUNITION);
+        GuardWeaponAmmunition.SupplyAssessment compatibility =
+                GuardWeaponAmmunition.assessPhysicalSupply(guard, offered);
+        if (!compatibility.compatible()) {
+            return DepositResult.failed(switch (compatibility.status()) {
+                case NO_GUN -> DepositStatus.NO_GUN;
+                case UNREADABLE_GUN, RECOVERY_REQUIRED -> DepositStatus.UNREADABLE_GUN;
+                case NO_PHYSICAL_AMMO_WEAPON ->
+                        DepositStatus.GUN_DOES_NOT_USE_PHYSICAL_AMMO;
+                case UNREADABLE_AMMUNITION -> DepositStatus.UNREADABLE_AMMUNITION;
+                case INCOMPATIBLE -> DepositStatus.INCOMPATIBLE_AMMUNITION;
+                case COMPATIBLE -> DepositStatus.TRANSACTION_FAILED;
+            });
         }
 
         GuardAmmoHandler destination = GuardAmmoAccess.getAmmoHandler(guard);

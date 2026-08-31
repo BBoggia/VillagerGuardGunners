@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
+import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.tacz.guns.api.item.IGun;
 import java.util.Set;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import tallestegg.guardvillagers.entities.Guard;
 
 /**
  * Strict NBT codec and authenticity check for naturally issued guard guns.
@@ -86,6 +88,26 @@ public final class NaturalGuardLoadoutProvenanceCodec {
             return false;
         }
         return provenance.equals(readGunRecord(gunStack));
+    }
+
+    /**
+     * Authenticates the active primary role rather than assuming it is always
+     * in the main hand. A valid sidearm-active layout keeps the issued primary
+     * in private storage; contradictory or unreadable layouts fail closed.
+     */
+    public static boolean matchesIssuedGun(
+            Guard guard,
+            @Nullable NaturalGuardLoadoutProvenance provenance) {
+        if (guard == null) {
+            return false;
+        }
+        try {
+            return matchesIssuedGun(
+                    GuardSidearmAccess.getEffectivePrimaryCopy(guard),
+                    provenance);
+        } catch (RuntimeException exception) {
+            return false;
+        }
     }
 
     @Nullable

@@ -18,7 +18,7 @@ public final class NaturalGuardLoadoutDiagnostics {
         AuthenticationState authentication = provenance == null
                 ? AuthenticationState.NO_RECORD
                 : NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
-                        guard.getMainHandItem(),
+                        guard,
                         provenance)
                         ? AuthenticationState.ACTIVE
                         : AuthenticationState.GUN_MISMATCH;

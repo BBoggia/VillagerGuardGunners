@@ -60,7 +60,7 @@ public final class NaturalGuardPopulationIndex extends SavedData {
         if (guard.isAlive()
                 && !guard.isRemoved()
                 && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
-                        guard.getMainHandItem(),
+                        guard,
                         provenance)) {
             index.put(
                     guard.getUUID(),
@@ -93,7 +93,7 @@ public final class NaturalGuardPopulationIndex extends SavedData {
         if (reason != null
                 && reason.shouldSave()
                 && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(
-                        guard.getMainHandItem(),
+                        guard,
                         provenance)) {
             index.put(
                     guard.getUUID(),

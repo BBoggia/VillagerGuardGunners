@@ -8,9 +8,9 @@ has the pool ID `<namespace>:<path>`. For example,
 `data/example/natural_guard_loadouts/village/guards.json` is selected in Fzzy
 Config as `example:village/guards`.
 
-## File format
+## File formats
 
-The current format version is 1:
+The bundled pools remain on format 1:
 
 ```json
 {
@@ -28,21 +28,59 @@ The current format version is 1:
 }
 ```
 
+Format 2 conditional pools are strictly parsed, published, and selected against
+the guard's one-shot spawn context. Their complete schema is documented in
+[natural-loadout-v2-contract.md](natural-loadout-v2-contract.md). Different
+condition categories combine with AND, include values combine with OR, and
+exclusions veto matches. If no entry matches, the attempt ends before the nearby
+population query and random roll. Existing format-1 pools continue on their
+original context-free path.
+
+Format 3 retains all format-2 conditions and adds an optional `sidearm` ID.
+Its complete rules are documented in
+[natural-loadout-v3-sidearms.md](natural-loadout-v3-sidearms.md). Natural
+sidearms are a deliberate modpack opt-in: the bundled pools remain format 1
+and contain none.
+
 `gun` must be a canonical namespaced TaCZ gun ID. `weight` must be a positive
 32-bit integer. Selection probability is an entry's weight divided by the sum
 of all weights in that pool; weights do not need to add to 100.
 
 The parser deliberately rejects unknown fields, missing fields, unsupported
-format versions, fractional or non-positive weights, duplicate gun IDs, empty
-pools, and total-weight overflow. Invalid syntax or semantics are logged and
-that pool is omitted from the newly published snapshot while other valid pools
-remain available. A missing or invalid pool therefore fails closed when a later
-spawn attempts to select it; it never falls back to stale data from before the
-reload.
+format versions, fractional or non-positive weights, ambiguous duplicates,
+empty pools, and total-weight overflow. Format 1 rejects repeated gun IDs.
+Format 2 permits one gun in multiple entries only when their normalized
+conditions differ; an exact gun-and-condition duplicate is invalid even if its
+weight differs. Format 3 uses primary gun, optional sidearm, and conditions as
+the duplicate identity. A pool may contain at most 256 entries, each condition
+collection may contain at most 64 values, and one pool may reference at most
+128 distinct biome and structure selectors in total. These limits bound both
+spawn-time matching and explicit administrator diagnostics. Invalid syntax or
+semantics are logged and that pool is omitted from the newly published snapshot
+while other valid pools remain available. A missing or invalid pool therefore
+fails closed when a later spawn attempts to select it; it never falls back to
+stale data from before the reload.
 
-Resource-pack priority replaces an entire pool file. Pools are not merged by
+Datapack priority replaces an entire pool file. Pools are not merged by
 entry, so a higher-priority pack can reliably replace
 `villagerguardgunners:hard` without depending on pack iteration order.
+
+## Copy-ready examples and migration
+
+The repository includes a complete Minecraft 1.20.1
+[example datapack](examples/natural-loadout-datapack/README.md). Its
+`vgg_example:migrated_normal` pool demonstrates a probability-preserving
+format-1 to format-2 conversion, while `vgg_example:contextual_guards` covers
+every contextual selector category and includes an unconditional fallback.
+`vgg_example:rifle_sidearms` demonstrates the strict format-3 opt-in.
+The pack is inert until one of those IDs is selected in Fzzy Config, so copying
+it cannot replace the built-in balance accidentally.
+
+Follow the [migration guide](natural-loadout-migration.md) for a staged rollout,
+scoreboard-tag timing, validation commands, common failure modes, and rollback.
+Every example pool is parsed by the production strict parser during the normal
+test suite, and its accompanying biome and structure tag files are checked for
+the Minecraft 1.20.1 datapack layout and canonical resource IDs.
 
 ## Built-in progression
 
@@ -69,11 +107,45 @@ apply afterward.
 
 ## Reload and compatibility behavior
 
-`/reload` builds a complete immutable pool map and publishes it in one atomic
-replacement. Spawn handling can therefore see either the old complete map or
-the new complete map, never a partially rebuilt collection. Reloading adds no
-entity scan, tick listener, TaCZ property-script evaluation, or gun-item
-construction.
+`/reload` builds a complete immutable, generation-tagged publication snapshot
+and publishes it in one atomic replacement. The snapshot contains the usable
+pool map, deterministic format/entry-count/weight metadata for published pools,
+and bounded rejection reasons for invalid documents. Spawn handling and
+diagnostic commands therefore see either the old complete generation or the
+new complete generation, never a mixture. The per-generation unavailable-gun
+warning tracker is replaced in the same publication.
+
+## Administrator loadout diagnostics
+
+Permission-level-2 administrators can inspect the current generation without
+changing guards, inventories, provenance, population accounting, or random
+state:
+
+```text
+/vgg loadouts validate [pool]
+/vgg loadouts inspect <pool> [page]
+/vgg loadouts preview <difficulty> <spawn_source> [pool]
+```
+
+`validate` checks all published entries, or one pool, through the same
+non-mutating TaCZ compatibility analyzer used before issuance. Its summary is
+capped at 20 actionable warnings/errors. Compatible guns whose explosive
+property script needs a living guard are counted separately as
+`contextDependent`; they are informational rather than warnings because actual
+issuance evaluates them against the spawned guard. `inspect` shows format,
+weights, conditions, and compatibility for eight entries per one-based page.
+Invalid pages fail before emitting a partial report.
+
+`preview` uses the command source's dimension and position, so `/execute in` and
+`/execute positioned` can test alternate locations. It calculates contextual
+matching and effective weights without a chance roll or nearby-guard query.
+Guard-tag and runtime-script results remain context-dependent for console or
+player sources; `/execute as` a Guard Villager guard supplies a real guard
+context. Preview displays at most 20 matching entries and reports any omitted
+results.
+
+Reloading adds no entity scan, tick listener, TaCZ index lookup,
+property-script evaluation, compatibility analysis, or gun-item construction.
 
 ## One-time spawn integration
 
@@ -99,8 +171,9 @@ bounded nearby-guard query runs only after those cheaper gates succeed. It uses
 a cubical entity-index lookup followed by an exact squared-distance filter for
 loaded guards, then consults a dimension-local, chunk-bucketed saved-data index
 for authenticated guards in unloaded chunks. It counts only guards whose
-main-hand gun authenticated against a successful natural-loadout identity when
-last loaded or saved. Selection stores immutable pool, gun, difficulty, and source
+effective primary role authenticated against a successful natural-loadout identity when
+last loaded or saved. Selection stores immutable pool, primary gun, optional
+sidearm, difficulty, and source
 metadata, then immediately passes that candidate to the one-shot issuance stage
 on the same server task. Only a completely issued guard counts toward the
 nearby cap.
@@ -131,12 +204,20 @@ exactly one complete loose-ammunition stack, and verifies its ID and native
 disallowed explosive definitions leave the guard's original equipment and
 inventory unchanged.
 
+A format-3 sidearm must also satisfy the reviewed sidearm eligibility contract:
+it is a single non-explosive pistol in this release. It cannot inherit the
+primary's `allowExplosiveWeapons` exception. The administrator commands report
+sidearm compatibility, eligibility, ammunition, and explosive state separately.
+
 Before replacing the starter crossbow, issuance snapshots the guard's original
-main hand and three dedicated ammunition slots, simulates insertion of the
-entire reserve stack, and commits only if all of it fits. Any unexpected handler
-or equipment failure restores the snapshot; partial ammunition is never paired
-with a newly issued gun. A failed issuance remains a completed one-time attempt
-and is not retried after a later config or datapack reload.
+main hand and three dedicated ammunition slots, then preflights all requested
+reserve stacks against a scratch inventory. Format 3 requires one complete
+compatible stack for each weapon, even for a shared caliber. The real commit
+covers ammunition, private configured-sidearm storage, primary hand, and guard
+provenance. Any unexpected handler, storage, equipment, or provenance failure
+restores the snapshots; another mod's existing sidearm is never displaced. A
+failed issuance remains a completed one-time attempt and is not retried after a
+later config or datapack reload.
 
 ## Issuance identity and lifecycle
 
@@ -146,7 +227,9 @@ and spawn source. The freshly built gun is stamped only after all Step 5
 validation has succeeded, and the matching guard record is published only
 after the gun/ammunition transaction commits. A record is active only when both
 copies decode under the current schema, agree exactly, and TaCZ still identifies
-the main-hand item as the recorded gun.
+the effective primary as the recorded gun. When a sidearm is active, that
+primary is authenticated in private stowed-primary storage rather than assumed
+to be in the main hand.
 
 The guard-side record survives chunk unloads and server restarts. Equipment is
 restored by Minecraft and Guard Villagers first; the add-on authenticates it at
@@ -200,15 +283,18 @@ real transformed integration checks:
   immutable atomic reload publication, provenance schema/identity rejection,
   and diagnostic snapshot invariants.
 - Forge GameTests load the bundled pools, exercise the protochunk source
-  handoff, build real TaCZ guns and full native ammunition stacks, reject an RPG
-  and insufficient inventory without mutation, authenticate Guard/ItemStack
-  save data, reject tampering, and execute the administrator command.
+  handoff through Guard Villagers' real first-AI-step equipment pass, build real
+  TaCZ guns and full native ammunition stacks, reject an RPG and insufficient
+  inventory without mutation, authenticate Guard/ItemStack save data, reject
+  tampering, and execute the administrator command. A deterministic test-only
+  crossbow loot table prevents the spawn-timing regression from passing by
+  chance and is excluded from the production JAR.
 - The live population test forces one Normal structure loadout, saves and
   reloads that guard, then proves its restored identity causes a second eligible
   guard inside the configured radius to receive `NEARBY_CAP_REACHED` while
   retaining its original crossbow.
 
-The normal transformed suite contains 44 required GameTests. Pack-specific
+The normal transformed suite contains 59 required GameTests. Pack-specific
 equipment rendering and Guard Villagers death/conversion presentation remain in
 the manual release matrix because a headless server cannot validate their
 client visuals.

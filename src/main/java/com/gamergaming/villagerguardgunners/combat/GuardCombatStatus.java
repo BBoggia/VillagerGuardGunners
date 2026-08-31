@@ -29,7 +29,8 @@ public enum GuardCombatStatus {
     CHARGING(19, "charging"),
     COOLING_DOWN(20, "cooling_down"),
     READY(21, "ready"),
-    WEAPON_RESTRICTED(22, "weapon_restricted");
+    WEAPON_RESTRICTED(22, "weapon_restricted"),
+    RECOVERY_REQUIRED(23, "recovery_required");
 
     private static final String TRANSLATION_PREFIX =
             "container.villagerguardgunners.combat_status.";

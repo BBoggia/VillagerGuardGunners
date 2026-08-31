@@ -137,38 +137,30 @@ public final class GuardAmmoSharing {
             GuardAmmoHandler destination,
             int requestedItems,
             int retainedMagazines) {
-        ItemStack donorGun = donor.getMainHandItem();
-        if (donorGun.isEmpty() || !(donorGun.getItem() instanceof IGun)) {
+        GuardWeaponAmmunition.Loadout donorLoadout =
+                GuardWeaponAmmunition.captureLoadout(donor);
+        if (donorLoadout.recoveryRequired()) {
             return null;
         }
 
         GuardAmmoHandler source = GuardAmmoAccess.getAmmoHandler(donor);
-        GuardAmmoSummary.Snapshot donorAmmo =
-                GuardAmmoSummary.capture(donorGun.copy(), source);
-        if (!donorAmmo.isReady()
-                || donorAmmo.reserveSource() != GuardAmmoSummary.ReserveSource.PHYSICAL
-                || !donorAmmo.reserveScanComplete()) {
-            return null;
-        }
-
-        long retainedUnits = retainedReserveUnits(
-                donorAmmo.magazineCapacity(),
-                retainedMagazines);
-        long shareableUnits = donorAmmo.infiniteReserve()
-                ? Long.MAX_VALUE
-                : donorAmmo.reserveUnits() - retainedUnits;
-        if (shareableUnits <= 0L) {
-            return null;
-        }
-
         for (int slot = 0; slot < source.getSlots(); slot++) {
             ItemStack stack = source.getStackInSlot(slot);
+            GuardWeaponAmmunition.DonorReserve reserve =
+                    GuardWeaponAmmunition.assessDonorReserve(
+                            donorLoadout,
+                            source,
+                            stack,
+                            retainedMagazines);
+            if (!reserve.compatible() || reserve.shareableUnits() <= 0L) {
+                continue;
+            }
             int maximum = transferableLooseItems(
-                    donorGun,
                     recipientGun,
                     stack,
                     requestedItems,
-                    shareableUnits);
+                    reserve.shareableUnits(),
+                    stack);
             if (maximum <= 0) {
                 continue;
             }
@@ -178,7 +170,13 @@ public final class GuardAmmoSharing {
             GuardAmmoTransactions.InsertionPlan plan =
                     GuardAmmoTransactions.planInsertion(destination, offered);
             if (plan.valid() && plan.accepted() > 0) {
-                return new DonorCandidate(donor, donorGun, source, shareableUnits);
+                ItemStack ammunitionTemplate = stack.copy();
+                ammunitionTemplate.setCount(1);
+                return new DonorCandidate(
+                        donor,
+                        source,
+                        reserve.shareableUnits(),
+                        ammunitionTemplate);
             }
         }
         return null;
@@ -199,11 +197,11 @@ public final class GuardAmmoSharing {
                 slot++) {
             ItemStack stack = donor.source().getStackInSlot(slot);
             int maximum = transferableLooseItems(
-                    donor.gunStack(),
                     recipientGun,
                     stack,
                     requestedItems - transferred,
-                    remainingShareableUnits);
+                    remainingShareableUnits,
+                    donor.ammunitionTemplate());
             if (maximum <= 0) {
                 continue;
             }
@@ -228,15 +226,15 @@ public final class GuardAmmoSharing {
     }
 
     private static int transferableLooseItems(
-            ItemStack donorGun,
             ItemStack recipientGun,
             ItemStack candidate,
             int requestedItems,
-            long shareableUnits) {
+            long shareableUnits,
+            ItemStack ammunitionTemplate) {
         if (candidate.isEmpty()
                 || !(candidate.getItem() instanceof IAmmo)
                 || candidate.getItem() instanceof IAmmoBox
-                || !AmmoCompatibility.assess(donorGun, candidate).isCompatible()
+                || !ItemStack.isSameItemSameTags(candidate, ammunitionTemplate)
                 || !AmmoCompatibility.assess(recipientGun, candidate).isCompatible()) {
             return 0;
         }
@@ -253,10 +251,9 @@ public final class GuardAmmoSharing {
     }
 
     static long retainedReserveUnits(int magazineCapacity, int retainedMagazines) {
-        if (magazineCapacity < 0 || retainedMagazines < 0) {
-            return Long.MAX_VALUE;
-        }
-        return (long) Math.max(1, magazineCapacity) * retainedMagazines;
+        return GuardWeaponAmmunition.retainedReserveUnits(
+                magazineCapacity,
+                retainedMagazines);
     }
 
     static boolean ownersMayShare(
@@ -288,8 +285,16 @@ public final class GuardAmmoSharing {
 
     private record DonorCandidate(
             Guard guard,
-            ItemStack gunStack,
             GuardAmmoHandler source,
-            long shareableUnits) {
+            long shareableUnits,
+            ItemStack ammunitionTemplate) {
+        private DonorCandidate {
+            ammunitionTemplate = ammunitionTemplate.copy();
+        }
+
+        @Override
+        public ItemStack ammunitionTemplate() {
+            return ammunitionTemplate.copy();
+        }
     }
 }

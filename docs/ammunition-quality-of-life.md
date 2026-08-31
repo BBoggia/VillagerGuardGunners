@@ -24,10 +24,11 @@ and never deletes the box or adds a per-guard tick task.
 
 ### Crouch-right-click handoff
 
-An armed guard can receive compatible loose ammunition or an ammo box from the
-player's held stack. Crouch and right-click the guard. The server validates the
-request, inserts only what fits, and leaves the remainder in the player's hand.
-Creative-mode players retain their held stack.
+A guard can receive compatible loose ammunition or an ammo box for either its
+effective primary or configured sidearm from the player's held stack. Crouch
+and right-click the guard. The server validates both weapon roles, inserts only
+what fits, and leaves the remainder in the player's hand. Creative-mode
+players retain their held stack.
 
 This action follows Guard Villagers' `giveGuardStuffHOTV` policy. Permission to
 give supplies does not grant permission to open the guard inventory or remove
@@ -45,12 +46,13 @@ the portion that fits. Vanilla pickup delays and player-targeted item entities
 remain authoritative. Passive pickup also follows Minecraft's `mobGriefing`
 game rule; when the rule is false, dropped ammunition performs no guard query.
 
-Passive pickup accepts compatible loose ammunition and non-empty compatible
-ammo boxes. It rejects empty finite boxes before the guard lookup, ordinary
-items, incompatible calibers, unreadable third-party ammo, full inventories,
-inactive or unarmed guards, and guns that do not consume a physical reserve.
-Disable `pickupDroppedAmmo` to roll this system back without disabling gun
-combat, manual stocking, or emergency sharing.
+Passive pickup accepts loose ammunition and non-empty ammo boxes compatible
+with either stable weapon role. It rejects empty finite boxes before the guard
+lookup, ordinary items, calibers incompatible with both guns, unreadable
+third-party ammo, full inventories, inactive or unarmed guards, and loadouts
+that do not consume a physical reserve. Disable `pickupDroppedAmmo` to roll
+this system back without disabling gun combat, manual stocking, or emergency
+sharing.
 
 ### Emergency sharing
 
@@ -61,12 +63,22 @@ eligible donor deterministically, and can receive at most one of its own
 attachment-adjusted magazines. A failed request enters the existing dry retry
 window instead of searching every tick.
 
-Sharing transfers loose ammunition only. The ammunition must be compatible
-with both weapons. Ammo boxes are deliberately not opened or transferred.
-`ammunition.donorReserveMagazines` keeps whole donor magazines in reserve. With
-`ammunition.requireMatchingOwnerForSharing` enabled, owner UUIDs must match;
-two unowned guards are considered a match. Disable `shareAmmoBetweenGuards` to
-roll sharing back independently of passive pickup and manual stocking.
+Sharing transfers loose ammunition only. It must be compatible with the
+recipient's currently active gun and with at least one stable donor weapon.
+Ammo boxes are deliberately not opened or transferred. The donor's physical
+and boxed reserves still count toward its retained floor, and
+`ammunition.donorReserveMagazines` keeps the configured number of whole
+attachment-adjusted magazines for every donor weapon that can consume the
+shared caliber. With `ammunition.requireMatchingOwnerForSharing` enabled,
+owner UUIDs must match; two unowned guards are considered a match. Disable
+`shareAmmoBetweenGuards` to roll sharing back independently of passive pickup
+and manual stocking.
+
+The normal dry-primary flow asks for emergency ammunition before requesting a
+sidearm transition. If the sidearm later runs dry, it can use this same sharing
+path because TaCZ binds it as the active main-hand gun. A dry-primary fallback
+does not return to that known-dry primary during the same engagement, avoiding
+weapon-switch loops.
 
 ## Supported reserve behavior
 
@@ -108,9 +120,9 @@ scan.
 ## Diagnostics and troubleshooting
 
 Use `/vgg inspect <guard>` as an operator with permission level 2. The report
-shows the resolved feed type, magazine and chamber state, physical reserve
-units, whether the reserve scan was complete, and the last emergency-sharing
-status and amount.
+shows separate primary and sidearm gun IDs, feed types, magazine and chamber
+states, physical reserve units, and scan completeness. Native dry-retry and
+last-sharing details are attached only to the currently active weapon role.
 
 If a guard will not reload or share:
 

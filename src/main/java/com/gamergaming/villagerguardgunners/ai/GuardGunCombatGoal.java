@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.ai;
 
 import java.util.EnumSet;
+import javax.annotation.Nullable;
 
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
 import com.gamergaming.villagerguardgunners.combat.GuardCombatStatus;
@@ -11,8 +12,13 @@ import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.MovementOrder;
+import com.gamergaming.villagerguardgunners.squad.SquadCommand;
+import com.gamergaming.villagerguardgunners.squad.SquadCommandType;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmRuntimeController;
+import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmRuntimeController.RuntimeOutcome;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -32,6 +38,8 @@ public final class GuardGunCombatGoal extends Goal {
     private final Guard guard;
     private final PathNavigation navigation;
     private final NativeGunController gunController;
+    private final GuardSidearmRuntimeController sidearmController;
+    private final SquadCommandMovementController commandMovement;
     private final VillagerGuardGunnersConfig config;
 
     private LivingEntity target;
@@ -69,29 +77,61 @@ public final class GuardGunCombatGoal extends Goal {
         this.guard = guard;
         this.navigation = guard.getNavigation();
         this.gunController = new NativeGunController(guard);
+        this.sidearmController = new GuardSidearmRuntimeController(guard);
+        this.commandMovement = new SquadCommandMovementController(guard);
         this.config = ModConfigs.GUARD_GUNNERS;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
     @Override
     public boolean canUse() {
+        if (guard.level().isClientSide) {
+            return false;
+        }
         LivingEntity currentTarget = guard.getTarget();
-        return !guard.level().isClientSide
-                && config.enabled.get()
-                && currentTarget != null
+        boolean targetMayEngage = targetMayEngage(currentTarget);
+        if (sidearmController.requiresRecoverySuppression()) {
+            return true;
+        }
+        if (sidearmController.requiresLifecycleCleanup(
+                currentTarget,
+                config.enabled.get(),
+                targetMayEngage)) {
+            return true;
+        }
+        if (!config.enabled.get()
+                || !NativeGunController.isGun(guard.getMainHandItem())) {
+            return false;
+        }
+        commandMovement.synchronize(true);
+        return currentTarget != null
                 && currentTarget.isAlive()
-                && NativeGunController.isGun(guard.getMainHandItem())
                 && shouldOwnTarget(currentTarget, false);
     }
 
     @Override
     public boolean canContinueToUse() {
+        if (guard.level().isClientSide) {
+            return false;
+        }
         LivingEntity currentTarget = guard.getTarget();
-        return !guard.level().isClientSide
-                && config.enabled.get()
-                && currentTarget != null
+        boolean targetMayEngage = targetMayEngage(currentTarget);
+        if (sidearmController.requiresRecoverySuppression()) {
+            return true;
+        }
+        if (sidearmController.requiresLifecycleCleanup(
+                currentTarget,
+                config.enabled.get(),
+                targetMayEngage)) {
+            return true;
+        }
+        if (!config.enabled.get()
+                || !NativeGunController.isGun(guard.getMainHandItem())) {
+            return false;
+        }
+        commandMovement.synchronize(true);
+        return currentTarget != null
                 && currentTarget.isAlive()
-                && NativeGunController.isGun(guard.getMainHandItem())
                 && shouldOwnTarget(currentTarget, true);
     }
 
@@ -139,27 +179,91 @@ public final class GuardGunCombatGoal extends Goal {
         guard.setAggressive(false);
         guard.setSprinting(false);
         navigation.stop();
-        gunController.startAiming();
+        // A naturally equipped shield can already be raised before this goal
+        // wins MOVE/LOOK ownership. TaCZ may reject aim while another item is
+        // in use, while the upstream shield goal yields only after aim begins.
+        // Release that circular wait only when an engageable gun goal starts;
+        // dry-gun melee/shield fallback never reaches this path.
+        boolean targetMayEngage = targetMayEngage(target);
+        if (sidearmController.requiresRecoverySuppression()) {
+            gunController.prepareForSidearmTransition();
+            navigation.stop();
+            return;
+        }
+        boolean lifecycleCleanup = sidearmController.requiresLifecycleCleanup(
+                target,
+                config.enabled.get(),
+                targetMayEngage);
+        if (lifecycleCleanup) {
+            gunController.prepareForSidearmTransition();
+            RuntimeOutcome outcome = sidearmController.evaluate(
+                    target,
+                    gunController,
+                    config.enabled.get(),
+                    targetMayEngage);
+            if (outcome.suppressSidearmFireForReturn()) {
+                gunController.prepareForSidearmTransition();
+            }
+        } else {
+            if (guard.isUsingItem()
+                    && guard.getUsedItemHand() == InteractionHand.OFF_HAND) {
+                guard.stopUsingItem();
+            }
+            gunController.startAiming();
+        }
     }
 
     @Override
     public void stop() {
+        if (sidearmController.isSidearmActive()) {
+            gunController.prepareForSidearmTransition();
+        }
         gunController.stopAiming();
         navigation.stop();
         target = null;
         aimRequirementMet = false;
         movementState = GuardCombatMovement.State.HOLD;
         friendlyBlockedUntilGameTick = Long.MIN_VALUE;
+        commandMovement.stop();
         invalidateSafetyCache();
     }
 
     @Override
     public void tick() {
+        SquadCommand activeCommand = commandMovement.synchronize(true);
         LivingEntity currentTarget = guard.getTarget();
+        long gameTime = guard.level().getGameTime();
+        if (sidearmController.requiresRecoverySuppression()) {
+            gunController.prepareForSidearmTransition();
+            navigation.stop();
+            return;
+        }
+        GuardRulesOfEngagement.EngagementReason engagementReason =
+                currentTarget == null || !currentTarget.isAlive()
+                        ? GuardRulesOfEngagement.EngagementReason.NO_TARGET
+                        : classifyEngagement(currentTarget);
+        boolean targetMayEngage = engagementReason.mayEngage();
+        if (sidearmController.isSidearmActive()) {
+            RuntimeOutcome sidearmOutcome = sidearmController.evaluate(
+                    currentTarget,
+                    gunController,
+                    config.enabled.get(),
+                    targetMayEngage);
+            if (sidearmOutcome.changedWeapon()) {
+                invalidateSafetyCache();
+                visibleTicks = 0;
+                aimRequirementMet = false;
+                return;
+            }
+            if (sidearmOutcome.suppressSidearmFireForReturn()) {
+                gunController.prepareForSidearmTransition();
+                navigation.stop();
+                return;
+            }
+        }
         if (currentTarget == null || !currentTarget.isAlive()) {
             return;
         }
-        long gameTime = guard.level().getGameTime();
         if (currentTarget != target) {
             target = currentTarget;
             visibleTicks = 0;
@@ -171,19 +275,18 @@ public final class GuardGunCombatGoal extends Goal {
             invalidateSafetyCache();
         }
 
-        GuardRulesOfEngagement.EngagementReason engagementReason =
-                classifyEngagement(currentTarget);
         boolean mayEngage = engagementReason.mayEngage()
                 && gunController.isWeaponAllowedByOrders();
         if (!mayEngage) {
             updateLook();
-            updateMovement(gameTime, 0.0D, false);
+            updateMovement(gameTime, 0.0D, false, activeCommand);
             LivingEntity heldTarget = target;
             gunController.tick(
                     heldTarget,
                     false,
                     this::hasClearShot,
                     () -> hasClearScheduledBurstShot(heldTarget));
+            evaluatePrimarySidearm(currentTarget, engagementReason.mayEngage());
             if (engagementReason.releaseTarget() && guard.getTarget() == currentTarget) {
                 // Let Guard Villagers' existing target selector choose again.
                 // The native controller has already released its trigger and
@@ -198,7 +301,7 @@ public final class GuardGunCombatGoal extends Goal {
         sampleVisibility(gameTime, requiredVisibleTicks);
         updateLook();
         double distanceSquared = guard.distanceToSqr(currentTarget);
-        updateMovement(gameTime, distanceSquared, mayEngage);
+        updateMovement(gameTime, distanceSquared, mayEngage, activeCommand);
 
         aimRequirementMet = canSeeTarget
                 && visibleTicks >= requiredVisibleTicks
@@ -213,6 +316,31 @@ public final class GuardGunCombatGoal extends Goal {
                 mayFire,
                 this::hasClearShot,
                 () -> hasClearScheduledBurstShot(burstTarget));
+        evaluatePrimarySidearm(currentTarget, engagementReason.mayEngage());
+    }
+
+    private void evaluatePrimarySidearm(
+            LivingEntity currentTarget,
+            boolean targetMayEngage) {
+        if (sidearmController.isSidearmActive()) {
+            return;
+        }
+        RuntimeOutcome outcome = sidearmController.evaluate(
+                currentTarget,
+                gunController,
+                config.enabled.get(),
+                targetMayEngage);
+        if (outcome.changedWeapon()) {
+            invalidateSafetyCache();
+            visibleTicks = 0;
+            aimRequirementMet = false;
+        }
+    }
+
+    private boolean targetMayEngage(@Nullable LivingEntity currentTarget) {
+        return currentTarget != null
+                && currentTarget.isAlive()
+                && GuardRulesOfEngagement.mayEngage(guard, currentTarget);
     }
 
     /**
@@ -222,6 +350,9 @@ public final class GuardGunCombatGoal extends Goal {
      * entity query is performed here.
      */
     public GuardCombatStatus getPlayerFacingStatus() {
+        if (sidearmController.requiresRecoverySuppression()) {
+            return GuardCombatStatus.RECOVERY_REQUIRED;
+        }
         if (!config.enabled.get()) {
             return GuardCombatStatus.DISABLED;
         }
@@ -294,29 +425,62 @@ public final class GuardGunCombatGoal extends Goal {
         guard.setYRot(guard.getYHeadRot());
     }
 
-    private void updateMovement(long gameTime, double distanceSquared, boolean mayEngage) {
+    private void updateMovement(
+            long gameTime,
+            double distanceSquared,
+            boolean mayEngage,
+            @Nullable SquadCommand activeCommand) {
+        boolean positionalCommand = activeCommand != null
+                && activeCommand.type().requiresPosition();
+        boolean pathSlotDue = positionalCommand
+                ? commandMovement.takePathSlot(gameTime)
+                : gameTime >= nextPathRecalculationGameTick;
+        if (!positionalCommand && pathSlotDue) {
+            // Advance by one interval only. A lag spike never creates a path
+            // backlog; command holding and ordinary holding still issue no
+            // navigation request.
+            nextPathRecalculationGameTick = gameTime
+                    + config.performance.pathRecalculationIntervalTicks.get();
+        }
+
+        if (activeCommand != null) {
+            SquadCommandMovementController.MovementOutcome outcome =
+                    commandMovement.apply(
+                            activeCommand,
+                            false,
+                            pathSlotDue,
+                            config.movement.approachSpeed.get());
+            if (outcome == SquadCommandMovementController.MovementOutcome.MOVING_TO_COMMAND) {
+                transitionMovementState(GuardCombatMovement.State.APPROACH, gameTime);
+                return;
+            }
+            if (outcome == SquadCommandMovementController.MovementOutcome.HOLDING_POSITION) {
+                transitionMovementState(GuardCombatMovement.State.HOLD, gameTime);
+                return;
+            }
+            if (outcome == SquadCommandMovementController.MovementOutcome.COMPLETED) {
+                activeCommand = null;
+            }
+        }
+
         if (!mayEngage) {
             transitionMovementState(GuardCombatMovement.State.HOLD, gameTime);
             return;
         }
         MovementOrder movementOrder = GuardOrdersAccess.getOrders(guard).movement();
-        if (movementOrder.holdsPosition()) {
+        boolean defendOverride = activeCommand != null
+                && activeCommand.type() == SquadCommandType.DEFEND;
+        if (!defendOverride && movementOrder.holdsPosition()) {
             transitionMovementState(GuardCombatMovement.State.HOLD, gameTime);
             return;
-        }
-        boolean pathSlotDue = gameTime >= nextPathRecalculationGameTick;
-        if (pathSlotDue) {
-            // Advance by one interval only. A lag spike never creates a path
-            // backlog, and idle/holding guards consume no path request.
-            nextPathRecalculationGameTick = gameTime
-                    + config.performance.pathRecalculationIntervalTicks.get();
         }
 
         if (gameTime >= nextMovementDecisionGameTick) {
             double retreatDistance = gunController.getRetreatDistance();
             double preferredApproachDistance = gunController.getPreferredApproachDistance();
             GuardCombatMovement.State nextState = GuardCombatMovement.selectState(
-                    movementOrder.treatAsPatrolling(guard.isPatrolling()),
+                    !defendOverride
+                            && movementOrder.treatAsPatrolling(guard.isPatrolling()),
                     canSeeTarget,
                     unseenSamples,
                     UNSEEN_SAMPLES_BEFORE_APPROACH,
@@ -332,7 +496,10 @@ public final class GuardGunCombatGoal extends Goal {
         switch (movementState) {
             case APPROACH -> {
                 if (pathSlotDue) {
-                    navigation.moveTo(target, config.movement.approachSpeed.get());
+                    commandMovement.moveTowardCombatTarget(
+                            activeCommand,
+                            target,
+                            config.movement.approachSpeed.get());
                 }
             }
             case RETREAT -> guard.getMoveControl().strafe(

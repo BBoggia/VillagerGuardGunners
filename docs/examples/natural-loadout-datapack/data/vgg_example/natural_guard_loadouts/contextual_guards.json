@@ -1,0 +1,92 @@
+{
+  "format": 2,
+  "entries": [
+    {
+      "gun": "tacz:glock_17",
+      "weight": 6
+    },
+    {
+      "gun": "tacz:uzi",
+      "weight": 3,
+      "conditions": {
+        "dimensions": {
+          "exclude": [
+            "minecraft:the_nether",
+            "minecraft:the_end"
+          ]
+        },
+        "structures": {
+          "include": [
+            "#vgg_example:villages"
+          ],
+          "exclude": [
+            "minecraft:pillager_outpost"
+          ]
+        },
+        "difficulties": [
+          "normal",
+          "hard"
+        ],
+        "spawn_sources": [
+          "structure"
+        ],
+        "raid": "inactive",
+        "excluded_guard_tags": [
+          "vgg_unarmed"
+        ]
+      }
+    },
+    {
+      "gun": "tacz:ak47",
+      "weight": 2,
+      "conditions": {
+        "dimensions": {
+          "include": [
+            "minecraft:overworld"
+          ]
+        },
+        "biomes": {
+          "include": [
+            "#vgg_example:is_dry"
+          ],
+          "exclude": [
+            "minecraft:badlands"
+          ]
+        },
+        "difficulties": [
+          "hard"
+        ],
+        "spawn_sources": [
+          "structure"
+        ]
+      }
+    },
+    {
+      "gun": "tacz:m4a1",
+      "weight": 1,
+      "conditions": {
+        "dimensions": {
+          "include": [
+            "minecraft:overworld"
+          ]
+        },
+        "difficulties": [
+          "hard"
+        ],
+        "spawn_sources": [
+          "conversion",
+          "spawn_egg",
+          "command",
+          "other"
+        ],
+        "raid": "active",
+        "required_guard_tags": [
+          "vgg_elite"
+        ],
+        "excluded_guard_tags": [
+          "vgg_unarmed"
+        ]
+      }
+    }
+  ]
+}

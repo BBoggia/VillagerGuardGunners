@@ -55,7 +55,7 @@ final class VillageWatchtowerStepSixteenContractTest {
                 + "tags/worldgen/biome/has_structure/watchtower.json");
         String production;
         try (Stream<Path> files = Files.walk(PROJECT.resolve(
-                "src/main/java/com/gamergaming/villagerguardgunners/worldgen"))) {
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/structure"))) {
             production = files.filter(path -> path.toString().endsWith(".java"))
                     .sorted()
                     .map(path -> {

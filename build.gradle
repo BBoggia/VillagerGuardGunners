@@ -486,6 +486,7 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/mixin/accessor/LootPoolEntryAccessor.class',
                     'com/gamergaming/villagerguardgunners/mixin/accessor/LootPoolSingletonAccessor.class',
                     'com/gamergaming/villagerguardgunners/mixin/accessor/LootTableAccessor.class',
+                    'com/gamergaming/villagerguardgunners/mixin/accessor/StructureTemplatePoolAccessor.class',
                     'com/gamergaming/villagerguardgunners/armory/ArmoryBlockEntity.class',
                     'com/gamergaming/villagerguardgunners/armory/ArmoryItemHandler.class',
                     'com/gamergaming/villagerguardgunners/armory/ArmoryLockInteractions.class',
@@ -567,6 +568,12 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/worldgen/structure/VillageWatchtowerStructure.class',
                     'com/gamergaming/villagerguardgunners/worldgen/structure/WatchtowerPlacement.class',
                     'com/gamergaming/villagerguardgunners/worldgen/structure/WatchtowerGenerationPolicy.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/village/VillageBuildingPoolElement.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/village/VillageBuildingPoolEntry.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/village/VillageBuildingPoolIntegration.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/village/VillageBuildingPools.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/village/VillageBuildingType.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/village/VillagePoolInjectionReport.class',
                     'com/gamergaming/villagerguardgunners/command/WatchtowerCommands.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroupDefaults.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroupFormat.class',
@@ -653,6 +660,7 @@ tasks.register('verifyReleaseArtifact') {
                     || !refmap.contains('mixin/GuardMixin')
                     || !refmap.contains('mixin/ItemEntityMixin')
                     || !refmap.contains('mixin/accessor/LootTableAccessor')
+                    || !refmap.contains('mixin/accessor/StructureTemplatePoolAccessor')
                     || !refmap.contains('mixin/RaiseShieldGoalMixin')
                     || !refmap.contains('mixin/VillagerToGuardMixin')) {
                 throw new GradleException('Release mixin refmap is empty or missing common-server mappings')
@@ -669,7 +677,8 @@ tasks.register('verifyReleaseArtifact') {
                         'accessor.LootPoolAccessor',
                         'accessor.LootPoolEntryAccessor',
                         'accessor.LootPoolSingletonAccessor',
-                        'accessor.LootTableAccessor'
+                        'accessor.LootTableAccessor',
+                        'accessor.StructureTemplatePoolAccessor'
                     ]
                     || mixinMetadata.client != [
                         'client.GuardModelMixin',

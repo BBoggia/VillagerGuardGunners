@@ -38,7 +38,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 11;
+    public static final int CONFIG_VERSION = 12;
 
     @Comment("Enables Guard Villagers to use TaCZ guns. The server controls this setting.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -72,6 +72,9 @@ public final class VillagerGuardGunnersConfig extends Config {
 
     @Comment("One-way controls for new Village Watchtower generation. Datapacks remain authoritative for placement, groups, and loot.")
     public WatchtowerSettings watchtowers = new WatchtowerSettings();
+
+    @Comment("Controls additive Village Defense Building integration for newly generated villages. Existing villages are never modified.")
+    public VillageBuildingSettings villageBuildings = new VillageBuildingSettings();
 
     @Comment("Advanced scheduling settings. Lower intervals react faster but require more server work.")
     public PerformanceSettings performance = new PerformanceSettings();
@@ -144,6 +147,12 @@ public final class VillagerGuardGunnersConfig extends Config {
             // multiplier. Existing watchtower and natural-loadout choices are
             // preserved while the new field receives its reviewed default.
             watchtowers.restoreVersionElevenDefaults();
+        }
+        if (previousVersion < 12) {
+            // Version 12 reserves the village-building integration boundary.
+            // The Step 2 compatibility probe is deliberately opt-in until the
+            // reviewed 1.5 building templates replace it.
+            villageBuildings.restoreVersionTwelveDefaults();
         }
     }
 
@@ -742,6 +751,17 @@ public final class VillagerGuardGunnersConfig extends Config {
 
         private void restoreVersionElevenDefaults() {
             restoreDefault(guardGunChanceMultiplier);
+        }
+    }
+
+    @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.villageBuildings")
+    public static final class VillageBuildingSettings extends ConfigSection {
+
+        @Comment("Allows Villager Guard Gunners to append its entries to supported village jigsaw pools during server startup. This affects only villages generated afterward. Disabled during the 1.5 integration-probe stage.")
+        public ValidatedBoolean enabled = new ValidatedBoolean(false);
+
+        private void restoreVersionTwelveDefaults() {
+            restoreDefault(enabled);
         }
     }
 

@@ -512,6 +512,11 @@
   "config.villagerguardgunners.guard_gunners.watchtowers.guardGunChanceMultiplier": "Watchtower Gun Chance Multiplier",
   "config.villagerguardgunners.guard_gunners.watchtowers.guardGunChanceMultiplier.desc": "Multiply each new Watchtower guard's normal difficulty-based gun chance once, then clamp the result to 100%. This does not bypass loadout eligibility, nearby caps, datapack pools, inventory limits, or weapon safety.",
 
+  "config.villagerguardgunners.guard_gunners.villageBuildings": "Village Defense Buildings",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.desc": "Additive integration for defense buildings in newly generated villages. Existing villages are never modified.",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.enabled": "Enable Village Defense Buildings",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.enabled.desc": "Append Villager Guard Gunners entries to supported village pools at server startup. This remains off during the 1.5 compatibility-probe stage.",
+
   "config.villagerguardgunners.guard_gunners.performance": "Advanced Performance",
   "config.villagerguardgunners.guard_gunners.performance.desc": "Scheduling controls. Lower intervals react faster but require more server work.",
   "config.villagerguardgunners.guard_gunners.performance.visibilitySampleIntervalTicks": "Visibility Sample Interval",

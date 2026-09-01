@@ -1,0 +1,87 @@
+package com.gamergaming.villagerguardgunners.worldgen.village;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import org.junit.jupiter.api.Test;
+
+final class VillageBuildingPoolIntegrationTest {
+
+    @Test
+    void disabledIntegrationDoesNotRequireDynamicRegistries() {
+        VillagePoolInjectionReport report = VillageBuildingPoolIntegration.install(
+                RegistryAccess.EMPTY,
+                false,
+                VillageBuildingPools.stepTwoEntries());
+
+        assertEquals(
+                new VillagePoolInjectionReport(false, 1, 0, 0, 0, 0),
+                report);
+        assertFalse(report.hasWarnings());
+    }
+
+    @Test
+    void entryValidationRejectsForeignIdsAndOutOfBoundsWeights() {
+        ResourceLocation pool = id("minecraft", "village/plains/houses");
+        ResourceLocation template = id("minecraft", "village/plains/houses/plains_small_house_1");
+        ResourceLocation processors = id("minecraft", "empty");
+
+        assertThrows(IllegalArgumentException.class, () -> new VillageBuildingPoolEntry(
+                id("example", "foreign"), pool, template, processors, 1));
+        assertThrows(IllegalArgumentException.class, () -> new VillageBuildingPoolEntry(
+                id("villagerguardgunners", "zero"), pool, template, processors, 0));
+        assertThrows(IllegalArgumentException.class, () -> new VillageBuildingPoolEntry(
+                id("villagerguardgunners", "heavy"), pool, template, processors, 6));
+    }
+
+    @Test
+    void batchValidationRejectsDuplicatesAndBothHardLimits() {
+        VillageBuildingPoolEntry probe = VillageBuildingPools.PLAINS_INTEGRATION_PROBE;
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> VillageBuildingPoolIntegration.validateBatch(List.of(probe, probe)));
+
+        List<VillageBuildingPoolEntry> tooManyPools = new ArrayList<>();
+        for (int index = 0; index <= VillageBuildingPools.MAXIMUM_TARGET_POOLS; index++) {
+            tooManyPools.add(entry(index, "pool_" + index));
+        }
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> VillageBuildingPoolIntegration.validateBatch(tooManyPools));
+
+        List<VillageBuildingPoolEntry> tooManyEntries = new ArrayList<>();
+        for (int index = 0; index <= VillageBuildingPools.MAXIMUM_INJECTED_ENTRIES; index++) {
+            tooManyEntries.add(entry(index, "shared_pool"));
+        }
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> VillageBuildingPoolIntegration.validateBatch(tooManyEntries));
+    }
+
+    @Test
+    void stableBuildingTypeSurfaceContainsExactlyTheFivePlannedBuildings() {
+        assertEquals(
+                List.of("barracks", "armory", "sentry_post", "watchtower", "training_yard"),
+                java.util.Arrays.stream(VillageBuildingType.values())
+                        .map(VillageBuildingType::serializedName)
+                        .toList());
+    }
+
+    private static VillageBuildingPoolEntry entry(int index, String poolPath) {
+        return new VillageBuildingPoolEntry(
+                id("villagerguardgunners", "test_" + index),
+                id("example", poolPath),
+                id("example", "template_" + index),
+                id("minecraft", "empty"),
+                1);
+    }
+
+    private static ResourceLocation id(String namespace, String path) {
+        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+    }
+}

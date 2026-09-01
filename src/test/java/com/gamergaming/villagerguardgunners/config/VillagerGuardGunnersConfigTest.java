@@ -31,7 +31,7 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(11, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(12, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertTrue(config.enabled.get()),
                 () -> assertTrue(config.naturalLoadouts.enabled.get()),
                 () -> assertEquals(
@@ -111,6 +111,7 @@ final class VillagerGuardGunnersConfigTest {
                         config.watchtowers.guardGunUpgradeChance(0.65D),
                         1.0E-12D),
                 () -> assertEquals(1.0D, config.watchtowers.guardGunUpgradeChance(1.0D)),
+                () -> assertFalse(config.villageBuildings.enabled.get()),
                 () -> assertEquals(2, config.performance.visibilitySampleIntervalTicks.get()),
                 () -> assertEquals(5, config.performance.movementDecisionIntervalTicks.get()),
                 () -> assertEquals(20, config.performance.pathRecalculationIntervalTicks.get()),
@@ -255,7 +256,7 @@ final class VillagerGuardGunnersConfigTest {
     }
 
     @Test
-    void currentVersionUpdateRetainsExplicitWatchtowerChoices() {
+    void versionElevenUpdateRetainsWatchtowersAndDisablesTheIntegrationProbe() {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
         config.watchtowers.enabled.accept(false);
         config.watchtowers.spawnGuards.accept(false);
@@ -263,6 +264,7 @@ final class VillagerGuardGunnersConfigTest {
         config.watchtowers.placeArmory.accept(false);
         config.watchtowers.stockArmory.accept(false);
         config.watchtowers.guardGunChanceMultiplier.accept(0.25D);
+        config.villageBuildings.enabled.accept(true);
 
         config.update(11);
 
@@ -271,7 +273,8 @@ final class VillagerGuardGunnersConfigTest {
                         new WatchtowerGenerationPolicy(false, false, 2, false, false),
                         config.watchtowers.snapshot()),
                 () -> assertEquals(0.25D,
-                        config.watchtowers.guardGunChanceMultiplier.get()));
+                        config.watchtowers.guardGunChanceMultiplier.get()),
+                () -> assertFalse(config.villageBuildings.enabled.get()));
     }
 
     @Test

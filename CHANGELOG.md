@@ -4,6 +4,22 @@ All notable Villager Guard Gunners changes are recorded here.
 
 ## Unreleased
 
+### Added
+
+- Began the 1.5 Village Defense Buildings foundation with stable Barracks,
+  Armory, Sentry Post, integrated Watchtower, and Training Yard identities.
+- Added a custom, serializable village pool element and a default-off plains
+  compatibility probe for validating additive jigsaw-pool integration before
+  any functional building template or marker behavior is enabled.
+
+### Improved
+
+- Village-pool augmentation is startup-only, copy-on-write, strictly bounded,
+  idempotent across repeated installation attempts, and preserves existing
+  vanilla and third-party entries in their original order.
+- Missing target pools or processor lists now fail closed with one bounded
+  startup diagnostic instead of preventing the server from starting.
+
 ## 1.4 - 2026-08-31
 
 ### Added

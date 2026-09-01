@@ -25,7 +25,7 @@ final class VillageWatchtowerPhaseZeroContractTest {
             properties.load(reader);
         }
 
-        assertEquals("1.4", properties.getProperty("mod_version"));
+        assertEquals("1.5-dev", properties.getProperty("mod_version"));
     }
 
     @Test

@@ -15,6 +15,7 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnIntegration;
 import com.gamergaming.villagerguardgunners.role.GuardRoles;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerService;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroups;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingPoolIntegration;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -47,5 +48,6 @@ public class VillagerGuardGunners {
         MinecraftForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(SquadLedgerService::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(SquadLedgerService::onPlayerLoggedOut);
+        MinecraftForge.EVENT_BUS.addListener(VillageBuildingPoolIntegration::onServerAboutToStart);
     }
 }

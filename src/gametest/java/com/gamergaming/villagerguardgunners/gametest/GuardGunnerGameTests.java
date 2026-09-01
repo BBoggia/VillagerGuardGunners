@@ -96,6 +96,7 @@ import com.gamergaming.villagerguardgunners.squad.SquadMembership;
 import com.gamergaming.villagerguardgunners.squad.SquadMembershipCodec;
 import com.gamergaming.villagerguardgunners.worldgen.structure.VillageWatchtowerPiece;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerPlacement;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingPoolGameTestAccess;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupDefaults;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupPool;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupReloadSnapshot;
@@ -227,6 +228,13 @@ public final class GuardGunnerGameTests {
     private static final String MIGRATION_OVERFLOW_TAG = "villagerguardgunners:ammo_overflow";
 
     private GuardGunnerGameTests() {
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageBuildingPoolIntegrationIsAdditiveAndIdempotent(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyStepTwoIntegration(helper);
+        helper.succeed();
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)

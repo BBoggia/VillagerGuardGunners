@@ -13,7 +13,8 @@
     "accessor.LootPoolAccessor",
     "accessor.LootPoolEntryAccessor",
     "accessor.LootPoolSingletonAccessor",
-    "accessor.LootTableAccessor"
+    "accessor.LootTableAccessor",
+    "accessor.StructureTemplatePoolAccessor"
   ],
   "client": [
     "client.GuardModelMixin",

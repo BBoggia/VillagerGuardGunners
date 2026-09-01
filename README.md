@@ -12,7 +12,7 @@ rebalance are not part of the current implementation.
 
 ## Supported versions
 
-The 1.4 development branch is deliberately locked to this reviewed combination:
+The 1.5 development branch is deliberately locked to this reviewed combination:
 
 | Component | Version |
 | --- | --- |
@@ -382,6 +382,15 @@ generic-loadout fallback for quarantined generated guards, proves removed or
 reassigned occupants and replaced Armories are never repaired, and adds
 bounded `/vgg watchtowers errors [page]` reload diagnostics for modpack
 operators.
+
+The 1.5 Village Defense Buildings line begins with the
+[baseline and additive-pool integration contract](docs/village-defense-buildings-1.5-plan.md).
+Its retained [validation matrix](docs/village-defense-buildings-release-matrix.md)
+separates automated pool-compatibility evidence from later visual, lifecycle,
+mixed-mod, and performance gates. Steps 1 and 2 register only a custom pool
+element and a default-off inert plains compatibility probe; they do not yet
+ship functional Barracks, Armories, Sentry Posts, integrated Watchtowers, or
+Training Yards.
 
 ## License
 

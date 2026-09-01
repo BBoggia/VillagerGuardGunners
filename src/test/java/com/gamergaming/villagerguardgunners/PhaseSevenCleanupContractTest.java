@@ -137,7 +137,7 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardMixin\",\"ItemEntityMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"VillagerToGuardMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\"]")),
+                        "\"mixins\":[\"GuardMixin\",\"ItemEntityMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"VillagerToGuardMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.StructureTemplatePoolAccessor\"]")),
                 () -> assertTrue(mixins.contains(
                         "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));
@@ -185,13 +185,17 @@ final class PhaseSevenCleanupContractTest {
         String largePackSyncClient = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/network/client/"
                         + "TaCZGunPackSyncClient.java");
+        String villagePoolStartup = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/village/"
+                        + "VillageBuildingPoolIntegration.java");
         String performanceSensitiveSource = productionSource
                 .replace(legacyNotice, "")
                 .replace(naturalLoadoutReload, "")
                 .replace(guardRoleReload, "")
                 .replace(guardPostGroupReload, "")
                 .replace(largePackSync, "")
-                .replace(largePackSyncClient, "");
+                .replace(largePackSyncClient, "")
+                .replace(villagePoolStartup, "");
 
         assertAll(
                 () -> assertFalse(performanceSensitiveSource.contains("LogUtils")),
@@ -231,6 +235,12 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertTrue(largePackSyncClient.contains("LOGGER.error(")),
                 () -> assertFalse(largePackSyncClient.contains("LOGGER.debug(")),
                 () -> assertFalse(largePackSyncClient.contains("tick(")));
+        assertAll(
+                () -> assertTrue(villagePoolStartup.contains("LOGGER.info(")),
+                () -> assertTrue(villagePoolStartup.contains("LOGGER.warn(")),
+                () -> assertFalse(villagePoolStartup.contains("LOGGER.debug(")),
+                () -> assertFalse(villagePoolStartup.contains("tick(")),
+                () -> assertFalse(villagePoolStartup.contains("getEntitiesOfClass(")));
     }
 
     private static String read(String relativePath) throws IOException {

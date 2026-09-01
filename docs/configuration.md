@@ -81,6 +81,7 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `watchtowers.placeArmory` | `true` | boolean | Allows Armory markers in newly placed towers to create an Armory. |
 | `watchtowers.stockArmory` | `true` | boolean | Allows a newly generated tower Armory to receive its datapack-defined initial stock. |
 | `watchtowers.guardGunChanceMultiplier` | 1.5 | 0–3 | Multiplies only a new tower guard's difficulty chance, clamped to 1.0. The default changes Easy/Normal/Hard chances from 35%/50%/65% to 52.5%/75%/97.5%; it does not bypass any other natural-loadout or safety gate. |
+| `villageBuildings.enabled` | `false` | boolean | Allows startup-only additive entries in supported village jigsaw pools, affecting only future generation. This is deliberately off while the 1.5 compatibility probe is under development. |
 | `performance.visibilitySampleIntervalTicks` | 2 | 1–10 ticks | Lower values update visibility sooner but perform more line-of-sight checks. |
 | `performance.movementDecisionIntervalTicks` | 5 | 1–20 ticks | Lower values reconsider movement more often. |
 | `performance.pathRecalculationIntervalTicks` | 20 | 5–100 ticks | Lower values request navigation paths more often. |
@@ -89,6 +90,19 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `performance.repositionProgressCheckTicks` | 10 | 5–40 ticks | Lower values check blocked repositioning progress more often. |
 
 The performance defaults are the recommended starting point. Increasing an interval generally reduces server work at the cost of a small response delay. Decreasing an interval does the reverse. Safety checks, per-tick shot limits, native burst cancellation, and other hard fail-closed limits are deliberately not configurable.
+
+## Village Defense Building integration
+
+Config version 12 adds only `villageBuildings.enabled`. Migrating a version-11
+file initializes it to `false` while preserving the complete 1.4 Watchtower,
+loadout, combat, safety, ammunition, squad, and Armory policy. During Steps 1
+and 2 the switch controls an inert plains compatibility probe rather than a
+functional VGG building, so it should remain off outside development tests.
+
+When enabled, the mod performs one bounded, additive pool update during server
+startup. It does not scan villages or chunks and cannot change existing village
+pieces. The exact compatibility and performance boundaries are documented in
+[the 1.5 integration contract](village-defense-buildings-1.5-plan.md).
 
 ## Watchtower loadout chance
 

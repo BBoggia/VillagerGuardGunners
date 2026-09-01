@@ -24,7 +24,7 @@ final class VillageDefenseBuildingsStepOneContractTest {
                 () -> assertTrue(plan.contains(
                         "2ebf9920e7916bc9d7e81e85a55c522020e7149eaabf74d2354bfe6c838e59ac")),
                 () -> assertTrue(plan.contains("at most five target village pools")),
-                () -> assertTrue(plan.contains("at most 25 injected entries")),
+                () -> assertTrue(plan.contains("at most 50 injected entries")),
                 () -> assertTrue(plan.contains("zero recurring ticks")),
                 () -> assertTrue(plan.contains("no retro-generation")),
                 () -> assertTrue(plan.contains("distinct from the existing")),

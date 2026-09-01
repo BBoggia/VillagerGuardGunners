@@ -243,6 +243,12 @@ public final class GuardGunnerGameTests {
         VillageBuildingPoolGameTestAccess.verifyRealTemplatePlacementAndPreflight(helper);
     }
 
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageBuildingBiomeTemplateMatrixLoadsAndPlaces(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyBuiltInTemplateMatrix(helper);
+    }
+
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE, timeoutTicks = 40)
     public static void villageBuildingAnchorCrossesWorkerThreadExactlyOnce(
             GameTestHelper helper) {

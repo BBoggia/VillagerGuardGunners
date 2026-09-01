@@ -1,0 +1,149 @@
+{
+  "dataVersion": 3465,
+  "biomes": {
+    "plains": {
+      "targetPool": "minecraft:village/plains/houses",
+      "streetPool": "minecraft:village/plains/streets",
+      "connectorState": "minecraft:oak_planks",
+      "palette": [
+        { "symbol": "F", "name": "minecraft:cobblestone" },
+        { "symbol": "W", "name": "minecraft:oak_planks" },
+        { "symbol": "L", "name": "minecraft:stripped_oak_log", "properties": { "axis": "y" } },
+        { "symbol": "P", "name": "minecraft:oak_planks" },
+        { "symbol": "S", "name": "minecraft:oak_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "G", "name": "minecraft:glass" },
+        { "symbol": "d", "name": "minecraft:oak_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
+        { "symbol": "D", "name": "minecraft:oak_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
+      ]
+    },
+    "desert": {
+      "targetPool": "minecraft:village/desert/houses",
+      "streetPool": "minecraft:village/desert/streets",
+      "connectorState": "minecraft:smooth_sandstone",
+      "palette": [
+        { "symbol": "F", "name": "minecraft:smooth_sandstone" },
+        { "symbol": "W", "name": "minecraft:sandstone" },
+        { "symbol": "L", "name": "minecraft:cut_sandstone" },
+        { "symbol": "P", "name": "minecraft:smooth_sandstone" },
+        { "symbol": "S", "name": "minecraft:sandstone_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "G", "name": "minecraft:orange_stained_glass" },
+        { "symbol": "d", "name": "minecraft:acacia_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
+        { "symbol": "D", "name": "minecraft:acacia_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
+      ]
+    },
+    "savanna": {
+      "targetPool": "minecraft:village/savanna/houses",
+      "streetPool": "minecraft:village/savanna/streets",
+      "connectorState": "minecraft:acacia_planks",
+      "palette": [
+        { "symbol": "F", "name": "minecraft:cobblestone" },
+        { "symbol": "W", "name": "minecraft:acacia_planks" },
+        { "symbol": "L", "name": "minecraft:stripped_acacia_log", "properties": { "axis": "y" } },
+        { "symbol": "P", "name": "minecraft:acacia_planks" },
+        { "symbol": "S", "name": "minecraft:acacia_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "G", "name": "minecraft:glass" },
+        { "symbol": "d", "name": "minecraft:acacia_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
+        { "symbol": "D", "name": "minecraft:acacia_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
+      ]
+    },
+    "snowy": {
+      "targetPool": "minecraft:village/snowy/houses",
+      "streetPool": "minecraft:village/snowy/streets",
+      "connectorState": "minecraft:spruce_planks",
+      "palette": [
+        { "symbol": "F", "name": "minecraft:cobblestone" },
+        { "symbol": "W", "name": "minecraft:spruce_planks" },
+        { "symbol": "L", "name": "minecraft:stripped_spruce_log", "properties": { "axis": "y" } },
+        { "symbol": "P", "name": "minecraft:spruce_planks" },
+        { "symbol": "S", "name": "minecraft:spruce_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "G", "name": "minecraft:light_blue_stained_glass" },
+        { "symbol": "d", "name": "minecraft:spruce_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
+        { "symbol": "D", "name": "minecraft:spruce_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
+      ]
+    },
+    "taiga": {
+      "targetPool": "minecraft:village/taiga/houses",
+      "streetPool": "minecraft:village/taiga/streets",
+      "connectorState": "minecraft:spruce_planks",
+      "palette": [
+        { "symbol": "F", "name": "minecraft:mossy_cobblestone" },
+        { "symbol": "W", "name": "minecraft:spruce_planks" },
+        { "symbol": "L", "name": "minecraft:spruce_log", "properties": { "axis": "y" } },
+        { "symbol": "P", "name": "minecraft:spruce_planks" },
+        { "symbol": "S", "name": "minecraft:spruce_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "G", "name": "minecraft:glass" },
+        { "symbol": "d", "name": "minecraft:spruce_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
+        { "symbol": "D", "name": "minecraft:spruce_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
+      ]
+    }
+  },
+  "commonPalette": [
+    { "symbol": ".", "name": "minecraft:air" },
+    { "symbol": "V", "name": "minecraft:structure_void" },
+    { "symbol": "C", "name": "minecraft:crafting_table" },
+    { "symbol": "T", "name": "minecraft:target" },
+    { "symbol": "Y", "name": "minecraft:hay_block", "properties": { "axis": "y" } },
+    { "symbol": "Q", "name": "minecraft:lantern", "properties": { "hanging": "false", "waterlogged": "false" } },
+    { "symbol": "H", "name": "minecraft:ladder", "properties": { "facing": "north", "waterlogged": "false" } }
+  ],
+  "buildings": {
+    "barracks": {
+      "size": [9, 5, 9],
+      "weight": 1,
+      "layers": [
+        ["VVVVFVVVV", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF"],
+        ["VVVVJVVVV", "LLLLdLLLL", "L.......L", "L.......L", "L...A...L", "L.......L", "L.......L", "L.......L", "LLLLLLLLL"],
+        ["VVVV.VVVV", "LLLLDLLLL", "W.G...G.W", "W.......W", "W.......W", "W.......W", "W.G...G.W", "W.......W", "LLLLLLLLL"],
+        ["VVVVSVVVV", "LLLLLLLLL", "W.......W", "W.......W", "W...Q...W", "W.......W", "W.......W", "W.......W", "LLLLLLLLL"],
+        ["VVVSSSVVV", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS"]
+      ]
+    },
+    "armory": {
+      "size": [7, 5, 7],
+      "weight": 1,
+      "layers": [
+        ["VVVFVVV", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF"],
+        ["VVVJVVV", "LLLdLLL", "L.C.C.L", "L..A..L", "L.T.T.L", "L.....L", "LLLLLLL"],
+        ["VVV.VVV", "LLLDLLL", "W.G.G.W", "W.....W", "W.G.G.W", "W.....W", "LLLLLLL"],
+        ["VVVSVVV", "LLLLLLL", "W.....W", "W..Q..W", "W.....W", "W.....W", "LLLLLLL"],
+        ["VVSSSVV", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS"]
+      ]
+    },
+    "sentry_post": {
+      "size": [5, 5, 5],
+      "weight": 1,
+      "layers": [
+        ["VVFVV", "FFFFF", "FFFFF", "FFFFF", "FFFFF"],
+        ["VVJVV", "LL.LL", "L.A.L", "L...L", "LLLLL"],
+        ["VV.VV", "L...L", "L...L", "L.Q.L", "L...L"],
+        ["VVSVV", "L...L", "L...L", "L...L", "L...L"],
+        ["VSSSV", "SSSSS", "SSSSS", "SSSSS", "SSSSS"]
+      ]
+    },
+    "watchtower": {
+      "size": [7, 9, 7],
+      "weight": 1,
+      "layers": [
+        ["VVVFVVV", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF"],
+        ["VVVJVVV", "LLLdLLL", "L.....L", "L..A..L", "L.....L", "L..H..L", "LLLLLLL"],
+        ["VVV.VVV", "LLLDLLL", "W.G.G.W", "W.....W", "W.....W", "W..H..W", "LLLLLLL"],
+        ["VVV.VVV", "L.....L", "L.....L", "L.....L", "L.....L", "L..H..L", "LLLLLLL"],
+        ["VVV.VVV", "L.....L", "L.....L", "L.....L", "L.....L", "L..H..L", "LLLLLLL"],
+        ["VVVSVVV", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPP.PPP", "PPP.PPP", "PPPPPPP"],
+        ["VVV.VVV", "L.....L", ".......", ".......", ".......", "L..H..L", "L.....L"],
+        ["VVVSVVV", "L..Q..L", ".......", ".......", ".......", "L.....L", "L.....L"],
+        ["VVSSSVV", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS"]
+      ]
+    },
+    "training_yard": {
+      "size": [9, 4, 7],
+      "weight": 1,
+      "layers": [
+        ["VVVVFVVVV", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF"],
+        ["VVVVJVVVV", "L.......L", "L.T...T.L", "L...A...L", "L.Y...Y.L", "L.......L", "LLLLLLLLL"],
+        ["VVVV.VVVV", "L.......L", ".........", ".........", ".........", "L...Q...L", "L.......L"],
+        ["VVVVSVVVV", "L.......L", ".........", ".........", ".........", "L.......L", "L.......L"]
+      ]
+    }
+  }
+}

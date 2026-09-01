@@ -386,7 +386,7 @@ operators.
 The 1.5 Village Defense Buildings line begins with the
 [baseline and additive-pool integration contract](docs/village-defense-buildings-1.5-plan.md).
 Its retained [validation matrix](docs/village-defense-buildings-release-matrix.md)
-separates automated pool-compatibility evidence from later visual, lifecycle,
+separates automated pool, lifecycle, and template evidence from manual visual,
 mixed-mod, and performance gates. Steps 1 through 3 register a custom pool
 element and a default-off inert plains compatibility probe, then move its
 placement declaration into a strict, bounded, atomic
@@ -402,8 +402,12 @@ than once. The main-thread claim has no ticker, scan, chunk ticket, forced
 load, or repair pass. Startup preflights pool, processor, template, and anchor
 dependencies before committing any pool changes; persisted identities are
 checked against their live dimension and world seed, and server-session reload
-state is cleared on shutdown. These steps still do not ship functional Barracks,
-Armories, Sentry Posts, integrated Watchtowers, or Training Yards.
+state is cleared on shutdown. Step 5 adds the reviewable
+[biome-aware visual template matrix](docs/village-defense-buildings-step-5.md):
+all five building shells are packaged for all five vanilla village palettes,
+with a validated road connector and anchor in every template. Generation stays
+default-off pending manual visual and mixed-mod review, and the shells still
+perform no garrison, Armory-stock, loot, repair, or recurring runtime work.
 
 ## License
 

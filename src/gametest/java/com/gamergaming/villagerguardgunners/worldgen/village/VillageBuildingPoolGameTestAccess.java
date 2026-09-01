@@ -6,7 +6,9 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 
 /** Runtime-only assertions that require Minecraft registries and applied mixins. */
 public final class VillageBuildingPoolGameTestAccess {
@@ -43,8 +46,8 @@ public final class VillageBuildingPoolGameTestAccess {
                 accessor.villagerGuardGunners$getTemplates());
         int originalMaxSize = accessor.villagerGuardGunners$getMaxSize();
         VillageBuildingPoolEntry probe = VillageBuildingDefinitions.get(
-                VillageBuildingPools.PLAINS_INTEGRATION_PROBE_ID);
-        helper.assertTrue(probe != null, "The built-in Step 3 definition was not loaded");
+                VillageBuildingPools.PLAINS_BARRACKS_ID);
+        helper.assertTrue(probe != null, "The built-in plains Barracks definition was not loaded");
         List<VillageBuildingPoolEntry> probeEntries = List.of(probe);
 
         try {
@@ -103,7 +106,7 @@ public final class VillageBuildingPoolGameTestAccess {
                                     == originalRaw.size() + 1
                             && accessor.villagerGuardGunners$getTemplates().size()
                                     == originalTemplates.size() + 1,
-                    "Repeated integration duplicated the probe");
+                    "Repeated integration duplicated the built-in Barracks");
 
             var jigsaws = appended.getShuffledJigsawBlocks(
                     level.getStructureManager(),
@@ -114,7 +117,7 @@ public final class VillageBuildingPoolGameTestAccess {
                     jigsaws.stream().anyMatch(info -> info.nbt() != null
                             && "minecraft:village/plains/streets".equals(
                                     info.nbt().getString("pool"))),
-                    "The inert probe template did not retain its plains-road connector");
+                    "The plains Barracks did not retain its plains-road connector");
 
             RegistryOps<JsonElement> ops = RegistryOps.create(
                     JsonOps.INSTANCE, level.registryAccess());
@@ -348,6 +351,195 @@ public final class VillageBuildingPoolGameTestAccess {
         helper.succeed();
     }
 
+    public static void verifyBuiltInTemplateMatrix(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var templateManager = level.getStructureManager();
+        Holder.Reference<StructureProcessorList> processors = level.registryAccess()
+                .registryOrThrow(Registries.PROCESSOR_LIST)
+                .getHolder(ResourceKey.create(
+                        Registries.PROCESSOR_LIST,
+                        VillageBuildingPools.EMPTY_PROCESSORS))
+                .orElseThrow();
+        Map<String, ResourceLocation> targetPools = new LinkedHashMap<>();
+        targetPools.put("plains", VillageBuildingPools.PLAINS_HOUSES);
+        targetPools.put("desert", VillageBuildingPools.DESERT_HOUSES);
+        targetPools.put("savanna", VillageBuildingPools.SAVANNA_HOUSES);
+        targetPools.put("snowy", VillageBuildingPools.SNOWY_HOUSES);
+        targetPools.put("taiga", VillageBuildingPools.TAIGA_HOUSES);
+        Map<String, String> streetPools = Map.of(
+                "plains", "minecraft:village/plains/streets",
+                "desert", "minecraft:village/desert/streets",
+                "savanna", "minecraft:village/savanna/streets",
+                "snowy", "minecraft:village/snowy/streets",
+                "taiga", "minecraft:village/taiga/streets");
+
+        int inspected = 0;
+        for (Map.Entry<String, ResourceLocation> biome : targetPools.entrySet()) {
+            for (VillageBuildingType type : VillageBuildingType.values()) {
+                ResourceLocation entryId = id(type.serializedName() + "/" + biome.getKey());
+                ResourceLocation templateId = id(
+                        "village/" + biome.getKey() + "/" + type.serializedName());
+                VillageBuildingPoolEntry entry = VillageBuildingDefinitions.get(entryId);
+                helper.assertTrue(
+                        entry != null
+                                && entry.buildingType() == type
+                                && entry.targetPool().equals(biome.getValue())
+                                && entry.template().equals(templateId)
+                                && entry.processors().equals(VillageBuildingPools.EMPTY_PROCESSORS)
+                                && entry.projection() == StructureTemplatePool.Projection.RIGID
+                                && entry.weight() == 1,
+                        "Built-in definition was missing or malformed: " + entryId);
+                StructureTemplate template = templateManager.get(templateId).orElse(null);
+                helper.assertTrue(template != null, "Built-in template was missing: " + templateId);
+                Vec3i size = template.getSize();
+                helper.assertTrue(
+                        size.getX() > 0 && size.getX() <= 16
+                                && size.getY() > 0 && size.getY() <= 16
+                                && size.getZ() > 0 && size.getZ() <= 16,
+                        "Built-in template exceeded its reviewed bounds: " + templateId);
+
+                VillageBuildingPoolElement element = VillageBuildingPoolElement.create(
+                        entryId,
+                        type,
+                        templateId,
+                        processors,
+                        StructureTemplatePool.Projection.RIGID);
+                List<StructureTemplate.StructureBlockInfo> markers = element.getDataMarkers(
+                        templateManager,
+                        BlockPos.ZERO,
+                        Rotation.NONE,
+                        false);
+                helper.assertTrue(
+                        markers.size() == 1
+                                && ("village_anchor:" + type.serializedName()).equals(
+                                        VillageBuildingAnchorMarker.metadata(markers.get(0).nbt())),
+                        "Built-in template did not contain exactly one matching anchor: "
+                                + templateId);
+                List<StructureTemplate.StructureBlockInfo> jigsaws =
+                        element.getShuffledJigsawBlocks(
+                                templateManager,
+                                BlockPos.ZERO,
+                                Rotation.NONE,
+                                RandomSource.create(31L + inspected));
+                helper.assertTrue(
+                        jigsaws.size() == 1
+                                && jigsaws.get(0).nbt() != null
+                                && "minecraft:building_entrance".equals(
+                                        jigsaws.get(0).nbt().getString("name"))
+                                && streetPools.get(biome.getKey()).equals(
+                                        jigsaws.get(0).nbt().getString("pool")),
+                        "Built-in template did not contain its biome street connector: "
+                                + templateId);
+                inspected++;
+            }
+        }
+        helper.assertTrue(inspected == 25, "The complete 25-template matrix was not inspected");
+
+        Map<StructureTemplatePool, PoolState> originalPools = new LinkedHashMap<>();
+        for (ResourceLocation poolId : targetPools.values()) {
+            StructureTemplatePool pool = level.registryAccess()
+                    .registryOrThrow(Registries.TEMPLATE_POOL)
+                    .get(poolId);
+            helper.assertTrue(pool != null, "A supported vanilla houses pool was missing: " + poolId);
+            StructureTemplatePoolAccessor accessor = (StructureTemplatePoolAccessor) pool;
+            originalPools.put(pool, new PoolState(
+                    new ArrayList<>(accessor.villagerGuardGunners$getRawTemplates()),
+                    new ObjectArrayList<>(accessor.villagerGuardGunners$getTemplates()),
+                    accessor.villagerGuardGunners$getMaxSize()));
+        }
+        try {
+            List<VillageBuildingPoolEntry> entries = List.copyOf(
+                    VillageBuildingDefinitions.snapshot().values());
+            helper.assertTrue(entries.size() == 25,
+                    "The built-in definition snapshot did not contain exactly 25 entries");
+            VillagePoolInjectionReport installed = VillageBuildingPoolIntegration.install(
+                    level.registryAccess(), templateManager, true, entries);
+            VillagePoolInjectionReport repeated = VillageBuildingPoolIntegration.install(
+                    level.registryAccess(), templateManager, true, entries);
+            helper.assertTrue(
+                    installed.injected() == 25
+                            && !installed.hasWarnings()
+                            && repeated.injected() == 0
+                            && repeated.alreadyPresent() == 25,
+                    "The complete built-in matrix was not installed exactly once");
+            for (Map.Entry<StructureTemplatePool, PoolState> original : originalPools.entrySet()) {
+                StructureTemplatePoolAccessor accessor =
+                        (StructureTemplatePoolAccessor) original.getKey();
+                helper.assertTrue(
+                        accessor.villagerGuardGunners$getRawTemplates().size()
+                                        == original.getValue().raw().size() + 5
+                                && accessor.villagerGuardGunners$getTemplates().size()
+                                        == original.getValue().flattened().size() + 5,
+                        "A supported village pool did not receive exactly five weight-1 entries");
+            }
+        } finally {
+            for (Map.Entry<StructureTemplatePool, PoolState> original : originalPools.entrySet()) {
+                StructureTemplatePoolAccessor accessor =
+                        (StructureTemplatePoolAccessor) original.getKey();
+                accessor.villagerGuardGunners$setRawTemplates(original.getValue().raw());
+                accessor.villagerGuardGunners$setTemplates(original.getValue().flattened());
+                accessor.villagerGuardGunners$setMaxSize(original.getValue().maximumSize());
+            }
+        }
+
+        int placementIndex = 0;
+        for (VillageBuildingType type : VillageBuildingType.values()) {
+            ResourceLocation entryId = id(type.serializedName() + "/plains");
+            ResourceLocation templateId = id("village/plains/" + type.serializedName());
+            VillageBuildingPoolElement element = VillageBuildingPoolElement.create(
+                    entryId,
+                    type,
+                    templateId,
+                    processors,
+                    StructureTemplatePool.Projection.RIGID);
+            Rotation rotation = Rotation.values()[placementIndex % Rotation.values().length];
+            BlockPos target = helper.absolutePos(new BlockPos(
+                    24 + placementIndex * 20,
+                    2,
+                    24));
+            List<StructureTemplate.StructureBlockInfo> markers = element.getDataMarkers(
+                    templateManager,
+                    target,
+                    rotation,
+                    false);
+            helper.assertTrue(markers.size() == 1,
+                    "The placement candidate lost its anchor: " + templateId);
+            BlockPos anchor = StructureTemplate.calculateRelativePosition(
+                    new StructurePlaceSettings().setRotation(rotation),
+                    markers.get(0).pos()).offset(target);
+            boolean placed = element.place(
+                    templateManager,
+                    level,
+                    level.structureManager(),
+                    level.getChunkSource().getGenerator(),
+                    target,
+                    BlockPos.ZERO,
+                    rotation,
+                    BoundingBox.infinite(),
+                    RandomSource.create(71L + placementIndex),
+                    false);
+            VillageBuildingIdentity identity = VillageBuildingIdentity.anchored(
+                    level.getSeed(),
+                    level.dimension().location(),
+                    entryId,
+                    type,
+                    anchor);
+            boolean anchorConsumed = level.getBlockState(anchor).isAir();
+            boolean recordPresent = VillageBuildingSavedData.get(level)
+                    .get(identity.buildingId()) != null;
+            helper.assertTrue(
+                    placed && anchorConsumed && recordPresent,
+                    "Built-in template failed real rotated placement: " + templateId
+                            + ", rotation=" + rotation
+                            + ", placed=" + placed
+                            + ", anchor=" + anchor
+                            + ", anchorState=" + level.getBlockState(anchor)
+                            + ", record=" + recordPresent);
+            placementIndex++;
+        }
+        helper.succeed();
+    }
+
     public static void verifyWorkerThreadAnchorHandoff(GameTestHelper helper) {
         var level = helper.getLevel();
         BlockPos anchor = helper.absolutePos(new BlockPos(4, 2, 4));
@@ -416,6 +608,12 @@ public final class VillageBuildingPoolGameTestAccess {
 
     private static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath("villagerguardgunners", path);
+    }
+
+    private record PoolState(
+            List<Pair<StructurePoolElement, Integer>> raw,
+            ObjectArrayList<StructurePoolElement> flattened,
+            int maximumSize) {
     }
 
     private VillageBuildingPoolGameTestAccess() {

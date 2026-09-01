@@ -13,8 +13,10 @@ Definitions are read from:
 
 The namespace and path become the stable entry ID. For example,
 `data/example/village_buildings/plains/post.json` is
-`example:plains/post`. Modpacks should use their own namespaces. The built-in
-inert probe remains `villagerguardgunners:integration_probe/plains`.
+`example:plains/post`. Modpacks should use their own namespaces. Step 5
+supersedes the built-in inert probe with the 25 biome/building definitions;
+`villagerguardgunners:integration_probe/plains` remains reserved only for
+backward codec compatibility.
 
 ## Format 1
 
@@ -47,8 +49,10 @@ entity, item, SNBT, marker, loot, or arbitrary registry-mutation field.
 
 ## Bounds and atomic publication
 
-One publication accepts at most 25 documents targeting at most five distinct
-pools. Each source document is limited to 16,384 characters and JSON depth 16.
+One publication accepts at most 50 documents targeting at most five distinct
+pools. Step 5 uses 25 slots for the built-in biome matrix and leaves 25 for
+bounded modpack replacements or extensions. Each source document is limited
+to 16,384 characters and JSON depth 16.
 Two IDs may not describe the same building-type, target-pool, template,
 processor-list, and projection tuple.
 

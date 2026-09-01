@@ -1,9 +1,9 @@
 # Village Defense Buildings 1.5 baseline and integration contract
 
-Steps 1 through 4 establish the 1.5 village-integration line without shipping a
-functional Barracks, Armory, Sentry Post, integrated Watchtower, or Training
-Yard. Development artifacts use `1.5-dev`; they must not be presented as a
-finished 1.5 release.
+Steps 1 through 4 establish the 1.5 village-integration line. Step 5 adds the
+five biome-aware visual building shells without activating their later
+garrison, Armory-stock, loot, or training behavior. Development artifacts use
+`1.5-dev`; they must not be presented as a finished 1.5 release.
 
 ## Exact inherited baseline
 
@@ -59,11 +59,11 @@ The following names are reserved before functional placement work begins:
 - stable building types: `barracks`, `armory`, `sentry_post`, `watchtower`, and
   `training_yard`.
 
-The Step 2 compatibility probe has the internal entry ID
+The removed Step 2 compatibility probe had the internal entry ID
 `villagerguardgunners:integration_probe/plains`. It is not a sixth building
-type and must be removed when the first reviewed VGG template becomes active.
-It wraps the existing road-connected vanilla plains small-house template, has
-no marker behavior, and is disabled by default.
+type. Step 5 removes its definition when the reviewed VGG templates become
+available, while retaining the ID only for backward codec compatibility with
+older development structure starts.
 
 Format-1 definition documents select only a target pool, template, processor
 list, stable building type, projection, and positive bounded weight. They may
@@ -74,7 +74,8 @@ unbounded collections.
 ## Hard limits and ownership
 
 - at most five target village pools per publication;
-- at most 25 injected entries across those pools;
+- at most 50 injected entries across those pools: 25 built-in biome variants
+  plus 25 bounded replacement or extension slots for modpacks;
 - entry weight from 1 through 5;
 - one stable entry ID per injected element;
 - one anchor marker per placed functional building piece;
@@ -111,10 +112,11 @@ committed only after the complete bounded preflight. A missing third-party or
 replaced vanilla pool cannot crash the server or cause fallback mutation of a
 different pool. Third-party entries already present remain untouched.
 
-The schema-13 Fzzy Config master switch is `villageBuildings.enabled`. It is
-`false` during the compatibility-probe stage. With the switch off, registry
-contents are not inspected or mutated. Once functional templates have passed
-the release matrix, this development default may be reviewed before release.
+The schema-13 Fzzy Config master switch is `villageBuildings.enabled`. It
+remains `false` through Step 5's visual-review stage. With the switch off,
+registry contents are not inspected or mutated. Once functional templates have
+passed the retained visual and compatibility matrix, this development default
+may be reviewed before release.
 Five default-on, one-way type switches can suppress Barracks, Armories, Sentry
 Posts, integrated Watchtowers, or Training Yards without rewriting datapack
 definitions. The integrated Watchtower switch never affects the standalone
@@ -122,11 +124,12 @@ definitions. The integrated Watchtower switch never affects the standalone
 
 ## Step 3 datapack publication
 
-Step 3 moves the inert probe declaration to
-`data/villagerguardgunners/village_buildings/integration_probe/plains.json` and
+Step 3 originally moved the inert probe declaration to a format-1 resource and
 registers a strict reload listener for
 `data/<namespace>/village_buildings/<id>.json`. Documents from modpack-owned
-namespaces are supported and compile in stable ID order.
+namespaces are supported and compile in stable ID order. Step 5 removes that
+probe resource and publishes the reviewed building matrix through the same
+format.
 
 Publication is atomic and last-known-good. One invalid document, duplicate
 placement tuple, or exceeded hard limit rejects the complete candidate while
@@ -173,6 +176,26 @@ after successful placement through the same rotation and projection processor
 chain, with only vanilla's structure-block ignore removed for the validated
 marker pass.
 
+## Step 5 biome-aware visual templates
+
+Step 5 replaces the inert probe with 25 generated assets: the five stable
+building layouts crossed with plains, desert, savanna, snowy, and taiga village
+palettes. Each weight-1 definition targets only its matching vanilla houses
+pool and each template contains exactly one outward-facing connector to that
+biome's streets pool plus one type-matching anchor.
+
+The source blueprint is strict and bounded to 16 blocks per axis and 4,096
+blocks per template. Its generator deletes stale output, compiles compressed
+NBT and format-1 definitions, and the artifact gate requires all 50 generated
+resources. The complete visual and runtime boundary is documented in
+[`village-defense-buildings-step-5.md`](village-defense-buildings-step-5.md).
+
+This step activates no functional action beyond the passive anchor claim.
+Barracks do not spawn guards, Armories do not place or stock VGG Armory blocks,
+Sentry Posts and Watchtowers do not assign posts, and Training Yards create no
+entity or controller. The default-off master switch remains the manual visual-
+review gate.
+
 ## Performance and compatibility invariants
 
 The integration cost is proportional only to the small number of declared
@@ -187,7 +210,7 @@ fallback holder, changes an existing weight, sorts entries, or writes a
 vanilla namespace resource. If a future overhaul removes a named pool, VGG
 skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 
-## Steps 1 through 4 exit criteria
+## Steps 1 through 5 exit criteria
 
 - the exact 1.4 commit and artifact are recorded;
 - `v1.5-support` produces `1.5-dev` artifacts;
@@ -209,8 +232,14 @@ skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 - marker publication performs no synchronous chunk load, scan, recurring task,
   or repair action;
 - the probe performs no marker, guard, Armory, loot, or persistent-state work;
+- the probe resource is absent while its legacy ID remains decodable;
+- all 25 biome/building templates and definitions are generated from bounded,
+  reviewable source;
+- every template has exactly one matching road connector and anchor;
+- all five building types pass real rotated placement without activating later
+  gameplay actions;
 - focused JVM and Forge integration tests pass; and
-- no functional village-defense building is claimed until later steps.
+- visual shells remain default-off until manual generation review passes.
 
 ## Verified Step 2 artifact
 
@@ -251,3 +280,14 @@ errors, and the clean Forge server passed all 99 required GameTests. The
 resulting development JAR is `villagerguardgunners-1.5-dev.jar`, 1,003,497
 bytes, with SHA-256
 `2833e99a8234e020c84496b94f96d5780686687c7a51f5e5a971c50ac7c4168d`.
+
+## Verified Step 5 artifact
+
+The Step 5 Java 17 gate passed 490 JVM/source-contract tests with no failures
+or errors, compiled both Forge test source sets, and required all 25 generated
+templates plus all 25 generated definitions in the release JAR. The Forge
+server loaded the complete definition matrix and passed all 100 required
+GameTests, including connector inspection across all five biome palettes and
+real rotated placement of every building type. The resulting development JAR
+is `villagerguardgunners-1.5-dev.jar`, 1,048,711 bytes, with SHA-256
+`29f5af34e1539bbce5ddcfcade0ff593ec880ba98046ac399ec2b3e2c1f621a3`.

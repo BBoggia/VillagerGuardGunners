@@ -2,8 +2,8 @@
 
 This matrix is the retained gate for the five village-attached defense
 buildings. “Pass” requires evidence against the exact candidate; source review
-alone is recorded as “Partial.” Steps 1 through 4 intentionally leave visual,
-marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
+alone is recorded as “Partial.” Step 5 adds automated visual-template evidence;
+natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 
 ## Baseline
 
@@ -12,7 +12,9 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 - Inherited 1.4 commit: `be63f09fc9697666aa67a8eb66055214fac2d568`
 - Inherited 1.4 JAR SHA-256:
   `2ebf9920e7916bc9d7e81e85a55c522020e7149eaabf74d2354bfe6c838e59ac`
-- Functional VGG village templates active: no
+- Functional VGG village behavior active: no
+- Step 5 visual templates packaged: 25 (five types x five village palettes)
+- Step 5 generation default: disabled pending manual visual review
 - Step 2 compatibility probe default: disabled
 - Step 2 JVM/source-contract tests: 464 passed
 - Step 2 Forge GameTests: all 97 required tests passed
@@ -38,6 +40,12 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 - Post-audit artifact size: 1,003,497 bytes
 - Post-audit artifact SHA-256:
   `2833e99a8234e020c84496b94f96d5780686687c7a51f5e5a971c50ac7c4168d`
+- Step 5 JVM/source-contract tests: 490 passed; 0 failed or errored
+- Step 5 Forge GameTests: all 100 required tests passed
+- Step 5 development artifact: `villagerguardgunners-1.5-dev.jar`
+- Step 5 artifact size: 1,048,711 bytes
+- Step 5 artifact SHA-256:
+  `29f5af34e1539bbce5ddcfcade0ff593ec880ba98046ac399ec2b3e2c1f621a3`
 
 ## Automated architecture and integration cases
 
@@ -45,7 +53,7 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 | --- | --- | --- | --- |
 | VBUILD-BASE-01 | Inspect version, branch contract, inherited commit, and checksum. | Every identity matches the recorded baseline. | Pass |
 | VBUILD-SCHEMA-01 | Enumerate building types and reserved paths. | Exactly the five reviewed stable building IDs are exposed; the probe is not a building type. | Pass |
-| VBUILD-LIMIT-01 | Submit invalid weight, duplicate IDs, more than five pools, or more than 25 entries. | Publication rejects the batch before touching a pool. | Pass |
+| VBUILD-LIMIT-01 | Submit invalid weight, duplicate IDs, more than five pools, or more than 50 entries. | Publication rejects the batch before touching a pool. | Pass |
 | VBUILD-CFG-01 | Start with `villageBuildings.enabled=false`. | No pool registry inspection or mutation occurs. | Pass |
 | VBUILD-CFG-02 | Disable any one schema-13 building-type switch. | Matching datapack entries are suppressed without rewriting the accepted snapshot or affecting other types. | Pass — JVM config/filter tests |
 | VBUILD-DATA-01 | Parse format-1 definitions, including pack-owned namespaces. | Only the seven reviewed fields and five stable types compile in deterministic entry-ID order. | Pass — JVM parser tests |
@@ -70,13 +78,13 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 
 | ID | Scenario | Required result | Current status |
 | --- | --- | --- | --- |
-| VBUILD-PLACE-01 | Generate each building in every supported village biome and rotation. | Road connection, terrain fit, bounds, palettes, and interiors are correct. | Not implemented |
+| VBUILD-PLACE-01 | Generate each building in every supported village biome and rotation. | Road connection, terrain fit, bounds, palettes, and interiors are correct. | Partial — all 25 templates load and all five types pass rotated real-placement tests; natural-village visual review remains manual |
 | VBUILD-MARKER-01 | Revisit, clip, save, and reload a building anchor. | One persistent identity; no duplicate guard, Armory, loot, or post action. | Partial — shared anchor identity, strict persistence, and at-most-once claims implemented; functional actions remain later steps |
-| VBUILD-BARRACKS-01 | Generate Barracks across all difficulties. | Bounded role/loadout-aware garrison and no partial issuance. | Not implemented |
-| VBUILD-ARMORY-01 | Generate the village Armory/Quartermaster. | Existing lock, loot, ammo, and resupply contracts remain authoritative. | Not implemented |
-| VBUILD-SENTRY-01 | Generate roadside Sentry Posts. | Small footprint, bounded staffing, and safe road clearance. | Not implemented |
-| VBUILD-TOWER-01 | Generate integrated and standalone towers in one world. | Independent controls/identity; no double processing or shared start state. | Not implemented |
-| VBUILD-YARD-01 | Generate Training Yards. | No unsafe combat target or recurring training controller is introduced. | Not implemented |
+| VBUILD-BARRACKS-01 | Generate Barracks across all difficulties. | Bounded role/loadout-aware garrison and no partial issuance. | Partial — biome-aware shell and anchor implemented; garrison is a later step |
+| VBUILD-ARMORY-01 | Generate the village Armory/Quartermaster. | Existing lock, loot, ammo, and resupply contracts remain authoritative. | Partial — biome-aware shell and anchor implemented; Armory placement/stock is a later step |
+| VBUILD-SENTRY-01 | Generate roadside Sentry Posts. | Small footprint, bounded staffing, and safe road clearance. | Partial — compact shell and anchor implemented; staffing is a later step |
+| VBUILD-TOWER-01 | Generate integrated and standalone towers in one world. | Independent controls/identity; no double processing or shared start state. | Partial — independent integrated shell/anchor implemented; natural mixed-generation review remains manual |
+| VBUILD-YARD-01 | Generate Training Yards. | No unsafe combat target or recurring training controller is introduced. | Partial — passive shell and anchor implemented; no entity or controller is present |
 | VBUILD-COMPAT-01 | Run with common village-overhaul datapacks/mods. | Third-party entries and weights remain intact; missing/replaced pools skip safely. | Manual test required |
 | VBUILD-PERF-01 | Generate at least 100 villages and profile startup/generation. | Startup work is bounded and generation adds no recurring server-tick cost. | Performance test required |
 

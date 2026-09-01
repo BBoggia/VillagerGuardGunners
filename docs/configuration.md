@@ -81,7 +81,7 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `watchtowers.placeArmory` | `true` | boolean | Allows Armory markers in newly placed towers to create an Armory. |
 | `watchtowers.stockArmory` | `true` | boolean | Allows a newly generated tower Armory to receive its datapack-defined initial stock. |
 | `watchtowers.guardGunChanceMultiplier` | 1.5 | 0–3 | Multiplies only a new tower guard's difficulty chance, clamped to 1.0. The default changes Easy/Normal/Hard chances from 35%/50%/65% to 52.5%/75%/97.5%; it does not bypass any other natural-loadout or safety gate. |
-| `villageBuildings.enabled` | `false` | boolean | Allows startup-only additive entries in supported village jigsaw pools, affecting only future generation. This is deliberately off while the 1.5 compatibility probe is under development. |
+| `villageBuildings.enabled` | `false` | boolean | Allows startup-only additive entries in supported village jigsaw pools, affecting only future generation. Step 5 keeps this off by default pending manual visual and mixed-mod village review. |
 | `villageBuildings.barracks` | `true` | boolean | Allows datapack-defined Barracks entries when the master switch is enabled. |
 | `villageBuildings.armories` | `true` | boolean | Allows datapack-defined village Armory entries when the master switch is enabled. |
 | `villageBuildings.sentryPosts` | `true` | boolean | Allows datapack-defined roadside Sentry Post entries when the master switch is enabled. |
@@ -103,9 +103,9 @@ the five default-on building-type suppressors. Migrating a version-12 file
 preserves its master choice and initializes only those new switches. Migrating
 a version-11 file still initializes the master to `false` while preserving the
 complete 1.4 Watchtower, loadout, combat, safety, ammunition, squad, and Armory
-policy. During Steps 1 through 3 the switch controls an inert plains
-compatibility probe rather than a functional VGG building, so it should remain
-off outside development tests.
+policy. During Steps 1 through 3 the switch controlled an inert plains
+compatibility probe. Step 5 replaces it with the biome-aware visual shells but
+keeps the switch default-off until manual village and mixed-mod review passes.
 
 When enabled, the mod performs one bounded, additive pool update during server
 startup. It does not scan villages or chunks and cannot change existing village

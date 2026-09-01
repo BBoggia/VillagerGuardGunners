@@ -6,7 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 /** Built-in pool identities reserved by the 1.5 village-building contract. */
 public final class VillageBuildingPools {
     public static final int MAXIMUM_TARGET_POOLS = 5;
-    public static final int MAXIMUM_INJECTED_ENTRIES = 25;
+    /** 25 built-in biome variants plus 25 bounded modpack extension slots. */
+    public static final int MAXIMUM_INJECTED_ENTRIES = 50;
 
     public static final ResourceLocation PLAINS_HOUSES = minecraft("village/plains/houses");
     public static final ResourceLocation DESERT_HOUSES = minecraft("village/desert/houses");
@@ -14,6 +15,8 @@ public final class VillageBuildingPools {
     public static final ResourceLocation SNOWY_HOUSES = minecraft("village/snowy/houses");
     public static final ResourceLocation TAIGA_HOUSES = minecraft("village/taiga/houses");
     public static final ResourceLocation EMPTY_PROCESSORS = minecraft("empty");
+    public static final ResourceLocation PLAINS_BARRACKS_ID = vgg("barracks/plains");
+    /** Retained only so Step 2 structure starts remain codec-compatible. */
     public static final ResourceLocation PLAINS_INTEGRATION_PROBE_ID =
             vgg("integration_probe/plains");
 

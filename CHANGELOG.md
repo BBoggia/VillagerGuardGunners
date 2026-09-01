@@ -23,6 +23,12 @@ All notable Villager Guard Gunners changes are recorded here.
   by all five planned village building types.
 - Added passive at-most-once claims for anchor, garrison, Armory, and initial-
   stock work so later functional steps cannot regenerate removed content.
+- Added biome-aware Barracks, Armory, Sentry Post, integrated Watchtower, and
+  Training Yard visual shells for plains, desert, savanna, snowy, and taiga
+  villages, generated from one bounded and reviewable source blueprint.
+- Added a 25-template Forge validation matrix covering every biome connector,
+  template bound, type-matching anchor, and real rotated placement for all five
+  building types.
 
 ### Improved
 
@@ -62,6 +68,8 @@ All notable Villager Guard Gunners changes are recorded here.
   before any village-pool mutation, with bounded entry-specific diagnostics.
 - Made worker-thread anchor publication queue exactly one immutable main-thread
   claim and documented its crash/retry boundary for future idempotent actions.
+- Removed the packaged Step 2 compatibility probe now that reviewed VGG
+  templates exist; its ID remains codec-reserved for older development worlds.
 
 ## 1.4 - 2026-08-31
 

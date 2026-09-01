@@ -32,7 +32,7 @@ final class VillageDefenseBuildingsStepThreeContractTest {
 
         assertAll(
                 () -> assertEquals(1, VillageBuildingDefinitionFormat.VERSION),
-                () -> assertEquals(25, VillageBuildingDefinitionFormat.MAXIMUM_DOCUMENTS),
+                () -> assertEquals(50, VillageBuildingDefinitionFormat.MAXIMUM_DOCUMENTS),
                 () -> assertEquals(16_384,
                         VillageBuildingDefinitionFormat.MAXIMUM_DOCUMENT_CHARACTERS),
                 () -> assertEquals(16, VillageBuildingDefinitionFormat.MAXIMUM_JSON_DEPTH),
@@ -48,34 +48,23 @@ final class VillageDefenseBuildingsStepThreeContractTest {
     }
 
     @Test
-    void builtInProbeUsesTheReviewedFormatAndRemainsInert() throws IOException {
-        JsonObject probe = JsonParser.parseString(read(
-                "src/main/resources/data/villagerguardgunners/village_buildings/"
-                        + "integration_probe/plains.json")).getAsJsonObject();
+    void stepFiveBlueprintSupersedesTheProbeWithoutGameplayPayload() throws IOException {
+        JsonObject blueprint = JsonParser.parseString(read(
+                "src/main/templates/villagerguardgunners/village_buildings.json"))
+                .getAsJsonObject();
 
         assertAll(
                 () -> assertEquals(
-                        Set.of(
-                                "format",
-                                "building_type",
-                                "target_pool",
-                                "template",
-                                "processors",
-                                "projection",
-                                "weight"),
-                        probe.keySet()),
-                () -> assertEquals(1, probe.get("format").getAsInt()),
-                () -> assertEquals("barracks", probe.get("building_type").getAsString()),
-                () -> assertEquals(
-                        "minecraft:village/plains/houses",
-                        probe.get("target_pool").getAsString()),
-                () -> assertEquals(
-                        "minecraft:village/plains/houses/plains_small_house_1",
-                        probe.get("template").getAsString()),
-                () -> assertFalse(probe.has("markers")),
-                () -> assertFalse(probe.has("guards")),
-                () -> assertFalse(probe.has("loot")),
-                () -> assertFalse(probe.has("commands")));
+                        Set.of("dataVersion", "biomes", "commonPalette", "buildings"),
+                        blueprint.keySet()),
+                () -> assertEquals(5, blueprint.getAsJsonObject("biomes").size()),
+                () -> assertEquals(5, blueprint.getAsJsonObject("buildings").size()),
+                () -> assertFalse(Files.exists(projectDirectory.resolve(
+                        "src/main/resources/data/villagerguardgunners/village_buildings/"
+                                + "integration_probe/plains.json"))),
+                () -> assertFalse(blueprint.has("guards")),
+                () -> assertFalse(blueprint.has("loot")),
+                () -> assertFalse(blueprint.has("commands")));
     }
 
     @Test
@@ -99,9 +88,9 @@ final class VillageDefenseBuildingsStepThreeContractTest {
                 () -> assertTrue(config.contains("CONFIG_VERSION = 13")),
                 () -> assertTrue(config.contains("restoreVersionThirteenDefaults")),
                 () -> assertTrue(config.contains("integratedWatchtowers")),
+                () -> assertTrue(build.contains("generateVillageBuildingTemplates")),
                 () -> assertTrue(build.contains(
-                        "data/villagerguardgunners/village_buildings/"
-                                + "integration_probe/plains.json")),
+                        "data/villagerguardgunners/village_buildings/${building}/${biome}.json")),
                 () -> assertTrue(build.contains("VillageBuildingDefinitions.class")));
     }
 

@@ -151,8 +151,8 @@ public final class VillagerGuardGunnersConfig extends Config {
         }
         if (previousVersion < 12) {
             // Version 12 reserves the village-building integration boundary.
-            // The Step 2 compatibility probe is deliberately opt-in until the
-            // reviewed 1.5 building templates replace it.
+            // Keep the integration default-off so migrated worlds explicitly
+            // opt into Step 5's still-manual visual and compatibility review.
             villageBuildings.restoreVersionTwelveDefaults();
         }
         if (previousVersion < 13) {
@@ -763,7 +763,7 @@ public final class VillagerGuardGunnersConfig extends Config {
     @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.villageBuildings")
     public static final class VillageBuildingSettings extends ConfigSection {
 
-        @Comment("Allows Villager Guard Gunners to append its entries to supported village jigsaw pools during server startup. This affects only villages generated afterward. Disabled during the 1.5 integration-probe stage.")
+        @Comment("Allows Villager Guard Gunners to append its entries to supported village jigsaw pools during server startup. This affects only villages generated afterward. Disabled by default until the 1.5 building templates pass manual visual and compatibility review.")
         public ValidatedBoolean enabled = new ValidatedBoolean(false);
 
         @Comment("Allows datapack-defined Barracks entries when the master village-building switch is enabled.")

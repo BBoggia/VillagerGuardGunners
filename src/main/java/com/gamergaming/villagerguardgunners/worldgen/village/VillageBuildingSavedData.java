@@ -207,6 +207,32 @@ public final class VillageBuildingSavedData extends SavedData {
         return ClaimResult.CLAIMED;
     }
 
+    /** Atomically reserves placement and the evaluated initial-stock decision. */
+    public synchronized ClaimResult claimArmorySetup(UUID buildingId) {
+        Objects.requireNonNull(buildingId, "buildingId");
+        if (!enabled) {
+            return ClaimResult.DISABLED;
+        }
+        VillageBuildingRecord current = records.get(buildingId);
+        if (current == null) {
+            return ClaimResult.MISSING_RECORD;
+        }
+        if (current.identity().buildingType() != VillageBuildingType.ARMORY) {
+            return ClaimResult.CONFLICT;
+        }
+        if (current.hasClaimed(VillageBuildingAction.INITIAL_STOCK)) {
+            return ClaimResult.ALREADY_CLAIMED;
+        }
+        VillageBuildingRecord claimed = current;
+        if (!claimed.hasClaimed(VillageBuildingAction.ARMORY)) {
+            claimed = claimed.claim(VillageBuildingAction.ARMORY);
+        }
+        claimed = claimed.claim(VillageBuildingAction.INITIAL_STOCK);
+        records.put(buildingId, claimed);
+        setDirty();
+        return ClaimResult.CLAIMED;
+    }
+
     public synchronized @Nullable VillageBuildingRecord get(UUID buildingId) {
         return records.get(Objects.requireNonNull(buildingId, "buildingId"));
     }

@@ -12,7 +12,7 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 - Inherited 1.4 commit: `be63f09fc9697666aa67a8eb66055214fac2d568`
 - Inherited 1.4 JAR SHA-256:
   `2ebf9920e7916bc9d7e81e85a55c522020e7149eaabf74d2354bfe6c838e59ac`
-- Functional VGG village behavior active: bounded garrisons when the default-off master switch is enabled
+- Functional VGG village behavior active: bounded garrisons and public village Armories when the default-off master switch is enabled
 - Step 5 visual templates packaged: 25 (five types x five village palettes)
 - Step 5 generation default: disabled pending manual visual review
 - Step 2 compatibility probe default: disabled
@@ -52,6 +52,12 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 - Step 6 artifact size: 1,066,498 bytes
 - Step 6 artifact SHA-256:
   `8650e519f1d573f2a82e0072ef29b6418560531eae187464d65ed6de5d55b9b0`
+- Step 7 JVM/source-contract tests: 503 passed; 0 failed, errored, or skipped
+- Step 7 Forge GameTests: all 102 required tests passed
+- Step 7 development artifact: `villagerguardgunners-1.5-dev.jar`
+- Step 7 artifact size: 1,075,732 bytes
+- Step 7 artifact SHA-256:
+  `ab4dd30f530edd2a6f83c699d30b353bd91d71236a45eecd897346f57d84c1a7`
 
 ## Automated architecture and integration cases
 
@@ -62,6 +68,7 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 | VBUILD-LIMIT-01 | Submit invalid weight, duplicate IDs, more than five pools, or more than 50 entries. | Publication rejects the batch before touching a pool. | Pass |
 | VBUILD-CFG-01 | Start with `villageBuildings.enabled=false`. | No pool registry inspection or mutation occurs. | Pass |
 | VBUILD-CFG-02 | Disable any one schema-13 building-type switch. | Matching datapack entries are suppressed without rewriting the accepted snapshot or affecting other types. | Pass — JVM config/filter tests |
+| VBUILD-CFG-03 | Disable village Armory placement or only initial stock. | Placement-off preserves the air anchor without a claim; stock-off places one complete public empty Armory. | Pass — JVM policy tests and live Forge GameTest |
 | VBUILD-DATA-01 | Parse format-1 definitions, including pack-owned namespaces. | Only the seven reviewed fields and five stable types compile in deterministic entry-ID order. | Pass — JVM parser tests |
 | VBUILD-DATA-02 | Submit duplicate keys, trailing JSON, deep/oversized documents, future formats, bad IDs/projections, or fractional/out-of-range weights. | The strict bounded reader rejects the candidate before pool mutation. | Pass — JVM parser tests |
 | VBUILD-DATA-03 | Reload one invalid document after a valid publication. | The complete invalid candidate is rejected; generation and last-known-good definitions remain unchanged. | Pass — JVM publication tests |
@@ -85,9 +92,9 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 | ID | Scenario | Required result | Current status |
 | --- | --- | --- | --- |
 | VBUILD-PLACE-01 | Generate each building in every supported village biome and rotation. | Road connection, terrain fit, bounds, palettes, and interiors are correct. | Partial — all 25 templates load and all five types pass rotated real-placement tests; natural-village visual review remains manual |
-| VBUILD-MARKER-01 | Revisit, clip, save, and reload a building anchor. | One persistent identity; no duplicate guard, Armory, loot, or post action. | Partial — shared anchor identity, strict persistence, and at-most-once garrison claims implemented; Armory and stock actions remain later steps |
+| VBUILD-MARKER-01 | Revisit, clip, save, and reload a building anchor. | One persistent identity; no duplicate guard, Armory, loot, or post action. | Partial — shared identity and at-most-once garrison, Armory, and initial-stock claims implemented; natural chunk-boundary review remains manual |
 | VBUILD-BARRACKS-01 | Generate Barracks across all difficulties. | Bounded role/loadout-aware garrison and no partial issuance. | Partial — bounded Easy/Normal/Hard datapack group, atomic entity creation, and one-shot claim implemented; natural terrain gameplay review remains manual |
-| VBUILD-ARMORY-01 | Generate the village Armory/Quartermaster. | Existing lock, loot, ammo, and resupply contracts remain authoritative. | Partial — biome-aware shell and anchor implemented; Armory placement/stock is a later step |
+| VBUILD-ARMORY-01 | Generate the village Armory/Quartermaster. | Existing lock, loot, ammo, and resupply contracts remain authoritative. | Partial — public Armory placement, bounded ammo-only stock, persistent identity, and existing resupply integration implemented; natural gameplay review remains manual |
 | VBUILD-SENTRY-01 | Generate roadside Sentry Posts. | Small footprint, bounded staffing, and safe road clearance. | Partial — one-guard difficulty-aware staffing and safe-cell validation implemented; natural road-clearance review remains manual |
 | VBUILD-TOWER-01 | Generate integrated and standalone towers in one world. | Independent controls/identity; no double processing or shared start state. | Partial — independent integrated upper-platform staffing and standalone controls implemented; natural mixed-generation review remains manual |
 | VBUILD-YARD-01 | Generate Training Yards. | No unsafe combat target or recurring training controller is introduced. | Partial — passive shell and anchor implemented; no entity or controller is present |

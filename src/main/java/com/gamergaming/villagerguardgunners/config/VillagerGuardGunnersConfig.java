@@ -14,8 +14,9 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnRules;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
-import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingArmoryPolicy;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisonPolicy;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 14;
+    public static final int CONFIG_VERSION = 15;
 
     @Comment("Enables Guard Villagers to use TaCZ guns. The server controls this setting.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -165,6 +166,12 @@ public final class VillagerGuardGunnersConfig extends Config {
             // Version 14 activates only one-shot village garrisons. Preserve
             // every existing building choice and initialize the new bounds.
             villageBuildings.restoreVersionFourteenDefaults();
+        }
+        if (previousVersion < 15) {
+            // Version 15 activates only generated village Armories. Preserve
+            // every prior building and garrison choice while adding the two
+            // independent, one-way Armory controls.
+            villageBuildings.restoreVersionFifteenDefaults();
         }
     }
 
@@ -802,6 +809,12 @@ public final class VillagerGuardGunnersConfig extends Config {
                 VillageBuildingGarrisonPolicy.MAXIMUM_GUN_CHANCE_MULTIPLIER,
                 VillageBuildingGarrisonPolicy.MINIMUM_GUN_CHANCE_MULTIPLIER);
 
+        @Comment("Allows newly generated village Armory buildings to replace their anchor with one public VGG Armory block. Existing buildings are never modified.")
+        public ValidatedBoolean placeArmoryBlocks = new ValidatedBoolean(true);
+
+        @Comment("Allows a newly generated village Armory to receive its bounded datapack-defined initial ammunition stock. Disabling this still places an empty Armory.")
+        public ValidatedBoolean stockArmories = new ValidatedBoolean(true);
+
         public boolean allows(VillageBuildingType buildingType) {
             return switch (buildingType) {
                 case BARRACKS -> barracks.get();
@@ -823,6 +836,13 @@ public final class VillagerGuardGunnersConfig extends Config {
             return garrisonPolicy().guardGunUpgradeChance(baseChance);
         }
 
+        public VillageBuildingArmoryPolicy armoryPolicy() {
+            boolean placementEnabled = enabled.get() && placeArmoryBlocks.get();
+            return new VillageBuildingArmoryPolicy(
+                    placementEnabled,
+                    placementEnabled && stockArmories.get());
+        }
+
         private void restoreVersionTwelveDefaults() {
             restoreDefault(enabled);
         }
@@ -839,6 +859,11 @@ public final class VillagerGuardGunnersConfig extends Config {
             restoreDefault(spawnGarrisons);
             restoreDefault(maximumGuardsPerBuilding);
             restoreDefault(guardGunChanceMultiplier);
+        }
+
+        private void restoreVersionFifteenDefaults() {
+            restoreDefault(placeArmoryBlocks);
+            restoreDefault(stockArmories);
         }
     }
 

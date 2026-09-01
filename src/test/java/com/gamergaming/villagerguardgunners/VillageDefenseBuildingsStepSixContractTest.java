@@ -84,7 +84,7 @@ final class VillageDefenseBuildingsStepSixContractTest {
         String docs = read("docs/village-defense-buildings-step-6.md");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 14")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 15")),
                 () -> assertTrue(config.contains("spawnGarrisons")),
                 () -> assertTrue(config.contains("maximumGuardsPerBuilding")),
                 () -> assertTrue(config.contains("guardGunChanceMultiplier")),

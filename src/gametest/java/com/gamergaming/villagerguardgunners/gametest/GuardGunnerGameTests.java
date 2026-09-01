@@ -98,6 +98,7 @@ import com.gamergaming.villagerguardgunners.worldgen.structure.VillageWatchtower
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerPlacement;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingPoolGameTestAccess;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingAction;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingArmoryLifecycle;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisonLifecycle;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisons;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingIdentity;
@@ -388,6 +389,165 @@ public final class GuardGunnerGameTests {
                                                 GuardSquadAccess.getSquadId(guard)),
                                 "A village guard did not complete the existing role, squad, and TaCZ loadout transaction");
                     }
+                } finally {
+                    restore.run();
+                }
+                helper.succeed();
+            });
+            deferredRestore = true;
+        } finally {
+            if (!deferredRestore) {
+                restore.run();
+            }
+        }
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 80,
+            batch = "village_building_armory_state")
+    public static void villageBuildingArmoryStocksPublicStorageExactlyOnce(
+            GameTestHelper helper) {
+        var level = helper.getLevel();
+        var settings = ModConfigs.GUARD_GUNNERS.villageBuildings;
+        boolean originalEnabled = settings.enabled.get();
+        boolean originalPlaceArmories = settings.placeArmoryBlocks.get();
+        boolean originalStockArmories = settings.stockArmories.get();
+        Runnable restore = () -> {
+            settings.enabled.accept(originalEnabled);
+            settings.placeArmoryBlocks.accept(originalPlaceArmories);
+            settings.stockArmories.accept(originalStockArmories);
+        };
+        boolean deferredRestore = false;
+        try {
+            settings.enabled.accept(true);
+            settings.placeArmoryBlocks.accept(true);
+            settings.stockArmories.accept(true);
+
+            BlockPos anchor = helper.absolutePos(new BlockPos(5, 2, 5));
+            level.setBlock(anchor.below(), Blocks.STONE.defaultBlockState(), 3);
+            level.setBlock(anchor, Blocks.AIR.defaultBlockState(), 3);
+            VillageBuildingIdentity identity = VillageBuildingIdentity.anchored(
+                    level.getSeed(),
+                    level.dimension().location(),
+                    ResourceLocation.fromNamespaceAndPath(
+                            VillagerGuardGunners.MODID, "gametest/village_armory"),
+                    VillageBuildingType.ARMORY,
+                    anchor);
+            VillageBuildingSavedData data = VillageBuildingSavedData.get(level);
+            helper.assertTrue(
+                    data.claimAnchor(identity)
+                            == VillageBuildingSavedData.ClaimResult.CLAIMED,
+                    "The Armory fixture could not claim its building anchor");
+
+            VillageBuildingArmoryLifecycle.Result first =
+                    VillageBuildingArmoryLifecycle.activate(
+                            level, identity, Rotation.CLOCKWISE_90);
+            helper.assertTrue(
+                    first.status()
+                                    == VillageBuildingArmoryLifecycle.Status.PLACED_PENDING_STOCK
+                            && level.getBlockEntity(anchor) instanceof ArmoryBlockEntity armory
+                            && armory.isGeneratedFor(identity.buildingId())
+                            && armory.getSquadLock() == null
+                            && data.get(identity.buildingId())
+                                    .hasClaimed(VillageBuildingAction.ARMORY)
+                            && data.get(identity.buildingId())
+                                    .hasClaimed(VillageBuildingAction.INITIAL_STOCK),
+                    "The village Armory did not reserve and place public storage");
+
+            settings.stockArmories.accept(false);
+            BlockPos emptyAnchor = helper.absolutePos(new BlockPos(8, 2, 5));
+            level.setBlock(emptyAnchor.below(), Blocks.STONE.defaultBlockState(), 3);
+            level.setBlock(emptyAnchor, Blocks.AIR.defaultBlockState(), 3);
+            VillageBuildingIdentity emptyIdentity = VillageBuildingIdentity.anchored(
+                    level.getSeed(),
+                    level.dimension().location(),
+                    ResourceLocation.fromNamespaceAndPath(
+                            VillagerGuardGunners.MODID, "gametest/empty_village_armory"),
+                    VillageBuildingType.ARMORY,
+                    emptyAnchor);
+            data.claimAnchor(emptyIdentity);
+            VillageBuildingArmoryLifecycle.Result empty =
+                    VillageBuildingArmoryLifecycle.activate(
+                            level, emptyIdentity, Rotation.NONE);
+            ArmoryBlockEntity emptyArmory =
+                    (ArmoryBlockEntity) level.getBlockEntity(emptyAnchor);
+            boolean emptyInventory = emptyArmory != null;
+            if (emptyArmory != null) {
+                for (int slot = 0; slot < emptyArmory.getInventory().getSlots(); slot++) {
+                    emptyInventory &= emptyArmory.getInventory()
+                            .getStackInSlot(slot)
+                            .isEmpty();
+                }
+            }
+            helper.assertTrue(
+                    empty.status() == VillageBuildingArmoryLifecycle.Status.PLACED_EMPTY
+                            && emptyArmory != null
+                            && emptyArmory.getGeneratedIdentity() != null
+                            && !emptyArmory.getGeneratedIdentity().pending()
+                            && emptyInventory,
+                    "Disabling initial stock did not leave the generated Armory empty");
+
+            settings.placeArmoryBlocks.accept(false);
+            BlockPos disabledAnchor = helper.absolutePos(new BlockPos(11, 2, 5));
+            VillageBuildingIdentity disabledIdentity = VillageBuildingIdentity.anchored(
+                    level.getSeed(),
+                    level.dimension().location(),
+                    ResourceLocation.fromNamespaceAndPath(
+                            VillagerGuardGunners.MODID, "gametest/disabled_village_armory"),
+                    VillageBuildingType.ARMORY,
+                    disabledAnchor);
+            data.claimAnchor(disabledIdentity);
+            VillageBuildingArmoryLifecycle.Result disabled =
+                    VillageBuildingArmoryLifecycle.activate(
+                            level, disabledIdentity, Rotation.NONE);
+            helper.assertTrue(
+                    disabled.status() == VillageBuildingArmoryLifecycle.Status.DISABLED
+                            && level.getBlockState(disabledAnchor).isAir()
+                            && !data.get(disabledIdentity.buildingId())
+                                    .hasClaimed(VillageBuildingAction.ARMORY),
+                    "Disabling village Armory placement still changed its anchor");
+            settings.placeArmoryBlocks.accept(true);
+            settings.stockArmories.accept(true);
+
+            helper.runAfterDelay(3, () -> {
+                try {
+                    ArmoryBlockEntity armory =
+                            (ArmoryBlockEntity) level.getBlockEntity(anchor);
+                    helper.assertTrue(
+                            armory != null
+                                    && armory.getGeneratedIdentity() != null
+                                    && !armory.getGeneratedIdentity().pending()
+                                    && armory.getSquadLock() == null,
+                            "The village Armory did not complete its public initial stock");
+                    int stockedSlots = 0;
+                    for (int slot = 0; slot < armory.getInventory().getSlots(); slot++) {
+                        ItemStack stack = armory.getInventory().getStackInSlot(slot);
+                        if (!stack.isEmpty()) {
+                            stockedSlots++;
+                            helper.assertTrue(
+                                    stack.getItem() instanceof IAmmo,
+                                    "Village Armory loot admitted a non-ammunition item");
+                        }
+                    }
+                    helper.assertTrue(stockedSlots == 7,
+                            "Village Armory stock did not fill the seven bounded ammo entries");
+                    CompoundTag inventoryBefore = armory.getInventory().serializeNBT();
+                    VillageBuildingArmoryLifecycle.Result repeated =
+                            VillageBuildingArmoryLifecycle.activate(
+                                    level, identity, Rotation.CLOCKWISE_90);
+                    helper.assertTrue(
+                            repeated.status()
+                                            == VillageBuildingArmoryLifecycle.Status.ALREADY_CLAIMED
+                                    && inventoryBefore.equals(
+                                            armory.getInventory().serializeNBT()),
+                            "Repeated village Armory processing duplicated initial stock");
+                    level.setBlock(anchor, Blocks.STONE.defaultBlockState(), 3);
+                    VillageBuildingArmoryLifecycle.activate(
+                            level, identity, Rotation.CLOCKWISE_90);
+                    helper.assertTrue(level.getBlockState(anchor).is(Blocks.STONE),
+                            "A removed village Armory regenerated after its one-shot claim");
                 } finally {
                     restore.run();
                 }

@@ -13,9 +13,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Rotation;
 
-/** Server-thread handoff for one persistent anchor and its optional bounded garrison. */
+/** Server-thread handoff for one persistent anchor and its bounded one-shot actions. */
 public final class VillageBuildingAnchorLifecycle {
-    static final int MAXIMUM_GARRISON_LOAD_RETRIES = 40;
+    static final int MAXIMUM_FUNCTIONAL_LOAD_RETRIES = 40;
 
     public static VillageBuildingIdentity record(
             WorldGenLevel worldGenLevel,
@@ -32,7 +32,7 @@ public final class VillageBuildingAnchorLifecycle {
                 false);
     }
 
-    /** Records the anchor and activates its bounded garrison in the same server task. */
+    /** Records the anchor and activates its bounded building behavior in one server task. */
     public static VillageBuildingIdentity recordAndPopulate(
             WorldGenLevel worldGenLevel,
             ResourceLocation entryId,
@@ -81,7 +81,7 @@ public final class VillageBuildingAnchorLifecycle {
                         && (anchorClaim == VillageBuildingSavedData.ClaimResult.CLAIMED
                                 || anchorClaim
                                         == VillageBuildingSavedData.ClaimResult.ALREADY_CLAIMED)) {
-                    populateWhenLoaded(
+                    activateWhenLoaded(
                             server,
                             dimension,
                             identity,
@@ -99,7 +99,7 @@ public final class VillageBuildingAnchorLifecycle {
         return identity;
     }
 
-    private static void populateWhenLoaded(
+    private static void activateWhenLoaded(
             MinecraftServer server,
             ResourceKey<Level> dimension,
             VillageBuildingIdentity identity,
@@ -110,14 +110,21 @@ public final class VillageBuildingAnchorLifecycle {
         if (liveLevel == null) {
             return;
         }
-        VillageBuildingGarrisonLifecycle.Result result =
-                VillageBuildingGarrisonLifecycle.populate(
-                        liveLevel, identity, rotation, generationDifficulty);
-        if (result.status() == VillageBuildingGarrisonLifecycle.Status.UNLOADED
-                && attempt < MAXIMUM_GARRISON_LOAD_RETRIES) {
+        boolean unloaded;
+        if (identity.buildingType() == VillageBuildingType.ARMORY) {
+            unloaded = VillageBuildingArmoryLifecycle.activate(liveLevel, identity, rotation)
+                            .status()
+                    == VillageBuildingArmoryLifecycle.Status.UNLOADED;
+        } else {
+            unloaded = VillageBuildingGarrisonLifecycle.populate(
+                                    liveLevel, identity, rotation, generationDifficulty)
+                            .status()
+                    == VillageBuildingGarrisonLifecycle.Status.UNLOADED;
+        }
+        if (unloaded && attempt < MAXIMUM_FUNCTIONAL_LOAD_RETRIES) {
             server.tell(new TickTask(
                     server.getTickCount() + 1,
-                    () -> populateWhenLoaded(
+                    () -> activateWhenLoaded(
                             server,
                             dimension,
                             identity,

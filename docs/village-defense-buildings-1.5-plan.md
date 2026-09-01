@@ -2,8 +2,9 @@
 
 Steps 1 through 4 establish the 1.5 village-integration line. Step 5 adds the
 five biome-aware visual building shells. Step 6 activates bounded garrisons for
-Barracks, Sentry Posts, and integrated Watchtowers while Armory-stock, loot,
-and training behavior remain later work. Development artifacts use `1.5-dev`;
+Barracks, Sentry Posts, and integrated Watchtowers. Step 7 activates one public,
+optionally pre-stocked VGG Armory in each eligible Armory building while
+training behavior remains passive. Development artifacts use `1.5-dev`;
 they must not be presented as a finished 1.5 release.
 
 ## Exact inherited baseline
@@ -217,6 +218,23 @@ global 0–4 ceiling, and a clamped one-time gun-chance multiplier. The complete
 contract is in
 [`village-defense-buildings-step-6.md`](village-defense-buildings-step-6.md).
 
+## Step 7 public village Armories
+
+Step 7 routes only the `armory` building type from the existing anchor handoff
+to the generated-Armory placer. The transformed anchor must be loaded and still
+air. One public Armory uses the deterministic building UUID as its generated
+identity and receives at most one bounded, ammo-only evaluation of
+`villagerguardgunners:chests/village_armory`.
+
+The persistent `ARMORY` and `INITIAL_STOCK` decisions are claimed together
+before placement. Repeats cannot duplicate stock, a matching already-saved
+Armory repairs only the missing claims, and a removed completed Armory is not
+regenerated. Config schema 15 adds independent placement and initial-stock
+suppressors beneath the default-off master switch. Existing loaded-index,
+lock, reservation, travel, withdrawal, and resupply contracts remain
+authoritative. The complete contract is in
+[`village-defense-buildings-step-7.md`](village-defense-buildings-step-7.md).
+
 ## Performance and compatibility invariants
 
 The integration cost is proportional only to the small number of declared
@@ -231,7 +249,7 @@ fallback holder, changes an existing weight, sorts entries, or writes a
 vanilla namespace resource. If a future overhaul removes a named pool, VGG
 skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 
-## Steps 1 through 6 exit criteria
+## Steps 1 through 7 exit criteria
 
 - the exact 1.4 commit and artifact are recorded;
 - `v1.5-support` produces `1.5-dev` artifacts;
@@ -266,6 +284,10 @@ skips it. Actual mixed-mod village generation remains a mandatory manual gate.
   and squad membership through the existing event-driven pipeline;
 - Peaceful, configured-zero, repeated, unsafe, unloaded, missing-group, and
   non-garrison paths fail closed without partial or retroactive staffing;
+- each eligible Armory building places at most one public Armory and evaluates
+  its bounded ammo-only datapack stock at most once;
+- disabled, empty, repeated, removed, blocked, wrong-owner, and unloaded
+  Armory paths fail closed without overwriting blocks or duplicating stock;
 - focused JVM and Forge integration tests pass; and
 - visual shells remain default-off until manual generation review passes.
 
@@ -332,3 +354,14 @@ handoff while crossbow-only replacement remained enabled. The resulting
 development JAR is `villagerguardgunners-1.5-dev.jar`, 1,066,498 bytes, with
 SHA-256
 `8650e519f1d573f2a82e0072ef29b6418560531eae187464d65ed6de5d55b9b0`.
+
+## Verified Step 7 artifact
+
+The Step 7 Java 17 gate passed 503 JVM/source-contract tests with no failures,
+errors, or skips, compiled both Forge test source sets, and required the public
+village-Armory runtime classes plus its bounded loot table in the release JAR.
+The isolated Forge server passed all 102 required GameTests, including stocked,
+empty, disabled, repeated, removed, public-lock, and ammo-only village Armory
+paths. The resulting development JAR is
+`villagerguardgunners-1.5-dev.jar`, 1,075,732 bytes, with SHA-256
+`ab4dd30f530edd2a6f83c699d30b353bd91d71236a45eecd897346f57d84c1a7`.

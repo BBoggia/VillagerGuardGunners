@@ -17,8 +17,9 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficultySettings
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
-import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingArmoryPolicy;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisonPolicy;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
 
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +34,7 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(14, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(15, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertTrue(config.enabled.get()),
                 () -> assertTrue(config.naturalLoadouts.enabled.get()),
                 () -> assertEquals(
@@ -127,6 +128,11 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(
                         new VillageBuildingGarrisonPolicy(false, 4, 3.0D),
                         config.villageBuildings.garrisonPolicy()),
+                () -> assertTrue(config.villageBuildings.placeArmoryBlocks.get()),
+                () -> assertTrue(config.villageBuildings.stockArmories.get()),
+                () -> assertEquals(
+                        new VillageBuildingArmoryPolicy(false, false),
+                        config.villageBuildings.armoryPolicy()),
                 () -> assertAll(java.util.Arrays.stream(VillageBuildingType.values())
                         .map(type -> () -> assertTrue(config.villageBuildings.allows(type)))),
                 () -> assertEquals(2, config.performance.visibilitySampleIntervalTicks.get()),
@@ -344,7 +350,37 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(4,
                         config.villageBuildings.maximumGuardsPerBuilding.get()),
                 () -> assertEquals(3.0D,
-                        config.villageBuildings.guardGunChanceMultiplier.get()));
+                        config.villageBuildings.guardGunChanceMultiplier.get()),
+                () -> assertTrue(config.villageBuildings.placeArmoryBlocks.get()),
+                () -> assertTrue(config.villageBuildings.stockArmories.get()));
+    }
+
+    @Test
+    void versionFourteenUpdatePreservesGarrisonsAndInitializesArmoryControls() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.villageBuildings.enabled.accept(true);
+        config.villageBuildings.spawnGarrisons.accept(false);
+        config.villageBuildings.maximumGuardsPerBuilding.accept(2);
+        config.villageBuildings.guardGunChanceMultiplier.accept(0.5D);
+        config.villageBuildings.placeArmoryBlocks.accept(false);
+        config.villageBuildings.stockArmories.accept(false);
+
+        config.update(14);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertTrue(config.villageBuildings.enabled.get()),
+                () -> assertFalse(config.villageBuildings.spawnGarrisons.get()),
+                () -> assertEquals(2,
+                        config.villageBuildings.maximumGuardsPerBuilding.get()),
+                () -> assertEquals(0.5D,
+                        config.villageBuildings.guardGunChanceMultiplier.get()),
+                () -> assertTrue(config.villageBuildings.placeArmoryBlocks.get()),
+                () -> assertTrue(config.villageBuildings.stockArmories.get()),
+                () -> assertEquals(
+                        new VillageBuildingArmoryPolicy(true, true),
+                        config.villageBuildings.armoryPolicy()));
     }
 
     @Test

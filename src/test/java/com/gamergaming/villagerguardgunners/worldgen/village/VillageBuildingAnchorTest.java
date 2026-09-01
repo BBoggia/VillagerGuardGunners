@@ -193,6 +193,40 @@ final class VillageBuildingAnchorTest {
     }
 
     @Test
+    void armorySetupClaimsPlacementAndStockAtomically() {
+        VillageBuildingSavedData data = new VillageBuildingSavedData();
+        VillageBuildingIdentity identity = VillageBuildingIdentity.anchored(
+                42L,
+                DIMENSION,
+                id("example", "plains/armory"),
+                VillageBuildingType.ARMORY,
+                ANCHOR);
+        data.claimAnchor(identity);
+
+        assertAll(
+                () -> assertEquals(
+                        VillageBuildingSavedData.ClaimResult.CLAIMED,
+                        data.claimArmorySetup(identity.buildingId())),
+                () -> assertTrue(data.get(identity.buildingId())
+                        .hasClaimed(VillageBuildingAction.ARMORY)),
+                () -> assertTrue(data.get(identity.buildingId())
+                        .hasClaimed(VillageBuildingAction.INITIAL_STOCK)),
+                () -> assertEquals(
+                        VillageBuildingSavedData.ClaimResult.ALREADY_CLAIMED,
+                        data.claimArmorySetup(identity.buildingId())),
+                () -> assertEquals(
+                        VillageBuildingSavedData.ClaimResult.MISSING_RECORD,
+                        data.claimArmorySetup(UUID.randomUUID())));
+
+        VillageBuildingSavedData wrongType = new VillageBuildingSavedData();
+        VillageBuildingIdentity barracks = identity();
+        wrongType.claimAnchor(barracks);
+        assertEquals(
+                VillageBuildingSavedData.ClaimResult.CONFLICT,
+                wrongType.claimArmorySetup(barracks.buildingId()));
+    }
+
+    @Test
     void savedDataRejectsIdAndPhysicalAnchorConflicts() {
         VillageBuildingSavedData data = new VillageBuildingSavedData();
         VillageBuildingIdentity original = identity();

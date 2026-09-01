@@ -17,6 +17,7 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficultySettings
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
 
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +32,7 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(12, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(13, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertTrue(config.enabled.get()),
                 () -> assertTrue(config.naturalLoadouts.enabled.get()),
                 () -> assertEquals(
@@ -112,6 +113,13 @@ final class VillagerGuardGunnersConfigTest {
                         1.0E-12D),
                 () -> assertEquals(1.0D, config.watchtowers.guardGunUpgradeChance(1.0D)),
                 () -> assertFalse(config.villageBuildings.enabled.get()),
+                () -> assertTrue(config.villageBuildings.barracks.get()),
+                () -> assertTrue(config.villageBuildings.armories.get()),
+                () -> assertTrue(config.villageBuildings.sentryPosts.get()),
+                () -> assertTrue(config.villageBuildings.integratedWatchtowers.get()),
+                () -> assertTrue(config.villageBuildings.trainingYards.get()),
+                () -> assertAll(java.util.Arrays.stream(VillageBuildingType.values())
+                        .map(type -> () -> assertTrue(config.villageBuildings.allows(type)))),
                 () -> assertEquals(2, config.performance.visibilitySampleIntervalTicks.get()),
                 () -> assertEquals(5, config.performance.movementDecisionIntervalTicks.get()),
                 () -> assertEquals(20, config.performance.pathRecalculationIntervalTicks.get()),
@@ -274,7 +282,29 @@ final class VillagerGuardGunnersConfigTest {
                         config.watchtowers.snapshot()),
                 () -> assertEquals(0.25D,
                         config.watchtowers.guardGunChanceMultiplier.get()),
-                () -> assertFalse(config.villageBuildings.enabled.get()));
+                () -> assertFalse(config.villageBuildings.enabled.get()),
+                () -> assertAll(java.util.Arrays.stream(VillageBuildingType.values())
+                        .map(type -> () -> assertTrue(config.villageBuildings.allows(type)))));
+    }
+
+    @Test
+    void versionTwelveUpdatePreservesMasterAndInitializesOnlyTypeSuppressors() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.villageBuildings.enabled.accept(true);
+        config.villageBuildings.barracks.accept(false);
+        config.villageBuildings.armories.accept(false);
+        config.villageBuildings.sentryPosts.accept(false);
+        config.villageBuildings.integratedWatchtowers.accept(false);
+        config.villageBuildings.trainingYards.accept(false);
+
+        config.update(12);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertTrue(config.villageBuildings.enabled.get()),
+                () -> assertAll(java.util.Arrays.stream(VillageBuildingType.values())
+                        .map(type -> () -> assertTrue(config.villageBuildings.allows(type)))));
     }
 
     @Test

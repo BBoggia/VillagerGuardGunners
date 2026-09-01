@@ -14,6 +14,7 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnRules;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 12;
+    public static final int CONFIG_VERSION = 13;
 
     @Comment("Enables Guard Villagers to use TaCZ guns. The server controls this setting.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -153,6 +154,11 @@ public final class VillagerGuardGunnersConfig extends Config {
             // The Step 2 compatibility probe is deliberately opt-in until the
             // reviewed 1.5 building templates replace it.
             villageBuildings.restoreVersionTwelveDefaults();
+        }
+        if (previousVersion < 13) {
+            // Version 13 adds one-way per-building suppression. Preserve the
+            // schema-12 master choice and initialize only the five new flags.
+            villageBuildings.restoreVersionThirteenDefaults();
         }
     }
 
@@ -760,8 +766,41 @@ public final class VillagerGuardGunnersConfig extends Config {
         @Comment("Allows Villager Guard Gunners to append its entries to supported village jigsaw pools during server startup. This affects only villages generated afterward. Disabled during the 1.5 integration-probe stage.")
         public ValidatedBoolean enabled = new ValidatedBoolean(false);
 
+        @Comment("Allows datapack-defined Barracks entries when the master village-building switch is enabled.")
+        public ValidatedBoolean barracks = new ValidatedBoolean(true);
+
+        @Comment("Allows datapack-defined village Armory entries when the master village-building switch is enabled.")
+        public ValidatedBoolean armories = new ValidatedBoolean(true);
+
+        @Comment("Allows datapack-defined roadside Sentry Post entries when the master village-building switch is enabled.")
+        public ValidatedBoolean sentryPosts = new ValidatedBoolean(true);
+
+        @Comment("Allows datapack-defined village-integrated Watchtower entries. This does not affect standalone Watchtowers.")
+        public ValidatedBoolean integratedWatchtowers = new ValidatedBoolean(true);
+
+        @Comment("Allows datapack-defined Training Yard entries when the master village-building switch is enabled.")
+        public ValidatedBoolean trainingYards = new ValidatedBoolean(true);
+
+        public boolean allows(VillageBuildingType buildingType) {
+            return switch (buildingType) {
+                case BARRACKS -> barracks.get();
+                case ARMORY -> armories.get();
+                case SENTRY_POST -> sentryPosts.get();
+                case WATCHTOWER -> integratedWatchtowers.get();
+                case TRAINING_YARD -> trainingYards.get();
+            };
+        }
+
         private void restoreVersionTwelveDefaults() {
             restoreDefault(enabled);
+        }
+
+        private void restoreVersionThirteenDefaults() {
+            restoreDefault(barracks);
+            restoreDefault(armories);
+            restoreDefault(sentryPosts);
+            restoreDefault(integratedWatchtowers);
+            restoreDefault(trainingYards);
         }
     }
 

@@ -2,7 +2,7 @@
 
 This matrix is the retained gate for the five village-attached defense
 buildings. “Pass” requires evidence against the exact candidate; source review
-alone is recorded as “Partial.” Steps 1 and 2 intentionally leave visual,
+alone is recorded as “Partial.” Steps 1 through 3 intentionally leave visual,
 marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 
 ## Baseline
@@ -20,20 +20,31 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 - Step 2 artifact size: 954,554 bytes
 - Step 2 artifact SHA-256:
   `2c973bbc32ac7baf870fb355826e48e2a488b8cf4e6090e031d2f5cc7b02322d`
+- Step 3 JVM/source-contract tests: 476 passed; 0 failed, errored, or skipped
+- Step 3 Forge GameTests: all 97 required tests passed
+- Step 3 development artifact: `villagerguardgunners-1.5-dev.jar`
+- Step 3 artifact size: 975,797 bytes
+- Step 3 artifact SHA-256:
+  `4dbb920dcb030f8b650f38fdd58a2072e8d6ba0c5856364c56b66b8d3f253cbc`
 
 ## Automated architecture and integration cases
 
-| ID | Scenario | Required result | Step 2 status |
+| ID | Scenario | Required result | Step 3 status |
 | --- | --- | --- | --- |
 | VBUILD-BASE-01 | Inspect version, branch contract, inherited commit, and checksum. | Every identity matches the recorded baseline. | Pass |
 | VBUILD-SCHEMA-01 | Enumerate building types and reserved paths. | Exactly the five reviewed stable building IDs are exposed; the probe is not a building type. | Pass |
 | VBUILD-LIMIT-01 | Submit invalid weight, duplicate IDs, more than five pools, or more than 25 entries. | Publication rejects the batch before touching a pool. | Pass |
 | VBUILD-CFG-01 | Start with `villageBuildings.enabled=false`. | No pool registry inspection or mutation occurs. | Pass |
+| VBUILD-CFG-02 | Disable any one schema-13 building-type switch. | Matching datapack entries are suppressed without rewriting the accepted snapshot or affecting other types. | Pass — JVM config/filter tests |
+| VBUILD-DATA-01 | Parse format-1 definitions, including pack-owned namespaces. | Only the seven reviewed fields and five stable types compile in deterministic entry-ID order. | Pass — JVM parser tests |
+| VBUILD-DATA-02 | Submit duplicate keys, trailing JSON, deep/oversized documents, future formats, bad IDs/projections, or fractional/out-of-range weights. | The strict bounded reader rejects the candidate before pool mutation. | Pass — JVM parser tests |
+| VBUILD-DATA-03 | Reload one invalid document after a valid publication. | The complete invalid candidate is rejected; generation and last-known-good definitions remain unchanged. | Pass — JVM publication tests |
+| VBUILD-DATA-04 | Run `/reload` after startup. | The accepted snapshot updates, but live template pools are not removed, reordered, or rebuilt; restart is documented as required. | Pass — architecture contract; live restart test remains manual |
 | VBUILD-POOL-01 | Inject the plains probe into the vanilla plains houses pool. | Existing raw and flattened entries retain identity/order; one weight-1 VGG element is appended. | Pass — live Forge registry test |
 | VBUILD-POOL-02 | Repeat injection in the same server. | Pool sizes do not change; the report records one already-present entry. | Pass — live Forge registry test |
 | VBUILD-POOL-03 | Target a missing pool or processor list. | The entry is skipped, other entries remain eligible, and one bounded report records the omission. | Pass — live Forge registry test |
 | VBUILD-POOL-04 | Inspect the probe template's jigsaw metadata. | The existing inert template has a connector to the plains street pool. | Pass — live Forge template test |
-| VBUILD-CODEC-01 | Encode and decode the custom pool element. | Entry ID, template, processors, and projection round-trip. | Pass — live polymorphic codec test |
+| VBUILD-CODEC-01 | Encode and decode the custom pool element. | Entry ID, building type, template, processors, and projection round-trip. | Pass — live polymorphic codec test |
 | VBUILD-RESTART-01 | Stop and start a second integrated server process. | The new registry receives one entry; no static prior-server state suppresses it. | Partial — implementation is content-based; lifecycle run pending |
 | VBUILD-OLDWORLD-01 | Load an existing 1.4 world with integration enabled. | Existing starts/chunks are unchanged; only newly selected pieces can use appended entries. | Manual test required |
 

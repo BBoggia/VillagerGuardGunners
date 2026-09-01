@@ -1,6 +1,6 @@
 # Village Defense Buildings 1.5 baseline and integration contract
 
-Steps 1 and 2 establish the 1.5 village-integration line without shipping a
+Steps 1 through 3 establish the 1.5 village-integration line without shipping a
 functional Barracks, Armory, Sentry Post, integrated Watchtower, or Training
 Yard. Development artifacts use `1.5-dev`; they must not be presented as a
 finished 1.5 release.
@@ -65,9 +65,9 @@ type and must be removed when the first reviewed VGG template becomes active.
 It wraps the existing road-connected vanilla plains small-house template, has
 no marker behavior, and is disabled by default.
 
-Future definition documents may select only a declared target pool, template,
-processor list, stable building type, positive bounded weight, and feature
-flags already represented by the schema. They may not contain commands,
+Format-1 definition documents select only a target pool, template, processor
+list, stable building type, projection, and positive bounded weight. They may
+not contain commands,
 entity SNBT, item NBT, Java class names, code, arbitrary registry mutation, or
 unbounded collections.
 
@@ -106,10 +106,34 @@ reported in one bounded startup diagnostic. A missing third-party or replaced
 vanilla pool cannot crash the server or cause fallback mutation of a different
 pool. Third-party entries already present remain untouched.
 
-The schema-12 Fzzy Config master switch is `villageBuildings.enabled`. It is
+The schema-13 Fzzy Config master switch is `villageBuildings.enabled`. It is
 `false` during the compatibility-probe stage. With the switch off, registry
 contents are not inspected or mutated. Once functional templates have passed
 the release matrix, this development default may be reviewed before release.
+Five default-on, one-way type switches can suppress Barracks, Armories, Sentry
+Posts, integrated Watchtowers, or Training Yards without rewriting datapack
+definitions. The integrated Watchtower switch never affects the standalone
+1.4 structure.
+
+## Step 3 datapack publication
+
+Step 3 moves the inert probe declaration to
+`data/villagerguardgunners/village_buildings/integration_probe/plains.json` and
+registers a strict reload listener for
+`data/<namespace>/village_buildings/<id>.json`. Documents from modpack-owned
+namespaces are supported and compile in stable ID order.
+
+Publication is atomic and last-known-good. One invalid document, duplicate
+placement tuple, or exceeded hard limit rejects the complete candidate while
+retaining the previously accepted definitions. Individual files are capped at
+16,384 characters and depth 16; diagnostics are normalized and bounded.
+
+The initial resource reload supplies the snapshot used by startup pool
+integration. Later `/reload` operations validate a future snapshot but do not
+rewrite live pools; accepted changes require a server restart. This preserves
+third-party pool entries and avoids unsafe removal of pieces already available
+to world generation. The complete format and example are documented in
+[`village-defense-buildings-step-3.md`](village-defense-buildings-step-3.md).
 
 ## Performance and compatibility invariants
 
@@ -125,7 +149,7 @@ fallback holder, changes an existing weight, sorts entries, or writes a
 vanilla namespace resource. If a future overhaul removes a named pool, VGG
 skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 
-## Step 1 and Step 2 exit criteria
+## Steps 1 through 3 exit criteria
 
 - the exact 1.4 commit and artifact are recorded;
 - `v1.5-support` produces `1.5-dev` artifacts;
@@ -135,6 +159,11 @@ skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 - additive mutation preserves order and weight, is idempotent, and invalidates
   only the target pool's height cache;
 - disabled and missing-dependency paths fail closed;
+- definitions are strict, bounded, deterministic, atomic, and pack-namespace
+  friendly;
+- schema-12 migration preserves the master choice while initializing only the
+  five schema-13 type suppressors;
+- `/reload` cannot destructively mutate live village pools;
 - the probe performs no marker, guard, Armory, loot, or persistent-state work;
 - focused JVM and Forge integration tests pass; and
 - no functional village-defense building is claimed until later steps.
@@ -147,3 +176,13 @@ live Forge server then passed all 97 required GameTests. The resulting
 development JAR is `villagerguardgunners-1.5-dev.jar`, 954,554 bytes, with
 SHA-256
 `2c973bbc32ac7baf870fb355826e48e2a488b8cf4e6090e031d2f5cc7b02322d`.
+
+## Verified Step 3 artifact
+
+The Step 3 Java 17 gate passed 476 JVM/source-contract tests with no failures,
+errors, or skips, compiled both Forge test source sets, and passed the packaged-
+artifact inspection. The live Forge server loaded one built-in format-1
+definition before startup and passed all 97 required GameTests. The resulting
+development JAR is `villagerguardgunners-1.5-dev.jar`, 975,797 bytes, with
+SHA-256
+`4dbb920dcb030f8b650f38fdd58a2072e8d6ba0c5856364c56b66b8d3f253cbc`.

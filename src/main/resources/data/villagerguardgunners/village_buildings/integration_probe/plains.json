@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "building_type": "barracks",
+  "target_pool": "minecraft:village/plains/houses",
+  "template": "minecraft:village/plains/houses/plains_small_house_1",
+  "processors": "minecraft:empty",
+  "projection": "rigid",
+  "weight": 1
+}

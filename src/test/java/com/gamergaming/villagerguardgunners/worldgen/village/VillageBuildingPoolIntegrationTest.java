@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import org.junit.jupiter.api.Test;
 
 final class VillageBuildingPoolIntegrationTest {
@@ -17,7 +18,7 @@ final class VillageBuildingPoolIntegrationTest {
         VillagePoolInjectionReport report = VillageBuildingPoolIntegration.install(
                 RegistryAccess.EMPTY,
                 false,
-                VillageBuildingPools.stepTwoEntries());
+                List.of(probe()));
 
         assertEquals(
                 new VillagePoolInjectionReport(false, 1, 0, 0, 0, 0),
@@ -26,22 +27,32 @@ final class VillageBuildingPoolIntegrationTest {
     }
 
     @Test
-    void entryValidationRejectsForeignIdsAndOutOfBoundsWeights() {
+    void entryValidationSupportsPackOwnedIdsAndRejectsOutOfBoundsWeights() {
         ResourceLocation pool = id("minecraft", "village/plains/houses");
         ResourceLocation template = id("minecraft", "village/plains/houses/plains_small_house_1");
         ResourceLocation processors = id("minecraft", "empty");
 
+        assertEquals(
+                id("example", "foreign"),
+                new VillageBuildingPoolEntry(
+                        id("example", "foreign"),
+                        VillageBuildingType.SENTRY_POST,
+                        pool,
+                        template,
+                        processors,
+                        StructureTemplatePool.Projection.RIGID,
+                        1).entryId());
         assertThrows(IllegalArgumentException.class, () -> new VillageBuildingPoolEntry(
-                id("example", "foreign"), pool, template, processors, 1));
+                id("villagerguardgunners", "zero"), VillageBuildingType.BARRACKS,
+                pool, template, processors, StructureTemplatePool.Projection.RIGID, 0));
         assertThrows(IllegalArgumentException.class, () -> new VillageBuildingPoolEntry(
-                id("villagerguardgunners", "zero"), pool, template, processors, 0));
-        assertThrows(IllegalArgumentException.class, () -> new VillageBuildingPoolEntry(
-                id("villagerguardgunners", "heavy"), pool, template, processors, 6));
+                id("villagerguardgunners", "heavy"), VillageBuildingType.BARRACKS,
+                pool, template, processors, StructureTemplatePool.Projection.RIGID, 6));
     }
 
     @Test
     void batchValidationRejectsDuplicatesAndBothHardLimits() {
-        VillageBuildingPoolEntry probe = VillageBuildingPools.PLAINS_INTEGRATION_PROBE;
+        VillageBuildingPoolEntry probe = probe();
         assertThrows(
                 IllegalArgumentException.class,
                 () -> VillageBuildingPoolIntegration.validateBatch(List.of(probe, probe)));
@@ -75,9 +86,22 @@ final class VillageBuildingPoolIntegrationTest {
     private static VillageBuildingPoolEntry entry(int index, String poolPath) {
         return new VillageBuildingPoolEntry(
                 id("villagerguardgunners", "test_" + index),
+                VillageBuildingType.BARRACKS,
                 id("example", poolPath),
                 id("example", "template_" + index),
                 id("minecraft", "empty"),
+                StructureTemplatePool.Projection.RIGID,
+                1);
+    }
+
+    private static VillageBuildingPoolEntry probe() {
+        return new VillageBuildingPoolEntry(
+                VillageBuildingPools.PLAINS_INTEGRATION_PROBE_ID,
+                VillageBuildingType.BARRACKS,
+                VillageBuildingPools.PLAINS_HOUSES,
+                id("minecraft", "village/plains/houses/plains_small_house_1"),
+                VillageBuildingPools.EMPTY_PROCESSORS,
+                StructureTemplatePool.Projection.RIGID,
                 1);
     }
 

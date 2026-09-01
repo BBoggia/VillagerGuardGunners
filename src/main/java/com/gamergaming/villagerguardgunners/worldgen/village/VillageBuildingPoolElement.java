@@ -1,6 +1,5 @@
 package com.gamergaming.villagerguardgunners.worldgen.village;
 
-import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.init.ModStructures;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -16,40 +15,43 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 /**
  * Identifiable single-template element used for additive, idempotent village
- * integration. Marker behavior is intentionally absent during Step 2.
+ * integration. Marker behavior is intentionally absent during Step 3.
  */
 public final class VillageBuildingPoolElement extends SinglePoolElement {
     public static final Codec<VillageBuildingPoolElement> CODEC =
             RecordCodecBuilder.create(instance -> instance.group(
                     ResourceLocation.CODEC.fieldOf("entry_id")
                             .forGetter(VillageBuildingPoolElement::entryId),
+                    VillageBuildingType.CODEC.fieldOf("building_type")
+                            .forGetter(VillageBuildingPoolElement::buildingType),
                     templateCodec(),
                     processorsCodec(),
                     projectionCodec())
                     .apply(instance, VillageBuildingPoolElement::new));
 
     private final ResourceLocation entryId;
+    private final VillageBuildingType buildingType;
 
     private VillageBuildingPoolElement(
             ResourceLocation entryId,
+            VillageBuildingType buildingType,
             Either<ResourceLocation, StructureTemplate> template,
             Holder<StructureProcessorList> processors,
             StructureTemplatePool.Projection projection) {
         super(template, processors, projection);
         this.entryId = Objects.requireNonNull(entryId, "entryId");
-        if (!VillagerGuardGunners.MODID.equals(entryId.getNamespace())) {
-            throw new IllegalArgumentException(
-                    "Village pool-element entry IDs must be owned by the add-on");
-        }
+        this.buildingType = Objects.requireNonNull(buildingType, "buildingType");
     }
 
     public static VillageBuildingPoolElement create(
             ResourceLocation entryId,
+            VillageBuildingType buildingType,
             ResourceLocation template,
             Holder<StructureProcessorList> processors,
             StructureTemplatePool.Projection projection) {
         return new VillageBuildingPoolElement(
                 entryId,
+                Objects.requireNonNull(buildingType, "buildingType"),
                 Either.left(Objects.requireNonNull(template, "template")),
                 Objects.requireNonNull(processors, "processors"),
                 Objects.requireNonNull(projection, "projection"));
@@ -59,6 +61,10 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
         return entryId;
     }
 
+    public VillageBuildingType buildingType() {
+        return buildingType;
+    }
+
     @Override
     public StructurePoolElementType<?> getType() {
         return ModStructures.VILLAGE_BUILDING_POOL_ELEMENT.get();
@@ -66,6 +72,7 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
 
     @Override
     public String toString() {
-        return "VillageBuildingPoolElement[" + entryId + ", " + super.toString() + "]";
+        return "VillageBuildingPoolElement[" + entryId + ", " + buildingType
+                + ", " + super.toString() + "]";
     }
 }

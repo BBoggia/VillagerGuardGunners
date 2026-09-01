@@ -35,7 +35,8 @@ public final class VillageBuildingPoolIntegration {
         VillagePoolInjectionReport report = install(
                 event.getServer().registryAccess(),
                 enabled,
-                VillageBuildingPools.stepTwoEntries());
+                VillageBuildingDefinitions.enabledEntries(
+                        ModConfigs.GUARD_GUNNERS.villageBuildings));
 
         if (!report.enabled()) {
             LOGGER.info(
@@ -144,9 +145,10 @@ public final class VillageBuildingPoolIntegration {
         StructureTemplatePoolAccessor accessor = (StructureTemplatePoolAccessor) pool;
         VillageBuildingPoolElement element = VillageBuildingPoolElement.create(
                 entry.entryId(),
+                entry.buildingType(),
                 entry.template(),
                 processorList,
-                StructureTemplatePool.Projection.RIGID);
+                entry.projection());
 
         List<Pair<StructurePoolElement, Integer>> rawTemplates = new ArrayList<>(
                 accessor.villagerGuardGunners$getRawTemplates());

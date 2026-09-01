@@ -32,10 +32,14 @@ public final class VillageBuildingPoolGameTestAccess {
         ObjectArrayList<StructurePoolElement> originalTemplates = new ObjectArrayList<>(
                 accessor.villagerGuardGunners$getTemplates());
         int originalMaxSize = accessor.villagerGuardGunners$getMaxSize();
+        VillageBuildingPoolEntry probe = VillageBuildingDefinitions.get(
+                VillageBuildingPools.PLAINS_INTEGRATION_PROBE_ID);
+        helper.assertTrue(probe != null, "The built-in Step 3 definition was not loaded");
+        List<VillageBuildingPoolEntry> probeEntries = List.of(probe);
 
         try {
             VillagePoolInjectionReport disabled = VillageBuildingPoolIntegration.install(
-                    level.registryAccess(), false, VillageBuildingPools.stepTwoEntries());
+                    level.registryAccess(), false, probeEntries);
             helper.assertTrue(
                     !disabled.enabled()
                             && accessor.villagerGuardGunners$getRawTemplates().size()
@@ -45,7 +49,7 @@ public final class VillageBuildingPoolGameTestAccess {
                     "The disabled integration path changed a village pool");
 
             VillagePoolInjectionReport first = VillageBuildingPoolIntegration.install(
-                    level.registryAccess(), true, VillageBuildingPools.stepTwoEntries());
+                    level.registryAccess(), true, probeEntries);
             helper.assertTrue(
                     first.injected() == 1
                             && first.alreadyPresent() == 0
@@ -75,12 +79,13 @@ public final class VillageBuildingPoolGameTestAccess {
             helper.assertTrue(
                     appended instanceof VillageBuildingPoolElement villageElement
                             && villageElement.entryId().equals(
-                                    VillageBuildingPools.PLAINS_INTEGRATION_PROBE.entryId())
+                                    probe.entryId())
+                            && villageElement.buildingType() == VillageBuildingType.BARRACKS
                             && updatedRaw.get(updatedRaw.size() - 1).getSecond() == 1,
                     "The appended element did not retain its stable ID and weight");
 
             VillagePoolInjectionReport repeated = VillageBuildingPoolIntegration.install(
-                    level.registryAccess(), true, VillageBuildingPools.stepTwoEntries());
+                    level.registryAccess(), true, probeEntries);
             helper.assertTrue(
                     repeated.injected() == 0
                             && repeated.alreadyPresent() == 1
@@ -112,21 +117,26 @@ public final class VillageBuildingPoolGameTestAccess {
             helper.assertTrue(
                     decoded instanceof VillageBuildingPoolElement decodedVillage
                             && decodedVillage.entryId().equals(
-                                    VillageBuildingPools.PLAINS_INTEGRATION_PROBE.entryId()),
+                                    probe.entryId())
+                            && decodedVillage.buildingType() == VillageBuildingType.BARRACKS,
                     "The registered village-building pool element did not round-trip");
 
             List<VillageBuildingPoolEntry> missingDependencies = List.of(
                     new VillageBuildingPoolEntry(
                             id("missing_pool"),
+                            VillageBuildingType.BARRACKS,
                             ResourceLocation.fromNamespaceAndPath("example", "missing_pool"),
-                            VillageBuildingPools.PLAINS_INTEGRATION_PROBE.template(),
+                            probe.template(),
                             VillageBuildingPools.EMPTY_PROCESSORS,
+                            StructureTemplatePool.Projection.RIGID,
                             1),
                     new VillageBuildingPoolEntry(
                             id("missing_processors"),
+                            VillageBuildingType.BARRACKS,
                             VillageBuildingPools.PLAINS_HOUSES,
-                            VillageBuildingPools.PLAINS_INTEGRATION_PROBE.template(),
+                            probe.template(),
                             ResourceLocation.fromNamespaceAndPath("example", "missing_processors"),
+                            StructureTemplatePool.Projection.RIGID,
                             1));
             VillagePoolInjectionReport missing = VillageBuildingPoolIntegration.install(
                     level.registryAccess(), true, missingDependencies);

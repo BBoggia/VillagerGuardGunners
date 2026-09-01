@@ -11,6 +11,13 @@ All notable Villager Guard Gunners changes are recorded here.
 - Added a custom, serializable village pool element and a default-off plains
   compatibility probe for validating additive jigsaw-pool integration before
   any functional building template or marker behavior is enabled.
+- Added strict format-1 village-building datapack definitions with support for
+  modpack-owned IDs, all five planned building types, target pools, templates,
+  processor lists, projection, and bounded weights.
+- Added synchronized, default-on per-type suppression controls beneath the
+  default-off Village Defense Buildings master switch.
+- Added a copyable village-building datapack example and an authoring guide
+  covering schema, bounds, precedence, atomic reloads, and restart behavior.
 
 ### Improved
 
@@ -19,6 +26,11 @@ All notable Villager Guard Gunners changes are recorded here.
   vanilla and third-party entries in their original order.
 - Missing target pools or processor lists now fail closed with one bounded
   startup diagnostic instead of preventing the server from starting.
+- Village-building definitions now compile in deterministic ID order and
+  publish atomically. Invalid, duplicate, oversized, overly deep, or future-
+  format documents retain the complete last-known-good snapshot.
+- Live `/reload` no longer risks destructive template-pool edits: it validates
+  the next snapshot while startup remains the only pool-installation boundary.
 
 ## 1.4 - 2026-08-31
 

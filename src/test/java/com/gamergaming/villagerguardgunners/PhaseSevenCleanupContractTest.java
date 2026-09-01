@@ -188,6 +188,9 @@ final class PhaseSevenCleanupContractTest {
         String villagePoolStartup = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/worldgen/village/"
                         + "VillageBuildingPoolIntegration.java");
+        String villageDefinitionReload = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/village/"
+                        + "VillageBuildingDefinitions.java");
         String performanceSensitiveSource = productionSource
                 .replace(legacyNotice, "")
                 .replace(naturalLoadoutReload, "")
@@ -195,7 +198,8 @@ final class PhaseSevenCleanupContractTest {
                 .replace(guardPostGroupReload, "")
                 .replace(largePackSync, "")
                 .replace(largePackSyncClient, "")
-                .replace(villagePoolStartup, "");
+                .replace(villagePoolStartup, "")
+                .replace(villageDefinitionReload, "");
 
         assertAll(
                 () -> assertFalse(performanceSensitiveSource.contains("LogUtils")),
@@ -241,6 +245,12 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(villagePoolStartup.contains("LOGGER.debug(")),
                 () -> assertFalse(villagePoolStartup.contains("tick(")),
                 () -> assertFalse(villagePoolStartup.contains("getEntitiesOfClass(")));
+        assertAll(
+                () -> assertTrue(villageDefinitionReload.contains("LOGGER.info(")),
+                () -> assertTrue(villageDefinitionReload.contains("LOGGER.error(")),
+                () -> assertFalse(villageDefinitionReload.contains("LOGGER.debug(")),
+                () -> assertFalse(villageDefinitionReload.contains("tick(")),
+                () -> assertFalse(villageDefinitionReload.contains("getEntitiesOfClass(")));
     }
 
     private static String read(String relativePath) throws IOException {

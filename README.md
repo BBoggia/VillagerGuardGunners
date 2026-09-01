@@ -387,10 +387,15 @@ The 1.5 Village Defense Buildings line begins with the
 [baseline and additive-pool integration contract](docs/village-defense-buildings-1.5-plan.md).
 Its retained [validation matrix](docs/village-defense-buildings-release-matrix.md)
 separates automated pool-compatibility evidence from later visual, lifecycle,
-mixed-mod, and performance gates. Steps 1 and 2 register only a custom pool
-element and a default-off inert plains compatibility probe; they do not yet
-ship functional Barracks, Armories, Sentry Posts, integrated Watchtowers, or
-Training Yards.
+mixed-mod, and performance gates. Steps 1 through 3 register a custom pool
+element and a default-off inert plains compatibility probe, then move its
+placement declaration into a strict, bounded, atomic
+[datapack format](docs/village-defense-buildings-step-3.md). Modpacks may own
+definition IDs and templates in their own namespaces, while synchronized
+one-way config switches can suppress individual building types. Definition
+changes accepted by `/reload` apply to village pools after a server restart.
+These steps still do not ship functional Barracks, Armories, Sentry Posts,
+integrated Watchtowers, or Training Yards.
 
 ## License
 

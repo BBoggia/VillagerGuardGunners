@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "building_type": "sentry_post",
+  "target_pool": "minecraft:village/plains/houses",
+  "template": "vgg_example:village/plains/sentry_post",
+  "processors": "minecraft:empty",
+  "projection": "rigid",
+  "weight": 1
+}

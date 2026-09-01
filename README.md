@@ -287,6 +287,19 @@ machine:
 ./gradlew verifyAmmunitionReleaseCandidate
 ```
 
+The 1.5 Village Defense Buildings workload is intentionally isolated from that
+older combat/logistics matrix:
+
+```bash
+./gradlew runGameTestServer -PvillageBuildingPerformance=true
+./gradlew verifyVillageBuildingPerformanceReport
+./gradlew verifyVillageDefenseBuildingsReleaseCandidate
+```
+
+Run the final aggregate command without either performance property. It binds
+the exact JAR and village JSON/JFR pair, reruns the normal correctness server,
+and retains natural-terrain and mixed-mod checks as separate manual evidence.
+
 See [docs/phase-8-validation-and-performance.md](docs/phase-8-validation-and-performance.md)
 for the reference measurements and interpretation. Headless tests cannot prove
 client animation or observer synchronization, so a release candidate must also
@@ -412,8 +425,13 @@ Barracks, Sentry Posts, and integrated Watchtowers. Their difficulty-aware
 datapack groups reuse the existing role, squad, natural-loadout, ammunition,
 and TaCZ issuance pipeline; Peaceful buildings remain empty, repeated claims
 cannot duplicate guards, and no scan, respawn controller, forced chunk, or
-recurring village runtime is introduced. Armories and Training Yards remain
-functionally dormant for their later steps.
+recurring village runtime is introduced. Step 7 activates
+[public village Armories](docs/village-defense-buildings-step-7.md) with
+bounded ammo-only initial stock and the existing event-driven resupply system.
+Training Yards remain passive. Step 8 adds the isolated
+[100-candidate performance and release-evidence gate](docs/village-defense-buildings-step-8.md)
+without treating compact performance evidence as natural-terrain or mixed-mod
+approval.
 
 ## License
 

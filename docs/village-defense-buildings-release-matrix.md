@@ -58,6 +58,16 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 - Step 7 artifact size: 1,075,732 bytes
 - Step 7 artifact SHA-256:
   `ab4dd30f530edd2a6f83c699d30b353bd91d71236a45eecd897346f57d84c1a7`
+- Step 8 JVM/source-contract tests: 505 passed; 0 failed, errored, or skipped
+- Step 8 Forge correctness GameTests: all 102 required tests passed
+- Step 8 isolated performance GameTests: 1 passed; 100 placements and 200 idle ticks
+- Step 8 startup publication: 25 injected; repeated publication found all 25
+- Step 8 development artifact: `villagerguardgunners-1.5-dev.jar`
+- Step 8 artifact size: 1,075,732 bytes
+- Step 8 artifact SHA-256:
+  `ab4dd30f530edd2a6f83c699d30b353bd91d71236a45eecd897346f57d84c1a7`
+- Step 8 village-building JFR SHA-256:
+  `88476a177aa0005d24f30b1e3b7cca940eb1e154eb00329d9e122a3c178a2820`
 
 ## Automated architecture and integration cases
 
@@ -99,9 +109,12 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 | VBUILD-TOWER-01 | Generate integrated and standalone towers in one world. | Independent controls/identity; no double processing or shared start state. | Partial — independent integrated upper-platform staffing and standalone controls implemented; natural mixed-generation review remains manual |
 | VBUILD-YARD-01 | Generate Training Yards. | No unsafe combat target or recurring training controller is introduced. | Partial — passive shell and anchor implemented; no entity or controller is present |
 | VBUILD-COMPAT-01 | Run with common village-overhaul datapacks/mods. | Third-party entries and weights remain intact; missing/replaced pools skip safely. | Manual test required |
-| VBUILD-PERF-01 | Generate at least 100 villages and profile startup/generation. | Startup work is bounded and generation adds no recurring server-tick cost. | Performance test required |
+| VBUILD-PERF-01 | Publish the complete built-in matrix, place one passive defense piece for each of 100 simulated village candidates, then profile 200 idle ticks. | Startup and placement work are bounded, JFR contains execution samples, records remain stable, and the forced-chunk set is unchanged. | Pass — 25 entries injected, 100/100 placements, records stable at 100, forced chunks 25→25, and JFR verifier passed |
 
 ## Manual visual checklist
+
+Natural terrain and mixed-mod review remains separate from the compact
+performance fixture and is required before a public release.
 
 - [ ] Every palette matches its vanilla village biome.
 - [ ] Every connector meets a road without a blocked doorway or floating path.

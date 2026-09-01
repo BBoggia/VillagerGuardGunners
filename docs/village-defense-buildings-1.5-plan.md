@@ -4,7 +4,8 @@ Steps 1 through 4 establish the 1.5 village-integration line. Step 5 adds the
 five biome-aware visual building shells. Step 6 activates bounded garrisons for
 Barracks, Sentry Posts, and integrated Watchtowers. Step 7 activates one public,
 optionally pre-stocked VGG Armory in each eligible Armory building while
-training behavior remains passive. Development artifacts use `1.5-dev`;
+training behavior remains passive. Step 8 adds the isolated 100-candidate
+performance workload and release-evidence boundary. Development artifacts use `1.5-dev`;
 they must not be presented as a finished 1.5 release.
 
 ## Exact inherited baseline
@@ -249,7 +250,23 @@ fallback holder, changes an existing weight, sorts entries, or writes a
 vanilla namespace resource. If a future overhaul removes a named pool, VGG
 skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 
-## Steps 1 through 7 exit criteria
+## Step 8 validation and release evidence
+
+Step 8 adds an opt-in JFR workload around the exact marginal work owned by the
+1.5 integration. It publishes all 25 built-in entries, verifies an idempotent
+repeat, places 100 passive real templates at unique anchors in an already
+loaded disposable fixture, and then samples 200 idle ticks. Exactly 100 passive
+records must be added, no record may appear during the idle window, the forced-
+chunk set must remain unchanged, and the JFR must contain execution samples.
+
+The fixture intentionally uses Training Yards to exclude guard, Armory,
+navigation, and combat cost. It is a compact simulated-candidate workload, not
+a substitute for natural terrain or visual review. The deterministic evidence
+manifest binds the report and JFR to the exact development JAR while recording
+the manual matrix as a separate required boundary. The complete method is in
+[`village-defense-buildings-step-8.md`](village-defense-buildings-step-8.md).
+
+## Steps 1 through 8 exit criteria
 
 - the exact 1.4 commit and artifact are recorded;
 - `v1.5-support` produces `1.5-dev` artifacts;
@@ -288,6 +305,12 @@ skips it. Actual mixed-mod village generation remains a mandatory manual gate.
   its bounded ammo-only datapack stock at most once;
 - disabled, empty, repeated, removed, blocked, wrong-owner, and unloaded
   Armory paths fail closed without overwriting blocks or duplicating stock;
+- the isolated performance workload publishes 25 entries, proves the repeated
+  publication is idempotent, and places exactly 100 passive candidates;
+- 100 placement records remain stable through 200 idle ticks without changing
+  the forced-chunk set, and the artifact-bound JFR contains execution samples;
+- automated evidence remains separate from natural-terrain, old-world, and
+  third-party compatibility review;
 - focused JVM and Forge integration tests pass; and
 - visual shells remain default-off until manual generation review passes.
 
@@ -365,3 +388,19 @@ empty, disabled, repeated, removed, public-lock, and ammo-only village Armory
 paths. The resulting development JAR is
 `villagerguardgunners-1.5-dev.jar`, 1,075,732 bytes, with SHA-256
 `ab4dd30f530edd2a6f83c699d30b353bd91d71236a45eecd897346f57d84c1a7`.
+
+## Verified Step 8 artifact and evidence
+
+The Step 8 Java 17 gate passed 505 JVM/source-contract tests with no failures,
+errors, or skips and all 102 required correctness GameTests. Its separately
+namespaced performance server ran exactly one required workload and passed:
+all 25 entries were published, the repeated publication found all 25 already
+present, 100 of 100 passive candidates placed, records remained exactly 100
+through 200 idle ticks, and the forced-chunk set remained 25 before and after.
+The independent verifier parsed the artifact-bound JFR and found execution
+samples. The development JAR remains
+`villagerguardgunners-1.5-dev.jar`, 1,075,732 bytes, with SHA-256
+`ab4dd30f530edd2a6f83c699d30b353bd91d71236a45eecd897346f57d84c1a7`.
+The captured JFR SHA-256 is
+`88476a177aa0005d24f30b1e3b7cca940eb1e154eb00329d9e122a3c178a2820`.
+Timing remains same-machine evidence only and is not an absolute release gate.

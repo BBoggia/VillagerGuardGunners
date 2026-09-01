@@ -34,6 +34,13 @@ All notable Villager Guard Gunners changes are recorded here.
   no occupants.
 - Added schema-14 village-garrison controls for staffing, the global four-guard
   ceiling, and the one-time gun-chance multiplier.
+- Added public village Armories with bounded ammo-only initial stock, shared
+  generated identity, and the existing lock, loaded-index, and resupply paths.
+- Added schema-15 controls for village Armory placement and one-time stock.
+- Added an isolated, artifact-bound JFR workload for additive pool startup,
+  100 passive building placements, and 200 post-placement idle ticks.
+- Added a deterministic village-building evidence manifest and aggregate gate
+  that keeps natural-terrain and third-party compatibility review manual.
 
 ### Improved
 
@@ -66,6 +73,11 @@ All notable Villager Guard Gunners changes are recorded here.
   parallel equipment or AI system.
 - Garrison placement verifies only bounded cells in already loaded chunks and
   adds the selected group atomically, with zero recurring scan or respawn work.
+- Village Armory placement claims placement and initial stock together, never
+  overwrites another block or owner, and fails closed instead of duplicating
+  stock after a crash or repeat callback.
+- Village performance evidence now runs in a private GameTest template
+  namespace, independently from the older combat and logistics matrix.
 
 ### Fixed
 

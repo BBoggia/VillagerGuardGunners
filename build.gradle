@@ -28,8 +28,19 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 def phase8PerformanceEnabled = providers.gradleProperty('phase8Performance')
         .map { it.toBoolean() }
         .orElse(false)
+def villageBuildingPerformanceEnabled = providers.gradleProperty(
+        'villageBuildingPerformance')
+        .map { it.toBoolean() }
+        .orElse(false)
+def anyPerformanceGameTestEnabled = providers.provider {
+    phase8PerformanceEnabled.get() || villageBuildingPerformanceEnabled.get()
+}
 def phase8PerformanceReportDirectory = layout.buildDirectory.dir('reports/phase8-performance')
+def villageBuildingPerformanceReportDirectory = layout.buildDirectory.dir(
+        'reports/village-building-performance')
 def releaseCandidateEvidenceDirectory = layout.buildDirectory.dir('reports/release-candidate')
+def villageBuildingEvidenceDirectory = layout.buildDirectory.dir(
+        'reports/village-building-release-candidate')
 def curseForgeReleaseDirectory = layout.buildDirectory.dir(
         "distributions/curseforge/${mod_version}")
 def generatedGameTestArenaDirectory = layout.buildDirectory.dir('generated/gametest-arena')
@@ -462,11 +473,17 @@ tasks.register('generateIsolatedGameTestArena') {
     description = 'Generates the padded development-only structure used to isolate GameTest fixtures.'
     File arena = generatedGameTestArenaDirectory.get().file(
             'data/minecraft/structures/villagerguardgunners/gametest_arena.nbt').asFile
-    outputs.file arena
+    File villageBuildingArena = generatedGameTestArenaDirectory.get().file(
+            'data/villagerguardgunners_village_buildings_performance/structures/'
+                    + 'villagerguardgunners/gametest_arena.nbt').asFile
+    outputs.files arena, villageBuildingArena
     doLast {
-        arena.parentFile.mkdirs()
-        arena.bytes = Base64.decoder.decode(
+        byte[] encodedArena = Base64.decoder.decode(
                 'H4sIAAAAAAAC/2WPzU4DMQyEB7Y/2VQV3JB4gj4DZ86IE9eVd+sWl2y8SixV8Aa8NYkK7KGW5jC2xprPAy0WWb64AVC1K3qsauE4mphwRp0Wqz7o8JF9MTceTezNYXlSiQaXNATqAztsDhIpdNnIGNtRIg+JDvZEkhwWkUbGw7wdte8GjcWa1vukGnA333mc7NPhVva4n7cnOWY6O6yM0pHtKlDKNpPmP6b/abC89LoArScKbMa/RP416cSpEhcMTVL4yUQj/F7PsYua7B2l5EuFuKpTvm+eyeiNU64hbL/xA1qm2jdgAQAA')
+        arena.parentFile.mkdirs()
+        arena.bytes = encodedArena
+        villageBuildingArena.parentFile.mkdirs()
+        villageBuildingArena.bytes = encodedArena
     }
 }
 
@@ -492,7 +509,7 @@ minecraft {
     runs {
         configureEach {
             workingDirectory project.file(
-                    phase8PerformanceEnabled.get() ? 'run-phase8-performance' : 'run')
+                    anyPerformanceGameTestEnabled.get() ? 'run-performance' : 'run')
             property 'forge.enabledGameTestNamespaces', "${mod_id},minecraft"
             property 'forge.logging.console.level', 'info'
 
@@ -514,15 +531,24 @@ minecraft {
 
         gameTestServer {
             workingDirectory project.file(
-                    phase8PerformanceEnabled.get() ? 'run-phase8-performance' : 'run-gametest')
+                    phase8PerformanceEnabled.get()
+                            ? 'run-phase8-performance'
+                            : villageBuildingPerformanceEnabled.get()
+                                    ? 'run-village-building-performance'
+                                    : 'run-gametest')
             if (phase8PerformanceEnabled.get()) {
                 property 'forge.enabledGameTestNamespaces', "${mod_id}_performance,minecraft"
                 property 'villagerguardgunners.phase8PerformanceReportDir',
                         phase8PerformanceReportDirectory.get().asFile.absolutePath
+            } else if (villageBuildingPerformanceEnabled.get()) {
+                property 'forge.enabledGameTestNamespaces',
+                        "${mod_id}_village_buildings_performance"
+                property 'villagerguardgunners.villageBuildingPerformanceReportDir',
+                        villageBuildingPerformanceReportDirectory.get().asFile.absolutePath
             }
             mods {
                 "${mod_id}" {
-                    source phase8PerformanceEnabled.get()
+                    source anyPerformanceGameTestEnabled.get()
                             ? sourceSets.performanceGameTest
                             : sourceSets.gameTest
                 }
@@ -977,25 +1003,221 @@ tasks.named('check').configure {
 }
 
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {
-    if (phase8PerformanceEnabled.get()) {
+    if (anyPerformanceGameTestEnabled.get()) {
         dependsOn tasks.named('reobfJar')
     }
     doFirst {
-        if (phase8PerformanceEnabled.get()) {
+        if (phase8PerformanceEnabled.get() && villageBuildingPerformanceEnabled.get()) {
+            throw new GradleException(
+                    'Choose either -Pphase8Performance=true or -PvillageBuildingPerformance=true, not both.')
+        }
+        if (anyPerformanceGameTestEnabled.get()) {
             File archive = tasks.named('jar', Jar).get().archiveFile.get().asFile
             if (!archive.isFile()) {
                 throw new GradleException("Performance run production artifact is missing: ${archive}")
             }
             systemProperty phase8ArtifactSha256Property, sha256OfFile(archive)
+        }
+        if (phase8PerformanceEnabled.get()) {
             delete phase8PerformanceReportDirectory
             delete layout.projectDirectory.dir('run-phase8-performance/world')
             delete layout.projectDirectory.file(
                     'run-phase8-performance/config/villagerguardgunners/guard_gunners.toml')
             phase8PerformanceReportDirectory.get().asFile.mkdirs()
+        } else if (villageBuildingPerformanceEnabled.get()) {
+            delete villageBuildingPerformanceReportDirectory
+            delete layout.projectDirectory.dir('run-village-building-performance/world')
+            delete layout.projectDirectory.file(
+                    'run-village-building-performance/config/villagerguardgunners/guard_gunners.toml')
+            villageBuildingPerformanceReportDirectory.get().asFile.mkdirs()
         } else {
             delete layout.projectDirectory.dir('run-gametest/world')
             delete layout.projectDirectory.file(
                     'run-gametest/config/villagerguardgunners/guard_gunners.toml')
+        }
+    }
+}
+
+tasks.register('verifyVillageBuildingPerformanceReport') {
+    group = 'verification'
+    description = 'Validates the opt-in 1.5 village-building startup and 100-placement JFR evidence.'
+    dependsOn tasks.named('verifyReleaseArtifact')
+
+    doLast {
+        File reportDirectory = villageBuildingPerformanceReportDirectory.get().asFile
+        File reportFile = new File(reportDirectory, 'village-buildings-100.json')
+        File profileFile = new File(reportDirectory, 'village-buildings-100.jfr')
+        if (!reportFile.isFile() || !profileFile.isFile() || profileFile.length() == 0L) {
+            throw new GradleException(
+                    'Village-building performance evidence is missing; run ./gradlew runGameTestServer -PvillageBuildingPerformance=true')
+        }
+        if (reportDirectory.listFiles().findAll { it.isFile() }.collect { it.name } as Set
+                != (['village-buildings-100.json', 'village-buildings-100.jfr'] as Set)) {
+            throw new GradleException(
+                    'Village-building performance evidence contains missing or unexpected files')
+        }
+
+        long jfrEventCount = 0L
+        long executionSampleCount = 0L
+        jdk.jfr.consumer.RecordingFile recordingFile = null
+        try {
+            recordingFile = new jdk.jfr.consumer.RecordingFile(profileFile.toPath())
+            while (recordingFile.hasMoreEvents()) {
+                def event = recordingFile.readEvent()
+                jfrEventCount++
+                if (event.eventType.name == 'jdk.ExecutionSample') {
+                    executionSampleCount++
+                }
+            }
+        } catch (IOException | RuntimeException exception) {
+            throw new GradleException(
+                    'The village-building JFR profile is unreadable', exception)
+        } finally {
+            recordingFile?.close()
+        }
+        if (jfrEventCount == 0L || executionSampleCount == 0L) {
+            throw new GradleException(
+                    'The village-building JFR profile has no events or execution samples')
+        }
+
+        Object report = new groovy.json.JsonSlurper().parse(reportFile)
+        File archive = tasks.named('jar', Jar).get().archiveFile.get().asFile
+        List<String> timingFields = [
+                'startupIntegrationMillis',
+                'placementTotalMillis',
+                'placementP50Millis',
+                'placementP95Millis',
+                'placementP99Millis',
+                'placementMaxMillis',
+                'idleP50Mspt',
+                'idleP95Mspt',
+                'idleP99Mspt',
+                'idleMaxMspt'
+        ]
+        if (report.schemaVersion != 1
+                || report.scenario != 'village-buildings-100'
+                || report.candidateVillages != 100
+                || report.passiveTemplates != 5
+                || report.startupRequestedEntries != 25
+                || report.startupInjectedEntries != 25
+                || report.startupWarnings != false
+                || report.repeatedInjectedEntries != 0
+                || report.repeatedAlreadyPresentEntries != 25
+                || report.successfulPlacements != 100
+                || report.recordDelta != 100
+                || report.recordsAfterPlacement != report.recordsBefore + 100
+                || report.recordsAfterIdle != report.recordsAfterPlacement
+                || report.idleSampleTicks != 200
+                || report.forcedChunksBefore != report.forcedChunksAfter
+                || report.jfrProfile != profileFile.name
+                || report.productionArtifactSha256 != sha256OfFile(archive)
+                || report.absoluteTimingGateApplied != false
+                || timingFields.any {
+                    !(report[it] instanceof Number)
+                            || !Double.isFinite(((Number) report[it]).doubleValue())
+                            || ((Number) report[it]).doubleValue() < 0.0D
+                }
+                || ((Number) report.placementP50Millis).doubleValue()
+                        > ((Number) report.placementP95Millis).doubleValue()
+                || ((Number) report.placementP95Millis).doubleValue()
+                        > ((Number) report.placementP99Millis).doubleValue()
+                || ((Number) report.placementP99Millis).doubleValue()
+                        > ((Number) report.placementMaxMillis).doubleValue()
+                || ((Number) report.idleP50Mspt).doubleValue()
+                        > ((Number) report.idleP95Mspt).doubleValue()
+                || ((Number) report.idleP95Mspt).doubleValue()
+                        > ((Number) report.idleP99Mspt).doubleValue()
+                || ((Number) report.idleP99Mspt).doubleValue()
+                        > ((Number) report.idleMaxMspt).doubleValue()) {
+            throw new GradleException(
+                    'The village-building performance report failed its bounded structural gate')
+        }
+    }
+}
+
+tasks.register('assembleVillageDefenseBuildingEvidence') {
+    group = 'build'
+    description = 'Binds the 1.5 village-building artifact and performance evidence without claiming manual review.'
+    dependsOn tasks.named('verifyReleaseArtifact'),
+            tasks.named('verifyVillageBuildingPerformanceReport')
+    outputs.dir villageBuildingEvidenceDirectory
+    outputs.upToDateWhen { false }
+
+    doFirst {
+        delete villageBuildingEvidenceDirectory
+    }
+
+    doLast {
+        File archive = tasks.named('jar', Jar).get().archiveFile.get().asFile
+        File reportDirectory = villageBuildingPerformanceReportDirectory.get().asFile
+        File outputDirectory = villageBuildingEvidenceDirectory.get().asFile
+        outputDirectory.mkdirs()
+        List<File> evidence = reportDirectory.listFiles().findAll { it.isFile() }
+                .sort { left, right -> left.name <=> right.name }
+        Map<String, Object> manifest = [
+                schemaVersion: 1,
+                mod          : [id: mod_id, version: mod_version],
+                artifact     : [file: archive.name, bytes: archive.length(),
+                                sha256: sha256OfFile(archive)],
+                automatedEvidence: [
+                        releaseArtifactGate: 'passed',
+                        villageBuildingPerformanceGate: 'passed',
+                        simulatedVillageCandidates: 100,
+                        evidence: evidence.collect { file -> [
+                                file: file.name,
+                                bytes: file.length(),
+                                sha256: sha256OfFile(file)
+                        ] }
+                ],
+                separateManualEvidence: [
+                        matrix: 'docs/village-defense-buildings-release-matrix.md',
+                        status: 'required-before-public-release'
+                ]
+        ]
+        java.nio.file.Files.writeString(
+                outputDirectory.toPath().resolve('village-building-release-candidate.json'),
+                groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifest))
+                        + System.lineSeparator(),
+                java.nio.charset.StandardCharsets.UTF_8)
+    }
+}
+
+tasks.register('verifyVillageDefenseBuildingsReleaseCandidate') {
+    group = 'verification'
+    description = 'Runs the automated 1.5 village-building gate while retaining manual rows separately.'
+    if (anyPerformanceGameTestEnabled.get()) {
+        doFirst {
+            throw new GradleException(
+                    'Run this aggregate gate without a performance property after generating performance evidence separately.')
+        }
+    } else {
+        dependsOn tasks.named('runGameTestServer'),
+                tasks.named('assembleVillageDefenseBuildingEvidence')
+    }
+
+    doLast {
+        File archive = tasks.named('jar', Jar).get().archiveFile.get().asFile
+        File manifestFile = villageBuildingEvidenceDirectory.get()
+                .file('village-building-release-candidate.json').asFile
+        File matrixFile = layout.projectDirectory
+                .file('docs/village-defense-buildings-release-matrix.md').asFile
+        if (!manifestFile.isFile() || !matrixFile.isFile()) {
+            throw new GradleException('Village-building release evidence is incomplete')
+        }
+        Object manifest = new groovy.json.JsonSlurper().parse(manifestFile)
+        if (manifest.schemaVersion != 1
+                || manifest.artifact.sha256 != sha256OfFile(archive)
+                || manifest.automatedEvidence.releaseArtifactGate != 'passed'
+                || manifest.automatedEvidence.villageBuildingPerformanceGate != 'passed'
+                || manifest.automatedEvidence.simulatedVillageCandidates != 100
+                || !(manifest.automatedEvidence.evidence instanceof List)
+                || manifest.automatedEvidence.evidence.size() != 2
+                || manifest.separateManualEvidence.matrix
+                        != 'docs/village-defense-buildings-release-matrix.md'
+                || manifest.separateManualEvidence.status
+                        != 'required-before-public-release') {
+            throw new GradleException(
+                    'Village-building release manifest is stale or overclaims its evidence')
         }
     }
 }

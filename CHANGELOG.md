@@ -41,6 +41,27 @@ All notable Villager Guard Gunners changes are recorded here.
   ticket, ticker, or repair manager.
 - Malformed, conflicting, duplicate, oversized, and future village-building
   records fail closed while preserving unreadable data unchanged.
+- Village-building startup now preflights every target pool, processor list,
+  template, and anchor marker before committing any pool changes, then rolls
+  back the bounded mutation batch if a commit unexpectedly fails.
+- Village-building persistence now validates record dimensions and deterministic
+  world-seed provenance, caps the index at 65,536 records, serializes in linear
+  insertion order, and emits only bounded once-per-state diagnostics.
+- Village-building definition snapshots are cleared when a server stops so an
+  integrated-server restart cannot inherit another world's last-known-good
+  datapack state.
+
+### Fixed
+
+- Preserved compatibility with Step 2 structure starts that predate the
+  explicit `building_type` field while keeping that field in every new encoding.
+- Fixed real template placement so valid `village_anchor` structure blocks are
+  consumed and claimed after vanilla placement instead of being silently
+  discarded by vanilla's structure-block ignore processor.
+- Rejected missing templates and invalid or type-mismatched anchor templates
+  before any village-pool mutation, with bounded entry-specific diagnostics.
+- Made worker-thread anchor publication queue exactly one immutable main-thread
+  claim and documented its crash/retry boundary for future idempotent actions.
 
 ## 1.4 - 2026-08-31
 

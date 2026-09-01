@@ -78,7 +78,7 @@ unbounded collections.
 - entry weight from 1 through 5;
 - one stable entry ID per injected element;
 - one anchor marker per placed functional building piece;
-- at most 262,144 passive building records per dimension, with no scan or
+- at most 65,536 passive building records per dimension, with no scan or
   per-record tick;
 - at most four generated guards for one future building;
 - at most one generated Armory for one future building;
@@ -103,10 +103,13 @@ callback therefore records `already_present` and changes neither list. The
 logic does not rely on a static “ran once” flag, so a stopped integrated server
 cannot poison a later server in the same client process.
 
-Missing target pools and processor lists are skipped independently and
-reported in one bounded startup diagnostic. A missing third-party or replaced
-vanilla pool cannot crash the server or cause fallback mutation of a different
-pool. Third-party entries already present remain untouched.
+Missing target pools, processor lists, and structure templates are skipped
+independently and reported in one bounded startup diagnostic. Existing
+templates are also checked for malformed, duplicate, or type-mismatched anchor
+markers before any target pool is changed. Pool changes are prepared first and
+committed only after the complete bounded preflight. A missing third-party or
+replaced vanilla pool cannot crash the server or cause fallback mutation of a
+different pool. Third-party entries already present remain untouched.
 
 The schema-13 Fzzy Config master switch is `villageBuildings.enabled`. It is
 `false` during the compatibility-probe stage. With the switch off, registry
@@ -129,6 +132,10 @@ Publication is atomic and last-known-good. One invalid document, duplicate
 placement tuple, or exceeded hard limit rejects the complete candidate while
 retaining the previously accepted definitions. Individual files are capped at
 16,384 characters and depth 16; diagnostics are normalized and bounded.
+
+Last-known-good state is scoped to one server session. The stopped-server
+event clears the singleton snapshot, so a rejected initial reload in a second
+integrated world cannot inherit definitions from the first world.
 
 The initial resource reload supplies the snapshot used by startup pool
 integration. Later `/reload` operations validate a future snapshot but do not
@@ -158,6 +165,13 @@ server-executor handoff performs the SavedData claim without a chunk ticket,
 chunk load, village/entity scan, ticker, or repair manager. Step 4 claims only
 the anchor; functional actions remain dormant. The complete contract is in
 [`village-defense-buildings-step-4.md`](village-defense-buildings-step-4.md).
+
+The custom element accepts the missing `building_type` field only when reading
+the default-off Step 2 compatibility probe and treats that legacy value as
+`barracks`; every new encoding writes the field. Actual anchor processing runs
+after successful placement through the same rotation and projection processor
+chain, with only vanilla's structure-block ignore removed for the validated
+marker pass.
 
 ## Performance and compatibility invariants
 
@@ -226,3 +240,14 @@ required live Forge GameTests, including marker consumption, schema-1 SavedData
 publication, and repeated-anchor idempotence. The resulting development JAR is
 `villagerguardgunners-1.5-dev.jar`, 997,182 bytes, with SHA-256
 `1724bfd38d8099cf36f1cc3afce86725c71a080f7c6461ad3d1072d851bc87c4`.
+
+## Post-Step-4 audit hardening
+
+The full review added session isolation, legacy codec compatibility, atomic
+template preflight, provenance-checked persistence, bounded lifecycle
+diagnostics, and real-template plus worker-thread integration coverage. The
+clean Java 17 gate passed 488 JVM/source-contract tests with no failures or
+errors, and the clean Forge server passed all 99 required GameTests. The
+resulting development JAR is `villagerguardgunners-1.5-dev.jar`, 1,003,497
+bytes, with SHA-256
+`2833e99a8234e020c84496b94f96d5780686687c7a51f5e5a971c50ac7c4168d`.

@@ -198,6 +198,27 @@ final class VillageBuildingDefinitionsTest {
     }
 
     @Test
+    void stoppedServerSessionCannotSupplyAnotherServersLastKnownGoodDefinitions() {
+        VillageBuildingDefinitions loader = new VillageBuildingDefinitions();
+        ResourceLocation acceptedId = id("example", "accepted");
+        loader.publish(prepared(Map.of(
+                acceptedId,
+                definition("watchtower", "pool", "accepted", 1))));
+
+        loader.resetSession();
+        loader.publish(prepared(Map.of(
+                id("example", "rejected"),
+                definition("watchtower", "pool", "rejected", 9))));
+
+        VillageBuildingDefinitionReloadSnapshot rejected = loader.currentSnapshot();
+        assertAll(
+                () -> assertFalse(rejected.lastReloadAccepted()),
+                () -> assertEquals(0L, rejected.generation()),
+                () -> assertTrue(rejected.definitions().isEmpty()),
+                () -> assertEquals(1, rejected.lastErrors().size()));
+    }
+
+    @Test
     void typeSettingsOnlySuppressMatchingAcceptedEntries() {
         Map<ResourceLocation, VillageBuildingPoolEntry> compiled =
                 VillageBuildingDefinitions.compile(Map.of(

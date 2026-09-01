@@ -6,19 +6,25 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import org.slf4j.Logger;
 
@@ -34,6 +40,7 @@ public final class VillageBuildingPoolIntegration {
         boolean enabled = ModConfigs.GUARD_GUNNERS.villageBuildings.enabled.get();
         VillagePoolInjectionReport report = install(
                 event.getServer().registryAccess(),
+                event.getServer().getStructureManager(),
                 enabled,
                 VillageBuildingDefinitions.enabledEntries(
                         ModConfigs.GUARD_GUNNERS.villageBuildings));
@@ -43,12 +50,15 @@ public final class VillageBuildingPoolIntegration {
                     "Village Defense Building pool integration is disabled; no village pools were changed");
         } else if (report.hasWarnings()) {
             LOGGER.warn(
-                    "Village Defense Building pool integration completed with missing dependencies: requested={}, injected={}, already_present={}, missing_pools={}, missing_processor_lists={}",
+                    "Village Defense Building pool integration completed with rejected entries: requested={}, injected={}, already_present={}, missing_pools={}, missing_processor_lists={}, missing_templates={}, invalid_templates={}, rejected_entries={}",
                     report.requested(),
                     report.injected(),
                     report.alreadyPresent(),
                     report.missingPools(),
-                    report.missingProcessorLists());
+                    report.missingProcessorLists(),
+                    report.missingTemplates(),
+                    report.invalidTemplates(),
+                    report.rejectedEntries());
         } else {
             LOGGER.info(
                     "Village Defense Building pool integration completed: requested={}, injected={}, already_present={}",
@@ -60,6 +70,7 @@ public final class VillageBuildingPoolIntegration {
 
     static VillagePoolInjectionReport install(
             RegistryAccess registryAccess,
+            @Nullable StructureTemplateManager templateManager,
             boolean enabled,
             List<VillageBuildingPoolEntry> requestedEntries) {
         Objects.requireNonNull(registryAccess, "registryAccess");
@@ -69,6 +80,7 @@ public final class VillageBuildingPoolIntegration {
         if (!enabled) {
             return VillagePoolInjectionReport.disabled(entries.size());
         }
+        Objects.requireNonNull(templateManager, "templateManager");
 
         Registry<StructureTemplatePool> pools = registryAccess.registryOrThrow(
                 Registries.TEMPLATE_POOL);
@@ -78,11 +90,16 @@ public final class VillageBuildingPoolIntegration {
         int alreadyPresent = 0;
         int missingPools = 0;
         int missingProcessorLists = 0;
+        int missingTemplates = 0;
+        int invalidTemplates = 0;
+        List<ResourceLocation> rejectedEntries = new ArrayList<>();
+        List<ResolvedEntry> resolved = new ArrayList<>();
 
         for (VillageBuildingPoolEntry entry : entries) {
             StructureTemplatePool pool = pools.get(entry.targetPool());
             if (pool == null) {
                 missingPools++;
+                rejectedEntries.add(entry.entryId());
                 continue;
             }
             Holder.Reference<StructureProcessorList> processorList = processors.getHolder(
@@ -90,14 +107,50 @@ public final class VillageBuildingPoolIntegration {
                     .orElse(null);
             if (processorList == null) {
                 missingProcessorLists++;
+                rejectedEntries.add(entry.entryId());
                 continue;
             }
             if (containsEntry(pool, entry.entryId())) {
                 alreadyPresent++;
                 continue;
             }
-            append(pool, entry, processorList);
+            if (templateManager.get(entry.template()).isEmpty()) {
+                missingTemplates++;
+                rejectedEntries.add(entry.entryId());
+                continue;
+            }
+            VillageBuildingPoolElement element = VillageBuildingPoolElement.create(
+                    entry.entryId(),
+                    entry.buildingType(),
+                    entry.template(),
+                    processorList,
+                    entry.projection());
+            if (!hasValidAnchorContract(templateManager, element, entry.buildingType())) {
+                invalidTemplates++;
+                rejectedEntries.add(entry.entryId());
+                continue;
+            }
+            resolved.add(new ResolvedEntry(pool, entry, element));
+        }
+
+        Map<StructureTemplatePool, PoolMutation> mutations = new LinkedHashMap<>();
+        for (ResolvedEntry candidate : resolved) {
+            PoolMutation mutation = mutations.computeIfAbsent(
+                    candidate.pool(), PoolMutation::capture);
+            mutation.append(candidate.entry(), candidate.element());
             injected++;
+        }
+        List<PoolMutation> committed = new ArrayList<>();
+        try {
+            for (PoolMutation mutation : mutations.values()) {
+                committed.add(mutation);
+                mutation.commit();
+            }
+        } catch (RuntimeException exception) {
+            for (int index = committed.size() - 1; index >= 0; index--) {
+                committed.get(index).rollback();
+            }
+            throw exception;
         }
 
         return new VillagePoolInjectionReport(
@@ -106,7 +159,10 @@ public final class VillageBuildingPoolIntegration {
                 injected,
                 alreadyPresent,
                 missingPools,
-                missingProcessorLists);
+                missingProcessorLists,
+                missingTemplates,
+                invalidTemplates,
+                rejectedEntries);
     }
 
     static void validateBatch(List<VillageBuildingPoolEntry> entries) {
@@ -138,30 +194,70 @@ public final class VillageBuildingPoolIntegration {
                 .anyMatch(element -> element.entryId().equals(entryId));
     }
 
-    private static void append(
+    private static boolean hasValidAnchorContract(
+            StructureTemplateManager templateManager,
+            VillageBuildingPoolElement element,
+            VillageBuildingType buildingType) {
+        try {
+            return VillageBuildingAnchorMarker.validateTemplateMarkers(
+                    element.getDataMarkers(
+                            templateManager,
+                            BlockPos.ZERO,
+                            Rotation.NONE,
+                            false),
+                    buildingType);
+        } catch (RuntimeException exception) {
+            return false;
+        }
+    }
+
+    private record ResolvedEntry(
             StructureTemplatePool pool,
             VillageBuildingPoolEntry entry,
-            Holder<StructureProcessorList> processorList) {
-        StructureTemplatePoolAccessor accessor = (StructureTemplatePoolAccessor) pool;
-        VillageBuildingPoolElement element = VillageBuildingPoolElement.create(
-                entry.entryId(),
-                entry.buildingType(),
-                entry.template(),
-                processorList,
-                entry.projection());
+            VillageBuildingPoolElement element) {
+    }
 
-        List<Pair<StructurePoolElement, Integer>> rawTemplates = new ArrayList<>(
-                accessor.villagerGuardGunners$getRawTemplates());
-        ObjectArrayList<StructurePoolElement> templates = new ObjectArrayList<>(
-                accessor.villagerGuardGunners$getTemplates());
-        rawTemplates.add(Pair.of(element, entry.weight()));
-        for (int index = 0; index < entry.weight(); index++) {
-            templates.add(element);
+    private static final class PoolMutation {
+        private final StructureTemplatePoolAccessor accessor;
+        private final List<Pair<StructurePoolElement, Integer>> originalRaw;
+        private final ObjectArrayList<StructurePoolElement> originalTemplates;
+        private final int originalMaxSize;
+        private final List<Pair<StructurePoolElement, Integer>> updatedRaw;
+        private final ObjectArrayList<StructurePoolElement> updatedTemplates;
+
+        private PoolMutation(StructureTemplatePool pool) {
+            accessor = (StructureTemplatePoolAccessor) pool;
+            originalRaw = accessor.villagerGuardGunners$getRawTemplates();
+            originalTemplates = accessor.villagerGuardGunners$getTemplates();
+            originalMaxSize = accessor.villagerGuardGunners$getMaxSize();
+            updatedRaw = new ArrayList<>(originalRaw);
+            updatedTemplates = new ObjectArrayList<>(originalTemplates);
         }
 
-        accessor.villagerGuardGunners$setRawTemplates(rawTemplates);
-        accessor.villagerGuardGunners$setTemplates(templates);
-        accessor.villagerGuardGunners$setMaxSize(SIZE_UNSET);
+        static PoolMutation capture(StructureTemplatePool pool) {
+            return new PoolMutation(pool);
+        }
+
+        void append(
+                VillageBuildingPoolEntry entry,
+                VillageBuildingPoolElement element) {
+            updatedRaw.add(Pair.of(element, entry.weight()));
+            for (int index = 0; index < entry.weight(); index++) {
+                updatedTemplates.add(element);
+            }
+        }
+
+        void commit() {
+            accessor.villagerGuardGunners$setRawTemplates(updatedRaw);
+            accessor.villagerGuardGunners$setTemplates(updatedTemplates);
+            accessor.villagerGuardGunners$setMaxSize(SIZE_UNSET);
+        }
+
+        void rollback() {
+            accessor.villagerGuardGunners$setRawTemplates(originalRaw);
+            accessor.villagerGuardGunners$setTemplates(originalTemplates);
+            accessor.villagerGuardGunners$setMaxSize(originalMaxSize);
+        }
     }
 
     private VillageBuildingPoolIntegration() {

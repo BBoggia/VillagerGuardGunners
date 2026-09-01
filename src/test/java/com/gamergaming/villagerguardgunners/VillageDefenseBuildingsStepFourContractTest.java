@@ -47,7 +47,7 @@ final class VillageDefenseBuildingsStepFourContractTest {
                 () -> assertTrue(codec.contains("BUILDING_TAG = \"VggVillageBuilding\"")),
                 () -> assertTrue(record.contains("claimedActions")),
                 () -> assertTrue(data.contains("DATA_VERSION = 1")),
-                () -> assertTrue(data.contains("MAXIMUM_RECORDS = 262_144")),
+                () -> assertTrue(data.contains("MAXIMUM_RECORDS = 65_536")),
                 () -> assertTrue(data.contains("ALREADY_CLAIMED")),
                 () -> assertTrue(data.contains("unreadableRoot.copy()")),
                 () -> assertTrue(data.contains("new AnchorKey(")));

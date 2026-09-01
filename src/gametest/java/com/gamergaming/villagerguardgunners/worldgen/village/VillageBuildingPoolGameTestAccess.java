@@ -8,18 +8,24 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.StructureBlockEntity;
+import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 
 /** Runtime-only assertions that require Minecraft registries and applied mixins. */
 public final class VillageBuildingPoolGameTestAccess {
@@ -43,7 +49,7 @@ public final class VillageBuildingPoolGameTestAccess {
 
         try {
             VillagePoolInjectionReport disabled = VillageBuildingPoolIntegration.install(
-                    level.registryAccess(), false, probeEntries);
+                    level.registryAccess(), level.getStructureManager(), false, probeEntries);
             helper.assertTrue(
                     !disabled.enabled()
                             && accessor.villagerGuardGunners$getRawTemplates().size()
@@ -53,7 +59,7 @@ public final class VillageBuildingPoolGameTestAccess {
                     "The disabled integration path changed a village pool");
 
             VillagePoolInjectionReport first = VillageBuildingPoolIntegration.install(
-                    level.registryAccess(), true, probeEntries);
+                    level.registryAccess(), level.getStructureManager(), true, probeEntries);
             helper.assertTrue(
                     first.injected() == 1
                             && first.alreadyPresent() == 0
@@ -89,7 +95,7 @@ public final class VillageBuildingPoolGameTestAccess {
                     "The appended element did not retain its stable ID and weight");
 
             VillagePoolInjectionReport repeated = VillageBuildingPoolIntegration.install(
-                    level.registryAccess(), true, probeEntries);
+                    level.registryAccess(), level.getStructureManager(), true, probeEntries);
             helper.assertTrue(
                     repeated.injected() == 0
                             && repeated.alreadyPresent() == 1
@@ -118,11 +124,22 @@ public final class VillageBuildingPoolGameTestAccess {
             StructurePoolElement decoded = encoded == null
                     ? null
                     : StructurePoolElement.CODEC.parse(ops, encoded).result().orElse(null);
+            JsonElement legacyEncoded = encoded == null ? null : encoded.deepCopy();
+            if (legacyEncoded != null && legacyEncoded.isJsonObject()) {
+                legacyEncoded.getAsJsonObject().remove("building_type");
+            }
+            StructurePoolElement legacyDecoded = legacyEncoded == null
+                    ? null
+                    : StructurePoolElement.CODEC.parse(ops, legacyEncoded)
+                            .result().orElse(null);
             helper.assertTrue(
                     decoded instanceof VillageBuildingPoolElement decodedVillage
                             && decodedVillage.entryId().equals(
                                     probe.entryId())
-                            && decodedVillage.buildingType() == VillageBuildingType.BARRACKS,
+                            && decodedVillage.buildingType() == VillageBuildingType.BARRACKS
+                            && legacyDecoded instanceof VillageBuildingPoolElement legacyVillage
+                            && legacyVillage.entryId().equals(probe.entryId())
+                            && legacyVillage.buildingType() == VillageBuildingType.BARRACKS,
                     "The registered village-building pool element did not round-trip");
 
             VillageBuildingPoolElement anchorElement =
@@ -185,19 +202,216 @@ public final class VillageBuildingPoolGameTestAccess {
                             probe.template(),
                             ResourceLocation.fromNamespaceAndPath("example", "missing_processors"),
                             StructureTemplatePool.Projection.RIGID,
+                            1),
+                    new VillageBuildingPoolEntry(
+                            id("missing_template"),
+                            VillageBuildingType.BARRACKS,
+                            VillageBuildingPools.PLAINS_HOUSES,
+                            ResourceLocation.fromNamespaceAndPath("example", "missing_template"),
+                            VillageBuildingPools.EMPTY_PROCESSORS,
+                            StructureTemplatePool.Projection.RIGID,
                             1));
             VillagePoolInjectionReport missing = VillageBuildingPoolIntegration.install(
-                    level.registryAccess(), true, missingDependencies);
+                    level.registryAccess(),
+                    level.getStructureManager(),
+                    true,
+                    missingDependencies);
             helper.assertTrue(
                     missing.injected() == 0
                             && missing.missingPools() == 1
-                            && missing.missingProcessorLists() == 1,
+                            && missing.missingProcessorLists() == 1
+                            && missing.missingTemplates() == 1
+                            && missing.rejectedEntries().equals(List.of(
+                                    id("missing_pool"),
+                                    id("missing_processors"),
+                                    id("missing_template"))),
                     "Missing pool dependencies did not fail closed independently");
         } finally {
             accessor.villagerGuardGunners$setRawTemplates(originalRaw);
             accessor.villagerGuardGunners$setTemplates(originalTemplates);
             accessor.villagerGuardGunners$setMaxSize(originalMaxSize);
         }
+    }
+
+    public static void verifyRealTemplatePlacementAndPreflight(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var templateManager = level.getStructureManager();
+        Holder.Reference<StructureProcessorList> processors = level.registryAccess()
+                .registryOrThrow(Registries.PROCESSOR_LIST)
+                .getHolder(ResourceKey.create(
+                        Registries.PROCESSOR_LIST,
+                        VillageBuildingPools.EMPTY_PROCESSORS))
+                .orElseThrow();
+
+        ResourceLocation validTemplateId = id("gametest/valid_anchor_template");
+        BlockPos validSource = helper.absolutePos(new BlockPos(2, 2, 8));
+        BlockPos validTarget = helper.absolutePos(new BlockPos(8, 2, 8));
+        captureTemplate(
+                level,
+                templateManager.getOrCreate(validTemplateId),
+                validSource,
+                "village_anchor:barracks");
+        VillageBuildingPoolElement validElement = VillageBuildingPoolElement.create(
+                id("gametest/valid_anchor"),
+                VillageBuildingType.BARRACKS,
+                validTemplateId,
+                processors,
+                StructureTemplatePool.Projection.RIGID);
+        level.setBlock(validTarget, Blocks.DIRT.defaultBlockState(), 2);
+        level.setBlock(validTarget.east(), Blocks.DIRT.defaultBlockState(), 2);
+        boolean placed = validElement.place(
+                templateManager,
+                level,
+                level.structureManager(),
+                level.getChunkSource().getGenerator(),
+                validTarget,
+                BlockPos.ZERO,
+                Rotation.NONE,
+                BoundingBox.infinite(),
+                RandomSource.create(11L),
+                false);
+        VillageBuildingIdentity validIdentity = VillageBuildingIdentity.anchored(
+                level.getSeed(),
+                level.dimension().location(),
+                validElement.entryId(),
+                VillageBuildingType.BARRACKS,
+                validTarget.east());
+        boolean recordPresent = VillageBuildingSavedData.get(level)
+                .get(validIdentity.buildingId()) != null;
+        List<StructureTemplate.StructureBlockInfo> capturedMarkers =
+                validElement.getDataMarkers(
+                        templateManager,
+                        validTarget,
+                        Rotation.NONE,
+                        false);
+        helper.assertTrue(
+                placed
+                        && level.getBlockState(validTarget).is(Blocks.STONE)
+                        && level.getBlockState(validTarget.east()).isAir()
+                        && recordPresent,
+                "A real valid template did not place and publish its anchor: placed="
+                        + placed
+                        + ", first=" + level.getBlockState(validTarget)
+                        + ", marker=" + level.getBlockState(validTarget.east())
+                        + ", record=" + recordPresent
+                        + ", capturedMarkers=" + capturedMarkers);
+
+        ResourceLocation invalidTemplateId = id("gametest/mismatched_anchor_template");
+        BlockPos invalidSource = helper.absolutePos(new BlockPos(2, 2, 11));
+        BlockPos invalidTarget = helper.absolutePos(new BlockPos(8, 2, 11));
+        captureTemplate(
+                level,
+                templateManager.getOrCreate(invalidTemplateId),
+                invalidSource,
+                "village_anchor:armory");
+        VillageBuildingPoolElement invalidElement = VillageBuildingPoolElement.create(
+                id("gametest/mismatched_anchor"),
+                VillageBuildingType.BARRACKS,
+                invalidTemplateId,
+                processors,
+                StructureTemplatePool.Projection.RIGID);
+        level.setBlock(invalidTarget, Blocks.DIRT.defaultBlockState(), 2);
+        level.setBlock(invalidTarget.east(), Blocks.DIRT.defaultBlockState(), 2);
+        boolean invalidPlaced = invalidElement.place(
+                templateManager,
+                level,
+                level.structureManager(),
+                level.getChunkSource().getGenerator(),
+                invalidTarget,
+                BlockPos.ZERO,
+                Rotation.NONE,
+                BoundingBox.infinite(),
+                RandomSource.create(12L),
+                false);
+
+        VillageBuildingPoolEntry invalidEntry = new VillageBuildingPoolEntry(
+                invalidElement.entryId(),
+                VillageBuildingType.BARRACKS,
+                VillageBuildingPools.PLAINS_HOUSES,
+                invalidTemplateId,
+                VillageBuildingPools.EMPTY_PROCESSORS,
+                StructureTemplatePool.Projection.RIGID,
+                1);
+        VillagePoolInjectionReport preflight = VillageBuildingPoolIntegration.install(
+                level.registryAccess(),
+                templateManager,
+                true,
+                List.of(invalidEntry));
+        helper.assertTrue(
+                !invalidPlaced
+                        && level.getBlockState(invalidTarget).is(Blocks.DIRT)
+                        && level.getBlockState(invalidTarget.east()).is(Blocks.DIRT)
+                        && preflight.injected() == 0
+                        && preflight.invalidTemplates() == 1
+                        && preflight.rejectedEntries().equals(List.of(invalidEntry.entryId())),
+                "A mismatched template wrote blocks or passed startup preflight");
+        helper.succeed();
+    }
+
+    public static void verifyWorkerThreadAnchorHandoff(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos anchor = helper.absolutePos(new BlockPos(4, 2, 4));
+        ResourceLocation entryId = id("gametest/worker_handoff");
+        java.util.concurrent.atomic.AtomicReference<Throwable> failure =
+                new java.util.concurrent.atomic.AtomicReference<>();
+        Thread worker = new Thread(() -> {
+            try {
+                VillageBuildingAnchorLifecycle.record(
+                        level,
+                        entryId,
+                        VillageBuildingType.SENTRY_POST,
+                        anchor);
+            } catch (Throwable throwable) {
+                failure.set(throwable);
+            }
+        }, "vgg-anchor-gametest-worker");
+        worker.start();
+        try {
+            worker.join(2_000L);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Interrupted while awaiting anchor worker", exception);
+        }
+        helper.assertTrue(!worker.isAlive(), "Anchor handoff worker did not finish");
+
+        VillageBuildingIdentity expected = VillageBuildingIdentity.anchored(
+                level.getSeed(),
+                level.dimension().location(),
+                entryId,
+                VillageBuildingType.SENTRY_POST,
+                anchor);
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(failure.get() == null,
+                    "Worker-thread anchor handoff threw " + failure.get());
+            helper.assertTrue(
+                    VillageBuildingSavedData.get(level).get(expected.buildingId()) != null,
+                    "Worker-thread anchor handoff did not reach SavedData");
+            helper.succeed();
+        });
+    }
+
+    private static void captureTemplate(
+            net.minecraft.server.level.ServerLevel level,
+            StructureTemplate template,
+            BlockPos source,
+            String metadata) {
+        level.setBlock(source, Blocks.STONE.defaultBlockState(), 2);
+        BlockPos marker = source.east();
+        level.setBlock(marker, Blocks.STRUCTURE_BLOCK.defaultBlockState(), 2);
+        if (!(level.getBlockEntity(marker) instanceof StructureBlockEntity structureBlock)) {
+            throw new IllegalStateException("Structure marker block entity was not created");
+        }
+        structureBlock.setMode(StructureMode.DATA);
+        structureBlock.setMetaData(metadata);
+        structureBlock.setChanged();
+        template.fillFromWorld(
+                level,
+                source,
+                new Vec3i(2, 1, 1),
+                false,
+                Blocks.STRUCTURE_VOID);
+        level.setBlock(source, Blocks.AIR.defaultBlockState(), 2);
+        level.setBlock(marker, Blocks.AIR.defaultBlockState(), 2);
     }
 
     private static ResourceLocation id(String path) {

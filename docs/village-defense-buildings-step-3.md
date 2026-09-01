@@ -72,6 +72,20 @@ five type switches default to `true`, so enabling the master later does not
 silently omit a reviewed building unless the server owner chooses to do so.
 The integrated Watchtower switch never changes the standalone 1.4 Watchtower.
 
+## Startup template preflight
+
+An enabled entry is not appended merely because its JSON is valid. Startup
+first resolves its target pool, processor list, and structure template, then
+checks the template's complete anchor-marker contract. Missing templates and
+malformed, duplicate, unknown, or type-mismatched anchors are skipped with the
+bounded entry ID in the startup report. All eligible mutations are prepared
+before the first pool is changed, and an unexpected commit failure rolls back
+the pools already touched.
+
+The last-known-good publication belongs only to the current server session.
+Stopping a server clears it, preventing a malformed initial reload in another
+integrated world from reusing the previous world's definitions.
+
 ## Restart required
 
 Minecraft's initial resource reload publishes the accepted snapshot before the

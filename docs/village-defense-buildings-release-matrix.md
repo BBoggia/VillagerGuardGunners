@@ -32,10 +32,16 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 - Step 4 artifact size: 997,182 bytes
 - Step 4 artifact SHA-256:
   `1724bfd38d8099cf36f1cc3afce86725c71a080f7c6461ad3d1072d851bc87c4`
+- Post-audit JVM/source-contract tests: 488 passed; 0 failed or errored
+- Post-audit Forge GameTests: all 99 required tests passed
+- Post-audit development artifact: `villagerguardgunners-1.5-dev.jar`
+- Post-audit artifact size: 1,003,497 bytes
+- Post-audit artifact SHA-256:
+  `2833e99a8234e020c84496b94f96d5780686687c7a51f5e5a971c50ac7c4168d`
 
 ## Automated architecture and integration cases
 
-| ID | Scenario | Required result | Step 3 status |
+| ID | Scenario | Required result | Current status |
 | --- | --- | --- | --- |
 | VBUILD-BASE-01 | Inspect version, branch contract, inherited commit, and checksum. | Every identity matches the recorded baseline. | Pass |
 | VBUILD-SCHEMA-01 | Enumerate building types and reserved paths. | Exactly the five reviewed stable building IDs are exposed; the probe is not a building type. | Pass |
@@ -48,15 +54,16 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 | VBUILD-DATA-04 | Run `/reload` after startup. | The accepted snapshot updates, but live template pools are not removed, reordered, or rebuilt; restart is documented as required. | Pass — architecture contract; live restart test remains manual |
 | VBUILD-POOL-01 | Inject the plains probe into the vanilla plains houses pool. | Existing raw and flattened entries retain identity/order; one weight-1 VGG element is appended. | Pass — live Forge registry test |
 | VBUILD-POOL-02 | Repeat injection in the same server. | Pool sizes do not change; the report records one already-present entry. | Pass — live Forge registry test |
-| VBUILD-POOL-03 | Target a missing pool or processor list. | The entry is skipped, other entries remain eligible, and one bounded report records the omission. | Pass — live Forge registry test |
+| VBUILD-POOL-03 | Target a missing pool, processor list, template, or invalid anchor template. | The entry is skipped before any pool commit, other entries remain eligible, and one bounded report records its ID. | Pass — live Forge registry/template tests |
 | VBUILD-POOL-04 | Inspect the probe template's jigsaw metadata. | The existing inert template has a connector to the plains street pool. | Pass — live Forge template test |
 | VBUILD-CODEC-01 | Encode and decode the custom pool element. | Entry ID, building type, template, processors, and projection round-trip. | Pass — live polymorphic codec test |
-| VBUILD-ANCHOR-01 | Handle one valid, type-matching anchor marker. | Marker cell becomes air and one deterministic schema-1 building record is claimed. | Pass — live Forge marker/SavedData test |
+| VBUILD-ANCHOR-01 | Place one real template with a valid, type-matching anchor marker. | Blocks place, the marker cell becomes air, and one deterministic schema-1 building record is claimed. | Pass — live Forge template-placement/SavedData test |
 | VBUILD-ANCHOR-02 | Supply duplicate, malformed, unknown, oversized, or type-mismatched anchors. | Template validation fails before placement; zero anchors remains valid for decorative pieces. | Pass — JVM marker tests |
 | VBUILD-ANCHOR-03 | Repeat an anchor or reuse its UUID/position with different provenance. | Exact repeats are no-ops; UUID and physical-anchor conflicts fail closed without another record. | Pass — JVM and live idempotence tests |
-| VBUILD-ANCHOR-04 | Save/load valid, malformed, duplicate, wrong-type, and future-version building data. | Valid state round-trips; invalid state disables claims and is retained opaquely without normalization. | Pass — JVM persistence tests |
-| VBUILD-LIFECYCLE-01 | Process an anchor from world generation. | Only immutable identity crosses to one server-thread task; no chunk load, scan, ticket, ticker, or repair manager exists. | Pass — architecture and live Forge tests |
-| VBUILD-RESTART-01 | Stop and start a second integrated server process. | The new registry receives one entry; no static prior-server state suppresses it. | Partial — implementation is content-based; lifecycle run pending |
+| VBUILD-ANCHOR-04 | Save/load valid, malformed, duplicate, wrong-dimension, wrong-seed identity, wrong-type, and future-version building data. | Valid state round-trips; invalid state disables claims and is retained opaquely without normalization. | Pass — JVM persistence tests |
+| VBUILD-LIFECYCLE-01 | Process an anchor from a world-generation worker. | Only immutable identity crosses to one server-thread task; no chunk load, scan, ticket, ticker, or repair manager exists. | Pass — architecture plus dedicated worker-thread Forge GameTest |
+| VBUILD-RESTART-01 | Stop and start a second integrated server process. | The new registry receives one entry; no static prior-server definitions suppress or contaminate it. | Partial — explicit stopped-server reset and JVM session-isolation test pass; live two-server lifecycle run pending |
+| VBUILD-LEGACY-01 | Decode a Step 2 compatibility-probe structure start without `building_type`. | It loads as the legacy Barracks probe, while every new encoding retains the explicit type. | Pass — live polymorphic codec test |
 | VBUILD-OLDWORLD-01 | Load an existing 1.4 world with integration enabled. | Existing starts/chunks are unchanged; only newly selected pieces can use appended entries. | Manual test required |
 
 ## Later functional and compatibility cases

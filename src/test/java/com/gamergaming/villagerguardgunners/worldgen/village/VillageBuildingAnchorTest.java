@@ -233,6 +233,12 @@ final class VillageBuildingAnchorTest {
         CompoundTag encoded = source.save(new CompoundTag());
 
         VillageBuildingSavedData loaded = VillageBuildingSavedData.load(encoded);
+        VillageBuildingSavedData levelValidated = VillageBuildingSavedData.loadForLevel(
+                encoded, DIMENSION, 42L);
+        VillageBuildingSavedData wrongDimension = VillageBuildingSavedData.loadForLevel(
+                encoded, id("minecraft", "the_nether"), 42L);
+        VillageBuildingSavedData wrongSeed = VillageBuildingSavedData.loadForLevel(
+                encoded, DIMENSION, 43L);
         CompoundTag future = encoded.copy();
         future.putInt("Version", VillageBuildingSavedData.DATA_VERSION + 1);
         VillageBuildingSavedData disabledFuture = VillageBuildingSavedData.load(future);
@@ -251,6 +257,9 @@ final class VillageBuildingAnchorTest {
 
         assertAll(
                 () -> assertTrue(loaded.enabled()),
+                () -> assertTrue(levelValidated.enabled()),
+                () -> assertFalse(wrongDimension.enabled()),
+                () -> assertFalse(wrongSeed.enabled()),
                 () -> assertEquals(source.get(identity.buildingId()),
                         loaded.get(identity.buildingId())),
                 () -> assertFalse(disabledFuture.enabled()),

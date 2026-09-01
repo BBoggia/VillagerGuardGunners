@@ -399,7 +399,10 @@ Step 4 adds the shared
 valid templates may carry one type-matching anchor, and passive schema-1
 records prevent later garrison, Armory, or initial-stock work from running more
 than once. The main-thread claim has no ticker, scan, chunk ticket, forced
-load, or repair pass. These steps still do not ship functional Barracks,
+load, or repair pass. Startup preflights pool, processor, template, and anchor
+dependencies before committing any pool changes; persisted identities are
+checked against their live dimension and world seed, and server-session reload
+state is cleared on shutdown. These steps still do not ship functional Barracks,
 Armories, Sentry Posts, integrated Watchtowers, or Training Yards.
 
 ## License

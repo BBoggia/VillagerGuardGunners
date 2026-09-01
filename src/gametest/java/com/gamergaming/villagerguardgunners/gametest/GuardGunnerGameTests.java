@@ -238,6 +238,18 @@ public final class GuardGunnerGameTests {
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageBuildingTemplatesPlaceAndFailClosedThroughRealPipeline(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyRealTemplatePlacementAndPreflight(helper);
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE, timeoutTicks = 40)
+    public static void villageBuildingAnchorCrossesWorkerThreadExactlyOnce(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyWorkerThreadAnchorHandoff(helper);
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
     public static void taczCommonDataCacheRoundTripsThroughBoundedChunks(
             GameTestHelper helper) {
         CommonAssetsManager manager = CommonAssetsManager.getInstance();

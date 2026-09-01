@@ -20,20 +20,25 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.level.block.Rotation;
 
 /**
  * Identifiable single-template element used for additive, idempotent village
- * integration. Marker behavior is intentionally absent during Step 3.
+ * integration and bounded anchor handling.
  */
 public final class VillageBuildingPoolElement extends SinglePoolElement {
     public static final Codec<VillageBuildingPoolElement> CODEC =
             RecordCodecBuilder.create(instance -> instance.group(
                     ResourceLocation.CODEC.fieldOf("entry_id")
                             .forGetter(VillageBuildingPoolElement::entryId),
-                    VillageBuildingType.CODEC.fieldOf("building_type")
+                    VillageBuildingType.CODEC.optionalFieldOf("building_type")
+                            .xmap(
+                                    type -> type.orElse(VillageBuildingType.BARRACKS),
+                                    java.util.Optional::of)
                             .forGetter(VillageBuildingPoolElement::buildingType),
                     templateCodec(),
                     processorsCodec(),
@@ -93,7 +98,7 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
                 buildingType)) {
             return false;
         }
-        return super.place(
+        boolean placed = super.place(
                 templateManager,
                 level,
                 structureManager,
@@ -104,6 +109,25 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
                 bounds,
                 random,
                 keepJigsaws);
+        if (!placed) {
+            return false;
+        }
+
+        StructurePlaceSettings markerSettings = getSettings(rotation, bounds, keepJigsaws);
+        markerSettings.getProcessors().removeIf(
+                processor -> processor == BlockIgnoreProcessor.STRUCTURE_BLOCK);
+        for (StructureTemplate.StructureBlockInfo marker : StructureTemplate.processBlockInfos(
+                level,
+                position,
+                pivot,
+                markerSettings,
+                getDataMarkers(templateManager, position, rotation, false))) {
+            if (VillageBuildingAnchorMarker.isAnchorMetadata(
+                    VillageBuildingAnchorMarker.metadata(marker.nbt()))) {
+                handleDataMarker(level, marker, position, rotation, random, bounds);
+            }
+        }
+        return true;
     }
 
     @Override

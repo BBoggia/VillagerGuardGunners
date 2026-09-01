@@ -17,11 +17,13 @@ final class VillageBuildingPoolIntegrationTest {
     void disabledIntegrationDoesNotRequireDynamicRegistries() {
         VillagePoolInjectionReport report = VillageBuildingPoolIntegration.install(
                 RegistryAccess.EMPTY,
+                null,
                 false,
                 List.of(probe()));
 
         assertEquals(
-                new VillagePoolInjectionReport(false, 1, 0, 0, 0, 0),
+                new VillagePoolInjectionReport(
+                        false, 1, 0, 0, 0, 0, 0, 0, List.of()),
                 report);
         assertFalse(report.hasWarnings());
     }

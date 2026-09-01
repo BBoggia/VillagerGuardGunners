@@ -51,21 +51,27 @@ is `VggVillageBuilding`, schema `1`, containing only:
 The stable action surface is `ANCHOR`, `GARRISON`, `ARMORY`, and
 `INITIAL_STOCK`. Step 4 claims only `ANCHOR`; the remaining claims reserve
 at-most-once boundaries for later building-specific steps. Initial stock also
-requires the Armory claim, preventing impossible partial state. Claims are written
-before later side effects so interruption fails toward missing optional
-content rather than duplicate guards, Armories, or loot.
+requires the Armory claim, preventing impossible partial state. A claim is an
+in-memory reservation that marks SavedData dirty; it is durable after a normal
+world save, but it is not an atomic disk transaction with an entity or chunk
+save. Later functional actions must therefore use deterministic identities and
+verify their physical side effects idempotently instead of treating claim
+order alone as process-kill protection.
 
 An existing UUID with different provenance or an existing physical anchor with
 a different UUID is a conflict. It does not create a replacement record. This
 prevents a changed datapack entry from treating a previously generated
 building as a new one if the marker is ever revisited.
 
-The per-dimension file has an explicit schema and a hard ceiling of 262,144
+The per-dimension file has an explicit schema and a hard ceiling of 65,536
 records. Unknown fields, wrong tag types, invalid IDs/types/actions, duplicate
 UUIDs, duplicate physical anchors, future versions, and over-limit files
 disable the complete index. An unreadable/future root is retained opaquely and
 written back unchanged instead of being normalized or erased. Disabled state
-cannot claim an action.
+cannot claim an action. A live load additionally verifies that every record
+belongs to that dimension and that its UUID matches the world seed and complete
+stored provenance. Disabled indexes and non-benign claim failures emit one
+bounded diagnostic per dimension/result rather than failing silently.
 
 ## Threading and performance
 
@@ -79,6 +85,10 @@ UUID/anchor-map claim. It does not capture a chunk, request a ticket, load a
 chunk, scan a village, enumerate entities, or schedule recurring work. Saved
 records have no ticker or repair pass. Removing a later generated guard or
 Armory will not clear its claim and will not cause regeneration.
+
+Serialization is linear in the number of retained records and preserves the
+bounded insertion order; it no longer allocates and sorts a second complete
+record list on every dirty save.
 
 ## No functional building actions
 

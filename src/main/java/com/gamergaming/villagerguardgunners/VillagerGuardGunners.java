@@ -43,6 +43,7 @@ public class VillagerGuardGunners {
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardLoadoutPools::registerReloadListener);
         MinecraftForge.EVENT_BUS.addListener(GuardPostGroups::registerReloadListener);
         MinecraftForge.EVENT_BUS.addListener(VillageBuildingDefinitions::registerReloadListener);
+        MinecraftForge.EVENT_BUS.addListener(VillageBuildingDefinitions::onServerStopped);
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardSpawnIntegration::onEntityJoin);
         MinecraftForge.EVENT_BUS.addListener(NaturalGuardPopulationIndex::onEntityLeave);
         MinecraftForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onEntityLeave);

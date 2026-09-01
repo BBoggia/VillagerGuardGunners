@@ -191,6 +191,9 @@ final class PhaseSevenCleanupContractTest {
         String villageDefinitionReload = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/worldgen/village/"
                         + "VillageBuildingDefinitions.java");
+        String villageBuildingState = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/village/"
+                        + "VillageBuildingSavedData.java");
         String performanceSensitiveSource = productionSource
                 .replace(legacyNotice, "")
                 .replace(naturalLoadoutReload, "")
@@ -199,7 +202,8 @@ final class PhaseSevenCleanupContractTest {
                 .replace(largePackSync, "")
                 .replace(largePackSyncClient, "")
                 .replace(villagePoolStartup, "")
-                .replace(villageDefinitionReload, "");
+                .replace(villageDefinitionReload, "")
+                .replace(villageBuildingState, "");
 
         assertAll(
                 () -> assertFalse(performanceSensitiveSource.contains("LogUtils")),
@@ -217,7 +221,12 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertTrue(naturalLoadoutReload.contains("LOGGER.info(")),
                 () -> assertFalse(naturalLoadoutReload.contains("LOGGER.debug(")),
                 () -> assertFalse(naturalLoadoutReload.contains("tick(")),
-                () -> assertFalse(naturalLoadoutReload.contains("getEntitiesOfClass(")));
+                () -> assertFalse(naturalLoadoutReload.contains("getEntitiesOfClass(")),
+                () -> assertTrue(villageBuildingState.contains("LOGGER.warn(")),
+                () -> assertTrue(villageBuildingState.contains("LOGGER.error(")),
+                () -> assertFalse(villageBuildingState.contains("LOGGER.info(")),
+                () -> assertFalse(villageBuildingState.contains("LOGGER.debug(")),
+                () -> assertFalse(villageBuildingState.contains("tick(")));
         assertAll(
                 () -> assertTrue(guardRoleReload.contains("LOGGER.error(")),
                 () -> assertTrue(guardRoleReload.contains("LOGGER.info(")),

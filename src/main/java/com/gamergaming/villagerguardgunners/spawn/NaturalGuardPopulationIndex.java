@@ -111,8 +111,15 @@ public final class NaturalGuardPopulationIndex extends SavedData {
             double x,
             double y,
             double z,
-            double radius) {
-        return countWithin(x, y, z, radius, guardId -> level.getEntity(guardId) != null);
+            double radius,
+            int maximumCount) {
+        return countWithin(
+                x,
+                y,
+                z,
+                radius,
+                guardId -> level.getEntity(guardId) != null,
+                maximumCount);
     }
 
     int countWithin(
@@ -121,7 +128,17 @@ public final class NaturalGuardPopulationIndex extends SavedData {
             double z,
             double radius,
             Predicate<UUID> isLoaded) {
-        if (!Double.isFinite(radius) || radius < 0.0D) {
+        return countWithin(x, y, z, radius, isLoaded, Integer.MAX_VALUE);
+    }
+
+    int countWithin(
+            double x,
+            double y,
+            double z,
+            double radius,
+            Predicate<UUID> isLoaded,
+            int maximumCount) {
+        if (!Double.isFinite(radius) || radius < 0.0D || maximumCount <= 0) {
             return 0;
         }
         double radiusSquared = radius * radius;
@@ -146,6 +163,9 @@ public final class NaturalGuardPopulationIndex extends SavedData {
                     if (deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ
                             <= radiusSquared) {
                         count++;
+                        if (count >= maximumCount) {
+                            return maximumCount;
+                        }
                     }
                 }
             }

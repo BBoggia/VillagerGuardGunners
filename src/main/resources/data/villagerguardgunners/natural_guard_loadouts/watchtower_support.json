@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "entries": [
+    {
+      "gun": "tacz:m249",
+      "weight": 2
+    },
+    {
+      "gun": "tacz:rpk",
+      "weight": 1
+    }
+  ]
+}

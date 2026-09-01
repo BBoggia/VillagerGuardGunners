@@ -75,6 +75,12 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `armoryResupply.successCooldownTicks` | 100 | 20–2400 ticks | Reassessment delay after a successful transaction. |
 | `armoryResupply.noSupplyRetryTicks` | 200 | 20–2400 ticks | Retry delay after bounded selection finds no compatible supply. |
 | `armoryResupply.unreachableRetryTicks` | 200 | 20–2400 ticks | Base retry delay after bounded navigation exhausts its approaches. |
+| `watchtowers.enabled` | `true` | boolean | Allows new Watchtower structure starts. Existing towers are never removed or rewritten. |
+| `watchtowers.spawnGuards` | `true` | boolean | Allows guard markers in newly placed towers to create guards. |
+| `watchtowers.maximumGuardsPerPost` | 4 | 0–4 guards | Caps the deterministic group selected for a newly placed tower. |
+| `watchtowers.placeArmory` | `true` | boolean | Allows Armory markers in newly placed towers to create an Armory. |
+| `watchtowers.stockArmory` | `true` | boolean | Allows a newly generated tower Armory to receive its datapack-defined initial stock. |
+| `watchtowers.guardGunChanceMultiplier` | 1.5 | 0–3 | Multiplies only a new tower guard's difficulty chance, clamped to 1.0. The default changes Easy/Normal/Hard chances from 35%/50%/65% to 52.5%/75%/97.5%; it does not bypass any other natural-loadout or safety gate. |
 | `performance.visibilitySampleIntervalTicks` | 2 | 1–10 ticks | Lower values update visibility sooner but perform more line-of-sight checks. |
 | `performance.movementDecisionIntervalTicks` | 5 | 1–20 ticks | Lower values reconsider movement more often. |
 | `performance.pathRecalculationIntervalTicks` | 20 | 5–100 ticks | Lower values request navigation paths more often. |
@@ -83,6 +89,18 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `performance.repositionProgressCheckTicks` | 10 | 5–40 ticks | Lower values check blocked repositioning progress more often. |
 
 The performance defaults are the recommended starting point. Increasing an interval generally reduces server work at the cost of a small response delay. Decreasing an interval does the reverse. Safety checks, per-tick shot limits, native burst cancellation, and other hard fail-closed limits are deliberately not configurable.
+
+## Watchtower loadout chance
+
+Config version 11 adds only `watchtowers.guardGunChanceMultiplier`. Migrating
+a version-10 file initializes that field to 1.5 and preserves every existing
+watchtower, natural-loadout, combat, and logistics value. The multiplier is
+read once when a newly generated tower guard reaches the existing loadout
+transaction; it creates no recurring scan or AI task. A value of 1 matches
+ordinary natural guards, 0 prevents tower gun upgrades, and results above 100%
+are clamped. The configured difficulty pool, enabled source, starting weapon,
+nearby cap, pool conditions, inventory capacity, TaCZ resolution, and
+explosive permission remain authoritative.
 
 ## Armory resupply policy
 

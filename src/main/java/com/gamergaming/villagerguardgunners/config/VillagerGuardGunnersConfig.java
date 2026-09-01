@@ -13,6 +13,7 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficultySettings
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnRules;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
+import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,7 +38,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 9;
+    public static final int CONFIG_VERSION = 11;
 
     @Comment("Enables Guard Villagers to use TaCZ guns. The server controls this setting.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -68,6 +69,9 @@ public final class VillagerGuardGunnersConfig extends Config {
 
     @Comment("Bounded Village Armory resupply policy. Searches may inspect only loaded indexed Armories and never force a chunk to load.")
     public ArmorySettings armoryResupply = new ArmorySettings();
+
+    @Comment("One-way controls for new Village Watchtower generation. Datapacks remain authoritative for placement, groups, and loot.")
+    public WatchtowerSettings watchtowers = new WatchtowerSettings();
 
     @Comment("Advanced scheduling settings. Lower intervals react faster but require more server work.")
     public PerformanceSettings performance = new PerformanceSettings();
@@ -129,6 +133,17 @@ public final class VillagerGuardGunnersConfig extends Config {
             // so initialize its bounded defaults while preserving all schema-8
             // combat, safety, loadout, ammunition, and squad values.
             armoryResupply.restoreVersionNineDefaults();
+        }
+        if (previousVersion < 10) {
+            // Version 10 adds only watchtower controls. Initialize every new
+            // bounded field without changing any existing schema-9 value.
+            watchtowers.restoreVersionTenDefaults();
+        }
+        if (previousVersion < 11) {
+            // Version 11 adds only the tower-specific, one-time loadout chance
+            // multiplier. Existing watchtower and natural-loadout choices are
+            // preserved while the new field receives its reviewed default.
+            watchtowers.restoreVersionElevenDefaults();
         }
     }
 
@@ -667,6 +682,66 @@ public final class VillagerGuardGunnersConfig extends Config {
             restoreDefault(successCooldownTicks);
             restoreDefault(noSupplyRetryTicks);
             restoreDefault(unreachableRetryTicks);
+        }
+    }
+
+    @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.watchtowers")
+    public static final class WatchtowerSettings extends ConfigSection {
+
+        @Comment("Allows new Village Watchtower structure starts. Disabling this does not remove or rewrite existing starts.")
+        public ValidatedBoolean enabled = new ValidatedBoolean(true);
+
+        @Comment("Allows guard markers in newly placed Watchtower pieces to create guards.")
+        public ValidatedBoolean spawnGuards = new ValidatedBoolean(true);
+
+        @Comment("Maximum guards created by one Watchtower guard marker. Range: 0 to 4 guards.")
+        public ValidatedInt maximumGuardsPerPost = new ValidatedInt(
+                WatchtowerGenerationPolicy.MAXIMUM_GUARDS_PER_POST,
+                WatchtowerGenerationPolicy.MAXIMUM_GUARDS_PER_POST,
+                WatchtowerGenerationPolicy.MINIMUM_GUARDS_PER_POST);
+
+        @Comment("Allows Armory markers in newly placed Watchtower pieces to place an Armory.")
+        public ValidatedBoolean placeArmory = new ValidatedBoolean(true);
+
+        @Comment("Allows newly generated Watchtower Armories to receive their datapack-defined initial stock.")
+        public ValidatedBoolean stockArmory = new ValidatedBoolean(true);
+
+        @Comment("Multiplier applied once to a Watchtower guard's difficulty-based natural gun chance. The final chance is clamped to 1. Range: 0 to 3.")
+        public ValidatedDouble guardGunChanceMultiplier = new ValidatedDouble(
+                1.5D,
+                3.0D,
+                0.0D);
+
+        /**
+         * Applies the tower-only chance modifier without widening any other
+         * natural-loadout eligibility or safety boundary.
+         */
+        public double guardGunUpgradeChance(double baseChance) {
+            if (!Double.isFinite(baseChance) || baseChance < 0.0D || baseChance > 1.0D) {
+                throw new IllegalArgumentException("Base gun chance must be finite and in [0, 1]");
+            }
+            return Math.min(1.0D, baseChance * guardGunChanceMultiplier.get());
+        }
+
+        public WatchtowerGenerationPolicy snapshot() {
+            return new WatchtowerGenerationPolicy(
+                    enabled.get(),
+                    spawnGuards.get(),
+                    maximumGuardsPerPost.get(),
+                    placeArmory.get(),
+                    stockArmory.get());
+        }
+
+        private void restoreVersionTenDefaults() {
+            restoreDefault(enabled);
+            restoreDefault(spawnGuards);
+            restoreDefault(maximumGuardsPerPost);
+            restoreDefault(placeArmory);
+            restoreDefault(stockArmory);
+        }
+
+        private void restoreVersionElevenDefaults() {
+            restoreDefault(guardGunChanceMultiplier);
         }
     }
 

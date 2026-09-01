@@ -49,6 +49,7 @@ public final class GuardGunnerCommands {
                 .then(NaturalGuardLoadoutCommands.build())
                 .then(SquadRegistryCommands.build())
                 .then(GuardRoleCommands.build())
+                .then(WatchtowerCommands.build())
                 .then(Commands.literal("inspect")
                         .then(Commands.argument("guard", EntityArgument.entity())
                                 .executes(context -> inspect(

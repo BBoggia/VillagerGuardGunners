@@ -182,7 +182,15 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
 
     @Unique
     @Nullable
+    private Tag villagerGuardGunners$unreadableGuardPostIdentity;
+
+    @Unique
+    @Nullable
     private GuardPostAssignment villagerGuardGunners$guardPostAssignment;
+
+    @Unique
+    @Nullable
+    private Tag villagerGuardGunners$unreadableGuardPostAssignment;
 
     @Unique
     @Nullable
@@ -375,10 +383,19 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
                 SquadMembershipCodec.readGuardRecord(compound));
         villagerGuardGunners$setSquadCommand(
                 SquadCommandCodec.readGuardRecord(compound));
-        villagerGuardGunners$setGuardPostIdentity(
-                GuardPostIdentityCodec.readGuardRecord(compound));
-        villagerGuardGunners$setGuardPostAssignment(
-                GuardPostAssignmentCodec.readGuardRecord(compound));
+        GuardPostIdentity decodedPostIdentity =
+                GuardPostIdentityCodec.readGuardRecord(compound);
+        villagerGuardGunners$guardPostIdentity = decodedPostIdentity;
+        villagerGuardGunners$unreadableGuardPostIdentity = decodedPostIdentity == null
+                ? GuardPostIdentityCodec.copyEncodedRecord(compound)
+                : null;
+        GuardPostAssignment decodedPostAssignment = decodedPostIdentity == null
+                ? null
+                : GuardPostAssignmentCodec.readGuardRecord(compound);
+        villagerGuardGunners$guardPostAssignment = decodedPostAssignment;
+        villagerGuardGunners$unreadableGuardPostAssignment = decodedPostAssignment == null
+                ? GuardPostAssignmentCodec.copyEncodedRecord(compound)
+                : null;
         villagerGuardGunners$pendingMigrationDrops.clear();
 
         List<CompoundTag> legacyAmmo = GuardAmmoMigration.extractLegacyAmmoSlots(compound);
@@ -474,12 +491,14 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
         SquadCommandCodec.writeGuardRecord(
                 compound,
                 villagerGuardGunners$getSquadCommand());
-        GuardPostIdentityCodec.writeGuardRecord(
+        GuardPostIdentityCodec.writeGuardRecordPreservingUnreadable(
                 compound,
-                villagerGuardGunners$getGuardPostIdentity());
-        GuardPostAssignmentCodec.writeGuardRecord(
+                villagerGuardGunners$getGuardPostIdentity(),
+                villagerGuardGunners$unreadableGuardPostIdentity);
+        GuardPostAssignmentCodec.writeGuardRecordPreservingUnreadable(
                 compound,
-                villagerGuardGunners$getGuardPostAssignment());
+                villagerGuardGunners$getGuardPostAssignment(),
+                villagerGuardGunners$unreadableGuardPostAssignment);
 
         if (villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             compound.remove(VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG);
@@ -762,6 +781,12 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
     public void villagerGuardGunners$setGuardPostIdentity(
             @Nullable GuardPostIdentity identity) {
         villagerGuardGunners$guardPostIdentity = identity;
+        villagerGuardGunners$unreadableGuardPostIdentity = null;
+    }
+
+    @Override
+    public boolean villagerGuardGunners$hasUnreadableGuardPostIdentity() {
+        return villagerGuardGunners$unreadableGuardPostIdentity != null;
     }
 
     @Override
@@ -774,6 +799,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
     public synchronized void villagerGuardGunners$setGuardPostAssignment(
             @Nullable GuardPostAssignment assignment) {
         villagerGuardGunners$guardPostAssignment = assignment;
+        villagerGuardGunners$unreadableGuardPostAssignment = null;
     }
 
     @Override
@@ -782,6 +808,11 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardAr
         GuardPostAssignment assignment = villagerGuardGunners$guardPostAssignment;
         villagerGuardGunners$guardPostAssignment = null;
         return assignment;
+    }
+
+    @Override
+    public synchronized boolean villagerGuardGunners$hasUnreadableGuardPostAssignment() {
+        return villagerGuardGunners$unreadableGuardPostAssignment != null;
     }
 
     @Override

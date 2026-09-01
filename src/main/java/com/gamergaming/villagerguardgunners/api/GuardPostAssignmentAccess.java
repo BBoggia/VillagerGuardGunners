@@ -15,6 +15,11 @@ public interface GuardPostAssignmentAccess {
     @Nullable
     GuardPostAssignment villagerGuardGunners$claimGuardPostAssignment();
 
+    /** True when pending work exists but this version deliberately cannot interpret it. */
+    default boolean villagerGuardGunners$hasUnreadableGuardPostAssignment() {
+        return false;
+    }
+
     static boolean set(Guard guard, GuardPostAssignment assignment) {
         if (!(guard instanceof GuardPostAssignmentAccess access)) {
             return false;
@@ -33,5 +38,10 @@ public interface GuardPostAssignmentAccess {
         return guard instanceof GuardPostAssignmentAccess access
                 ? access.villagerGuardGunners$claimGuardPostAssignment()
                 : null;
+    }
+
+    static boolean hasUnreadableAssignment(Guard guard) {
+        return guard instanceof GuardPostAssignmentAccess access
+                && access.villagerGuardGunners$hasUnreadableGuardPostAssignment();
     }
 }

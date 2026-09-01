@@ -2,6 +2,7 @@ package com.gamergaming.villagerguardgunners.worldgen.structure;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.init.ModStructures;
+import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupPool;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupSelection;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroups;
@@ -9,6 +10,7 @@ import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryPlacer;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostMarker;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostMarkerState;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSpawner;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,12 +20,16 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.TemplateStructurePiece;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -37,6 +43,7 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
 
     private static final String ROTATION_TAG = "Rot";
     private static final String POST_STATE_TAG = "VggPost";
+    private static final String PLACEMENT_ENABLED_TAG = "VggPlacementEnabled";
     private static final BlockPos ROTATION_PIVOT = new BlockPos(
             WatchtowerPlacement.FOOTPRINT_RADIUS,
             0,
@@ -63,6 +70,7 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                 settings(rotation),
                 templatePosition);
         markerState = GuardPostMarkerState.fresh(guardGroupSeed);
+        placementEnabled = true;
     }
 
     public VillageWatchtowerPiece(
@@ -73,12 +81,18 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                 tag,
                 templateManager,
                 ignored -> settings(readRotation(tag)));
-        markerState = GuardPostMarkerState.load(tag.contains(POST_STATE_TAG, Tag.TAG_COMPOUND)
-                ? tag.getCompound(POST_STATE_TAG)
-                : null);
+        placementEnabled = hasValidPersistedRotation(tag)
+                && (!tag.contains(PLACEMENT_ENABLED_TAG)
+                        || (tag.contains(PLACEMENT_ENABLED_TAG, Tag.TAG_BYTE)
+                                && tag.getBoolean(PLACEMENT_ENABLED_TAG)));
+        markerState = GuardPostMarkerState.load(placementEnabled
+                && tag.contains(POST_STATE_TAG, Tag.TAG_COMPOUND)
+                        ? tag.getCompound(POST_STATE_TAG)
+                        : null);
     }
 
     private GuardPostMarkerState markerState;
+    private final boolean placementEnabled;
 
     private static StructurePlaceSettings settings(Rotation rotation) {
         return new StructurePlaceSettings()
@@ -100,6 +114,18 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
         }
     }
 
+    private static boolean hasValidPersistedRotation(CompoundTag tag) {
+        if (!tag.contains(ROTATION_TAG, Tag.TAG_STRING)) {
+            return false;
+        }
+        try {
+            Rotation.valueOf(tag.getString(ROTATION_TAG));
+            return true;
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
+    }
+
     @Override
     protected void addAdditionalSaveData(
             StructurePieceSerializationContext context,
@@ -107,6 +133,29 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
         super.addAdditionalSaveData(context, tag);
         tag.putString(ROTATION_TAG, placeSettings.getRotation().name());
         tag.put(POST_STATE_TAG, markerState.save());
+        tag.putBoolean(PLACEMENT_ENABLED_TAG, placementEnabled);
+    }
+
+    @Override
+    public void postProcess(
+            WorldGenLevel level,
+            StructureManager structureManager,
+            ChunkGenerator chunkGenerator,
+            RandomSource random,
+            BoundingBox bounds,
+            ChunkPos chunk,
+            BlockPos origin) {
+        if (!placementEnabled) {
+            return;
+        }
+        super.postProcess(
+                level,
+                structureManager,
+                chunkGenerator,
+                random,
+                bounds,
+                chunk,
+                origin);
     }
 
     @Override
@@ -141,32 +190,45 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                 level.getLevel().getSeed(),
                 level.getLevel().dimension().location(),
                 templatePosition);
+        WatchtowerGenerationPolicy policy =
+                ModConfigs.GUARD_GUNNERS.watchtowers.snapshot();
         if (marker.action() == GuardPostMarker.Action.ARMORY) {
+            if (!policy.armoryPlacementEnabled()) {
+                level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
+                return;
+            }
             GuardPostArmoryPlacer.place(
                     level,
                     position,
                     placeSettings.getRotation(),
                     postId,
-                    marker);
+                    marker,
+                    policy.armoryStockEnabled());
             return;
         }
 
         // Guard markers create entities at and around their cell, so the
         // marker itself must become air before spawn-cell validation.
         level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
+        if (!policy.guardSpawningEnabled()
+                || policy.maximumGuardsPerPost() == 0) {
+            return;
+        }
         GuardPostGroupPool group = GuardPostGroups.get(marker.groupId());
         if (group == null) {
             return;
         }
-        Optional<GuardPostGroupSelection> selected = group.select(
-                GuardPostSpawner.mapDifficulty(level.getLevel().getDifficulty()),
-                markerState.selectionSeed());
+        NaturalGuardDifficulty generationDifficulty =
+                GuardPostSpawner.mapDifficulty(level.getLevel().getDifficulty());
+        Optional<GuardPostGroupSelection> selected =
+                group.select(generationDifficulty, markerState.selectionSeed());
         if (selected.isEmpty()) {
             return;
         }
         GuardPostGroupSelection selection = selected.get();
         markerState.recordSelection(selection);
-        for (int memberIndex = 0; memberIndex < selection.members().size(); memberIndex++) {
+        int guardCount = policy.limitGuardCount(selection.members().size());
+        for (int memberIndex = 0; memberIndex < guardCount; memberIndex++) {
             if (GuardPostSpawner.spawnMember(
                     level,
                     bounds,
@@ -176,7 +238,8 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                     selection.groupId(),
                     selection.variantName(),
                     memberIndex,
-                    selection.members().get(memberIndex))) {
+                    selection.members().get(memberIndex),
+                    generationDifficulty)) {
                 markerState.recordSpawnedGuard();
             }
         }

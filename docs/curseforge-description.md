@@ -60,6 +60,18 @@ are carrying without replacing TaCZ's projectiles or weapon behavior.
     source, raid state, and guard scoreboard tags.<br><br>
   </li>
   <li>
+    <strong>Naturally generated Village Watchtowers</strong><br>
+    Rare standalone Watchtowers generate on suitable dry terrain in vanilla
+    village-compatible Overworld biomes. Each compact stone-and-oak tower can
+    create a difficulty-scaled squad of up to four persistent guards, assign
+    role-appropriate TaCZ loadouts with a configurable higher gun chance, and
+    place a stocked squad Armory. Towers are datapack-controlled, rotate with
+    the terrain, and add no recurring tower scan, ticker, forced chunk, or
+    repair system. They use
+    village-compatible biomes but are not injected into vanilla village roads
+    or building pools.<br><br>
+  </li>
+  <li>
     <strong>Weapon-specific tactical profiles</strong><br>
     Pistols, SMGs, rifles, shotguns, sniper rifles, machine guns, and launchers
     can use different approach distances, retreat behavior, aim requirements,
@@ -169,7 +181,7 @@ are carrying without replacing TaCZ's projectiles or weapon behavior.
 
 ## Requirements
 
-Villager Guard Gunners `1.3-beta1` requires:
+Villager Guard Gunners `1.4` requires:
 
 <ul>
   <li><strong>Minecraft 1.20.1</strong></li>
@@ -207,6 +219,8 @@ The server-authoritative Fzzy Config screen includes controls for:
   <li>Natural-loadout spawn sources, difficulty chances, local caps, pool IDs,
       unloaded-chunk accounting, crossbow replacement, and explosive
       eligibility</li>
+  <li>New Watchtower generation, guard count, tower gun-chance multiplier,
+      Armory placement, and initial Armory stock</li>
 </ul>
 
 The configuration file is stored at:
@@ -240,6 +254,11 @@ permission-gated maintenance for the persistent squad registry.
 `/vgg roles assign <guard> <role>`, and `/vgg roles clear <guard>` provide
 permission-gated inspection and assignment of datapack-defined roles.
 
+`/vgg watchtowers status`, `/vgg watchtowers groups [page]`,
+`/vgg watchtowers inspect <guard>`, and `/vgg watchtowers errors [page]`
+provide bounded, read-only diagnostics for Watchtower configuration, group
+publication, generated guards, and rejected datapack definitions.
+
 <br>
 
 ## Installation
@@ -254,6 +273,8 @@ permission-gated inspection and assignment of datapack-defined roles.
   <li>Launch the game. Equip a guard manually, or allow an eligible natural
       guard to receive a configured loadout, and let Guard Villagers select a
       target.</li>
+  <li>Explore newly generated village-compatible Overworld biomes to find
+      standalone Village Watchtowers and their generated guard squads.</li>
   <li>Optionally equip a pistol sidearm, copy persistent behavior with an
       Orders Ledger, or manage temporary group commands with a Squad Command
       Ledger.</li>
@@ -265,8 +286,8 @@ permission-gated inspection and assignment of datapack-defined roles.
 
 Configuration, sidearms, squads, Village Armories, automatic Armory resupply,
 guard roles, natural-loadout datapack pools, rules-of-engagement behavior,
-ammunition logistics, and operator guidance are documented with the project
-source.
+ammunition logistics, Village Watchtower customization, and operator guidance
+are documented with the project source.
 
 Please report reproducible problems through the CurseForge project page. Include
 the Minecraft, Forge, Guard Villagers, TaCZ, Fzzy Config, Kotlin for Forge, and

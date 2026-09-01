@@ -80,7 +80,8 @@ final class VillageWatchtowerStepThirteenContractTest {
                 () -> assertFalse(codec.contains("Class.forName")),
                 () -> assertFalse(codec.contains("ItemStack")),
                 () -> assertTrue(mixin.contains("GuardPostIdentityCodec.readGuardRecord(compound)")),
-                () -> assertTrue(mixin.contains("GuardPostIdentityCodec.writeGuardRecord(")));
+                () -> assertTrue(mixin.contains(
+                        "GuardPostIdentityCodec.writeGuardRecordPreservingUnreadable(")));
     }
 
     private static int integerConstant(String source, String name) {

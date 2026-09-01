@@ -4,23 +4,65 @@ All notable Villager Guard Gunners changes are recorded here.
 
 ## Unreleased
 
-### Development
+## 1.4 - 2026-08-31
 
-- Added the dormant Minecraft 1.20.1 registry and datapack skeleton for the
-  planned Village Watchtower structure. The structure type, structure settings,
-  structure set, and empty biome tag now validate as a complete packaged unit,
-  while an empty generation point independently prevents unfinished towers from
-  appearing before the template and terrain phase.
-- Added the first physical Village Watchtower: a generated 9 x 14 x 9 native
-  structure template with a stone foundation, lower room, ladder, observation
-  deck, railings, and roof.
-- Activated rare deterministic watchtower placement in vanilla
-  village-compatible Overworld biomes with four persisted rotations, a
-  nine-point two-block slope ceiling, dry and frozen-support checks, and strict
-  build-height rejection.
-- Kept Step 11 limited to structure placement. Towers do not yet create guards,
-  Armories, loot, marker actions, retro-generation work, chunk tickets, scans,
-  or recurring tasks.
+### Added
+
+- Added naturally generated Village Watchtowers in vanilla village-compatible
+  Overworld biomes. Each standalone 9 x 14 x 9 tower has a stone guardroom,
+  internal ladder, wooden observation deck, railings, and roof.
+- Added difficulty-scaled Watchtower groups containing up to four persistent
+  Guard Villagers with deterministic post, member, squad, role, and loadout
+  identities. Peaceful towers deliberately create no guards.
+- Added a generated squad-locked Village Armory with deterministic initial
+  ammunition stock covering the built-in rifleman, marksman, support,
+  breacher, and demolitions weapon pools.
+- Added synchronized Fzzy Config controls for new Watchtower starts, guard
+  spawning, the 0–4 guard ceiling, Armory placement, initial Armory stock, and
+  a tower-only natural-gun chance multiplier.
+- Added permission-level-2 `/vgg watchtowers status`, `groups`, `inspect`, and
+  `errors` diagnostics with bounded pagination and no structure location or
+  chunk-loading side effects.
+- Added standard datapack resources for Watchtower placement, biome selection,
+  physical templates, guard groups, role-specific loadout pools, and Armory
+  loot so modpacks can replace each layer independently.
+
+### Improved
+
+- Added four persisted rotations and bounded nine-point terrain validation
+  that rejects water, frozen unsupported terrain, slopes above two blocks, and
+  placements outside the dimension build height.
+- Deferred generated guard loadouts and Armory loot to one-shot live-server
+  tasks. Generation workers persist only bounded identifiers and never perform
+  TaCZ definition work, live-world scans, or arbitrary inventory transactions.
+- Persisted the exact generation difficulty for each tower member and applied
+  a configurable 1.5x tower-only gun chance while retaining source, nearby-cap,
+  explosive, inventory, and TaCZ compatibility rules during issuance.
+- Added dedicated Marksman, Support, Breacher, and Demolitions pools and
+  expanded Watchtower Armory ammunition without bypassing global explosive
+  restrictions.
+- Stopped loaded and unloaded natural-gunner population queries immediately
+  after the configured nearby cap is proven.
+- Kept completed towers passive: there is no tower manager, block-entity
+  ticker, recurring scan, forced chunk, repair pass, or retro-generation path.
+
+### Fixed
+
+- Moved the generated Armory against the inside wall so it no longer blocks
+  the Watchtower's central doorway aisle in any structure rotation.
+- Made queued generated-guard handoffs interruption-safe by retaining pending
+  assignment and source data until the live server task revalidates the guard.
+- Prevented Peaceful, disabled, zero-occupant, and failed-spawn towers from
+  leaving an unusable Armory squad lock. The one-time resolver registers the
+  squad or safely makes the Armory public if capacity is unavailable.
+- Prevented tower registry exhaustion from creating unmanaged squad
+  memberships while reserving capacity for player-created and recovered squads.
+- Preserved malformed and future-version Watchtower guard, assignment, and
+  generated-Armory records without executing, normalizing, or erasing them.
+- Prevented completed towers from respawning removed guards, reverting manual
+  squad changes, rebuilding broken Armories, or rerolling Armory contents.
+- Disabled pieces with missing or corrupt persisted rotations instead of
+  placing them in an incorrect default orientation.
 
 ## 1.3-beta1 - 2026-08-31
 

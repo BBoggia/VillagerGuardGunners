@@ -508,6 +508,10 @@ final class NaturalGuardLoadoutPoolsTest {
         NaturalGuardLoadoutPool easy = bundled("easy");
         NaturalGuardLoadoutPool normal = bundled("normal");
         NaturalGuardLoadoutPool hard = bundled("hard");
+        NaturalGuardLoadoutPool marksman = bundled("watchtower_marksman");
+        NaturalGuardLoadoutPool support = bundled("watchtower_support");
+        NaturalGuardLoadoutPool breacher = bundled("watchtower_breacher");
+        NaturalGuardLoadoutPool demolitions = bundled("watchtower_demolitions");
 
         assertAll(
                 () -> assertEquals(NaturalGuardLoadoutDefaults.EASY_POOL, easy.id()),
@@ -524,10 +528,24 @@ final class NaturalGuardLoadoutPoolsTest {
                         .filter(entry -> entry.gunId().getPath().matches("ak47|m4a1"))
                         .mapToInt(NaturalGuardLoadoutPool.Entry::weight)
                         .sum()),
-                () -> assertTrue(List.of(easy, normal, hard).stream()
+                () -> assertTrue(marksman.entries().stream().allMatch(entry ->
+                        entry.gunId().getPath().matches("ai_awp|m700"))),
+                () -> assertTrue(support.entries().stream().allMatch(entry ->
+                        entry.gunId().getPath().matches("m249|rpk"))),
+                () -> assertTrue(List.of(breacher, demolitions).stream()
+                        .flatMap(pool -> pool.entries().stream())
+                        .allMatch(entry -> entry.gunId().getPath().matches("m870|aa12"))),
+                () -> assertTrue(List.of(
+                                easy,
+                                normal,
+                                hard,
+                                marksman,
+                                support,
+                                breacher,
+                                demolitions).stream()
                         .flatMap(pool -> pool.entries().stream())
                         .allMatch(entry -> entry.sidearmId() == null),
-                        "Bundled formats 1 pools must remain sidearm-free"));
+                        "Bundled format-1 pools must remain sidearm-free"));
     }
 
     private static NaturalGuardLoadoutPool bundled(String name) throws IOException {

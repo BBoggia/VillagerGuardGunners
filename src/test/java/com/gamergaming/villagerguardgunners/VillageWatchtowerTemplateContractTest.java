@@ -96,7 +96,8 @@ final class VillageWatchtowerTemplateContractTest {
         }
         assertEquals(1, guardMarkerCount);
         assertEquals(1, armoryMarkerCount);
-        assertEquals(".S..A..S.", layers.get(1).getAsJsonArray().get(2).getAsString());
+        assertEquals(".SA....S.", layers.get(1).getAsJsonArray().get(2).getAsString());
+        assertEquals('.', layers.get(1).getAsJsonArray().get(2).getAsString().charAt(4));
         assertEquals(".S..G..S.", layers.get(1).getAsJsonArray().get(4).getAsString());
     }
 

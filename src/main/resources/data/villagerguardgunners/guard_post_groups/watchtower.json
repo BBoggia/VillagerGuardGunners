@@ -43,6 +43,7 @@
           "role": "villagerguardgunners:rifleman"
         },
         {
+          "loadout_pool": "villagerguardgunners:watchtower_marksman",
           "role": "villagerguardgunners:marksman"
         }
       ]
@@ -59,9 +60,11 @@
           "role": "villagerguardgunners:rifleman"
         },
         {
+          "loadout_pool": "villagerguardgunners:watchtower_support",
           "role": "villagerguardgunners:support"
         },
         {
+          "loadout_pool": "villagerguardgunners:watchtower_marksman",
           "role": "villagerguardgunners:marksman",
           "chance": 50
         }
@@ -79,9 +82,11 @@
           "role": "villagerguardgunners:rifleman"
         },
         {
+          "loadout_pool": "villagerguardgunners:watchtower_marksman",
           "role": "villagerguardgunners:marksman"
         },
         {
+          "loadout_pool": "villagerguardgunners:watchtower_support",
           "role": "villagerguardgunners:support"
         }
       ]
@@ -98,12 +103,15 @@
           "role": "villagerguardgunners:rifleman"
         },
         {
+          "loadout_pool": "villagerguardgunners:watchtower_support",
           "role": "villagerguardgunners:support"
         },
         {
+          "loadout_pool": "villagerguardgunners:watchtower_breacher",
           "role": "villagerguardgunners:breacher"
         },
         {
+          "loadout_pool": "villagerguardgunners:watchtower_demolitions",
           "role": "villagerguardgunners:demolitions",
           "chance": 25
         }

@@ -9,7 +9,11 @@
     "ItemEntityMixin",
     "RaiseShieldGoalMixin",
     "TaCZCommonAssetsManagerMixin",
-    "VillagerToGuardMixin"
+    "VillagerToGuardMixin",
+    "accessor.LootPoolAccessor",
+    "accessor.LootPoolEntryAccessor",
+    "accessor.LootPoolSingletonAccessor",
+    "accessor.LootTableAccessor"
   ],
   "client": [
     "client.GuardModelMixin",

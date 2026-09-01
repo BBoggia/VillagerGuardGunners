@@ -362,9 +362,26 @@ duplicate prevention across piece revisits and persistence.
 The [Step 14 post integration](docs/village-watchtowers-step-14.md) adds the
 server-thread member handoff to existing natural-loadout and role transactions,
 one deterministic shared squad, and a rotation-safe locked Village Armory whose
-declared ammo-only loot is evaluated and committed once. Public/locked and
-empty/loot-stocked marker forms remain closed and bounded, and the completed
-tower adds no manager, scan, retry task, block-entity ticker, or chunk ticket.
+declared ammo-only loot is evaluated on the live server thread and committed
+once. Public/locked and empty/loot-stocked marker forms remain closed and
+bounded, and the completed tower adds no manager, recurring scan, retry loop,
+block-entity ticker, or chunk ticket. Role-specific built-in pools keep tower
+positions aligned with suitable weapon classes, zero-occupant towers still
+resolve their Armory squad exactly once, and nearby-cap queries terminate as
+soon as the configured limit is proven.
+The [Step 15 configuration and diagnostics](docs/village-watchtowers-step-15.md)
+adds schema-10 one-way generation, guard-count, Armory-placement, and initial-
+stock controls; documents datapack/config precedence; and provides bounded
+permission-level-2 status, group-publication, and loaded-post inspection
+commands without locating structures, loading chunks, or mutating towers. The
+current schema 11 adds a tower-only one-time gun-chance multiplier, defaulting
+to 1.5, while retaining every existing loadout and safety gate.
+The [Step 16 lifecycle and compatibility hardening](docs/village-watchtowers-step-16.md)
+preserves unreadable/future post records without executing them, prevents
+generic-loadout fallback for quarantined generated guards, proves removed or
+reassigned occupants and replaced Armories are never repaired, and adds
+bounded `/vgg watchtowers errors [page]` reload diagnostics for modpack
+operators.
 
 ## License
 

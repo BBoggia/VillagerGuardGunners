@@ -6,7 +6,7 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: `1.3-beta1`
+- Version: `1.4`
 - Minecraft: `1.20.1`
 - Forge: `47.4.23`
 - Guard Villagers: `1.20.1-1.6.19`
@@ -14,17 +14,17 @@ the relevant manual rows pass against the exact files being distributed.
 - Fzzy Config: `0.7.6+1.20.1`
 - Kotlin for Forge: `4.12.0`
 - Gun pack(s): record exact names and versions in the release notes
-- Current beta JAR SHA-256: `d498dabe6e87de95034a70befc92997a6a9d8b931211362471606242cf480417`
+- Current release-candidate JAR SHA-256: `2ebf9920e7916bc9d7e81e85a55c522020e7149eaabf74d2354bfe6c838e59ac`
 
 ## Automated gates
 
-- [x] `./gradlew check` after guard-role Step 8 validation
-- [x] `./gradlew runGameTestServer` — all 87 required correctness tests passed against the Step 8 candidate
-- [x] `./gradlew runGameTestServer -Pphase8Performance=true` — all 20 required performance tests passed against the current JAR
-- [x] `./gradlew verifyPhase8PerformanceReports` — all 20 JSON/JFR pairs passed artifact, evidence, JFR, and timing verification
-- [x] `./gradlew assembleReleaseCandidateEvidence` — deterministic manifest records 20 JSON and 20 JFR files
-- [x] `./gradlew verifyAmmunitionReleaseCandidate` — aggregate Step 7 release gate passed
-- [x] Rebuild the final JAR and confirm its SHA-256 is reproducible
+- [x] `./gradlew clean check` — 458 JVM tests and the packaged-artifact gate passed against the exact 1.4 candidate
+- [x] `./gradlew runGameTestServer` — all 96 required correctness tests passed against the exact 1.4 candidate
+- [ ] `./gradlew runGameTestServer -Pphase8Performance=true` — rerun all 20 performance scenarios against the exact 1.4 candidate
+- [ ] `./gradlew verifyPhase8PerformanceReports` against the exact 1.4 candidate
+- [ ] `./gradlew assembleReleaseCandidateEvidence` against the exact 1.4 candidate
+- [ ] `./gradlew verifyAmmunitionReleaseCandidate` against the exact 1.4 candidate
+- [x] Rebuilt the final JAR and reproduced SHA-256 `2ebf9920e7916bc9d7e81e85a55c522020e7149eaabf74d2354bfe6c838e59ac`
 - [ ] Confirm the CI build passes from a clean checkout
 
 The normal GameTest suite includes a native Glock firing case with a target

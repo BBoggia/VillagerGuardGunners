@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,8 @@ final class GuardPostAssignmentCodecTest {
         GuardPostAssignment assignment = new GuardPostAssignment(
                 GuardPostAssignment.CURRENT_SCHEMA_VERSION,
                 POOL,
-                ROLE);
+                ROLE,
+                NaturalGuardDifficulty.HARD);
         CompoundTag guard = new CompoundTag();
 
         GuardPostAssignmentCodec.writeGuardRecord(guard, assignment);
@@ -46,6 +48,16 @@ final class GuardPostAssignmentCodecTest {
         shorthand.getCompound(GuardPostAssignmentCodec.ASSIGNMENT_TAG)
                 .putString("LoadoutPool", "tower_rifles");
         assertNull(GuardPostAssignmentCodec.readGuardRecord(shorthand));
+
+        CompoundTag unknownDifficulty = valid.copy();
+        unknownDifficulty.getCompound(GuardPostAssignmentCodec.ASSIGNMENT_TAG)
+                .putString("Difficulty", "NIGHTMARE");
+        assertNull(GuardPostAssignmentCodec.readGuardRecord(unknownDifficulty));
+
+        CompoundTag missingDifficulty = valid.copy();
+        missingDifficulty.getCompound(GuardPostAssignmentCodec.ASSIGNMENT_TAG)
+                .remove("Difficulty");
+        assertNull(GuardPostAssignmentCodec.readGuardRecord(missingDifficulty));
     }
 
     private static CompoundTag encoded() {
@@ -55,7 +67,8 @@ final class GuardPostAssignmentCodecTest {
                 new GuardPostAssignment(
                         GuardPostAssignment.CURRENT_SCHEMA_VERSION,
                         POOL,
-                        null));
+                        null,
+                        NaturalGuardDifficulty.NORMAL));
         return guard;
     }
 

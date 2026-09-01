@@ -453,6 +453,10 @@ tasks.register('verifyReleaseArtifact') {
                     'data/villagerguardgunners/natural_guard_loadouts/easy.json',
                     'data/villagerguardgunners/natural_guard_loadouts/normal.json',
                     'data/villagerguardgunners/natural_guard_loadouts/hard.json',
+                    'data/villagerguardgunners/natural_guard_loadouts/watchtower_breacher.json',
+                    'data/villagerguardgunners/natural_guard_loadouts/watchtower_demolitions.json',
+                    'data/villagerguardgunners/natural_guard_loadouts/watchtower_marksman.json',
+                    'data/villagerguardgunners/natural_guard_loadouts/watchtower_support.json',
                     'data/villagerguardgunners/guard_roles/breacher.json',
                     'data/villagerguardgunners/guard_roles/demolitions.json',
                     'data/villagerguardgunners/guard_roles/marksman.json',
@@ -476,7 +480,12 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/ammunition/GuardWeaponAmmunition.class',
                     'com/gamergaming/villagerguardgunners/armory/ArmoryBlock.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostAssignment.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostArmoryLoot.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostArmoryPlacer.class',
+                    'com/gamergaming/villagerguardgunners/mixin/accessor/LootPoolAccessor.class',
+                    'com/gamergaming/villagerguardgunners/mixin/accessor/LootPoolEntryAccessor.class',
+                    'com/gamergaming/villagerguardgunners/mixin/accessor/LootPoolSingletonAccessor.class',
+                    'com/gamergaming/villagerguardgunners/mixin/accessor/LootTableAccessor.class',
                     'com/gamergaming/villagerguardgunners/armory/ArmoryBlockEntity.class',
                     'com/gamergaming/villagerguardgunners/armory/ArmoryItemHandler.class',
                     'com/gamergaming/villagerguardgunners/armory/ArmoryLockInteractions.class',
@@ -557,6 +566,8 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/worldgen/structure/VillageWatchtowerPiece.class',
                     'com/gamergaming/villagerguardgunners/worldgen/structure/VillageWatchtowerStructure.class',
                     'com/gamergaming/villagerguardgunners/worldgen/structure/WatchtowerPlacement.class',
+                    'com/gamergaming/villagerguardgunners/worldgen/structure/WatchtowerGenerationPolicy.class',
+                    'com/gamergaming/villagerguardgunners/command/WatchtowerCommands.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroupDefaults.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroupFormat.class',
                     'com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroupMember.class',
@@ -641,6 +652,7 @@ tasks.register('verifyReleaseArtifact') {
             if (refmap.trim().isEmpty()
                     || !refmap.contains('mixin/GuardMixin')
                     || !refmap.contains('mixin/ItemEntityMixin')
+                    || !refmap.contains('mixin/accessor/LootTableAccessor')
                     || !refmap.contains('mixin/RaiseShieldGoalMixin')
                     || !refmap.contains('mixin/VillagerToGuardMixin')) {
                 throw new GradleException('Release mixin refmap is empty or missing common-server mappings')
@@ -653,7 +665,11 @@ tasks.register('verifyReleaseArtifact') {
                         'ItemEntityMixin',
                         'RaiseShieldGoalMixin',
                         'TaCZCommonAssetsManagerMixin',
-                        'VillagerToGuardMixin'
+                        'VillagerToGuardMixin',
+                        'accessor.LootPoolAccessor',
+                        'accessor.LootPoolEntryAccessor',
+                        'accessor.LootPoolSingletonAccessor',
+                        'accessor.LootTableAccessor'
                     ]
                     || mixinMetadata.client != [
                         'client.GuardModelMixin',
@@ -886,6 +902,12 @@ tasks.register('verifyPhase8PerformanceReports') {
                 'armoryResupply.successCooldownTicks'         : 100,
                 'armoryResupply.noSupplyRetryTicks'           : 200,
                 'armoryResupply.unreachableRetryTicks'        : 200,
+                'watchtowers.enabled'                         : true,
+                'watchtowers.spawnGuards'                     : true,
+                'watchtowers.maximumGuardsPerPost'            : 4,
+                'watchtowers.placeArmory'                     : true,
+                'watchtowers.stockArmory'                     : true,
+                'watchtowers.guardGunChanceMultiplier'        : 1.5D,
                 'performance.visibilitySampleIntervalTicks'    : 2,
                 'performance.movementDecisionIntervalTicks'    : 5,
                 'performance.pathRecalculationIntervalTicks'   : 20,
@@ -1037,8 +1059,8 @@ tasks.register('verifyPhase8PerformanceReports') {
                     || report.armories != expectedArmories
                     || report.warmupTicks != 200
                     || report.sampleTicks != 1000
-                    || report.configProfile != 'default-v9'
-                    || report.configVersion != 9
+                    || report.configProfile != 'default-v11'
+                    || report.configVersion != 10
                     || report.jfrProfile != "${scenario}.jfr"
                     || report.minimumAcceptedShotEvidence != minimumAcceptedShotEvidence
                     || report.minimumAcceptedFiringGuards != minimumAcceptedFiringGuards
@@ -1069,7 +1091,7 @@ tasks.register('verifyPhase8PerformanceReports') {
                 if (!matches) {
                     throw new GradleException(
                             "Phase 8 scenario ${scenario} used ${path}=${actualValue}; "
-                                    + "the default-v9 profile requires ${expectedValue}")
+                                    + "the default-v11 profile requires ${expectedValue}")
                 }
             }
 

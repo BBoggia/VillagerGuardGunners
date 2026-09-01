@@ -3,6 +3,7 @@ package com.gamergaming.villagerguardgunners.worldgen.post;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,6 +53,9 @@ final class GuardPostIdsTest {
         assertEquals(firstLoadout, GuardPostIds.memberLoadoutSeed(post, 0));
         assertNotEquals(firstLoadout, GuardPostIds.memberLoadoutSeed(post, 1));
         assertNotEquals(firstLoadout, GuardPostIds.armoryLootSeed(post));
+        assertTrue(GuardPostIds.armoryLootSeed(post) != 0L);
+        assertTrue(GuardPostIds.nonZeroLootSeed(0L) != 0L);
+        assertEquals(17L, GuardPostIds.nonZeroLootSeed(17L));
         assertThrows(IllegalArgumentException.class,
                 () -> GuardPostIds.memberLoadoutSeed(post, 4));
     }

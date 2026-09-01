@@ -7,6 +7,8 @@ import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
 import com.gamergaming.villagerguardgunners.menu.ArmoryMenu;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryIdentity;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryIdentityCodec;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryLoot;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSquads;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +21,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.TickTask;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,6 +40,8 @@ import net.minecraftforge.items.IItemHandler;
 /** Unticked, fixed-size ammunition storage with an optional squad restriction. */
 public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider {
     private static final String INVENTORY_TAG = "Inventory";
+    private static final String GENERATED_SQUAD_PENDING_TAG =
+            "villagerguardgunners:watchtower_squad_pending";
 
     private final ArmoryItemHandler inventory = new ArmoryItemHandler(this::inventoryChanged);
     private final IItemHandler automationView = new IItemHandler() {
@@ -82,6 +87,10 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     private int lastComparatorOutput;
     @Nullable
     private GuardPostArmoryIdentity generatedIdentity;
+    @Nullable
+    private Tag unreadableGeneratedIdentity;
+    private boolean generatedInitializationQueued;
+    private boolean generatedSquadResolutionPending;
 
     public ArmoryBlockEntity(BlockPos position, BlockState state) {
         super(ModBlockEntities.ARMORY.get(), position, state);
@@ -100,21 +109,65 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     }
 
     /**
-     * Commits a pre-evaluated loot result only when every stack fits the empty,
-     * ammo-only inventory. Identity is written last and makes retries a no-op.
+     * Persists deferred work without evaluating a loot table on a worldgen
+     * worker. The pending identity makes structure revisits a no-op and lets a
+     * later live chunk load safely retry after a shutdown.
+     */
+    public boolean prepareGenerated(
+            UUID postId,
+            ResourceLocation lootTableId,
+            long lootSeed,
+            @Nullable ArmorySquadLock lock) {
+        if (postId == null || lootTableId == null || lootSeed == 0L) {
+            return false;
+        }
+        if (unreadableGeneratedIdentity != null) {
+            return false;
+        }
+        if (generatedIdentity != null) {
+            return generatedIdentity.postId().equals(postId);
+        }
+        if (!inventoryIsEmpty()) {
+            return false;
+        }
+        setSquadLock(lock);
+        generatedIdentity = GuardPostArmoryIdentity.pending(postId, lootTableId, lootSeed);
+        generatedSquadResolutionPending = isExpectedGeneratedSquadLock(postId, lock);
+        setChanged();
+        queueGeneratedInitialization();
+        return true;
+    }
+
+    /**
+     * Commits a server-thread loot result only when every stack fits the empty,
+     * ammo-only inventory. A pending identity becomes complete only after the
+     * full inventory plan has succeeded.
      */
     public boolean initializeGenerated(
             UUID postId,
             @Nullable ResourceLocation lootTableId,
             @Nullable ArmorySquadLock lock,
             List<ItemStack> generatedLoot) {
-        if (postId == null || generatedLoot == null || generatedIdentity != null) {
-            return generatedIdentity != null && generatedIdentity.postId().equals(postId);
+        if (postId == null || generatedLoot == null) {
+            return false;
         }
-        for (int slot = 0; slot < inventory.getSlots(); slot++) {
-            if (!inventory.getStackInSlot(slot).isEmpty()) {
+        if (unreadableGeneratedIdentity != null) {
+            return false;
+        }
+        boolean completingPending = generatedIdentity != null;
+        if (completingPending) {
+            if (!generatedIdentity.postId().equals(postId)) {
                 return false;
             }
+            if (!generatedIdentity.pending()) {
+                return true;
+            }
+            if (!java.util.Objects.equals(generatedIdentity.lootTableId(), lootTableId)) {
+                return false;
+            }
+        }
+        if (!inventoryIsEmpty()) {
+            return false;
         }
 
         ArmoryItemHandler planned = new ArmoryItemHandler(() -> { });
@@ -134,10 +187,28 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
         for (int slot = 0; slot < planned.getSlots(); slot++) {
             inventory.setStackInSlot(slot, planned.getStackInSlot(slot).copy());
         }
-        setSquadLock(lock);
-        generatedIdentity = GuardPostArmoryIdentity.initialized(postId, lootTableId);
+        if (!completingPending) {
+            setSquadLock(lock);
+            generatedSquadResolutionPending = isExpectedGeneratedSquadLock(postId, lock);
+        }
+        generatedIdentity = generatedIdentity == null
+                ? GuardPostArmoryIdentity.initialized(postId, lootTableId)
+                : generatedIdentity.completed();
+        unreadableGeneratedIdentity = null;
         setChanged();
+        queueGeneratedInitialization();
         return true;
+    }
+
+    /** Marks a failed/rejected pending table complete without touching player stock. */
+    public void completeGeneratedWithoutLoot(UUID postId) {
+        if (generatedIdentity == null
+                || !generatedIdentity.pending()
+                || !generatedIdentity.postId().equals(postId)) {
+            return;
+        }
+        generatedIdentity = generatedIdentity.completed();
+        setChanged();
     }
 
     @Nullable
@@ -222,7 +293,17 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
         super.saveAdditional(tag);
         tag.put(INVENTORY_TAG, inventory.serializeNBT());
         writePersistentLock(tag);
-        GuardPostArmoryIdentityCodec.write(tag, generatedIdentity);
+        GuardPostArmoryIdentityCodec.writePreservingUnreadable(
+                tag,
+                generatedIdentity,
+                unreadableGeneratedIdentity);
+        if (generatedIdentity != null) {
+            tag.putBoolean(
+                    GENERATED_SQUAD_PENDING_TAG,
+                    generatedSquadResolutionPending);
+        } else {
+            tag.remove(GENERATED_SQUAD_PENDING_TAG);
+        }
     }
 
     @Override
@@ -238,6 +319,16 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
         lastComparatorOutput = inventory.comparatorOutput();
         applyDecodedLock(tag);
         generatedIdentity = GuardPostArmoryIdentityCodec.read(tag);
+        unreadableGeneratedIdentity = generatedIdentity == null
+                ? GuardPostArmoryIdentityCodec.copyEncodedRecord(tag)
+                : null;
+        generatedSquadResolutionPending = generatedIdentity != null
+                && (tag.contains(GENERATED_SQUAD_PENDING_TAG, Tag.TAG_BYTE)
+                        ? tag.getBoolean(GENERATED_SQUAD_PENDING_TAG)
+                        : isExpectedGeneratedSquadLock(
+                                generatedIdentity.postId(),
+                                squadLock));
+        generatedInitializationQueued = false;
     }
 
     @Override
@@ -262,11 +353,13 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
             ArmoryResupplyServerServices.forLevel(serverLevel)
                     .loadedArmories()
                     .register(serverLevel, this);
+            queueGeneratedInitialization();
         }
     }
 
     @Override
     public void setRemoved() {
+        generatedInitializationQueued = false;
         if (level instanceof ServerLevel serverLevel) {
             ArmoryResupplyServerServices.Services services =
                     ArmoryResupplyServerServices.existingForLevel(serverLevel);
@@ -352,6 +445,72 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
                     worldPosition,
                     getBlockState().getBlock());
         }
+    }
+
+    private boolean inventoryIsEmpty() {
+        for (int slot = 0; slot < inventory.getSlots(); slot++) {
+            if (!inventory.getStackInSlot(slot).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void queueGeneratedInitialization() {
+        if (generatedInitializationQueued
+                || (generatedIdentity == null
+                        && !generatedSquadResolutionPending)
+                || (generatedIdentity != null
+                        && !generatedIdentity.pending()
+                        && !generatedSquadResolutionPending)
+                || !(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        generatedInitializationQueued = true;
+        serverLevel.getServer().tell(new TickTask(
+                serverLevel.getServer().getTickCount(),
+                () -> {
+                    generatedInitializationQueued = false;
+                    if (!isRemoved()
+                            && level == serverLevel
+                            && serverLevel.getBlockEntity(worldPosition) == this) {
+                        resolveGeneratedSquad(serverLevel);
+                        GuardPostArmoryLoot.completePending(serverLevel, this);
+                    }
+                }));
+    }
+
+    private void resolveGeneratedSquad(ServerLevel serverLevel) {
+        if (!generatedSquadResolutionPending) {
+            return;
+        }
+        generatedSquadResolutionPending = false;
+        GuardPostArmoryIdentity identity = generatedIdentity;
+        if (identity == null
+                || !isExpectedGeneratedSquadLock(identity.postId(), squadLock)) {
+            setChanged();
+            return;
+        }
+        if (GuardPostSquads.ensureRegistered(
+                        serverLevel.getServer(),
+                        identity.postId(),
+                        serverLevel.getGameTime())
+                .isEmpty()) {
+            // A generated lock must never point at a squad that cannot exist.
+            // Preserve the Armory and its stock as public rather than leaving
+            // every guard permanently unable to use it for resupply.
+            setSquadLock(null);
+            return;
+        }
+        setChanged();
+    }
+
+    private static boolean isExpectedGeneratedSquadLock(
+            UUID postId,
+            @Nullable ArmorySquadLock lock) {
+        return postId != null
+                && lock != null
+                && GuardPostSquads.squadId(postId).equals(lock.squadId());
     }
 
     private void lockChanged() {

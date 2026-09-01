@@ -10,6 +10,9 @@ import net.minecraft.server.MinecraftServer;
 
 /** Deterministic bridge from a generated post to the existing squad formats. */
 public final class GuardPostSquads {
+    /** Capacity kept available for player-created/recovered squads. */
+    public static final int PLAYER_SQUAD_RESERVE = 256;
+
     private GuardPostSquads() {
     }
 
@@ -35,8 +38,17 @@ public final class GuardPostSquads {
         UUID squadId = squadId(postId);
         SquadRegistrySavedData registry = SquadRegistrySavedData.get(server);
         Optional<SquadMetadata> existing = registry.find(squadId);
-        return existing.isPresent()
-                ? existing
-                : registry.register(squadId, displayName(postId), null, gameTime);
+        if (existing.isPresent()) {
+            return existing;
+        }
+        if (!canAutomaticallyRegister(registry.size())) {
+            return Optional.empty();
+        }
+        return registry.register(squadId, displayName(postId), null, gameTime);
+    }
+
+    static boolean canAutomaticallyRegister(int registrySize) {
+        return registrySize >= 0
+                && registrySize < SquadRegistrySavedData.MAX_SQUADS - PLAYER_SQUAD_RESERVE;
     }
 }

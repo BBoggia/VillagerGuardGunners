@@ -13,6 +13,7 @@ public final class GuardPostIds {
     private static final String SQUAD_DOMAIN = "villagerguardgunners:watchtower_squad:v1";
     private static final String LOADOUT_DOMAIN = "villagerguardgunners:watchtower_loadout:v1";
     private static final String ARMORY_LOOT_DOMAIN = "villagerguardgunners:watchtower_armory_loot:v1";
+    private static final long ZERO_LOOT_SEED_REPLACEMENT = 0x6A09E667F3BCC909L;
 
     private GuardPostIds() {
     }
@@ -61,7 +62,12 @@ public final class GuardPostIds {
         UUID identity = namespacedUuid(
                 ARMORY_LOOT_DOMAIN,
                 Objects.requireNonNull(postId, "postId").toString());
-        return identity.getMostSignificantBits() ^ identity.getLeastSignificantBits();
+        return nonZeroLootSeed(
+                identity.getMostSignificantBits() ^ identity.getLeastSignificantBits());
+    }
+
+    static long nonZeroLootSeed(long seed) {
+        return seed == 0L ? ZERO_LOOT_SEED_REPLACEMENT : seed;
     }
 
     private static UUID namespacedUuid(String domain, String value) {

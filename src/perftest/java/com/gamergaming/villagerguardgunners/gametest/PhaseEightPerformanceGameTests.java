@@ -1091,7 +1091,7 @@ public final class PhaseEightPerformanceGameTests {
         report.addProperty("armories", workload.armoryCount());
         report.addProperty("warmupTicks", WARMUP_TICKS);
         report.addProperty("sampleTicks", samples.length);
-        report.addProperty("configProfile", "default-v9");
+        report.addProperty("configProfile", "default-v11");
         report.addProperty("configVersion", VillagerGuardGunnersConfig.CONFIG_VERSION);
         report.add("guardGunnerConfig", configSnapshot());
         report.addProperty("averageMspt", averageMspt);
@@ -1639,6 +1639,19 @@ public final class PhaseEightPerformanceGameTests {
                 "unreachableRetryTicks",
                 config.armoryResupply.unreachableRetryTicks.get());
         snapshot.add("armoryResupply", armoryResupply);
+
+        JsonObject watchtowers = new JsonObject();
+        watchtowers.addProperty("enabled", config.watchtowers.enabled.get());
+        watchtowers.addProperty("spawnGuards", config.watchtowers.spawnGuards.get());
+        watchtowers.addProperty(
+                "maximumGuardsPerPost",
+                config.watchtowers.maximumGuardsPerPost.get());
+        watchtowers.addProperty("placeArmory", config.watchtowers.placeArmory.get());
+        watchtowers.addProperty("stockArmory", config.watchtowers.stockArmory.get());
+        watchtowers.addProperty(
+                "guardGunChanceMultiplier",
+                config.watchtowers.guardGunChanceMultiplier.get());
+        snapshot.add("watchtowers", watchtowers);
 
         JsonObject performance = new JsonObject();
         performance.addProperty(

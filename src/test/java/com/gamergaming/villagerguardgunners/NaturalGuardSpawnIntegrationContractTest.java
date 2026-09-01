@@ -47,7 +47,8 @@ final class NaturalGuardSpawnIntegrationContractTest {
                 () -> assertTrue(integration.contains(
                         "if (!guard.getMainHandItem().isEmpty())")),
                 () -> assertTrue(integration.contains("level.getServer().tell(new TickTask(")),
-                () -> assertTrue(integration.contains("getEntitiesOfClass(")),
+                () -> assertTrue(integration.contains("level.getEntities(")),
+                () -> assertTrue(integration.contains("maximumCount - loaded")),
                 () -> assertTrue(integration.contains("nearby.distanceToSqr(origin)")),
                 () -> assertTrue(integration.contains("countNearbyCandidates")),
                 () -> assertTrue(integration.contains("hasActiveNaturalLoadout(nearby)")),

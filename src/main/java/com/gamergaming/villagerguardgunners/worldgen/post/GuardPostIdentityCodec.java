@@ -42,7 +42,28 @@ public final class GuardPostIdentityCodec {
         guardTag.put(GUARD_POST_TAG, encoded);
     }
 
-    /** Unknown, future, or malformed records recover as an unassociated guard. */
+    /** Copies any encoded record without interpreting or normalizing it. */
+    public static @Nullable Tag copyEncodedRecord(@Nullable CompoundTag guardTag) {
+        if (guardTag == null) {
+            return null;
+        }
+        Tag encoded = guardTag.get(GUARD_POST_TAG);
+        return encoded == null ? null : encoded.copy();
+    }
+
+    /** Writes recognized state, otherwise retaining an unreadable/future record exactly. */
+    public static void writeGuardRecordPreservingUnreadable(
+            CompoundTag guardTag,
+            @Nullable GuardPostIdentity identity,
+            @Nullable Tag unreadableRecord) {
+        if (identity != null || unreadableRecord == null) {
+            writeGuardRecord(guardTag, identity);
+            return;
+        }
+        guardTag.put(GUARD_POST_TAG, unreadableRecord.copy());
+    }
+
+    /** Returns only recognized current records; callers may preserve an unreadable tag opaquely. */
     public static @Nullable GuardPostIdentity readGuardRecord(CompoundTag guardTag) {
         if (guardTag == null || !guardTag.contains(GUARD_POST_TAG, Tag.TAG_COMPOUND)) {
             return null;

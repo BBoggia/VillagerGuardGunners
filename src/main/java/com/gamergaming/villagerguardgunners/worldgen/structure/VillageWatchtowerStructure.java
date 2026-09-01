@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.worldgen.structure;
 
 import com.gamergaming.villagerguardgunners.init.ModStructures;
+import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.mojang.serialization.Codec;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -23,6 +24,11 @@ public final class VillageWatchtowerStructure extends Structure {
 
     @Override
     protected Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
+        // Read one validated primitive before any terrain or template work.
+        // Existing serialized starts do not pass through this method again.
+        if (!ModConfigs.GUARD_GUNNERS.watchtowers.enabled.get()) {
+            return Optional.empty();
+        }
         ChunkPos chunk = context.chunkPos();
         int originX = chunk.getMiddleBlockX() - WatchtowerPlacement.FOOTPRINT_RADIUS;
         int originZ = chunk.getMiddleBlockZ() - WatchtowerPlacement.FOOTPRINT_RADIUS;

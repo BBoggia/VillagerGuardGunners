@@ -11,9 +11,19 @@ public interface GuardPostAccess {
 
     void villagerGuardGunners$setGuardPostIdentity(@Nullable GuardPostIdentity identity);
 
+    /** True when a record exists but this version deliberately cannot interpret it. */
+    default boolean villagerGuardGunners$hasUnreadableGuardPostIdentity() {
+        return false;
+    }
+
     public static @Nullable GuardPostIdentity getIdentity(Guard guard) {
         return guard instanceof GuardPostAccess access
                 ? access.villagerGuardGunners$getGuardPostIdentity()
                 : null;
+    }
+
+    public static boolean hasUnreadableIdentity(Guard guard) {
+        return guard instanceof GuardPostAccess access
+                && access.villagerGuardGunners$hasUnreadableGuardPostIdentity();
     }
 }

@@ -80,13 +80,15 @@ public final class GuardPostSpawner {
             ResourceLocation groupId,
             String variantName,
             int memberIndex,
-            GuardPostGroupMember member) {
+            GuardPostGroupMember member,
+            NaturalGuardDifficulty generationDifficulty) {
         Objects.requireNonNull(level, "level");
         Objects.requireNonNull(placementBounds, "placementBounds");
         Objects.requireNonNull(postId, "postId");
         Objects.requireNonNull(groupId, "groupId");
         Objects.requireNonNull(variantName, "variantName");
         Objects.requireNonNull(member, "member");
+        Objects.requireNonNull(generationDifficulty, "generationDifficulty");
 
         BlockPos position = spawnPosition(markerPosition, rotation, memberIndex);
         if (!isSafeSpawnCell(level, placementBounds, position)) {
@@ -108,7 +110,9 @@ public final class GuardPostSpawner {
         guard.setPersistenceRequired();
         ((GuardPostAccess) guard).villagerGuardGunners$setGuardPostIdentity(
                 GuardPostIdentity.assigned(postId, groupId, variantName, memberIndex));
-        if (!GuardPostAssignmentAccess.set(guard, GuardPostAssignment.pending(member))) {
+        if (!GuardPostAssignmentAccess.set(
+                guard,
+                GuardPostAssignment.pending(member, generationDifficulty))) {
             guard.discard();
             return false;
         }

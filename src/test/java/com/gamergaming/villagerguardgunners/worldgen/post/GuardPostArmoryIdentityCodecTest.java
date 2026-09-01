@@ -2,6 +2,8 @@ package com.gamergaming.villagerguardgunners.worldgen.post;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
@@ -30,6 +32,27 @@ final class GuardPostArmoryIdentityCodecTest {
         stocked.getCompound(GuardPostArmoryIdentityCodec.IDENTITY_TAG)
                 .putString("Items", "not executable");
         assertNull(GuardPostArmoryIdentityCodec.read(stocked));
+    }
+
+    @Test
+    void pendingWorkRoundTripsAndLegacyCompletionMigrates() {
+        CompoundTag pendingTag = new CompoundTag();
+        GuardPostArmoryIdentity pending =
+                GuardPostArmoryIdentity.pending(POST, LOOT, 91L);
+        GuardPostArmoryIdentityCodec.write(pendingTag, pending);
+        assertEquals(pending, GuardPostArmoryIdentityCodec.read(pendingTag));
+        assertTrue(pending.pending());
+        assertFalse(pending.completed().pending());
+
+        CompoundTag legacyIdentity = new CompoundTag();
+        legacyIdentity.putInt("Version", 1);
+        legacyIdentity.putUUID("PostId", POST);
+        legacyIdentity.putString("LootTable", LOOT.toString());
+        CompoundTag legacyParent = new CompoundTag();
+        legacyParent.put(GuardPostArmoryIdentityCodec.IDENTITY_TAG, legacyIdentity);
+        GuardPostArmoryIdentity migrated = GuardPostArmoryIdentityCodec.read(legacyParent);
+        assertEquals(GuardPostArmoryIdentity.CURRENT_SCHEMA_VERSION, migrated.schemaVersion());
+        assertFalse(migrated.pending());
     }
 
     @Test

@@ -27,13 +27,17 @@ final class VillageWatchtowerStepFourteenContractTest {
                 + "worldgen/post/GuardPostAssignmentCodec.java");
 
         assertAll(
-                () -> assertTrue(spawner.contains("GuardPostAssignment.pending(member)")),
+                () -> assertTrue(spawner.contains(
+                        "GuardPostAssignment.pending(member, generationDifficulty)")),
                 () -> assertFalse(spawner.contains("ItemStack")),
                 () -> assertFalse(spawner.contains("setItemSlot")),
                 () -> assertTrue(integration.contains("selectPostAfterJoin")),
                 () -> assertTrue(integration.contains("NaturalGuardLoadoutSelector.select(")),
                 () -> assertTrue(integration.contains("NaturalGuardLoadoutIssuance.issue(")),
                 () -> assertTrue(integration.contains("GuardPostIds.memberLoadoutSeed")),
+                () -> assertTrue(integration.contains("assignment.generationDifficulty()")),
+                () -> assertTrue(integration.contains(
+                        "config.watchtowers.guardGunUpgradeChance(configured.upgradeChance())")),
                 () -> assertTrue(integration.contains("countNearbyCandidates")),
                 () -> assertTrue(integration.contains("GuardRoles.get(assignment.roleId())")),
                 () -> assertTrue(integration.contains("SquadMembership.assigned(squadId)")),
@@ -49,6 +53,8 @@ final class VillageWatchtowerStepFourteenContractTest {
                 + "worldgen/post/GuardPostMarker.java");
         String placer = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "worldgen/post/GuardPostArmoryPlacer.java");
+        String loot = read("src/main/java/com/gamergaming/villagerguardgunners/"
+                + "worldgen/post/GuardPostArmoryLoot.java");
         String armory = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "armory/ArmoryBlockEntity.java");
         String armoryBlock = read("src/main/java/com/gamergaming/villagerguardgunners/"
@@ -61,15 +67,25 @@ final class VillageWatchtowerStepFourteenContractTest {
                 () -> assertTrue(marker.contains("SQUAD_LOCKED(\"squad\")")),
                 () -> assertTrue(marker.contains("PUBLIC(\"public\")")),
                 () -> assertTrue(marker.contains("\"empty\".equals(loot)")),
-                () -> assertTrue(placer.contains("MAXIMUM_LOOT_STACKS = 64")),
                 () -> assertTrue(placer.contains("GuardPostIds.armoryLootSeed(postId)")),
-                () -> assertTrue(placer.contains("LootContextParamSets.CHEST")),
+                () -> assertTrue(placer.contains("prepareGenerated(")),
+                () -> assertFalse(placer.contains("LootTable")),
+                () -> assertTrue(loot.contains("MAXIMUM_LOOT_STACKS = 64")),
+                () -> assertTrue(loot.contains("LootContextParamSets.CHEST")),
+                () -> assertTrue(loot.contains("getRandomItemsRaw(")),
+                () -> assertTrue(loot.contains("isSameThread()")),
+                () -> assertTrue(loot.contains("hasBoundedDefinition(")),
+                () -> assertTrue(loot.contains("instanceof ConstantValue")),
+                () -> assertTrue(loot.contains("instanceof LootItem")),
+                () -> assertTrue(loot.contains("TimelessAPI.getCommonAmmoIndex")),
                 () -> assertTrue(armory.contains("initializeGenerated(")),
+                () -> assertTrue(armory.contains("queueGeneratedInitialization()")),
                 () -> assertTrue(armory.contains("generatedIdentity != null")),
                 () -> assertTrue(piece.contains("GuardPostArmoryPlacer.place(")),
                 () -> assertFalse(placer.contains("getChunk(")),
                 () -> assertFalse(placer.contains("getEntitiesOfClass(")),
                 () -> assertFalse(placer.contains("TickTask")),
+                () -> assertFalse(loot.contains("ForgeHooks.modifyLoot")),
                 () -> assertFalse(placer.contains("LOGGER")),
                 () -> assertTrue(armoryBlock.contains("return null;")));
     }

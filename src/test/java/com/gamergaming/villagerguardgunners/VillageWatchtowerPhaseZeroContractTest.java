@@ -18,14 +18,14 @@ final class VillageWatchtowerPhaseZeroContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void developmentArtifactCannotBeMistakenForTheThirteenBeta() throws IOException {
+    void releaseArtifactUsesTheFinalWatchtowerVersion() throws IOException {
         Properties properties = new Properties();
         try (Reader reader = Files.newBufferedReader(
                 PROJECT_DIRECTORY.resolve("gradle.properties"), StandardCharsets.UTF_8)) {
             properties.load(reader);
         }
 
-        assertEquals("1.4-dev", properties.getProperty("mod_version"));
+        assertEquals("1.4", properties.getProperty("mod_version"));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -83,35 +84,63 @@ public final class NaturalGuardSpawnIntegration {
     }
 
     private static void queueSelection(ServerLevel level, Guard guard) {
-        GuardNaturalLoadoutAccess access = (GuardNaturalLoadoutAccess) guard;
         GuardPostIdentity postIdentity = GuardPostAccess.getIdentity(guard);
-        if (postIdentity != null) {
-            GuardPostAssignment assignment = GuardPostAssignmentAccess.claim(guard);
-            NaturalGuardSpawnSource source = access.villagerGuardGunners$claimNaturalLoadoutSpawnSource();
-            if (assignment != null && source == NaturalGuardSpawnSource.STRUCTURE) {
-                level.getServer().tell(new TickTask(
-                        level.getServer().getTickCount(),
-                        () -> selectPostAfterJoin(level, guard, postIdentity, assignment)));
-            }
-            // Generated-post guards never fall through to the generic
-            // difficulty pool. Missing or malformed assignment data therefore
-            // leaves Guard Villagers' normal equipment unchanged.
+        if (GuardPostAssignmentAccess.hasUnreadableAssignment(guard)) {
+            // An orphaned or future assignment is still pending work, even if
+            // its companion identity is missing or unreadable. Preserve it and
+            // the source marker rather than issuing an unrelated loadout.
             return;
         }
-        NaturalGuardSpawnSource source =
-                access.villagerGuardGunners$claimNaturalLoadoutSpawnSource();
-        if (source == null) {
+        if (postIdentity == null && GuardPostAccess.hasUnreadableIdentity(guard)) {
+            // Preserve future/corrupt post data and its unclaimed spawn source.
+            // This version must neither erase it nor reinterpret the entity as
+            // an ordinary structure-spawned guard.
             return;
         }
 
         // Queue explicitly: MinecraftServer#execute runs inline on the server
         // thread. At entity join that would be before Entity#onAddedToWorld;
         // after native equipment it would mutate equipment in the middle of
-        // Guard#aiStep. The atomic source claim makes both readiness paths safe
-        // if another mod creates an already-equipped finalized guard.
+        // Guard#aiStep. Persistent work is deliberately claimed inside the
+        // queued task, after liveness is rechecked. An unload, dimension move,
+        // cancellation, or shutdown before then therefore leaves the handoff
+        // retryable when the guard next joins a live server level. Duplicate
+        // readiness callbacks are harmless because the first live task claims
+        // the source and assignment atomically and later tasks observe no work.
         level.getServer().tell(new TickTask(
                 level.getServer().getTickCount(),
-                () -> selectAfterJoin(level, guard, source)));
+                () -> selectQueuedAfterJoin(level, guard)));
+    }
+
+    private static void selectQueuedAfterJoin(ServerLevel level, Guard guard) {
+        if (!isLiveIn(level, guard)
+                || GuardPostAssignmentAccess.hasUnreadableAssignment(guard)) {
+            return;
+        }
+        GuardPostIdentity postIdentity = GuardPostAccess.getIdentity(guard);
+        if (postIdentity == null && GuardPostAccess.hasUnreadableIdentity(guard)) {
+            return;
+        }
+
+        GuardNaturalLoadoutAccess access = (GuardNaturalLoadoutAccess) guard;
+        if (postIdentity != null) {
+            GuardPostAssignment assignment = GuardPostAssignmentAccess.claim(guard);
+            NaturalGuardSpawnSource source =
+                    access.villagerGuardGunners$claimNaturalLoadoutSpawnSource();
+            if (assignment != null && source == NaturalGuardSpawnSource.STRUCTURE) {
+                selectPostAfterJoin(level, guard, postIdentity, assignment);
+            }
+            // Generated-post guards never fall through to the generic
+            // difficulty pool. Missing or malformed assignment data therefore
+            // leaves Guard Villagers' normal equipment unchanged.
+            return;
+        }
+
+        NaturalGuardSpawnSource source =
+                access.villagerGuardGunners$claimNaturalLoadoutSpawnSource();
+        if (source != null) {
+            selectAfterJoin(level, guard, source);
+        }
     }
 
     private static void selectPostAfterJoin(
@@ -125,10 +154,12 @@ public final class NaturalGuardSpawnIntegration {
 
         UUID squadId = GuardPostSquads.squadId(identity.postId());
         GuardPostSquads.ensureRegistered(
-                level.getServer(),
-                identity.postId(),
-                level.getGameTime());
-        GuardSquadAccess.setMembership(guard, SquadMembership.assigned(squadId));
+                        level.getServer(),
+                        identity.postId(),
+                        level.getGameTime())
+                .ifPresent(ignored -> GuardSquadAccess.setMembership(
+                        guard,
+                        SquadMembership.assigned(squadId)));
 
         if (assignment.roleId() != null) {
             if (GuardRoles.get(assignment.roleId()) == null
@@ -143,11 +174,11 @@ public final class NaturalGuardSpawnIntegration {
 
         VillagerGuardGunnersConfig config = ModConfigs.GUARD_GUNNERS;
         NaturalGuardSpawnRules rules = config.naturalLoadouts.spawnRules();
-        NaturalGuardDifficulty difficultyKey = mapDifficulty(level.getDifficulty());
+        NaturalGuardDifficulty difficultyKey = assignment.generationDifficulty();
         NaturalGuardDifficultySettings configured =
                 config.naturalLoadouts.settingsFor(difficultyKey);
         NaturalGuardDifficultySettings effective = new NaturalGuardDifficultySettings(
-                configured.upgradeChance(),
+                config.watchtowers.guardGunUpgradeChance(configured.upgradeChance()),
                 configured.maximumNearby(),
                 assignment.loadoutPool());
         NaturalGuardLoadoutPool pool = NaturalGuardLoadoutPools.get(assignment.loadoutPool());
@@ -178,7 +209,11 @@ public final class NaturalGuardSpawnIntegration {
                         difficultyKey,
                         NaturalGuardSpawnSource.STRUCTURE),
                 deterministic::nextDouble,
-                () -> countNearbyCandidates(level, guard, rules.nearbyCapRadius()),
+                () -> countNearbyCandidates(
+                        level,
+                        guard,
+                        rules.nearbyCapRadius(),
+                        effective.maximumNearby()),
                 pool,
                 deterministic::nextInt);
         access.villagerGuardGunners$setNaturalLoadoutDecisionStatus(decision.status());
@@ -268,7 +303,11 @@ public final class NaturalGuardSpawnIntegration {
                         difficultyKey,
                         source),
                 guard.getRandom()::nextDouble,
-                () -> countNearbyCandidates(level, guard, rules.nearbyCapRadius()),
+                () -> countNearbyCandidates(
+                        level,
+                        guard,
+                        rules.nearbyCapRadius(),
+                        difficulty.maximumNearby()),
                 pool,
                 guard.getRandom()::nextInt);
         access.villagerGuardGunners$setNaturalLoadoutDecisionStatus(decision.status());
@@ -323,26 +362,38 @@ public final class NaturalGuardSpawnIntegration {
         access.villagerGuardGunners$setNaturalLoadoutProvenance(null);
     }
 
-    private static int countNearbyCandidates(ServerLevel level, Guard origin, double radius) {
+    private static int countNearbyCandidates(
+            ServerLevel level,
+            Guard origin,
+            double radius,
+            int maximumCount) {
+        if (maximumCount <= 0) {
+            return 0;
+        }
         double radiusSquared = radius * radius;
         AABB bounds = origin.getBoundingBox().inflate(radius);
-        int loaded = level.getEntitiesOfClass(
-                Guard.class,
+        ArrayList<Guard> loadedGuards = new ArrayList<>(maximumCount);
+        level.getEntities(
+                net.minecraft.world.level.entity.EntityTypeTest.forClass(Guard.class),
                 bounds,
                 nearby -> nearby != origin
                         && nearby.isAlive()
                         && nearby.distanceToSqr(origin) <= radiusSquared
-                        && hasActiveNaturalLoadout(nearby))
-                .size();
+                        && hasActiveNaturalLoadout(nearby),
+                loadedGuards,
+                maximumCount);
+        int loaded = loadedGuards.size();
+        if (loaded >= maximumCount) {
+            return maximumCount;
+        }
         int unloaded = NaturalGuardPopulationIndex.get(level).countUnloadedWithin(
                 level,
                 origin.getX(),
                 origin.getY(),
                 origin.getZ(),
-                radius);
-        return unloaded > Integer.MAX_VALUE - loaded
-                ? Integer.MAX_VALUE
-                : loaded + unloaded;
+                radius,
+                maximumCount - loaded);
+        return loaded + unloaded;
     }
 
     private static boolean hasActiveNaturalLoadout(Guard guard) {

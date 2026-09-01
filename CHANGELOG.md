@@ -18,6 +18,11 @@ All notable Villager Guard Gunners changes are recorded here.
   default-off Village Defense Buildings master switch.
 - Added a copyable village-building datapack example and an authoring guide
   covering schema, bounds, precedence, atomic reloads, and restart behavior.
+- Added closed `village_anchor:<building>` template markers, deterministic
+  building UUIDs, and strict schema-1 `VggVillageBuilding` persistence shared
+  by all five planned village building types.
+- Added passive at-most-once claims for anchor, garrison, Armory, and initial-
+  stock work so later functional steps cannot regenerate removed content.
 
 ### Improved
 
@@ -31,6 +36,11 @@ All notable Villager Guard Gunners changes are recorded here.
   format documents retain the complete last-known-good snapshot.
 - Live `/reload` no longer risks destructive template-pool edits: it validates
   the next snapshot while startup remains the only pool-installation boundary.
+- Anchor claims now cross from world generation through one immutable server-
+  thread handoff with O(1) identity/position lookup and no scan, chunk load,
+  ticket, ticker, or repair manager.
+- Malformed, conflicting, duplicate, oversized, and future village-building
+  records fail closed while preserving unreadable data unchanged.
 
 ## 1.4 - 2026-08-31
 

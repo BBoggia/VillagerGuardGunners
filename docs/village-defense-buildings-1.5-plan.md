@@ -1,6 +1,6 @@
 # Village Defense Buildings 1.5 baseline and integration contract
 
-Steps 1 through 3 establish the 1.5 village-integration line without shipping a
+Steps 1 through 4 establish the 1.5 village-integration line without shipping a
 functional Barracks, Armory, Sentry Post, integrated Watchtower, or Training
 Yard. Development artifacts use `1.5-dev`; they must not be presented as a
 finished 1.5 release.
@@ -78,6 +78,8 @@ unbounded collections.
 - entry weight from 1 through 5;
 - one stable entry ID per injected element;
 - one anchor marker per placed functional building piece;
+- at most 262,144 passive building records per dimension, with no scan or
+  per-record tick;
 - at most four generated guards for one future building;
 - at most one generated Armory for one future building;
 - zero recurring ticks, post-generation scans, synchronous chunk loads, or
@@ -135,6 +137,28 @@ third-party pool entries and avoids unsafe removal of pieces already available
 to world generation. The complete format and example are documented in
 [`village-defense-buildings-step-3.md`](village-defense-buildings-step-3.md).
 
+## Step 4 anchor and one-shot lifecycle
+
+Step 4 implements the reserved `village_anchor:<building>` structure-data
+marker and `VggVillageBuilding` schema-1 record. A definition-backed template
+may have zero or one anchor. Duplicate, malformed, unknown, or type-mismatched
+anchors reject placement before blocks are written. A valid transformed marker
+cell is consumed and produces a deterministic identity from the world seed,
+dimension, entry ID, building type, and anchor position.
+
+Records live in passive per-dimension SavedData and reserve bounded at-most-once
+claims for the anchor, garrison, Armory, and initial stock. UUID and physical-
+anchor indexes make repeat processing O(1) and reject datapack-change
+conflicts. Future or malformed files disable the complete index and preserve
+the unreadable root unchanged, preventing a downgrade or corruption from
+rerunning generation work.
+
+World-generation workers create only immutable identity data. A one-shot
+server-executor handoff performs the SavedData claim without a chunk ticket,
+chunk load, village/entity scan, ticker, or repair manager. Step 4 claims only
+the anchor; functional actions remain dormant. The complete contract is in
+[`village-defense-buildings-step-4.md`](village-defense-buildings-step-4.md).
+
 ## Performance and compatibility invariants
 
 The integration cost is proportional only to the small number of declared
@@ -149,7 +173,7 @@ fallback holder, changes an existing weight, sorts entries, or writes a
 vanilla namespace resource. If a future overhaul removes a named pool, VGG
 skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 
-## Steps 1 through 3 exit criteria
+## Steps 1 through 4 exit criteria
 
 - the exact 1.4 commit and artifact are recorded;
 - `v1.5-support` produces `1.5-dev` artifacts;
@@ -164,6 +188,12 @@ skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 - schema-12 migration preserves the master choice while initializing only the
   five schema-13 type suppressors;
 - `/reload` cannot destructively mutate live village pools;
+- anchor identity is deterministic, marker grammar is closed, and at most one
+  matching anchor is accepted per template;
+- one-shot claims persist strictly and unreadable/future state fails closed
+  without data loss;
+- marker publication performs no synchronous chunk load, scan, recurring task,
+  or repair action;
 - the probe performs no marker, guard, Armory, loot, or persistent-state work;
 - focused JVM and Forge integration tests pass; and
 - no functional village-defense building is claimed until later steps.
@@ -186,3 +216,13 @@ definition before startup and passed all 97 required GameTests. The resulting
 development JAR is `villagerguardgunners-1.5-dev.jar`, 975,797 bytes, with
 SHA-256
 `4dbb920dcb030f8b650f38fdd58a2072e8d6ba0c5856364c56b66b8d3f253cbc`.
+
+## Verified Step 4 artifact
+
+The Step 4 clean Java 17 gate passed 487 JVM/source-contract tests with no
+failures, errors, or skips, compiled both Forge test source sets, and passed the
+packaged-artifact inspection. The exact cleaned fixture then passed all 97
+required live Forge GameTests, including marker consumption, schema-1 SavedData
+publication, and repeated-anchor idempotence. The resulting development JAR is
+`villagerguardgunners-1.5-dev.jar`, 997,182 bytes, with SHA-256
+`1724bfd38d8099cf36f1cc3afce86725c71a080f7c6461ad3d1072d851bc87c4`.

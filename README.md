@@ -394,8 +394,13 @@ placement declaration into a strict, bounded, atomic
 definition IDs and templates in their own namespaces, while synchronized
 one-way config switches can suppress individual building types. Definition
 changes accepted by `/reload` apply to village pools after a server restart.
-These steps still do not ship functional Barracks, Armories, Sentry Posts,
-integrated Watchtowers, or Training Yards.
+Step 4 adds the shared
+[deterministic anchor and one-shot lifecycle](docs/village-defense-buildings-step-4.md):
+valid templates may carry one type-matching anchor, and passive schema-1
+records prevent later garrison, Armory, or initial-stock work from running more
+than once. The main-thread claim has no ticker, scan, chunk ticket, forced
+load, or repair pass. These steps still do not ship functional Barracks,
+Armories, Sentry Posts, integrated Watchtowers, or Training Yards.
 
 ## License
 

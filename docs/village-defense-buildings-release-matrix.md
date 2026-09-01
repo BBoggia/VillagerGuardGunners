@@ -2,7 +2,7 @@
 
 This matrix is the retained gate for the five village-attached defense
 buildings. “Pass” requires evidence against the exact candidate; source review
-alone is recorded as “Partial.” Steps 1 through 3 intentionally leave visual,
+alone is recorded as “Partial.” Steps 1 through 4 intentionally leave visual,
 marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 
 ## Baseline
@@ -26,6 +26,12 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 - Step 3 artifact size: 975,797 bytes
 - Step 3 artifact SHA-256:
   `4dbb920dcb030f8b650f38fdd58a2072e8d6ba0c5856364c56b66b8d3f253cbc`
+- Step 4 JVM/source-contract tests: 487 passed; 0 failed, errored, or skipped
+- Step 4 Forge GameTests: all 97 required tests passed
+- Step 4 development artifact: `villagerguardgunners-1.5-dev.jar`
+- Step 4 artifact size: 997,182 bytes
+- Step 4 artifact SHA-256:
+  `1724bfd38d8099cf36f1cc3afce86725c71a080f7c6461ad3d1072d851bc87c4`
 
 ## Automated architecture and integration cases
 
@@ -45,6 +51,11 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 | VBUILD-POOL-03 | Target a missing pool or processor list. | The entry is skipped, other entries remain eligible, and one bounded report records the omission. | Pass — live Forge registry test |
 | VBUILD-POOL-04 | Inspect the probe template's jigsaw metadata. | The existing inert template has a connector to the plains street pool. | Pass — live Forge template test |
 | VBUILD-CODEC-01 | Encode and decode the custom pool element. | Entry ID, building type, template, processors, and projection round-trip. | Pass — live polymorphic codec test |
+| VBUILD-ANCHOR-01 | Handle one valid, type-matching anchor marker. | Marker cell becomes air and one deterministic schema-1 building record is claimed. | Pass — live Forge marker/SavedData test |
+| VBUILD-ANCHOR-02 | Supply duplicate, malformed, unknown, oversized, or type-mismatched anchors. | Template validation fails before placement; zero anchors remains valid for decorative pieces. | Pass — JVM marker tests |
+| VBUILD-ANCHOR-03 | Repeat an anchor or reuse its UUID/position with different provenance. | Exact repeats are no-ops; UUID and physical-anchor conflicts fail closed without another record. | Pass — JVM and live idempotence tests |
+| VBUILD-ANCHOR-04 | Save/load valid, malformed, duplicate, wrong-type, and future-version building data. | Valid state round-trips; invalid state disables claims and is retained opaquely without normalization. | Pass — JVM persistence tests |
+| VBUILD-LIFECYCLE-01 | Process an anchor from world generation. | Only immutable identity crosses to one server-thread task; no chunk load, scan, ticket, ticker, or repair manager exists. | Pass — architecture and live Forge tests |
 | VBUILD-RESTART-01 | Stop and start a second integrated server process. | The new registry receives one entry; no static prior-server state suppresses it. | Partial — implementation is content-based; lifecycle run pending |
 | VBUILD-OLDWORLD-01 | Load an existing 1.4 world with integration enabled. | Existing starts/chunks are unchanged; only newly selected pieces can use appended entries. | Manual test required |
 
@@ -53,7 +64,7 @@ marker, lifecycle, gameplay, and mixed-mod generation rows incomplete.
 | ID | Scenario | Required result | Current status |
 | --- | --- | --- | --- |
 | VBUILD-PLACE-01 | Generate each building in every supported village biome and rotation. | Road connection, terrain fit, bounds, palettes, and interiors are correct. | Not implemented |
-| VBUILD-MARKER-01 | Revisit, clip, save, and reload a building anchor. | One persistent identity; no duplicate guard, Armory, loot, or post action. | Not implemented |
+| VBUILD-MARKER-01 | Revisit, clip, save, and reload a building anchor. | One persistent identity; no duplicate guard, Armory, loot, or post action. | Partial — shared anchor identity, strict persistence, and at-most-once claims implemented; functional actions remain later steps |
 | VBUILD-BARRACKS-01 | Generate Barracks across all difficulties. | Bounded role/loadout-aware garrison and no partial issuance. | Not implemented |
 | VBUILD-ARMORY-01 | Generate the village Armory/Quartermaster. | Existing lock, loot, ammo, and resupply contracts remain authoritative. | Not implemented |
 | VBUILD-SENTRY-01 | Generate roadside Sentry Posts. | Small footprint, bounded staffing, and safe road clearance. | Not implemented |

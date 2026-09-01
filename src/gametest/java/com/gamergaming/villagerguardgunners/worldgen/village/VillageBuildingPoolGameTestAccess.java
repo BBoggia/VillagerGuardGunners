@@ -10,12 +10,16 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 /** Runtime-only assertions that require Minecraft registries and applied mixins. */
 public final class VillageBuildingPoolGameTestAccess {
@@ -120,6 +124,50 @@ public final class VillageBuildingPoolGameTestAccess {
                                     probe.entryId())
                             && decodedVillage.buildingType() == VillageBuildingType.BARRACKS,
                     "The registered village-building pool element did not round-trip");
+
+            VillageBuildingPoolElement anchorElement =
+                    (VillageBuildingPoolElement) appended;
+            BlockPos anchorPosition = helper.absolutePos(new BlockPos(1, 2, 1));
+            CompoundTag anchorTag = new CompoundTag();
+            anchorTag.putString("metadata", "village_anchor:barracks");
+            StructureTemplate.StructureBlockInfo anchorInfo =
+                    new StructureTemplate.StructureBlockInfo(
+                            anchorPosition,
+                            Blocks.STRUCTURE_BLOCK.defaultBlockState(),
+                            anchorTag);
+            level.setBlock(anchorPosition, Blocks.STONE.defaultBlockState(), 2);
+            anchorElement.handleDataMarker(
+                    level,
+                    anchorInfo,
+                    BlockPos.ZERO,
+                    Rotation.NONE,
+                    RandomSource.create(2L),
+                    BoundingBox.infinite());
+            VillageBuildingIdentity anchorIdentity = VillageBuildingIdentity.anchored(
+                    level.getSeed(),
+                    level.dimension().location(),
+                    probe.entryId(),
+                    VillageBuildingType.BARRACKS,
+                    anchorPosition);
+            VillageBuildingSavedData buildingData = VillageBuildingSavedData.get(level);
+            int recordedBuildings = buildingData.size();
+            helper.assertTrue(
+                    level.getBlockState(anchorPosition).isAir()
+                            && buildingData.get(anchorIdentity.buildingId()) != null
+                            && buildingData.get(anchorIdentity.buildingId())
+                                    .hasClaimed(VillageBuildingAction.ANCHOR),
+                    "A valid building anchor was not consumed and persisted");
+
+            anchorElement.handleDataMarker(
+                    level,
+                    anchorInfo,
+                    BlockPos.ZERO,
+                    Rotation.NONE,
+                    RandomSource.create(3L),
+                    BoundingBox.infinite());
+            helper.assertTrue(
+                    buildingData.size() == recordedBuildings,
+                    "Repeated anchor handling duplicated persistent building state");
 
             List<VillageBuildingPoolEntry> missingDependencies = List.of(
                     new VillageBuildingPoolEntry(

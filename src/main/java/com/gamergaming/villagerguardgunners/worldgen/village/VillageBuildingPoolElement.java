@@ -154,11 +154,12 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
         if (marker == null || !(level instanceof WorldGenLevel worldGenLevel)) {
             return;
         }
-        VillageBuildingAnchorLifecycle.record(
+        VillageBuildingAnchorLifecycle.recordAndPopulate(
                 worldGenLevel,
                 entryId,
                 buildingType,
-                markerPosition);
+                markerPosition,
+                rotation);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.gamergaming.villagerguardgunners.worldgen.post;
 import com.gamergaming.villagerguardgunners.api.GuardPostAccess;
 import com.gamergaming.villagerguardgunners.api.GuardPostAssignmentAccess;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -90,16 +91,112 @@ public final class GuardPostSpawner {
         Objects.requireNonNull(member, "member");
         Objects.requireNonNull(generationDifficulty, "generationDifficulty");
 
-        BlockPos position = spawnPosition(markerPosition, rotation, memberIndex);
-        if (!isSafeSpawnCell(level, placementBounds, position)) {
-            return false;
-        }
-        Guard guard = GuardEntityType.GUARD.get().create(level.getLevel());
+        Guard guard = prepareMember(
+                level,
+                placementBounds,
+                markerPosition,
+                rotation,
+                postId,
+                groupId,
+                variantName,
+                memberIndex,
+                member,
+                generationDifficulty);
         if (guard == null) {
             return false;
         }
+        if (addPrepared(level, guard)) {
+            return true;
+        }
+        guard.discard();
+        return false;
+    }
 
-        guard.setUUID(GuardPostIds.guardId(postId, memberIndex));
+    /**
+     * Adds every requested member or removes the complete batch. This keeps a
+     * building garrison from being left half-created when one entity is rejected.
+     */
+    public static int spawnMembersAtomically(
+            ServerLevelAccessor level,
+            BoundingBox placementBounds,
+            BlockPos markerPosition,
+            Rotation rotation,
+            UUID postId,
+            ResourceLocation groupId,
+            String variantName,
+            List<GuardPostGroupMember> members,
+            int memberCount,
+            NaturalGuardDifficulty generationDifficulty) {
+        Objects.requireNonNull(members, "members");
+        if (memberCount < 0
+                || memberCount > members.size()
+                || memberCount > LOCAL_OFFSETS.size()) {
+            throw new IllegalArgumentException("Atomic guard batch is outside its hard bound");
+        }
+        List<Guard> prepared = new ArrayList<>(memberCount);
+        for (int memberIndex = 0; memberIndex < memberCount; memberIndex++) {
+            Guard guard = prepareMember(
+                    level,
+                    placementBounds,
+                    markerPosition,
+                    rotation,
+                    postId,
+                    groupId,
+                    variantName,
+                    memberIndex,
+                    members.get(memberIndex),
+                    generationDifficulty);
+            if (guard == null) {
+                prepared.forEach(Guard::discard);
+                return 0;
+            }
+            prepared.add(guard);
+        }
+
+        for (Guard guard : prepared) {
+            if (!addPrepared(level, guard)) {
+                prepared.forEach(Guard::discard);
+                return 0;
+            }
+        }
+        return prepared.size();
+    }
+
+    private static Guard prepareMember(
+            ServerLevelAccessor level,
+            BoundingBox placementBounds,
+            BlockPos markerPosition,
+            Rotation rotation,
+            UUID postId,
+            ResourceLocation groupId,
+            String variantName,
+            int memberIndex,
+            GuardPostGroupMember member,
+            NaturalGuardDifficulty generationDifficulty) {
+        Objects.requireNonNull(level, "level");
+        Objects.requireNonNull(placementBounds, "placementBounds");
+        Objects.requireNonNull(markerPosition, "markerPosition");
+        Objects.requireNonNull(rotation, "rotation");
+        Objects.requireNonNull(postId, "postId");
+        Objects.requireNonNull(groupId, "groupId");
+        Objects.requireNonNull(variantName, "variantName");
+        Objects.requireNonNull(member, "member");
+        Objects.requireNonNull(generationDifficulty, "generationDifficulty");
+
+        BlockPos position = spawnPosition(markerPosition, rotation, memberIndex);
+        if (!isSafeSpawnCell(level, placementBounds, position)) {
+            return null;
+        }
+        UUID guardId = GuardPostIds.guardId(postId, memberIndex);
+        if (level.getLevel().getEntity(guardId) != null) {
+            return null;
+        }
+        Guard guard = GuardEntityType.GUARD.get().create(level.getLevel());
+        if (guard == null) {
+            return null;
+        }
+
+        guard.setUUID(guardId);
         float yaw = rotation.rotate(Direction.NORTH).toYRot();
         guard.moveTo(
                 position.getX() + 0.5D,
@@ -114,7 +211,7 @@ public final class GuardPostSpawner {
                 guard,
                 GuardPostAssignment.pending(member, generationDifficulty))) {
             guard.discard();
-            return false;
+            return null;
         }
         guard.finalizeSpawn(
                 level,
@@ -122,14 +219,14 @@ public final class GuardPostSpawner {
                 MobSpawnType.STRUCTURE,
                 null,
                 null);
-        if (level.addFreshEntity(guard)) {
-            return true;
-        }
-        guard.discard();
-        return false;
+        return guard;
     }
 
-    private static boolean isSafeSpawnCell(
+    private static boolean addPrepared(ServerLevelAccessor level, Guard guard) {
+        return level.addFreshEntity(guard);
+    }
+
+    public static boolean isSafeSpawnCell(
             ServerLevelAccessor level,
             BoundingBox placementBounds,
             BlockPos position) {

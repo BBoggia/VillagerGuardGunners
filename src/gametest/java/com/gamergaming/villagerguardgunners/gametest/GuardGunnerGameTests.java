@@ -97,6 +97,12 @@ import com.gamergaming.villagerguardgunners.squad.SquadMembershipCodec;
 import com.gamergaming.villagerguardgunners.worldgen.structure.VillageWatchtowerPiece;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerPlacement;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingPoolGameTestAccess;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingAction;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisonLifecycle;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisons;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingIdentity;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingSavedData;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupDefaults;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupPool;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupReloadSnapshot;
@@ -253,6 +259,146 @@ public final class GuardGunnerGameTests {
     public static void villageBuildingAnchorCrossesWorkerThreadExactlyOnce(
             GameTestHelper helper) {
         VillageBuildingPoolGameTestAccess.verifyWorkerThreadAnchorHandoff(helper);
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 40,
+            batch = "village_building_garrison_state")
+    public static void villageBuildingGarrisonSpawnsAtomicallyAndExactlyOnce(
+            GameTestHelper helper) {
+        var level = helper.getLevel();
+        var config = ModConfigs.GUARD_GUNNERS;
+        var settings = config.villageBuildings;
+        Difficulty originalDifficulty = level.getDifficulty();
+        boolean originalAddonEnabled = config.enabled.get();
+        boolean originalNaturalEnabled = config.naturalLoadouts.enabled.get();
+        Set<NaturalGuardSpawnSource> originalSources =
+                Set.copyOf(config.naturalLoadouts.enabledSpawnSources.get());
+        boolean originalCrossbowsOnly = config.naturalLoadouts.replaceCrossbowsOnly.get();
+        double originalNaturalChance = config.naturalLoadouts.normal.upgradeChance.get();
+        int originalNearbyMaximum = config.naturalLoadouts.normal.maximumNearby.get();
+        boolean originalEnabled = settings.enabled.get();
+        boolean originalSpawnGarrisons = settings.spawnGarrisons.get();
+        int originalMaximum = settings.maximumGuardsPerBuilding.get();
+        double originalChanceMultiplier = settings.guardGunChanceMultiplier.get();
+        Runnable restore = () -> {
+            level.getServer().setDifficulty(originalDifficulty, true);
+            config.enabled.accept(originalAddonEnabled);
+            config.naturalLoadouts.enabled.accept(originalNaturalEnabled);
+            config.naturalLoadouts.enabledSpawnSources.accept(originalSources);
+            config.naturalLoadouts.replaceCrossbowsOnly.accept(originalCrossbowsOnly);
+            config.naturalLoadouts.normal.upgradeChance.accept(originalNaturalChance);
+            config.naturalLoadouts.normal.maximumNearby.accept(originalNearbyMaximum);
+            settings.enabled.accept(originalEnabled);
+            settings.spawnGarrisons.accept(originalSpawnGarrisons);
+            settings.maximumGuardsPerBuilding.accept(originalMaximum);
+            settings.guardGunChanceMultiplier.accept(originalChanceMultiplier);
+        };
+        boolean deferredRestore = false;
+        try {
+            level.getServer().setDifficulty(Difficulty.NORMAL, true);
+            config.enabled.accept(true);
+            config.naturalLoadouts.enabled.accept(true);
+            config.naturalLoadouts.enabledSpawnSources.accept(
+                    Set.of(NaturalGuardSpawnSource.STRUCTURE));
+            config.naturalLoadouts.replaceCrossbowsOnly.accept(true);
+            config.naturalLoadouts.normal.upgradeChance.accept(0.5D);
+            config.naturalLoadouts.normal.maximumNearby.accept(32);
+            settings.enabled.accept(true);
+            settings.spawnGarrisons.accept(true);
+            settings.maximumGuardsPerBuilding.accept(4);
+            settings.guardGunChanceMultiplier.accept(3.0D);
+
+            BlockPos anchor = helper.absolutePos(new BlockPos(8, 2, 8));
+            BoundingBox bounds = new BoundingBox(
+                    anchor.getX() - 3,
+                    anchor.getY() - 1,
+                    anchor.getZ() - 3,
+                    anchor.getX() + 3,
+                    anchor.getY() + 2,
+                    anchor.getZ() + 3);
+            for (int x = -3; x <= 3; x++) {
+                for (int z = -3; z <= 3; z++) {
+                    level.setBlock(anchor.offset(x, -1, z),
+                            Blocks.STONE.defaultBlockState(), 3);
+                    level.setBlock(anchor.offset(x, 0, z),
+                            Blocks.AIR.defaultBlockState(), 3);
+                    level.setBlock(anchor.offset(x, 1, z),
+                            Blocks.AIR.defaultBlockState(), 3);
+                }
+            }
+
+            VillageBuildingIdentity identity = VillageBuildingIdentity.anchored(
+                    level.getSeed(),
+                    level.dimension().location(),
+                    ResourceLocation.fromNamespaceAndPath(
+                            VillagerGuardGunners.MODID, "gametest/garrison_barracks"),
+                    VillageBuildingType.BARRACKS,
+                    anchor);
+            VillageBuildingSavedData data = VillageBuildingSavedData.get(level);
+            helper.assertTrue(
+                    data.claimAnchor(identity)
+                            == VillageBuildingSavedData.ClaimResult.CLAIMED,
+                    "The garrison fixture could not claim its building anchor");
+
+            VillageBuildingGarrisonLifecycle.Result first =
+                    VillageBuildingGarrisonLifecycle.populate(
+                            level, identity, Rotation.CLOCKWISE_90);
+            List<Guard> guards = level.getEntitiesOfClass(Guard.class, AABB.of(bounds));
+            helper.assertTrue(
+                    first.status() == VillageBuildingGarrisonLifecycle.Status.SPAWNED
+                            && first.spawnedGuards() >= 2
+                            && first.spawnedGuards() <= 3
+                            && guards.size() == first.spawnedGuards()
+                            && data.get(identity.buildingId())
+                                    .hasClaimed(VillageBuildingAction.GARRISON),
+                    "The Barracks did not create its bounded Normal garrison atomically");
+            for (Guard guard : guards) {
+                GuardPostIdentity post = GuardPostAccess.getIdentity(guard);
+                helper.assertTrue(
+                        post != null
+                                && identity.buildingId().equals(post.postId())
+                                && VillageBuildingGarrisons.BARRACKS_GROUP.equals(post.groupId())
+                                && GuardPostAssignmentAccess.get(guard) != null,
+                        "A village guard bypassed the existing post/loadout handoff");
+            }
+
+            VillageBuildingGarrisonLifecycle.Result repeated =
+                    VillageBuildingGarrisonLifecycle.populate(
+                            level, identity, Rotation.CLOCKWISE_90);
+            helper.assertTrue(
+                    repeated.status()
+                                    == VillageBuildingGarrisonLifecycle.Status.ALREADY_CLAIMED
+                            && repeated.spawnedGuards() == 0
+                            && level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size()
+                                    == guards.size(),
+                    "Repeated garrison processing duplicated or changed its guard group");
+
+            UUID expectedSquad = GuardPostIds.squadId(identity.buildingId());
+            helper.runAfterDelay(3, () -> {
+                try {
+                    for (Guard guard : guards) {
+                        helper.assertTrue(
+                                GuardPostAssignmentAccess.get(guard) == null
+                                        && NaturalGuardLoadoutDiagnostics.capture(guard).active()
+                                        && GuardRoleAccess.getRoleId(guard) != null
+                                        && expectedSquad.equals(
+                                                GuardSquadAccess.getSquadId(guard)),
+                                "A village guard did not complete the existing role, squad, and TaCZ loadout transaction");
+                    }
+                } finally {
+                    restore.run();
+                }
+                helper.succeed();
+            });
+            deferredRestore = true;
+        } finally {
+            if (!deferredRestore) {
+                restore.run();
+            }
+        }
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)

@@ -29,6 +29,11 @@ All notable Villager Guard Gunners changes are recorded here.
 - Added a 25-template Forge validation matrix covering every biome connector,
   template bound, type-matching anchor, and real rotated placement for all five
   building types.
+- Added bounded, difficulty-aware datapack garrisons for newly generated
+  Barracks, Sentry Posts, and integrated Watchtowers, with Peaceful producing
+  no occupants.
+- Added schema-14 village-garrison controls for staffing, the global four-guard
+  ceiling, and the one-time gun-chance multiplier.
 
 ### Improved
 
@@ -56,6 +61,11 @@ All notable Villager Guard Gunners changes are recorded here.
 - Village-building definition snapshots are cleared when a server stops so an
   integrated-server restart cannot inherit another world's last-known-good
   datapack state.
+- Village garrisons reuse the existing Guard Villagers spawn, role, squad,
+  natural-loadout, ammunition, and TaCZ transaction paths instead of adding a
+  parallel equipment or AI system.
+- Garrison placement verifies only bounded cells in already loaded chunks and
+  adds the selected group atomically, with zero recurring scan or respawn work.
 
 ### Fixed
 

@@ -15,6 +15,7 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnRules;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisonPolicy;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 13;
+    public static final int CONFIG_VERSION = 14;
 
     @Comment("Enables Guard Villagers to use TaCZ guns. The server controls this setting.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -159,6 +160,11 @@ public final class VillagerGuardGunnersConfig extends Config {
             // Version 13 adds one-way per-building suppression. Preserve the
             // schema-12 master choice and initialize only the five new flags.
             villageBuildings.restoreVersionThirteenDefaults();
+        }
+        if (previousVersion < 14) {
+            // Version 14 activates only one-shot village garrisons. Preserve
+            // every existing building choice and initialize the new bounds.
+            villageBuildings.restoreVersionFourteenDefaults();
         }
     }
 
@@ -781,6 +787,21 @@ public final class VillagerGuardGunnersConfig extends Config {
         @Comment("Allows datapack-defined Training Yard entries when the master village-building switch is enabled.")
         public ValidatedBoolean trainingYards = new ValidatedBoolean(true);
 
+        @Comment("Allows newly generated Barracks, Sentry Posts, and integrated Watchtowers to create one bounded guard group. No scan or respawn controller is added.")
+        public ValidatedBoolean spawnGarrisons = new ValidatedBoolean(true);
+
+        @Comment("Global ceiling for guards created by one Village Defense Building. Building-specific limits remain stricter. Range: 0 to 4 guards.")
+        public ValidatedInt maximumGuardsPerBuilding = new ValidatedInt(
+                VillageBuildingGarrisonPolicy.MAXIMUM_GUARDS_PER_BUILDING,
+                VillageBuildingGarrisonPolicy.MAXIMUM_GUARDS_PER_BUILDING,
+                VillageBuildingGarrisonPolicy.MINIMUM_GUARDS_PER_BUILDING);
+
+        @Comment("Multiplier applied once to a village-garrison guard's difficulty-based natural gun chance. The final chance is clamped to 1. Range: 0 to 3.")
+        public ValidatedDouble guardGunChanceMultiplier = new ValidatedDouble(
+                3.0D,
+                VillageBuildingGarrisonPolicy.MAXIMUM_GUN_CHANCE_MULTIPLIER,
+                VillageBuildingGarrisonPolicy.MINIMUM_GUN_CHANCE_MULTIPLIER);
+
         public boolean allows(VillageBuildingType buildingType) {
             return switch (buildingType) {
                 case BARRACKS -> barracks.get();
@@ -789,6 +810,17 @@ public final class VillagerGuardGunnersConfig extends Config {
                 case WATCHTOWER -> integratedWatchtowers.get();
                 case TRAINING_YARD -> trainingYards.get();
             };
+        }
+
+        public VillageBuildingGarrisonPolicy garrisonPolicy() {
+            return new VillageBuildingGarrisonPolicy(
+                    enabled.get() && spawnGarrisons.get(),
+                    maximumGuardsPerBuilding.get(),
+                    guardGunChanceMultiplier.get());
+        }
+
+        public double guardGunUpgradeChance(double baseChance) {
+            return garrisonPolicy().guardGunUpgradeChance(baseChance);
         }
 
         private void restoreVersionTwelveDefaults() {
@@ -801,6 +833,12 @@ public final class VillagerGuardGunnersConfig extends Config {
             restoreDefault(sentryPosts);
             restoreDefault(integratedWatchtowers);
             restoreDefault(trainingYards);
+        }
+
+        private void restoreVersionFourteenDefaults() {
+            restoreDefault(spawnGarrisons);
+            restoreDefault(maximumGuardsPerBuilding);
+            restoreDefault(guardGunChanceMultiplier);
         }
     }
 

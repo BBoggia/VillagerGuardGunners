@@ -17,6 +17,7 @@ import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignment;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIds;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSquads;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisons;
 
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -156,6 +157,7 @@ public final class NaturalGuardSpawnIntegration {
         GuardPostSquads.ensureRegistered(
                         level.getServer(),
                         identity.postId(),
+                        identity.groupId(),
                         level.getGameTime())
                 .ifPresent(ignored -> GuardSquadAccess.setMembership(
                         guard,
@@ -177,8 +179,12 @@ public final class NaturalGuardSpawnIntegration {
         NaturalGuardDifficulty difficultyKey = assignment.generationDifficulty();
         NaturalGuardDifficultySettings configured =
                 config.naturalLoadouts.settingsFor(difficultyKey);
+        boolean villageGarrison = VillageBuildingGarrisons.isVillageGroup(identity.groupId());
+        double effectiveUpgradeChance = villageGarrison
+                ? config.villageBuildings.guardGunUpgradeChance(configured.upgradeChance())
+                : config.watchtowers.guardGunUpgradeChance(configured.upgradeChance());
         NaturalGuardDifficultySettings effective = new NaturalGuardDifficultySettings(
-                config.watchtowers.guardGunUpgradeChance(configured.upgradeChance()),
+                effectiveUpgradeChance,
                 configured.maximumNearby(),
                 assignment.loadoutPool());
         NaturalGuardLoadoutPool pool = NaturalGuardLoadoutPools.get(assignment.loadoutPool());
@@ -197,7 +203,7 @@ public final class NaturalGuardSpawnIntegration {
                         config.enabled.get() && config.naturalLoadouts.enabled.get(),
                         true,
                         NaturalGuardSpawnSource.STRUCTURE,
-                        guard.getMainHandItem().is(Items.CROSSBOW),
+                        villageGarrison || guard.getMainHandItem().is(Items.CROSSBOW),
                         alreadyIssued),
                 rules,
                 difficultyKey,

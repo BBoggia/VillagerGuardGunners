@@ -406,8 +406,14 @@ state is cleared on shutdown. Step 5 adds the reviewable
 [biome-aware visual template matrix](docs/village-defense-buildings-step-5.md):
 all five building shells are packaged for all five vanilla village palettes,
 with a validated road connector and anchor in every template. Generation stays
-default-off pending manual visual and mixed-mod review, and the shells still
-perform no garrison, Armory-stock, loot, repair, or recurring runtime work.
+default-off pending manual visual and mixed-mod review. Step 6 adds
+[bounded village garrisons](docs/village-defense-buildings-step-6.md) to new
+Barracks, Sentry Posts, and integrated Watchtowers. Their difficulty-aware
+datapack groups reuse the existing role, squad, natural-loadout, ammunition,
+and TaCZ issuance pipeline; Peaceful buildings remain empty, repeated claims
+cannot duplicate guards, and no scan, respawn controller, forced chunk, or
+recurring village runtime is introduced. Armories and Training Yards remain
+functionally dormant for their later steps.
 
 ## License
 

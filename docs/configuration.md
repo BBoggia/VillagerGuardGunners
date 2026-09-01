@@ -87,6 +87,9 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `villageBuildings.sentryPosts` | `true` | boolean | Allows datapack-defined roadside Sentry Post entries when the master switch is enabled. |
 | `villageBuildings.integratedWatchtowers` | `true` | boolean | Allows datapack-defined village Watchtower entries without affecting standalone Watchtowers. |
 | `villageBuildings.trainingYards` | `true` | boolean | Allows datapack-defined Training Yard entries when the master switch is enabled. |
+| `villageBuildings.spawnGarrisons` | `true` | boolean | Allows newly generated Barracks, Sentry Posts, and integrated Watchtowers to create one bounded guard group. Existing buildings are not staffed later. |
+| `villageBuildings.maximumGuardsPerBuilding` | 4 | 0–4 guards | Global staffing ceiling. Barracks may use 4, Sentry Posts at most 1, and integrated Watchtowers at most 2. |
+| `villageBuildings.guardGunChanceMultiplier` | 3.0 | 0–3 | Multiplies only village-garrison guards' one-time difficulty gun chance, clamped to 1.0. Other natural-loadout and safety gates remain active. |
 | `performance.visibilitySampleIntervalTicks` | 2 | 1–10 ticks | Lower values update visibility sooner but perform more line-of-sight checks. |
 | `performance.movementDecisionIntervalTicks` | 5 | 1–20 ticks | Lower values reconsider movement more often. |
 | `performance.pathRecalculationIntervalTicks` | 20 | 5–100 ticks | Lower values request navigation paths more often. |
@@ -99,13 +102,18 @@ The performance defaults are the recommended starting point. Increasing an inter
 ## Village Defense Building integration
 
 Config version 12 added only `villageBuildings.enabled`. Config version 13 adds
-the five default-on building-type suppressors. Migrating a version-12 file
-preserves its master choice and initializes only those new switches. Migrating
-a version-11 file still initializes the master to `false` while preserving the
+the five default-on building-type suppressors. Config version 14 adds only the
+one-shot garrison switch, global guard ceiling, and village-garrison gun-chance
+multiplier. Migrating a version-13 file preserves its master and building
+choices while initializing those three bounded defaults. Migrating a version-
+12 file preserves its master choice and initializes the type switches as well.
+Migrating a version-11 file still initializes the master to `false` while preserving the
 complete 1.4 Watchtower, loadout, combat, safety, ammunition, squad, and Armory
 policy. During Steps 1 through 3 the switch controlled an inert plains
-compatibility probe. Step 5 replaces it with the biome-aware visual shells but
-keeps the switch default-off until manual village and mixed-mod review passes.
+compatibility probe. Step 5 replaces it with the biome-aware visual shells and
+Step 6 activates bounded Barracks, Sentry Post, and integrated Watchtower
+staffing. The master stays default-off until manual village and mixed-mod
+review passes.
 
 When enabled, the mod performs one bounded, additive pool update during server
 startup. It does not scan villages or chunks and cannot change existing village

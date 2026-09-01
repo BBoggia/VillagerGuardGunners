@@ -1,9 +1,10 @@
 # Village Defense Buildings 1.5 baseline and integration contract
 
 Steps 1 through 4 establish the 1.5 village-integration line. Step 5 adds the
-five biome-aware visual building shells without activating their later
-garrison, Armory-stock, loot, or training behavior. Development artifacts use
-`1.5-dev`; they must not be presented as a finished 1.5 release.
+five biome-aware visual building shells. Step 6 activates bounded garrisons for
+Barracks, Sentry Posts, and integrated Watchtowers while Armory-stock, loot,
+and training behavior remain later work. Development artifacts use `1.5-dev`;
+they must not be presented as a finished 1.5 release.
 
 ## Exact inherited baseline
 
@@ -112,7 +113,7 @@ committed only after the complete bounded preflight. A missing third-party or
 replaced vanilla pool cannot crash the server or cause fallback mutation of a
 different pool. Third-party entries already present remain untouched.
 
-The schema-13 Fzzy Config master switch is `villageBuildings.enabled`. It
+The schema-12 Fzzy Config master switch is `villageBuildings.enabled`. It
 remains `false` through Step 5's visual-review stage. With the switch off,
 registry contents are not inspected or mutated. Once functional templates have
 passed the retained visual and compatibility matrix, this development default
@@ -196,6 +197,26 @@ Sentry Posts and Watchtowers do not assign posts, and Training Yards create no
 entity or controller. The default-off master switch remains the manual visual-
 review gate.
 
+## Step 6 bounded village garrisons
+
+Step 6 joins the shared anchor lifecycle to the existing Guard Villagers
+structure-spawn, guard-post assignment, role, squad, natural-loadout,
+ammunition, and TaCZ issuance systems. Barracks select at most four occupants,
+Sentry Posts at most one, and integrated Watchtowers at most two on their upper
+platform. Three strict format-1 `guard_post_groups` resources provide Easy,
+Normal, and Hard compositions and remain replaceable by datapacks.
+
+The anchor's existing `GARRISON` bit is the sole persistent action boundary.
+Peaceful or configured-zero buildings claim it without occupants; exact repeat
+processing is a no-op. Candidate cells must already be loaded and safe, and a
+selected group is prepared and added all-or-none. No village scan, entity
+search, chunk load, ticket, persistent ticker, respawn manager, retrofit, or
+repair pass is introduced. A not-yet-live generation chunk receives at most 40
+one-tick deferred checks before failing closed. Config schema 14 adds only a garrison switch, a
+global 0–4 ceiling, and a clamped one-time gun-chance multiplier. The complete
+contract is in
+[`village-defense-buildings-step-6.md`](village-defense-buildings-step-6.md).
+
 ## Performance and compatibility invariants
 
 The integration cost is proportional only to the small number of declared
@@ -210,7 +231,7 @@ fallback holder, changes an existing weight, sorts entries, or writes a
 vanilla namespace resource. If a future overhaul removes a named pool, VGG
 skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 
-## Steps 1 through 5 exit criteria
+## Steps 1 through 6 exit criteria
 
 - the exact 1.4 commit and artifact are recorded;
 - `v1.5-support` produces `1.5-dev` artifacts;
@@ -238,6 +259,13 @@ skips it. Actual mixed-mod village generation remains a mandatory manual gate.
 - every template has exactly one matching road connector and anchor;
 - all five building types pass real rotated placement without activating later
   gameplay actions;
+- the three combat buildings select difficulty-aware groups through the
+  existing strict datapack registry and never exceed their intrinsic or global
+  guard ceilings;
+- garrison guards retain deterministic post identity, role/loadout assignment,
+  and squad membership through the existing event-driven pipeline;
+- Peaceful, configured-zero, repeated, unsafe, unloaded, missing-group, and
+  non-garrison paths fail closed without partial or retroactive staffing;
 - focused JVM and Forge integration tests pass; and
 - visual shells remain default-off until manual generation review passes.
 
@@ -291,3 +319,16 @@ GameTests, including connector inspection across all five biome palettes and
 real rotated placement of every building type. The resulting development JAR
 is `villagerguardgunners-1.5-dev.jar`, 1,048,711 bytes, with SHA-256
 `29f5af34e1539bbce5ddcfcade0ff593ec880ba98046ac399ec2b3e2c1f621a3`.
+
+## Verified Step 6 artifact
+
+The Step 6 Java 17 gate passed 497 JVM/source-contract tests with no failures,
+errors, or skips, compiled both Forge test source sets, and required all three
+village-garrison group resources plus their runtime classes in the release
+JAR. The isolated Forge server loaded all four guard-post groups and passed all
+101 required GameTests, including atomic Barracks staffing, duplicate
+prevention, and completion of the existing TaCZ loadout, role, and squad
+handoff while crossbow-only replacement remained enabled. The resulting
+development JAR is `villagerguardgunners-1.5-dev.jar`, 1,066,498 bytes, with
+SHA-256
+`8650e519f1d573f2a82e0072ef29b6418560531eae187464d65ed6de5d55b9b0`.

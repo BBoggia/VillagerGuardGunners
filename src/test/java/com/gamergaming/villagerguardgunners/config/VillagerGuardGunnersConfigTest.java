@@ -18,6 +18,7 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisonPolicy;
 
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,7 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(13, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(14, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertTrue(config.enabled.get()),
                 () -> assertTrue(config.naturalLoadouts.enabled.get()),
                 () -> assertEquals(
@@ -118,6 +119,14 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertTrue(config.villageBuildings.sentryPosts.get()),
                 () -> assertTrue(config.villageBuildings.integratedWatchtowers.get()),
                 () -> assertTrue(config.villageBuildings.trainingYards.get()),
+                () -> assertTrue(config.villageBuildings.spawnGarrisons.get()),
+                () -> assertEquals(4,
+                        config.villageBuildings.maximumGuardsPerBuilding.get()),
+                () -> assertEquals(3.0D,
+                        config.villageBuildings.guardGunChanceMultiplier.get()),
+                () -> assertEquals(
+                        new VillageBuildingGarrisonPolicy(false, 4, 3.0D),
+                        config.villageBuildings.garrisonPolicy()),
                 () -> assertAll(java.util.Arrays.stream(VillageBuildingType.values())
                         .map(type -> () -> assertTrue(config.villageBuildings.allows(type)))),
                 () -> assertEquals(2, config.performance.visibilitySampleIntervalTicks.get()),
@@ -308,6 +317,37 @@ final class VillagerGuardGunnersConfigTest {
     }
 
     @Test
+    void versionThirteenUpdatePreservesBuildingsAndInitializesGarrisonBounds() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.villageBuildings.enabled.accept(true);
+        config.villageBuildings.barracks.accept(false);
+        config.villageBuildings.armories.accept(false);
+        config.villageBuildings.sentryPosts.accept(true);
+        config.villageBuildings.integratedWatchtowers.accept(false);
+        config.villageBuildings.trainingYards.accept(true);
+        config.villageBuildings.spawnGarrisons.accept(false);
+        config.villageBuildings.maximumGuardsPerBuilding.accept(1);
+        config.villageBuildings.guardGunChanceMultiplier.accept(0.25D);
+
+        config.update(13);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertTrue(config.villageBuildings.enabled.get()),
+                () -> assertFalse(config.villageBuildings.barracks.get()),
+                () -> assertFalse(config.villageBuildings.armories.get()),
+                () -> assertTrue(config.villageBuildings.sentryPosts.get()),
+                () -> assertFalse(config.villageBuildings.integratedWatchtowers.get()),
+                () -> assertTrue(config.villageBuildings.trainingYards.get()),
+                () -> assertTrue(config.villageBuildings.spawnGarrisons.get()),
+                () -> assertEquals(4,
+                        config.villageBuildings.maximumGuardsPerBuilding.get()),
+                () -> assertEquals(3.0D,
+                        config.villageBuildings.guardGunChanceMultiplier.get()));
+    }
+
+    @Test
     void versionTenUpdateAddsOnlyTheTowerGunChanceDefault() {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
         config.combat.requiredVisibleTicks.accept(17);
@@ -355,6 +395,7 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(1.5D,
                         config.watchtowers.guardGunChanceMultiplier.get()));
     }
+
 
     @Test
     void versionEightConfigAddsBoundedArmoryDefaultsWithoutChangingExistingSettings() {

@@ -12,7 +12,7 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 - Inherited 1.4 commit: `be63f09fc9697666aa67a8eb66055214fac2d568`
 - Inherited 1.4 JAR SHA-256:
   `2ebf9920e7916bc9d7e81e85a55c522020e7149eaabf74d2354bfe6c838e59ac`
-- Functional VGG village behavior active: no
+- Functional VGG village behavior active: bounded garrisons when the default-off master switch is enabled
 - Step 5 visual templates packaged: 25 (five types x five village palettes)
 - Step 5 generation default: disabled pending manual visual review
 - Step 2 compatibility probe default: disabled
@@ -46,6 +46,12 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 - Step 5 artifact size: 1,048,711 bytes
 - Step 5 artifact SHA-256:
   `29f5af34e1539bbce5ddcfcade0ff593ec880ba98046ac399ec2b3e2c1f621a3`
+- Step 6 JVM/source-contract tests: 497 passed; 0 failed, errored, or skipped
+- Step 6 Forge GameTests: all 101 required tests passed
+- Step 6 development artifact: `villagerguardgunners-1.5-dev.jar`
+- Step 6 artifact size: 1,066,498 bytes
+- Step 6 artifact SHA-256:
+  `8650e519f1d573f2a82e0072ef29b6418560531eae187464d65ed6de5d55b9b0`
 
 ## Automated architecture and integration cases
 
@@ -79,11 +85,11 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 | ID | Scenario | Required result | Current status |
 | --- | --- | --- | --- |
 | VBUILD-PLACE-01 | Generate each building in every supported village biome and rotation. | Road connection, terrain fit, bounds, palettes, and interiors are correct. | Partial — all 25 templates load and all five types pass rotated real-placement tests; natural-village visual review remains manual |
-| VBUILD-MARKER-01 | Revisit, clip, save, and reload a building anchor. | One persistent identity; no duplicate guard, Armory, loot, or post action. | Partial — shared anchor identity, strict persistence, and at-most-once claims implemented; functional actions remain later steps |
-| VBUILD-BARRACKS-01 | Generate Barracks across all difficulties. | Bounded role/loadout-aware garrison and no partial issuance. | Partial — biome-aware shell and anchor implemented; garrison is a later step |
+| VBUILD-MARKER-01 | Revisit, clip, save, and reload a building anchor. | One persistent identity; no duplicate guard, Armory, loot, or post action. | Partial — shared anchor identity, strict persistence, and at-most-once garrison claims implemented; Armory and stock actions remain later steps |
+| VBUILD-BARRACKS-01 | Generate Barracks across all difficulties. | Bounded role/loadout-aware garrison and no partial issuance. | Partial — bounded Easy/Normal/Hard datapack group, atomic entity creation, and one-shot claim implemented; natural terrain gameplay review remains manual |
 | VBUILD-ARMORY-01 | Generate the village Armory/Quartermaster. | Existing lock, loot, ammo, and resupply contracts remain authoritative. | Partial — biome-aware shell and anchor implemented; Armory placement/stock is a later step |
-| VBUILD-SENTRY-01 | Generate roadside Sentry Posts. | Small footprint, bounded staffing, and safe road clearance. | Partial — compact shell and anchor implemented; staffing is a later step |
-| VBUILD-TOWER-01 | Generate integrated and standalone towers in one world. | Independent controls/identity; no double processing or shared start state. | Partial — independent integrated shell/anchor implemented; natural mixed-generation review remains manual |
+| VBUILD-SENTRY-01 | Generate roadside Sentry Posts. | Small footprint, bounded staffing, and safe road clearance. | Partial — one-guard difficulty-aware staffing and safe-cell validation implemented; natural road-clearance review remains manual |
+| VBUILD-TOWER-01 | Generate integrated and standalone towers in one world. | Independent controls/identity; no double processing or shared start state. | Partial — independent integrated upper-platform staffing and standalone controls implemented; natural mixed-generation review remains manual |
 | VBUILD-YARD-01 | Generate Training Yards. | No unsafe combat target or recurring training controller is introduced. | Partial — passive shell and anchor implemented; no entity or controller is present |
 | VBUILD-COMPAT-01 | Run with common village-overhaul datapacks/mods. | Third-party entries and weights remain intact; missing/replaced pools skip safely. | Manual test required |
 | VBUILD-PERF-01 | Generate at least 100 villages and profile startup/generation. | Startup work is bounded and generation adds no recurring server-tick cost. | Performance test required |

@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.resources.ResourceLocation;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisons;
 
 /** Deterministic bridge from a generated post to the existing squad formats. */
 public final class GuardPostSquads {
@@ -34,6 +36,15 @@ public final class GuardPostSquads {
             MinecraftServer server,
             UUID postId,
             long gameTime) {
+        return ensureRegistered(server, postId, null, gameTime);
+    }
+
+    /** Uses the building identity for village garrisons while retaining tower names. */
+    public static Optional<SquadMetadata> ensureRegistered(
+            MinecraftServer server,
+            UUID postId,
+            ResourceLocation groupId,
+            long gameTime) {
         Objects.requireNonNull(server, "server");
         UUID squadId = squadId(postId);
         SquadRegistrySavedData registry = SquadRegistrySavedData.get(server);
@@ -44,7 +55,10 @@ public final class GuardPostSquads {
         if (!canAutomaticallyRegister(registry.size())) {
             return Optional.empty();
         }
-        return registry.register(squadId, displayName(postId), null, gameTime);
+        String displayName = VillageBuildingGarrisons.isVillageGroup(groupId)
+                ? VillageBuildingGarrisons.squadDisplayName(groupId, postId)
+                : displayName(postId);
+        return registry.register(squadId, displayName, null, gameTime);
     }
 
     static boolean canAutomaticallyRegister(int registrySize) {

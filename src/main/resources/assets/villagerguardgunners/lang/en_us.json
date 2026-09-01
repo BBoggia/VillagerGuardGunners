@@ -526,6 +526,12 @@
   "config.villagerguardgunners.guard_gunners.villageBuildings.integratedWatchtowers.desc": "Allow datapack-defined village Watchtower entries. This does not affect standalone Watchtowers.",
   "config.villagerguardgunners.guard_gunners.villageBuildings.trainingYards": "Enable Village Training Yards",
   "config.villagerguardgunners.guard_gunners.villageBuildings.trainingYards.desc": "Allow datapack-defined Training Yard entries when Village Defense Buildings are enabled.",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.spawnGarrisons": "Spawn Village Garrison Guards",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.spawnGarrisons.desc": "Allow newly generated Barracks, Sentry Posts, and integrated Watchtowers to create one bounded guard group. Existing buildings are never staffed retroactively.",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.maximumGuardsPerBuilding": "Maximum Guards per Building",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.maximumGuardsPerBuilding.desc": "Global ceiling from 0 through 4. Sentry Posts remain limited to 1 guard and integrated Watchtowers to 2.",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.guardGunChanceMultiplier": "Village Garrison Gun Chance Multiplier",
+  "config.villagerguardgunners.guard_gunners.villageBuildings.guardGunChanceMultiplier.desc": "Multiply each new village-garrison guard's difficulty-based gun chance once, then clamp it to 100%. Natural-loadout population, datapack, inventory, and safety gates still apply.",
 
   "config.villagerguardgunners.guard_gunners.performance": "Advanced Performance",
   "config.villagerguardgunners.guard_gunners.performance.desc": "Scheduling controls. Lower intervals react faster but require more server work.",

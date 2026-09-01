@@ -1,0 +1,32 @@
+{
+  "format": 1,
+  "variants": [
+    {
+      "name": "easy_sentry",
+      "weight": 1,
+      "difficulties": ["easy"],
+      "loadout_pool": "villagerguardgunners:easy",
+      "members": [
+        { "role": "villagerguardgunners:rifleman" }
+      ]
+    },
+    {
+      "name": "normal_sentry",
+      "weight": 1,
+      "difficulties": ["normal"],
+      "loadout_pool": "villagerguardgunners:normal",
+      "members": [
+        { "role": "villagerguardgunners:rifleman" }
+      ]
+    },
+    {
+      "name": "hard_sentry",
+      "weight": 1,
+      "difficulties": ["hard"],
+      "loadout_pool": "villagerguardgunners:hard",
+      "members": [
+        { "role": "villagerguardgunners:rifleman" }
+      ]
+    }
+  ]
+}

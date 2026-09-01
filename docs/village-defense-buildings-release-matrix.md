@@ -68,6 +68,16 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
   `ab4dd30f530edd2a6f83c699d30b353bd91d71236a45eecd897346f57d84c1a7`
 - Step 8 village-building JFR SHA-256:
   `88476a177aa0005d24f30b1e3b7cca940eb1e154eb00329d9e122a3c178a2820`
+- Step 9 JVM/source-contract tests: 507 passed; 0 failed, errored, or skipped
+- Step 9 Forge correctness GameTests: all 103 required tests passed
+- Step 9 integrated tower matrix: five biome variants x four rotations passed
+- Step 9 isolated performance GameTest: 1 passed; 100 placements and 200 idle ticks
+- Step 9 development artifact: `villagerguardgunners-1.5-dev.jar`
+- Step 9 artifact size: 1,075,740 bytes
+- Step 9 artifact SHA-256:
+  `c80aff053cef3c38362da1f08724ada3b3267f23b694e80b9963046186777e06`
+- Step 9 village-building JFR SHA-256:
+  `b7d1073428cb36ecb65dae0717a96e3c7b4fe16cc5bdce1dc2fdb5431af1eb2b`
 
 ## Automated architecture and integration cases
 
@@ -107,6 +117,7 @@ natural terrain, gameplay, and mixed-mod generation rows remain incomplete.
 | VBUILD-ARMORY-01 | Generate the village Armory/Quartermaster. | Existing lock, loot, ammo, and resupply contracts remain authoritative. | Partial — public Armory placement, bounded ammo-only stock, persistent identity, and existing resupply integration implemented; natural gameplay review remains manual |
 | VBUILD-SENTRY-01 | Generate roadside Sentry Posts. | Small footprint, bounded staffing, and safe road clearance. | Partial — one-guard difficulty-aware staffing and safe-cell validation implemented; natural road-clearance review remains manual |
 | VBUILD-TOWER-01 | Generate integrated and standalone towers in one world. | Independent controls/identity; no double processing or shared start state. | Partial — independent integrated upper-platform staffing and standalone controls implemented; natural mixed-generation review remains manual |
+| VBUILD-TOWER-02 | Place all five integrated tower palettes under all four rotations. | Compact bounds, matching road connector, safe two-guard platform, supported ground route, and no Armory. | Pass — 20-case live Forge placement matrix plus build-time source validation |
 | VBUILD-YARD-01 | Generate Training Yards. | No unsafe combat target or recurring training controller is introduced. | Partial — passive shell and anchor implemented; no entity or controller is present |
 | VBUILD-COMPAT-01 | Run with common village-overhaul datapacks/mods. | Third-party entries and weights remain intact; missing/replaced pools skip safely. | Manual test required |
 | VBUILD-PERF-01 | Publish the complete built-in matrix, place one passive defense piece for each of 100 simulated village candidates, then profile 200 idle ticks. | Startup and placement work are bounded, JFR contains execution samples, records remain stable, and the forced-chunk set is unchanged. | Pass — 25 entries injected, 100/100 placements, records stable at 100, forced chunks 25→25, and JFR verifier passed |

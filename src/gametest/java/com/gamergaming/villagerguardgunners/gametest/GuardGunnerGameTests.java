@@ -256,6 +256,12 @@ public final class GuardGunnerGameTests {
         VillageBuildingPoolGameTestAccess.verifyBuiltInTemplateMatrix(helper);
     }
 
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageIntegratedWatchtowersRetainSafeGroundAccess(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyIntegratedWatchtowerVariants(helper);
+    }
+
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE, timeoutTicks = 40)
     public static void villageBuildingAnchorCrossesWorkerThreadExactlyOnce(
             GameTestHelper helper) {

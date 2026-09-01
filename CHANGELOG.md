@@ -41,6 +41,8 @@ All notable Villager Guard Gunners changes are recorded here.
   100 passive building placements, and 200 post-placement idle ticks.
 - Added a deterministic village-building evidence manifest and aggregate gate
   that keeps natural-terrain and third-party compatibility review manual.
+- Completed the compact integrated Village Watchtower across all five village
+  palettes with a dedicated 20-case biome/rotation placement matrix.
 
 ### Improved
 
@@ -78,6 +80,9 @@ All notable Villager Guard Gunners changes are recorded here.
   stock after a crash or repeat callback.
 - Village performance evidence now runs in a private GameTest template
   namespace, independently from the older combat and logistics matrix.
+- Integrated Village Watchtowers now retain a continuous, fully supported
+  ladder from the lower level through the upper platform; build-time checks
+  prevent broken access, unsafe guard cells, or accidental Armory placement.
 
 ### Fixed
 

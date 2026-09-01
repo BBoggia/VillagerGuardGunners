@@ -78,10 +78,10 @@ present. All 100 placements succeeded, the passive record count stayed at 100
 through all 200 idle ticks, and the forced-chunk count remained 25 before and
 after. The independent verifier parsed real execution samples from the JFR.
 
-The evidence is bound to `villagerguardgunners-1.5-dev.jar`, 1,075,732 bytes,
+The Step 9 recapture is bound to `villagerguardgunners-1.5-dev.jar`, 1,075,740 bytes,
 SHA-256
-`ab4dd30f530edd2a6f83c699d30b353bd91d71236a45eecd897346f57d84c1a7`.
+`c80aff053cef3c38362da1f08724ada3b3267f23b694e80b9963046186777e06`.
 The captured JFR SHA-256 is
-`88476a177aa0005d24f30b1e3b7cca940eb1e154eb00329d9e122a3c178a2820`.
+`b7d1073428cb36ecb65dae0717a96e3c7b4fe16cc5bdce1dc2fdb5431af1eb2b`.
 The measured wall-clock values remain informational because this is not an
 absolute timing gate.

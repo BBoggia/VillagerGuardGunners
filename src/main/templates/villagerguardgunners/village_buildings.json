@@ -129,8 +129,8 @@
         ["VVV.VVV", "LLLDLLL", "W.G.G.W", "W.....W", "W.....W", "W..H..W", "LLLLLLL"],
         ["VVV.VVV", "L.....L", "L.....L", "L.....L", "L.....L", "L..H..L", "LLLLLLL"],
         ["VVV.VVV", "L.....L", "L.....L", "L.....L", "L.....L", "L..H..L", "LLLLLLL"],
-        ["VVVSVVV", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPP.PPP", "PPP.PPP", "PPPPPPP"],
-        ["VVV.VVV", "L.....L", ".......", ".......", ".......", "L..H..L", "L.....L"],
+        ["VVVSVVV", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPHPPP", "PPPPPPP"],
+        ["VVV.VVV", "L.....L", ".......", ".......", ".......", "L..H..L", "L..L..L"],
         ["VVVSVVV", "L..Q..L", ".......", ".......", ".......", "L.....L", "L.....L"],
         ["VVSSSVV", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS"]
       ]

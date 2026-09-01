@@ -45,6 +45,10 @@ final class VillageDefenseBuildingsStepEightContractTest {
                         "data/villagerguardgunners_village_buildings_performance/structures/")),
                 () -> assertTrue(build.contains(
                         "tasks.register('verifyVillageBuildingPerformanceReport')")),
+                () -> assertTrue(build.contains(
+                        "VillageDefenseBuildingsPerformanceGameTests.class")),
+                () -> assertTrue(build.contains(
+                        "a zero-test server run is not accepted")),
                 () -> assertTrue(build.contains("executionSampleCount == 0L")),
                 () -> assertTrue(build.contains("report.recordDelta != 100")),
                 () -> assertTrue(build.contains(

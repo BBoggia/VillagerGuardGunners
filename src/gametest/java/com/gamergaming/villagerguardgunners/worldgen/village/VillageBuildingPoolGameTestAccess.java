@@ -1,6 +1,8 @@
 package com.gamergaming.villagerguardgunners.worldgen.village;
 
+import com.gamergaming.villagerguardgunners.init.ModBlocks;
 import com.gamergaming.villagerguardgunners.mixin.accessor.StructureTemplatePoolAccessor;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSpawner;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -537,6 +539,123 @@ public final class VillageBuildingPoolGameTestAccess {
                             + ", record=" + recordPresent);
             placementIndex++;
         }
+        helper.succeed();
+    }
+
+    public static void verifyIntegratedWatchtowerVariants(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var templateManager = level.getStructureManager();
+        Holder.Reference<StructureProcessorList> processors = level.registryAccess()
+                .registryOrThrow(Registries.PROCESSOR_LIST)
+                .getHolder(ResourceKey.create(
+                        Registries.PROCESSOR_LIST,
+                        VillageBuildingPools.EMPTY_PROCESSORS))
+                .orElseThrow();
+        List<String> biomes = List.of("plains", "desert", "savanna", "snowy", "taiga");
+        int placedCount = 0;
+        for (int biomeIndex = 0; biomeIndex < biomes.size(); biomeIndex++) {
+            String biome = biomes.get(biomeIndex);
+            ResourceLocation entryId = id("watchtower/" + biome);
+            ResourceLocation templateId = id("village/" + biome + "/watchtower");
+            StructureTemplate template = templateManager.get(templateId).orElse(null);
+            helper.assertTrue(
+                    template != null && template.getSize().equals(new Vec3i(7, 9, 7)),
+                    "Integrated Village Watchtower lost its compact bounds: " + templateId);
+            VillageBuildingPoolElement element = VillageBuildingPoolElement.create(
+                    entryId,
+                    VillageBuildingType.WATCHTOWER,
+                    templateId,
+                    processors,
+                    StructureTemplatePool.Projection.RIGID);
+            List<StructureTemplate.StructureBlockInfo> jigsaws =
+                    element.getShuffledJigsawBlocks(
+                            templateManager,
+                            BlockPos.ZERO,
+                            Rotation.NONE,
+                            RandomSource.create(901L + biomeIndex));
+            helper.assertTrue(
+                    jigsaws.size() == 1
+                            && jigsaws.get(0).nbt() != null
+                            && ("minecraft:village/" + biome + "/streets").equals(
+                                    jigsaws.get(0).nbt().getString("pool")),
+                    "Integrated Village Watchtower lost its biome road connector: "
+                            + templateId);
+
+            for (Rotation rotation : Rotation.values()) {
+                StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(rotation);
+                BlockPos target = helper.absolutePos(new BlockPos(
+                        8 + biomeIndex * 18,
+                        2,
+                        8 + rotation.ordinal() * 18));
+                List<StructureTemplate.StructureBlockInfo> markers = element.getDataMarkers(
+                        templateManager,
+                        target,
+                        rotation,
+                        false);
+                helper.assertTrue(markers.size() == 1,
+                        "Integrated Village Watchtower lost its anchor: " + templateId);
+                BlockPos anchor = StructureTemplate.calculateRelativePosition(
+                        settings, markers.get(0).pos()).offset(target);
+                boolean placed = element.place(
+                        templateManager,
+                        level,
+                        level.structureManager(),
+                        level.getChunkSource().getGenerator(),
+                        target,
+                        BlockPos.ZERO,
+                        rotation,
+                        BoundingBox.infinite(),
+                        RandomSource.create(1_001L + placedCount),
+                        false);
+                helper.assertTrue(placed,
+                        "Integrated Village Watchtower failed rotated placement: "
+                                + templateId + "/" + rotation);
+
+                BlockPos upperAnchor = anchor.above(5);
+                BoundingBox guardBounds = new BoundingBox(
+                        upperAnchor.getX() - 1,
+                        upperAnchor.getY() - 1,
+                        upperAnchor.getZ() - 1,
+                        upperAnchor.getX() + 1,
+                        upperAnchor.getY() + 1,
+                        upperAnchor.getZ() + 1);
+                for (int memberIndex = 0; memberIndex < 2; memberIndex++) {
+                    BlockPos position = GuardPostSpawner.spawnPosition(
+                            upperAnchor, rotation, memberIndex);
+                    helper.assertTrue(
+                            GuardPostSpawner.isSafeSpawnCell(level, guardBounds, position),
+                            "Integrated Village Watchtower lost safe upper guard cell "
+                                    + memberIndex + ": " + templateId + "/" + rotation);
+                }
+
+                for (int y = 1; y <= 6; y++) {
+                    BlockPos ladder = StructureTemplate.calculateRelativePosition(
+                            settings, new BlockPos(3, y, 5)).offset(target);
+                    helper.assertTrue(
+                            level.getBlockState(ladder).is(Blocks.LADDER)
+                                    && level.getBlockState(ladder).canSurvive(level, ladder),
+                            "Integrated Village Watchtower ladder is missing or unsupported at y="
+                                    + y + ": " + templateId + "/" + rotation);
+                }
+
+                Vec3i size = template.getSize();
+                for (int x = 0; x < size.getX(); x++) {
+                    for (int y = 0; y < size.getY(); y++) {
+                        for (int z = 0; z < size.getZ(); z++) {
+                            BlockPos position = StructureTemplate.calculateRelativePosition(
+                                    settings, new BlockPos(x, y, z)).offset(target);
+                            helper.assertTrue(
+                                    !level.getBlockState(position).is(ModBlocks.ARMORY.get()),
+                                    "Integrated Village Watchtower unexpectedly placed an Armory: "
+                                            + templateId + "/" + rotation);
+                        }
+                    }
+                }
+                placedCount++;
+            }
+        }
+        helper.assertTrue(placedCount == 20,
+                "The complete integrated Village Watchtower rotation matrix was not placed");
         helper.succeed();
     }
 

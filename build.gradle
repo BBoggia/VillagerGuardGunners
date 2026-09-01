@@ -356,6 +356,33 @@ tasks.register('generateVillageBuildingTemplates') {
                     throw new GradleException(
                             "Village-building ${building} requires known symbols and exactly one connector and anchor")
                 }
+                if (building == 'watchtower') {
+                    if (size != [7, 9, 7]) {
+                        throw new GradleException(
+                                'The integrated Village Watchtower must retain its compact 7x9x7 bounds')
+                    }
+                    (1..6).each { y ->
+                        if (layers[y][5].charAt(3) != 'H') {
+                            throw new GradleException(
+                                    "The integrated Village Watchtower ladder is discontinuous at y=${y}")
+                        }
+                        char backing = layers[y][6].charAt(3)
+                        if (backing in ['.', 'V', 'H', 'J', 'A']) {
+                            throw new GradleException(
+                                    "The integrated Village Watchtower ladder is unsupported at y=${y}")
+                        }
+                    }
+                    [[2, 3], [3, 3]].each { position ->
+                        int x = position[0]
+                        int z = position[1]
+                        if (layers[5][z].charAt(x) == '.'
+                                || layers[6][z].charAt(x) != '.'
+                                || layers[7][z].charAt(x) != '.') {
+                            throw new GradleException(
+                                    'The integrated Village Watchtower lost a safe upper guard cell')
+                        }
+                    }
+                }
 
                 File template = new File(
                         outputDirectory,
@@ -1025,6 +1052,16 @@ tasks.matching { it.name == 'runGameTestServer' }.configureEach {
                     'run-phase8-performance/config/villagerguardgunners/guard_gunners.toml')
             phase8PerformanceReportDirectory.get().asFile.mkdirs()
         } else if (villageBuildingPerformanceEnabled.get()) {
+            File harnessClass = layout.buildDirectory.file(
+                    'classes/java/performanceGameTest/com/gamergaming/'
+                            + 'villagerguardgunners/worldgen/village/'
+                            + 'VillageDefenseBuildingsPerformanceGameTests.class')
+                    .get().asFile
+            if (!harnessClass.isFile()) {
+                throw new GradleException(
+                        'Village-building performance harness was not compiled; '
+                                + 'rerun compilePerformanceGameTestJava with --rerun-tasks.')
+            }
             delete villageBuildingPerformanceReportDirectory
             delete layout.projectDirectory.dir('run-village-building-performance/world')
             delete layout.projectDirectory.file(
@@ -1034,6 +1071,18 @@ tasks.matching { it.name == 'runGameTestServer' }.configureEach {
             delete layout.projectDirectory.dir('run-gametest/world')
             delete layout.projectDirectory.file(
                     'run-gametest/config/villagerguardgunners/guard_gunners.toml')
+        }
+    }
+    doLast {
+        if (villageBuildingPerformanceEnabled.get()) {
+            File reportDirectory = villageBuildingPerformanceReportDirectory.get().asFile
+            File report = new File(reportDirectory, 'village-buildings-100.json')
+            File profile = new File(reportDirectory, 'village-buildings-100.jfr')
+            if (!report.isFile() || !profile.isFile() || profile.length() == 0L) {
+                throw new GradleException(
+                        'Village-building performance GameTest produced no JSON/JFR evidence; '
+                                + 'a zero-test server run is not accepted.')
+            }
         }
     }
 }

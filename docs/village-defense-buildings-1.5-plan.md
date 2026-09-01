@@ -8,6 +8,11 @@ training behavior remains passive. Step 8 adds the isolated 100-candidate
 performance workload and release-evidence boundary. Development artifacts use `1.5-dev`;
 they must not be presented as a finished 1.5 release.
 
+Step 9 is a focused completion pass for the integrated Village Watchtower that
+was initially staffed through Step 6. It hardens the internal ground route and
+adds the dedicated five-biome, four-rotation functional matrix without
+changing the standalone Watchtower.
+
 ## Exact inherited baseline
 
 | Identity | Value |
@@ -314,6 +319,20 @@ the manual matrix as a separate required boundary. The complete method is in
 - focused JVM and Forge integration tests pass; and
 - visual shells remain default-off until manual generation review passes.
 
+## Step 9 integrated Watchtower acceptance criteria
+
+- every integrated tower remains a compact 7x9x7 village jigsaw piece with
+  exactly one matching biome-road connector;
+- all six ladder segments are continuous and retain valid backing blocks;
+- both possible upper-platform guard positions have a solid floor and two
+  collision-free blocks under all four rotations;
+- the intrinsic garrison ceiling remains two and uses only the independent
+  `villagerguardgunners:village_watchtower` group;
+- integrated towers never place a Village Armory or reuse standalone
+  Watchtower structure, group, marker, loot, or identity state;
+- initialized towers add zero recurring work; and
+- natural terrain, road, navigation, and mixed-mod review remain manual.
+
 ## Verified Step 2 artifact
 
 The final Steps 1–2 Java 17 gate passed 464 JVM/source-contract tests, compiled
@@ -404,3 +423,20 @@ samples. The development JAR remains
 The captured JFR SHA-256 is
 `88476a177aa0005d24f30b1e3b7cca940eb1e154eb00329d9e122a3c178a2820`.
 Timing remains same-machine evidence only and is not an absolute release gate.
+
+## Verified Step 9 artifact and evidence
+
+The Step 9 Java 17 gate passed 507 JVM/source-contract tests with no failures,
+errors, or skips and all 103 required Forge correctness GameTests. The new
+integrated-tower test placed five biome variants under all four rotations. The
+isolated performance GameTest then passed again with 25 startup entries, an
+idempotent 25-entry repeat, 100 successful passive placements, stable records
+through 200 idle ticks, and unchanged forced chunks.
+
+The development JAR is `villagerguardgunners-1.5-dev.jar`, 1,075,740 bytes,
+with SHA-256
+`c80aff053cef3c38362da1f08724ada3b3267f23b694e80b9963046186777e06`.
+The recaptured JFR SHA-256 is
+`b7d1073428cb36ecb65dae0717a96e3c7b4fe16cc5bdce1dc2fdb5431af1eb2b`.
+Natural generation, visual review, old-world behavior, and mixed-mod village
+compatibility remain separate manual gates.

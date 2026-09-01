@@ -431,7 +431,11 @@ bounded ammo-only initial stock and the existing event-driven resupply system.
 Training Yards remain passive. Step 8 adds the isolated
 [100-candidate performance and release-evidence gate](docs/village-defense-buildings-step-8.md)
 without treating compact performance evidence as natural-terrain or mixed-mod
-approval.
+approval. Step 9 completes the
+[integrated Village Watchtower](docs/village-defense-buildings-step-9.md) with
+a compact 7x9x7 biome-aware shell, a supported internal route from its upper
+platform to ground level, a strict two-guard ceiling, and no Armory or runtime
+controller. It remains independent from the rare standalone Watchtower.
 
 ## License
 

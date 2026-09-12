@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "minecraft:block/cartography_table_top",
+    "front": "minecraft:block/cartography_table_side3",
+    "side": "minecraft:block/barrel_side"
+  }
+}

@@ -1,0 +1,1640 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:small/village_mountain"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "47c5a90211e4bd8dbe4e96702d4456126654b3562e0fad5435ccc58c35cfe631",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "4f5029c055b7935035a9584f874d865901f2acc5e59d89b7aa3277ace455c749",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "26c1223e97e82f8cdf1dbb3283c6ec92e30ad7254f35dd98822d964ef1ca3f0c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "0fd7b2bfd19bda6737f958a86b8b61e925d9130ba25f303792e3475e58457af6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "371a98a33d3c62b6d7031a00e476cab8d4f329cd937a982cc67d283c4910efc3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "73ef233097e6d54a15b5efaca180e8335bdd8800ce96d01b842f27c51d29db8c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "39b8036b7736c30ecbaa94a6e4129638976941f8f0e04082e53394b0de433bcd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "6daa0c85b6919f429a0a8f9ff99d16868332f7a5772bcc805d6a11a661270145",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "bd75e59eab5a504ad885b331f7785163f25e845f930f04a6d3930ccb204ab1e6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/lamp_5": [
+      {
+        "kind": "decoration",
+        "sha256": "47d0341724fdb8c6c582d949b96e8de303cfc2a86fdbad7962cbaee24b1f27fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/lamp_6": [
+      {
+        "kind": "decoration",
+        "sha256": "ff42ecfb238661b999efeca043d5642d644103872acae03ec7a560e975e43086",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "d85475c04e29dbd28a85e6eb7da17f4c9a9b66f993b25dfd66865ca7511dc25e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/sakura_1": [
+      {
+        "kind": "decoration",
+        "sha256": "195345ad73977537a376ee65096b800a4bf1f1813d384aa98a77564a8cf3e4a3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/sakura_2": [
+      {
+        "kind": "decoration",
+        "sha256": "f40bdcb88417ce7b24b02033d842e91d416b2832b64f8581d1840400c3c95d4c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/sakura_3": [
+      {
+        "kind": "decoration",
+        "sha256": "f0b931357a977630bedece2392a4931d18b1ea4b4a099344e1ef76894e2038f8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "cf3a61d83d64e9906e21f5c67b9925ffda09ed00cc66a32c266b97e233c48148",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "8604fb34b624a60671356a3cba875c46d93ba63c9b27739b617acd77e3dbae2d",
+        "beds": [
+          [
+            3,
+            5,
+            6
+          ],
+          [
+            3,
+            5,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/house/big_2": [
+      {
+        "kind": "residence",
+        "sha256": "17bdecd69cdcd35a0f1af305fa400303c906ef83c872d64eed76be01e074093d",
+        "beds": [
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            5,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "17ee3956e11c2922e4a2d81e402b855274d08145890f1f4fccd5cc752cda9b96",
+        "beds": [
+          [
+            7,
+            5,
+            3
+          ],
+          [
+            7,
+            5,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "db3f586d34fb97a9c178fc155d7e08f4d952327d8114e7256669d44cd2cea0a6",
+        "beds": [
+          [
+            9,
+            1,
+            3
+          ],
+          [
+            9,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/house/med_3": [
+      {
+        "kind": "residence",
+        "sha256": "b0b71ca62802fe7265d01cea40bdb54825ab26dd512cd82231e03ade96d97bab",
+        "beds": [
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            5,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "b0181178e3b9d06a0c44c3948ce999df84b32c3f7effdb0c57f898dc82ce5e66",
+        "beds": [
+          [
+            5,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            1
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "662ee646dc1544298d077ce1cc7df0ad6d25ba3744a7d02a796b5d4cde516500",
+        "beds": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            1
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "9549ebae2cb517297adfb9ed2030d9ebc395247fbc0d994026379204fae2dab0",
+        "beds": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/house/small_4": [
+      {
+        "kind": "residence",
+        "sha256": "bb49eb148f4cd8cf5e9e1d79dd4417ddfe7562b679fb0dcb0897c1667d3f6d36",
+        "beds": [
+          [
+            3,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "5abfb682db4c6d44f29ef88ed6add2bca1938513443149029948f10a5f615a67",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            2
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "80a9b3f312e86589b8317c9141e59c35943996776e0c6d8e1b9034300b8f4ea8",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            0,
+            0
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "9b12c9ef527bbbde5ab85b866e438e22f631939826e1177978dd35cd2694046d",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "8bfb45d8aafc717c1d187a919ee2a24a2c4116b3241a1ea4db42ca748ebc32aa",
+        "beds": [
+          [
+            3,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "82e7b06ff2fc9c85748735037eb15e447f811d38cbd2a9dc2cda672564214470",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "5b8cdb35c3185cf841f53d2af649532ac6dc393510b3ee5ec61c66d964dddbdb",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "9b27af568509d6be833ef3622f3ae5a44ebc05bee4fe45016f3a390e58184e67",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "247d4e83200006b8d0b0ea57dadcf14d2f244f28def766b22b7d43757244aeb4",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            7,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "e229d3c47ce7d10ff8532a4e9092bdb15bafc39d244d911c242676f531a8c46f",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/cartography": [
+      {
+        "kind": "service",
+        "sha256": "712b736c3617faee7a1a806a266b8a9ff3d3c350f660d3a551458f60684c0eeb",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            1
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "187190fca67e864e8ad9a3e9e015729e8db540f18da25a806380632c154b88f7",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "b768f52570b5e7c04bbeadec5bc9e9faef4c80b50b0e276cc4bea5333ea58247",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "6698b4d64204b85e67b5c960f19e19d52f399251bdbc960a09cfcd4c86c524f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "38a2cdbc3a48ceb483a7d048603bbe5e96d9c19c9d4866442d6b847135d666f9",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "eaf51a30026fe8b825a60ead47d885b9fef2836e27ca3db97604cecbf87a94bf",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            6,
+            14
+          ],
+          [
+            8,
+            7,
+            12
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "71fe4d9ea7862c28c2e6d324aafceff53a66473678e379709a76131fc460b51e",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            7,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "503bc2eb6593b157602003f30a2ade79d1b86c629e54b1514ae1e1b5b3adf2af",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            2
+          ],
+          [
+            7,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/fisherman": [
+      {
+        "kind": "service",
+        "sha256": "5de1c9450db9465e92168a3e022326e7bae1dd706e5c7e50d18adc719b7007d9",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            1
+          ],
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "2dea1aee43dfce67bcc4a9f0eb44340f91d93717a646c8eb60b35800f3ca7825",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "e9ca3a927177f43b626c6660d1487cbcf503466b57a2500243c12eb68b2970ec",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "3a4a1a9634152b013567edc8efa6bf197cc802e1bd03954dcf92eff9b00d3d1b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "1954de8afd17c527b01963c57a6929d3d102371b9590b8b1eeac8cec6c3a4de6",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "fad2cc2c7b0efc00dba71f167a1bb660a9e00305bba20f87ad0f349a822022ca",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            10
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/horticulturalist": [
+      {
+        "kind": "service",
+        "sha256": "ee5660d4654e538565ac957b349276bc2a07ff821d8b0b96405b1189351979d3",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "c6b86c4c461f3f201fa1a9e1ee5fc7e495684b6dfc77b2324e46fd85d16e2035",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "149a92e83935f4697e925e52ae286151366b4c777328629a0bae69540943a931",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "7d2e63c3bfbbdc3c584c75945fbef16e214143662f09d80545b2fe95eb0109de",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            10
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "7d1c1356c97ab647a081353a8f15f67c1514575a2a3bc37125a776e753d57aea",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "93ee20eb69e0833ddc2f1fd592fb17859382eca7a4c0f0e57b67233facbe4543",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "118d5affb5f800b8b10b3371b39ef83608a68c6c21ec81542e3d32fc64f97253",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/leatherworker": [
+      {
+        "kind": "service",
+        "sha256": "ffd1c90a840a514c9fd224b1382de005cb910237e8fb2013e86b72a92e22c510",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "f9dce0e1204c6ca131735c89a7999bccb1b7b5cebdb219c99948988214651a7e",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "7e6c7ab6f53956c31d6c2a2be66d425d6bd96da2c077c69e33d2206fb4c2efcd",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "5500791b87feeb38765db73da1d7135c499d12b8fa4135507f9b5abde26a28fb",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            5,
+            2,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "8e090c4d41fcdcb677f2ea7bcd293197c3e991dbd19d88ad1ed6fc0c07340a7a",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "99f779ebfcdc870363ec81e867b85f99acdd377d08758fe8641a91b7c3a1e319",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "6f17d7d209bc8ea8549d987effcb1d1f99d36a9623ee4713f66069d4c367d45f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            7,
+            0,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/pen": [
+      {
+        "kind": "service",
+        "sha256": "85548b194a336e8d2c6c9882f3f3a44c1a9a49cd58dcf7a5dbac353526a7efb4",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "32c45ba73a7bbc5265ed79a86ba2c9a17ccd1f716d2feebc40cad00785ce2bbf",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            0,
+            9
+          ],
+          [
+            7,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "2f5a7789b65205fb58711ed9f8d4d7566d830e10840ae1a2b01a500af0744aae",
+        "beds": [
+          [
+            4,
+            6,
+            5
+          ],
+          [
+            4,
+            6,
+            7
+          ],
+          [
+            4,
+            8,
+            5
+          ],
+          [
+            4,
+            8,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            6,
+            9
+          ],
+          [
+            6,
+            6,
+            9
+          ],
+          [
+            7,
+            1,
+            14
+          ],
+          [
+            7,
+            2,
+            11
+          ],
+          [
+            7,
+            6,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "204305dcfbd837873b50ce2001e31c26c67a3917f951c37ee6d8334f679be2f5",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "b6d34a9ee3115aa5cde76d2af75e2e72ffa9ae30646e8ddd64a0e6b214e47ca8",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "ca0788ffd3d3bf94a2e8d6d65fc6d75c86715713f2211366a3f17d2b6caecb0e",
+        "beds": [
+          [
+            9,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "2149c404fbee9a274abb775bcd654f4774d568cd3c49e9c4165fd805dcfa2e3c",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "e404e1a5c62819cf13f5fd00d7e54933b69593a219f94d5a4df6cb0b3025a54c",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/shepherd": [
+      {
+        "kind": "service",
+        "sha256": "637e4df95bde704946823d1fc8f39036255b040b42654b7bd53a1e04c709becf",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            1
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "6b615aaf2353493f46c9ce15e5c4d64964324803b2cdc4fe6d02254e0ecd561a",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "a7ef63cc2e9a1d5f670fc6409222c67709342242bd690b9f5451016811bfadd6",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            5,
+            0
+          ],
+          [
+            5,
+            6,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "0d9cded2fc1922a12d06b63bc25148bc7b47fcbcac79691dbd568d299b314641",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            5,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "eb16e4a01c43d92531b6bd36f5ed5e0b3a5f3e4378c9c1831f0edb02a03a563d",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "27afcad8831580b0fb6fa9a846455f6adeb0d9dfd73816e559af97fadae5f50d",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "5958d6ec33f67e1d1ae7fbe27a64869da10a74a921b7e9db9f7bf55ad46d9882",
+        "beds": [
+          [
+            2,
+            6,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "8fd756056639f0e5d5dd08f17e4e91e52d947b90052f1ba51c3aa5accb72b300",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mountain/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "7f9eb1d720cd63c430f6df161997ca43f7c25838ca2f10109cc2bc4b50b04204",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "77e735c2c3db7d049d244f1912cd3927b6db6b9feb4ad3e8df0eff7dab593af8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "363fb0866fdf39e16155a1ffdbccf9932eaecc515f2817219ab7492c57a739d1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "a6bba2c5a4665fd797b1bfaec9b374478cb3fd929c5edbbcd2b678610e19beba",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "2742786c3f22772f0c50215fe6d14fede02eb182ee520fda081e064aef247ff5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "aa51073a484df3625a1b24531417f709679a1fc0a777307b7a3c026a15a1cee5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "83fa96db742439db3e7f73465b9ddad4806353f8d25014c1181e57c10cfeb83b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "5fc693496e25ddb7f85ca085fbed58380e95945fd1f89d386ebe3a717bd0c259",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mountain/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "18272eaf5dfac4fe3da76546c2b6d33c870e8e6bc0604cf76cd9ef268caa5a7f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "b370cbf5b332e322571a911cd74e05bbbfc8f6c18cfcd4f996b999a215b3493a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "db96c95a62fda81b9366cf61086dfc78655c875b418b7e64ec00bbeb701e64c9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "275183d9e98a8094e1ce3afadefb43ab84058ac8c2edc5cd923aa5117f73b855",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [
+    "steep_terrain"
+  ],
+  "size_family": "small"
+}

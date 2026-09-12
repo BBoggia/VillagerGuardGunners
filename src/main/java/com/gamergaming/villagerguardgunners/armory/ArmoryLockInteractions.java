@@ -61,9 +61,11 @@ public final class ArmoryLockInteractions {
         if (binding == null) {
             return InteractionResult.CORRUPT_LEDGER;
         }
-        SquadMetadata metadata = SquadRegistrySavedData.get(level.getServer())
-                .find(binding.squadId())
-                .orElse(null);
+        SquadRegistrySavedData registry = SquadRegistrySavedData.get(level.getServer());
+        if (!registry.enabled()) {
+            return InteractionResult.REGISTRY_DISABLED;
+        }
+        SquadMetadata metadata = registry.find(binding.squadId()).orElse(null);
         if (metadata == null) {
             return InteractionResult.SQUAD_NOT_REGISTERED;
         }
@@ -100,6 +102,8 @@ public final class ArmoryLockInteractions {
                     "message.villagerguardgunners.armory.corrupt_ledger");
             case UNSUPPORTED_LEDGER -> Component.translatable(
                     "message.villagerguardgunners.armory.unsupported_ledger");
+            case REGISTRY_DISABLED -> Component.translatable(
+                    "message.villagerguardgunners.armory.registry_disabled");
             case SQUAD_NOT_REGISTERED -> Component.translatable(
                     "message.villagerguardgunners.armory.missing_squad");
             case NOT_LEDGER, INVALID_REQUEST -> Component.translatable(
@@ -123,6 +127,7 @@ public final class ArmoryLockInteractions {
         BLANK_LEDGER,
         CORRUPT_LEDGER,
         UNSUPPORTED_LEDGER,
+        REGISTRY_DISABLED,
         SQUAD_NOT_REGISTERED,
         NOT_LEDGER,
         INVALID_REQUEST;

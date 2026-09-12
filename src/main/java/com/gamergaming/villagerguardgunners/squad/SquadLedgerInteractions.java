@@ -107,6 +107,9 @@ public final class SquadLedgerInteractions {
                             "message.villagerguardgunners.squad_ledger.unsupported",
                             result.storedVersion())
                     .withStyle(ChatFormatting.RED);
+            case REGISTRY_DISABLED -> Component.translatable(
+                            "message.villagerguardgunners.squad_ledger.registry_disabled")
+                    .withStyle(ChatFormatting.RED);
             case REGISTRY_FULL -> Component.translatable(
                             "message.villagerguardgunners.squad_ledger.registry_full")
                     .withStyle(ChatFormatting.RED);

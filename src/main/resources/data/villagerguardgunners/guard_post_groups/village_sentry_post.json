@@ -7,7 +7,7 @@
       "difficulties": ["easy"],
       "loadout_pool": "villagerguardgunners:easy",
       "members": [
-        { "role": "villagerguardgunners:rifleman" }
+        { "role": "villagerguardgunners:sentry" }
       ]
     },
     {
@@ -16,7 +16,7 @@
       "difficulties": ["normal"],
       "loadout_pool": "villagerguardgunners:normal",
       "members": [
-        { "role": "villagerguardgunners:rifleman" }
+        { "role": "villagerguardgunners:sentry" }
       ]
     },
     {
@@ -25,7 +25,7 @@
       "difficulties": ["hard"],
       "loadout_pool": "villagerguardgunners:hard",
       "members": [
-        { "role": "villagerguardgunners:rifleman" }
+        { "role": "villagerguardgunners:sentry" }
       ]
     }
   ]

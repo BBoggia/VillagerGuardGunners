@@ -1,0 +1,931 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:tavern_village"
+  ],
+  "templates": {
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_basichouse1": [
+      {
+        "kind": "residence",
+        "sha256": "e801e2c1353377bcfd2d7e46e071c300bab2b6b94df536b592abc0e21e987658",
+        "beds": [
+          [
+            4,
+            7,
+            4
+          ],
+          [
+            4,
+            7,
+            5
+          ],
+          [
+            4,
+            7,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_basichouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "5ea7cdb9dede6eaa046c95a67518d6a95852a8d9c86387f097d0a4d12143213e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_basichouse2": [
+      {
+        "kind": "residence",
+        "sha256": "998b52cfa0107d0ac3bbc73d4dfd6fbc07a3fce893550d4142361d35db40835d",
+        "beds": [
+          [
+            4,
+            7,
+            4
+          ],
+          [
+            4,
+            7,
+            5
+          ],
+          [
+            4,
+            7,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_basichouse2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "ba0e9f6ac753a2cacbdd0b753715e8e7589f409dc7e8cb829343ec5e0d0a2bd7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_basichouse3": [
+      {
+        "kind": "residence",
+        "sha256": "a3992a2cfa82b55e185265d086f3701d267d94269c87f6f1acad5685b4b24f60",
+        "beds": [
+          [
+            4,
+            7,
+            4
+          ],
+          [
+            4,
+            7,
+            5
+          ],
+          [
+            4,
+            7,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_basichouse3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "21f1192f8fd25cf18d25088d4e5e5ebbe4c34957bf5eaf39b6b7e3fed2278f98",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_blacksmith": [
+      {
+        "kind": "residence",
+        "sha256": "762a002f2a0f061957ea4d58d6e07b4934fdb1e9c9ea07d48f244c8a4bf14ad9",
+        "beds": [
+          [
+            15,
+            8,
+            7
+          ],
+          [
+            16,
+            8,
+            7
+          ],
+          [
+            17,
+            8,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_blacksmith_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "d333b8f29ca22a42a4bfa7deb72c4866a718aa6af4b7990b50c6b46a0c560d25",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_butcher": [
+      {
+        "kind": "residence",
+        "sha256": "ef0b101359d86f910bbdedf398ce7caa62f1ff81d7761c8a92538e80a1a86894",
+        "beds": [
+          [
+            3,
+            8,
+            12
+          ],
+          [
+            3,
+            8,
+            13
+          ],
+          [
+            3,
+            8,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            2,
+            18
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_butcher_bottom": [
+      {
+        "kind": "service",
+        "sha256": "d6240efd2a2266597cd67e0d3e12b3663e8fb9b709f5ecb75692dd6a2dc41d1d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_farmhouse1": [
+      {
+        "kind": "residence",
+        "sha256": "1bb1a2fab027bb438395e9a4d7fd8d1eeb535501d082d8b45d9b1d6bd47306d6",
+        "beds": [
+          [
+            14,
+            7,
+            22
+          ],
+          [
+            15,
+            7,
+            22
+          ],
+          [
+            16,
+            7,
+            22
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            1,
+            14
+          ],
+          [
+            20,
+            1,
+            19
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_farmhouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "0cfe79a1ff69b6546972a34cbdd9c3fd15938ae8574b03d86edac461cab1b709",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_farmhouse2": [
+      {
+        "kind": "residence",
+        "sha256": "15373b185b16cbf6212be7ed25b80be7a9a72b153cdb3f03969a9c95af9b7695",
+        "beds": [
+          [
+            20,
+            7,
+            18
+          ],
+          [
+            21,
+            7,
+            18
+          ]
+        ],
+        "entrances": [
+          [
+            16,
+            1,
+            15
+          ],
+          [
+            26,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_farmhouse2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "43e5382e9355642271d8bbaab54db243c878e3ebc6ce38eb64d26ad47a782171",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_shepard": [
+      {
+        "kind": "residence",
+        "sha256": "04fd54812ff90a76d3dd49f64943901482a69f25a940fefbbecf9f5d6837f60d",
+        "beds": [
+          [
+            4,
+            8,
+            11
+          ],
+          [
+            4,
+            8,
+            12
+          ],
+          [
+            4,
+            8,
+            13
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            2,
+            17
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_shepard_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b38675c8eecca724a99b7cae7fdb647b147695b802dbcc6d93e7084503488960",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_stable": [
+      {
+        "kind": "residence",
+        "sha256": "cbb5596d2ea25f17d290294693f8025dd5ea848f31300a9cff42a8d458076a6e",
+        "beds": [
+          [
+            7,
+            6,
+            3
+          ],
+          [
+            7,
+            6,
+            4
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_stable_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b86b2ed2e10abd41b1d1458e3598752223ae7d0ef0eefb936c11dd2ccac06e6b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/house/tavern_village_tavern_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "9ed257244b9146d3b80ee8f621549ffd8ae4d1f1095039454a0db59f4a851480",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/intersection/tavern_village_intersection1": [
+      {
+        "kind": "decoration",
+        "sha256": "07f0fa0abc30fea2ef92d28acf9d74b2c79db3374eb29354bbce2b61baf38c55",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall1": [
+      {
+        "kind": "service",
+        "sha256": "72bd97b451f5933c58206cae1ed0168b1f1fccddb0d2b1b5a8673b5c828b57a1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "7557615fa72f3f7cd5a21fe72880d6c122afb08e1a9e5828982f315f696b7aff",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall2": [
+      {
+        "kind": "decoration",
+        "sha256": "08790a7c88fc794c7ab82e008a477f887970847493212d0aa13d70d67a94a056",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "d09cb5721519d83408bcc33afa43c7219a2209dd9b55248e3458691d651ba906",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall3": [
+      {
+        "kind": "service",
+        "sha256": "9330240dc23942bc11bffcc88fc148e7733e46d4f5f2cdb093fd70ded5250af6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "ce5702a698c00d86bc6260c2fa341458eb61321e794da14dde8883b6975aacd0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall4": [
+      {
+        "kind": "service",
+        "sha256": "dc3df9504e3bc7923cfc1f1a0014e712804c2bf500b7aadcd167a784cf272f04",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall4_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "747b29cb3a1e608d6c86d0683105b4f9bc8d78d7e6ae4390acf2b809a63ba128",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall5": [
+      {
+        "kind": "decoration",
+        "sha256": "f4f819b4f3e0f3d88ef02f8616381dabc71567a796ed7db2d57959685e17e79b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall5_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "198f7421c203813e405ca4d8b37f6718febb7a6b6578a8708de404919a4fa5fc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall6": [
+      {
+        "kind": "service",
+        "sha256": "d341f94c0090cc36dde760995d140b4cadb9a6782b97c16207d753045c6ebbef",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall6_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "2446944e69ac5c1409af663806ecae63f0c7ef0ff33bad3dfc547958bef38455",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall7": [
+      {
+        "kind": "decoration",
+        "sha256": "29caf1bbcd9b6e516883dc2780ad86151199fce27c8f0c89ee3be38e3ed03a10",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/market/tavern_village_market_stall7_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b1587fc8efca3329ceb7dbbe7c984d9aa46c82eb50acfe4150094596fcdc27b4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/mobs/tavern_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "77cbc6cb9766a89ecc7d169165c676aeda7545b1da8b622172c55c47f38ebefd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/mobs/tavern_village_villager_guard": [
+      {
+        "kind": "decoration",
+        "sha256": "4020ba807bd0fe0a3f23983a12ba91e6d4218ab52ce499921647416bad6d950c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_bell": [
+      {
+        "kind": "road",
+        "sha256": "9dfedfd8dc88f109ad8fb320ae7b283e3c3476f42de595f2a22d059e7f998680",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_light_right": [
+      {
+        "kind": "road",
+        "sha256": "e1a2744a87ec4ea8ad2ed874844bb320e6a955a1a9231a28999bd75b90f33cd1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_house1": [
+      {
+        "kind": "road",
+        "sha256": "9bf86082b5bbcd73c97cd6146ea0556dd4298602d3cae5cd32e60fa8f353a8cd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_house2": [
+      {
+        "kind": "road",
+        "sha256": "990d0783954951cb7119932f2f46ebd8ea1b54e702abec1a436b12f49095ed9d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_house3": [
+      {
+        "kind": "road",
+        "sha256": "7ad3ead5efeaf76e0a9a86bea0c81298dae8562c375faa6198f091beac0c9f62",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_house4": [
+      {
+        "kind": "road",
+        "sha256": "1b20d60336d464508e1701fa9a129fbd2bc9d8234ab1eda8f6ed31ae4c01786a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_house5": [
+      {
+        "kind": "road",
+        "sha256": "3020eaa2b22b23fb53af40d4f9de13fdea86f9e904f6948ab30c329fc95ded1a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_house6": [
+      {
+        "kind": "road",
+        "sha256": "4ecb049e62327557af1a497d7b85c4999351cbfbf7def99e0387759be74d0821",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "ac36c1d5bd92a1b51f40c709cf8781c4a69af594e0994405ab7a7c0c7a78b8ad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "02ff81c789e4b11891af31bf69c92b6db64812c568c2cfadae9990bf8a62f493",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "7b9cc853928847ae7aa8d4a64f1e3aa4b9f32b0d5edc4d8ec2b40123ad16b0bc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "29c3735e19220e3a71f997a3d39d616b7a6e35aa4c08a49bfb894120cd366c09",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_large5": [
+      {
+        "kind": "road",
+        "sha256": "99c57e4b3dca22f6088974a48ef470266543daf72f68ae719fac23cb79b94719",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_large6": [
+      {
+        "kind": "road",
+        "sha256": "b10fa88ed899803b2701e49dbf9182b70e5102f6e8b37351370ccafc8a4836d1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_market1": [
+      {
+        "kind": "road",
+        "sha256": "589d434d30a6a38273a750cf7715d9a01ea5bfb3740a53c9cad693adc80e4c2a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_market2": [
+      {
+        "kind": "road",
+        "sha256": "1fafb48dea91b39cc92d145b7394bf018821ca4c0fdafc2dde562814a254194f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_market3": [
+      {
+        "kind": "road",
+        "sha256": "8ab25633c956b0f97ce0bc0b26b067dbe2ead2d2a49771494a0a9f546de55444",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_well1": [
+      {
+        "kind": "road",
+        "sha256": "186a34b5f122a1c3cade032778c37f68a1ddb192fd08481f27ca83a1fd577fe1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/path/tavern_village_path_well2": [
+      {
+        "kind": "road",
+        "sha256": "46bc62453faf4d45b1ea18172fc434cd2772e63c7e9d95c3663ea59908f8479b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/tavern/tavern_village_tavern": [
+      {
+        "kind": "residence",
+        "sha256": "cca93ad8a6abc393dc9822309aeefc19f51c85299f02da5b8c1055b5638fa8d5",
+        "beds": [
+          [
+            40,
+            17,
+            20
+          ],
+          [
+            40,
+            17,
+            30
+          ],
+          [
+            40,
+            19,
+            29
+          ],
+          [
+            43,
+            17,
+            19
+          ],
+          [
+            43,
+            17,
+            31
+          ],
+          [
+            43,
+            19,
+            20
+          ],
+          [
+            43,
+            19,
+            31
+          ],
+          [
+            46,
+            17,
+            19
+          ],
+          [
+            46,
+            17,
+            30
+          ],
+          [
+            46,
+            19,
+            20
+          ],
+          [
+            46,
+            19,
+            30
+          ],
+          [
+            49,
+            17,
+            31
+          ],
+          [
+            49,
+            19,
+            30
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            1,
+            18
+          ],
+          [
+            47,
+            1,
+            9
+          ],
+          [
+            47,
+            1,
+            41
+          ],
+          [
+            57,
+            19,
+            13
+          ],
+          [
+            57,
+            19,
+            37
+          ],
+          [
+            71,
+            1,
+            14
+          ],
+          [
+            73,
+            1,
+            19
+          ],
+          [
+            81,
+            1,
+            14
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:tavern_village/well/tavern_village_well1": [
+      {
+        "kind": "decoration",
+        "sha256": "989e585260f9bd9da84fe8ff760a572799ea5be00161f1c3f8db9910f5284d85",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/well/tavern_village_well1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "58eeb29793126404c45002d0ddd9ad99a007b121c7583d28da264d0b0ac7ed27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/well/tavern_village_well2": [
+      {
+        "kind": "decoration",
+        "sha256": "bae884154a7bed913e153a9d537edb3190475cce40e3ac5a4864178e49075d1e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/well/tavern_village_well2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "a6b979d830d4459589e6a94fe4685e1b3fc1374193940666fa239baa2795d076",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:tavern_village/well/tavern_village_well_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "3ecb17d6a4743a77f5f12bbe0ddaec23300db995ce970dc2c1e957a88212e7bf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

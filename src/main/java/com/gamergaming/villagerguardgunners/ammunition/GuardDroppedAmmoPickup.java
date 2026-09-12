@@ -50,7 +50,7 @@ public final class GuardDroppedAmmoPickup {
         List<Guard> nearbyGuards = droppedAmmo.level().getEntitiesOfClass(
                 Guard.class,
                 searchBounds,
-                guard -> guard.isAlive() && guard.isEffectiveAi());
+                guard -> !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) && guard.isAlive() && guard.isEffectiveAi());
 
         Guard recipient = null;
         GuardAmmoHandler destination = null;

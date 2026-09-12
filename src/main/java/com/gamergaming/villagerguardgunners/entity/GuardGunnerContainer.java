@@ -3,6 +3,9 @@ package com.gamergaming.villagerguardgunners.entity;
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoMaintenance;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardMedicalAccess;
+import com.gamergaming.villagerguardgunners.medical.MedicalTreatment;
+import com.gamergaming.villagerguardgunners.medical.TreatmentProfiles;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.combat.GuardCombatStatus;
 import com.gamergaming.villagerguardgunners.init.ModMenus;
@@ -35,13 +38,34 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
     public static final int GUARD_SLOT_COUNT = 6;
     public static final int AMMO_SLOT_COUNT = GuardAmmoHandler.SLOT_COUNT;
     public static final int SIDEARM_SLOT_INDEX = GUARD_SLOT_COUNT + AMMO_SLOT_COUNT;
-    public static final int ADDON_SLOT_COUNT = SIDEARM_SLOT_INDEX + 1;
+    public static final int MEDICAL_SLOT_START = SIDEARM_SLOT_INDEX + 1;
+    public static final int MEDICAL_SLOT_COUNT = 3;
+    public static final int ADDON_SLOT_COUNT = MEDICAL_SLOT_START + MEDICAL_SLOT_COUNT;
+    public static final int TREAT_BUTTON_ID = 200;
+    public static final int PACK_MEDICAL_BUTTON_ID = 201;
     public static final int RECOVER_SIDEARM_BUTTON_ID = 100;
 
     private static final int AMMO_SLOT_END = GUARD_SLOT_COUNT + AMMO_SLOT_COUNT;
     private static final int PLAYER_INVENTORY_START = ADDON_SLOT_COUNT;
     private static final int PLAYER_HOTBAR_START = PLAYER_INVENTORY_START + 27;
     private static final int PLAYER_SLOT_END = PLAYER_HOTBAR_START + 9;
+
+    private int medicFlags, medicStatus;
+    public int medicFlags() {
+        var state = com.gamergaming.villagerguardgunners.api.GuardMedicAccess.get(guard);
+        return guard.level().isClientSide ? medicFlags : (state.medic() ? 1 : 0) | (state.retreat() ? 2 : 0);
+    }
+    public int medicStatus() { return guard.level().isClientSide ? medicStatus : com.gamergaming.villagerguardgunners.api.GuardMedicAccess.get(guard).status.ordinal(); }
+    private int servicePolicy, serviceStatus, serviceReplace;
+    private final char[] serviceProfile = new char[96];
+    public int servicePolicy() { return guard.level().isClientSide ? servicePolicy : com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess.get(guard).policy().ordinal(); }
+    public int serviceStatus() { var state = com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess.get(guard); return guard.level().isClientSide ? serviceStatus : (state.readable() ? state.status : com.gamergaming.villagerguardgunners.quartermaster.service.ServiceStatus.RECOVERY_REQUIRED).ordinal(); }
+    public boolean serviceReplace() { return guard.level().isClientSide ? serviceReplace != 0 : com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess.get(guard).replaceExisting(); }
+    public String serviceProfile() {
+        if (guard.level().isClientSide) return new String(serviceProfile).replace("\u0000", "");
+        var selected = com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess.get(guard).profile();
+        return selected == null ? "" : selected.toString();
+    }
 
     private final Container guardInventory;
     private final GuardAmmoHandler ammoHandler;
@@ -107,6 +131,34 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
                 @Override
                 public void set(int value) {
                     synchronizedOrders = synchronizedOrders.withNetworkValue(field, value);
+                }
+            });
+        }
+
+        addDataSlot(new DataSlot() {
+            @Override public int get() { return medicFlags(); }
+            @Override public void set(int value) { medicFlags = value; }
+        });
+        addDataSlot(new DataSlot() {
+            @Override public int get() { return medicStatus(); }
+            @Override public void set(int value) { medicStatus = value; }
+        });
+        for (int index = 0; index < 99; index++) {
+            final int field = index;
+            addDataSlot(new DataSlot() {
+                @Override public int get() {
+                    var service = com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess.get(guard);
+                    if (field == 0) return service.policy().ordinal();
+                    if (field == 1) return service.readable() ? service.status.ordinal() : com.gamergaming.villagerguardgunners.quartermaster.service.ServiceStatus.RECOVERY_REQUIRED.ordinal();
+                    if (field == 2) return service.replaceExisting() ? 1 : 0;
+                    String id = service.profile() == null ? "" : service.profile().toString();
+                    return field - 3 < id.length() ? id.charAt(field - 3) : 0;
+                }
+                @Override public void set(int value) {
+                    if (field == 0) servicePolicy = value;
+                    else if (field == 1) serviceStatus = value;
+                    else if (field == 2) serviceReplace = value;
+                    else serviceProfile[field - 3] = (char) value;
                 }
             });
         }
@@ -217,6 +269,18 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
             }
         });
 
+        var medical = GuardMedicalAccess.get(guard);
+        for (int slot = 0; slot < MEDICAL_SLOT_COUNT; slot++) {
+            addSlot(new SlotItemHandler(medical.inventory(), slot, 8 + slot * 18, 184) {
+                @Override public boolean mayPlace(ItemStack stack) {
+                    return medical.available() && stillValid(playerInventory.player) && mayEditGuard(playerInventory.player) && super.mayPlace(stack);
+                }
+                @Override public boolean mayPickup(Player player) {
+                    return medical.available() && stillValid(player) && mayEditGuard(player);
+                }
+            });
+        }
+
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
                 addSlot(new Slot(playerInventory, column + (row + 1) * 9, 8 + column * 18, 84 + row * 18));
@@ -265,7 +329,7 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
     }
 
     private boolean mayEditGuard(Player player) {
-        return GuardVillagers.hotvChecker(player, guard);
+        return !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) && GuardVillagers.hotvChecker(player, guard);
     }
 
     private boolean mayConfigureMainHand() {
@@ -360,11 +424,36 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return guardInventory.stillValid(player) && guard.isAlive() && guard.distanceTo(player) < 8.0F;
+        return !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) && player.level() == guard.level() && !player.isSpectator() && player.isAlive() && !guard.isRemoved()
+                && guardInventory.stillValid(player) && guard.isAlive() && guard.distanceTo(player) < 8.0F;
+    }
+
+    @Override
+    public void clicked(int slot, int button, net.minecraft.world.inventory.ClickType type, Player player) {
+        if (stillValid(player) && !GuardMedicalAccess.get(guard).busy()
+                && com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess.get(guard).readable()
+                && !com.gamergaming.villagerguardgunners.quartermaster.service.ServiceTransactions.mutating(guard)) super.clicked(slot, button, type, player);
     }
 
     @Override
     public boolean clickMenuButton(Player player, int buttonId) {
+        if (buttonId == 310 || buttonId == 311) {
+            if (!stillValid(player)) return false;
+            boolean changed = com.gamergaming.villagerguardgunners.medical.MedicControls.change(player, guard, buttonId);
+            broadcastChanges(); return changed;
+        }
+        if (buttonId >= 300 && buttonId <= 302) {
+            if (!stillValid(player)) return false;
+            boolean changed = com.gamergaming.villagerguardgunners.quartermaster.service.ServiceControls.change(player, guard, buttonId);
+            broadcastChanges(); return changed;
+        }
+        if (buttonId == TREAT_BUTTON_ID || buttonId == PACK_MEDICAL_BUTTON_ID) {
+            if (player.level().isClientSide || !stillValid(player) || !mayEditGuard(player)) return false;
+            var result = buttonId == TREAT_BUTTON_ID ? MedicalTreatment.fromPouch(player, guard) : MedicalTreatment.pack(player, guard);
+            MedicalTreatment.report(player, result);
+            broadcastChanges();
+            return result == MedicalTreatment.Result.HEALED || result == MedicalTreatment.Result.PACKED;
+        }
         if (buttonId == RECOVER_SIDEARM_BUTTON_ID) {
             if (player.level().isClientSide
                     || !stillValid(player)
@@ -406,7 +495,9 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        if (index < 0 || index >= slots.size()) {
+        if (!stillValid(player) || GuardMedicalAccess.get(guard).busy()
+                || !com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess.get(guard).readable()
+                || com.gamergaming.villagerguardgunners.quartermaster.service.ServiceTransactions.mutating(guard) || index < 0 || index >= slots.size()) {
             return ItemStack.EMPTY;
         }
 
@@ -440,6 +531,9 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
     }
 
     private boolean moveFromPlayerInventory(Player player, ItemStack stack, int sourceIndex) {
+        if (TreatmentProfiles.resolve(stack) != null && mayEditGuard(player)
+                && GuardMedicalAccess.get(guard).available()
+                && moveItemStackTo(stack, MEDICAL_SLOT_START, ADDON_SLOT_COUNT, false)) return true;
         if (GuardAmmoHandler.isAmmo(stack) && mayEditGuard(player)) {
             GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard);
             if (moveItemStackTo(stack, GUARD_SLOT_COUNT, AMMO_SLOT_END, false)) {

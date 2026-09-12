@@ -1,0 +1,798 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:sunken_village"
+  ],
+  "templates": {
+    "integrated_villages:swamp_village/deco/post_alone": [
+      {
+        "kind": "decoration",
+        "sha256": "0a98a4fa0b402eb176266e398a47e6651b80353adcf84265183c629e4473c6be",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_big_stone_pillar": [
+      {
+        "kind": "decoration",
+        "sha256": "7d20757e2e9f2ac30c08ae20c85f5d707e0bd474564dcc07f4f98817d65ffbce",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_crop_beetroot": [
+      {
+        "kind": "service",
+        "sha256": "8f089e71ad6e579fe619da658817195df7d1e247940edee058dc25a13c0682ae",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_crop_carrot": [
+      {
+        "kind": "service",
+        "sha256": "952bc09365532b3c8682a5bab2e28c8fb7c465123f6e13ec395888bea89c1f63",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_crop_flax": [
+      {
+        "kind": "service",
+        "sha256": "9c839d496ae1407f07c1239b159028e5eaf12ece353312b13652f4390fea0c32",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_crop_potato": [
+      {
+        "kind": "service",
+        "sha256": "b25f422911b8bcbaa5aac886569423740f8bb1a51ec3b3d889d572159b3002d9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_crop_wheat": [
+      {
+        "kind": "service",
+        "sha256": "26b55cdcf189bedf6f83415e94dbe746f7fbefd67c075c2d7b2facd35b271609",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_hut_pig": [
+      {
+        "kind": "decoration",
+        "sha256": "37c8147c43df500ab0c7ef7d372b62ddb1a7d29306a36ce4bf7585f87f00f08d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_hut_sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "a857e49bab8cf3599bfc7d65200afc4e5e89f098c6246aee46b975e54b0e3519",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_platform_1": [
+      {
+        "kind": "decoration",
+        "sha256": "a2c469a75c8466358b18cd9ce583c483c829ab12373c5acaee586eda3c81b969",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_platform_2": [
+      {
+        "kind": "decoration",
+        "sha256": "3507510008d9375696d273e88211266c81bbd28ab54e27202dcbd0acc8460978",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_platform_3": [
+      {
+        "kind": "decoration",
+        "sha256": "fa4dd1111332d63d5e393a9378ed6a1e121d99262eede767a059827afe5bc27c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_platform_4": [
+      {
+        "kind": "decoration",
+        "sha256": "28ce70d9eeffc851f234d17a3a53b986648d0c578ae607e3fe1640176effc46a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_post_deco": [
+      {
+        "kind": "decoration",
+        "sha256": "5a5e0f47d6a12f593c5288bc7cf99d73bdd2f5976563fb04ab645d4c3f7c30fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_post_lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "86d9fb7bbf055002bdf1baf4e48231494bf61bbcf6f74ddf1181691f20cadad7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_post_lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "3380da7708838c2a3ab5402f9e3ebcb97e291354e87a13df9da2dada3b95af57",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_post_lampdouble_1": [
+      {
+        "kind": "decoration",
+        "sha256": "d18242e727785620c8d6b6e48c5d522c90e44d9c8b1b37c4f16fc5062686b2b7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_post_lampdouble_2": [
+      {
+        "kind": "decoration",
+        "sha256": "dff24b16fa7d33f7bead0a3d238cebef4750252e886320370bc554e35d9b7abb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_post_planter_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bba3d06a3dd7590aad115375179af70b687ea17f5f2d59ef74754df1b90a6b05",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_post_planter_2": [
+      {
+        "kind": "decoration",
+        "sha256": "fb95dcdf632d31c90d1dc2780fb8b078ed73fdbfd1770ca93e6827c299bd3927",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_1": [
+      {
+        "kind": "decoration",
+        "sha256": "ae4ae20cd21b37f179d5f3c8fccd3fff94ca6a2bfc52057b759bb2b24fb7650d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_2": [
+      {
+        "kind": "decoration",
+        "sha256": "f8eb98fea25a7a05674204ac97f22a7af1caa07365f422521212f7d85f149d10",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_3": [
+      {
+        "kind": "decoration",
+        "sha256": "7f032a032c58887b211082b8f7349a629d7556a3894afa49ea4534e7c96986f4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_4": [
+      {
+        "kind": "decoration",
+        "sha256": "61c2f66d5cde928c371e1f5bf7df516aecde1d9eb071d39458002d17b69e6d04",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_5": [
+      {
+        "kind": "decoration",
+        "sha256": "08e700057fc05fdf1341c50e867a387b74a7c8b16487de4faac625f142bc959d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_6": [
+      {
+        "kind": "decoration",
+        "sha256": "dc2304ec66c1b5f56af9647f576d69a966ae3543a37299340454dd21ddde1fb0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_large_1": [
+      {
+        "kind": "decoration",
+        "sha256": "886d1fd970dfd3fadf86ca97d8e8775e6e6da3b6d09afef3ebf77710e8264ea6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_large_2": [
+      {
+        "kind": "decoration",
+        "sha256": "4ef1a0b3a3e1709a6a4dc410479136633c3059f31272c606ad173a1823de0912",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_large_3": [
+      {
+        "kind": "decoration",
+        "sha256": "8e18a9b8ff8509194c9d478ef54194374a0a46076f7f0c0f5d16225a9bc8075e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/deco/swamp_village_props_large_4": [
+      {
+        "kind": "decoration",
+        "sha256": "4dd5b2f3c6913d862b92d9215439e3dde34608c2b85576fe805f23b668144bed",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_armorer": [
+      {
+        "kind": "residence",
+        "sha256": "688a3dbb91b22e766424feffd3bc3f3adc45017872146b6dbb0db22482a85043",
+        "beds": [
+          [
+            7,
+            18,
+            5
+          ],
+          [
+            7,
+            18,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            13,
+            4
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_butcher": [
+      {
+        "kind": "residence",
+        "sha256": "724ad3404bb31e5293bc98c70c8bd2a8fb12092f1faa20d666c33d0dacfd837a",
+        "beds": [
+          [
+            3,
+            13,
+            11
+          ],
+          [
+            4,
+            13,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            13,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_cartographer": [
+      {
+        "kind": "residence",
+        "sha256": "3098cad4b51771c5bac0ef21462d39f2787b2e428e06072f6f06607507f48946",
+        "beds": [
+          [
+            6,
+            18,
+            5
+          ],
+          [
+            6,
+            18,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            13,
+            4
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_cleric": [
+      {
+        "kind": "residence",
+        "sha256": "28c5c9fc528b5639725836bd1d1e3e126b8cbbf66a02b9d0b57491d05688e104",
+        "beds": [
+          [
+            5,
+            18,
+            10
+          ],
+          [
+            7,
+            18,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            13,
+            5
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_farmer": [
+      {
+        "kind": "residence",
+        "sha256": "3d1682af048889121345f39036e2eb82b0a6b2a2f85132c04712a56cba773d2b",
+        "beds": [
+          [
+            3,
+            14,
+            7
+          ],
+          [
+            4,
+            14,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            14,
+            6
+          ],
+          [
+            7,
+            14,
+            8
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_fisherman": [
+      {
+        "kind": "residence",
+        "sha256": "dc75ff7ae3dd6ea79dbaf5719b9805c52cc8307d19c80b83d66ebe09dc6ba0b6",
+        "beds": [
+          [
+            7,
+            19,
+            4
+          ],
+          [
+            8,
+            19,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            13,
+            3
+          ],
+          [
+            8,
+            13,
+            3
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_fletcher": [
+      {
+        "kind": "residence",
+        "sha256": "32c05e2474787381e52fe49ff9b09d74a44fb8934a3002fa2c3af335d14f4a80",
+        "beds": [
+          [
+            3,
+            18,
+            11
+          ],
+          [
+            5,
+            18,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            13,
+            6
+          ],
+          [
+            9,
+            13,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_generic_1": [
+      {
+        "kind": "residence",
+        "sha256": "316ec2c3b185227911c44a1f8297823f18057301640faa27d57d7b65253760a8",
+        "beds": [
+          [
+            11,
+            18,
+            7
+          ],
+          [
+            11,
+            18,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            13,
+            3
+          ],
+          [
+            6,
+            13,
+            4
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_generic_2": [
+      {
+        "kind": "residence",
+        "sha256": "81d7c13faa2f7e33bde743f7ac3b398fec49da4c6b2361f50f34796188cffb07",
+        "beds": [
+          [
+            3,
+            13,
+            11
+          ],
+          [
+            3,
+            13,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            13,
+            4
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_generic_3": [
+      {
+        "kind": "residence",
+        "sha256": "bf7fa1573bfd56b49718bf45993c2d847dd68b48abc552a8d926f1662ba532f7",
+        "beds": [
+          [
+            4,
+            13,
+            14
+          ],
+          [
+            6,
+            13,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            13,
+            5
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_leatherworker": [
+      {
+        "kind": "residence",
+        "sha256": "073c40fd339eb4084eff50bc75698c5f6bbf02b57c7d0446b449bc9989a2c1e2",
+        "beds": [
+          [
+            11,
+            13,
+            9
+          ],
+          [
+            11,
+            13,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            13,
+            4
+          ],
+          [
+            6,
+            13,
+            5
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_librarian": [
+      {
+        "kind": "residence",
+        "sha256": "dffa52aff01f73af431f354f722170c71388f0a553cec397c125e6ec4909877d",
+        "beds": [
+          [
+            4,
+            18,
+            6
+          ],
+          [
+            6,
+            18,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            13,
+            2
+          ],
+          [
+            5,
+            13,
+            2
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_shepherd": [
+      {
+        "kind": "residence",
+        "sha256": "e7d3ad01e852d1d66c263372e1938a22cee9732585176c379ccf5795d07d441d",
+        "beds": [
+          [
+            6,
+            18,
+            3
+          ],
+          [
+            6,
+            18,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            13,
+            3
+          ],
+          [
+            7,
+            13,
+            3
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_smith": [
+      {
+        "kind": "residence",
+        "sha256": "eb85ce676afd83ee0633b44c3bb9c7fc489d549c4b5eff939096135b57a0c590",
+        "beds": [
+          [
+            13,
+            18,
+            9
+          ],
+          [
+            13,
+            18,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            15,
+            4
+          ],
+          [
+            7,
+            13,
+            7
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/house/swamp_village_house_stonecutter": [
+      {
+        "kind": "residence",
+        "sha256": "73a48144c178d5101c8f8ca89c8eb1c24928649e14c01db868f7a24328be45be",
+        "beds": [
+          [
+            9,
+            14,
+            10
+          ],
+          [
+            10,
+            14,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            13,
+            3
+          ],
+          [
+            7,
+            13,
+            4
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:swamp_village/mobs/swamp_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "3edfb6e4d6080ddd34a6da44dc71426e66f15b4e3f8f99cdb15f52ead6759596",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/mobs/swamp_village_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "f881384bf8f2767cc218194003eb65b0c59a132cbdf758c0e151a3dff2154f8b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/mobs/swamp_village_villager_guard": [
+      {
+        "kind": "decoration",
+        "sha256": "99d22c06b512789673b9ec2fbbfcb95b4b8b44fe8b78d1869d3ad46ce815cc43",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/path/swamp_village_path_1": [
+      {
+        "kind": "road",
+        "sha256": "b29890ae17615831e4d893ac036fbb32850f750608d1e1580f3180c253698128",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/path/swamp_village_path_corner": [
+      {
+        "kind": "road",
+        "sha256": "6b309ea548a8ea1f83bfad09dec272ba6738d8b71471e71a8fdb4eb872400df7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/path/swamp_village_path_end1": [
+      {
+        "kind": "road",
+        "sha256": "93df266cea9dc86bcb8aa2a28f1bb6aa514de282ac9159b05d9982c10ed9201a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/path/swamp_village_path_end2": [
+      {
+        "kind": "road",
+        "sha256": "8469c445a173b5fb60b7e1aed42c2590ca6254c7315a8789beec0084d7cb854d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/path/swamp_village_path_house": [
+      {
+        "kind": "road",
+        "sha256": "86df063364e0a595ffc46d4a5512015116b3e72d31765b86ba7e688fcf2dbd0f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/path/swamp_village_path_tc": [
+      {
+        "kind": "road",
+        "sha256": "f06032cf4aa28dd57616986216653fd027300ebfcf8769ea646c246b51f11d93",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/path/swamp_village_path_tjunction": [
+      {
+        "kind": "road",
+        "sha256": "83490ffb4d216e625961af7e4a0d0a8dc92c618b046f0cef2db5ded9f7f8ab8a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/path/swamp_village_path_xjunction": [
+      {
+        "kind": "road",
+        "sha256": "96b54e5774418d386b2403311c2765489113a92ba24abae2a1f315671cff1cad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/swamp_village_post": [
+      {
+        "kind": "decoration",
+        "sha256": "78d9c9f519eec6e13e317fcf9749d3057bf9c26ecaadc0496d592df079636b40",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/swamp_village_town_center": [
+      {
+        "kind": "decoration",
+        "sha256": "902f38bdcea2c33924abcc18f70448bf45b7e1cea5dcee177377cb3b0b4e9e2d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:swamp_village/swamp_village_town_center_bot": [
+      {
+        "kind": "decoration",
+        "sha256": "6971f3f65bf15d39b0700ef8c31b39aa17df0c959e610cf2ef87635ee78f5eda",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [
+    "water"
+  ]
+}

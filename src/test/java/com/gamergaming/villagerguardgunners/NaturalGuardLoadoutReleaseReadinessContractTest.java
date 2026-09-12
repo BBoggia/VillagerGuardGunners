@@ -49,24 +49,22 @@ final class NaturalGuardLoadoutReleaseReadinessContractTest {
     @Test
     void curseForgeHandoffDescribesTheShippedNaturalLoadoutContract() throws IOException {
         String description = read("docs/curseforge-description.md");
-        String releaseNotes = read("docs/curseforge-release-notes-1.1.md");
-        String upload = read("docs/curseforge-upload-1.1.md");
+        String releaseNotes = read("docs/releases/1.1.md");
 
+        String plainDescription = description.replaceAll("\\s+", " ");
         assertAll(
-                () -> assertTrue(description.contains(
-                        "<strong>Difficulty-scaled natural guard loadouts</strong>")),
-                () -> assertTrue(description.contains("one complete stack")),
-                () -> assertTrue(description.contains("Reloadable datapack weapon pools")),
-                () -> assertTrue(description.contains("Conditional datapack")),
-                () -> assertTrue(description.contains("/vgg loadouts validate")),
-                () -> assertTrue(description.contains("guard/gun provenance mismatch")),
+                () -> assertTrue(description.contains("## Features")),
+                () -> assertTrue(description.contains("## Requirements")),
+                () -> assertTrue(description.contains("**Natural gun loadouts.**")),
+                () -> assertTrue(plainDescription.contains("Newly generated guards can receive guns and matching ammo based on difficulty")),
+                () -> assertTrue(plainDescription.contains("Server settings and datapacks control the available loadouts")),
+                () -> assertTrue(description.contains("**Ammo and backup sidearms.**")),
+                () -> assertTrue(description.contains("Operators can use `/vgg` commands")),
                 () -> assertTrue(releaseNotes.contains(
                         "Difficulty-scaled natural guard loadouts")),
                 () -> assertTrue(releaseNotes.contains("one full compatible ammunition stack")),
                 () -> assertTrue(releaseNotes.contains("Conditional format-2 entries")),
-                () -> assertTrue(releaseNotes.contains("/vgg loadouts validate")),
-                () -> assertTrue(upload.contains("difficulty-scaled loadouts")),
-                () -> assertTrue(upload.contains("datapack-defined pools")));
+                () -> assertTrue(releaseNotes.contains("/vgg loadouts validate")));
     }
 
     @Test

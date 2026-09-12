@@ -1,0 +1,1432 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:large/village_mesa"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "68addff7be68bd1c26b2d079bd094a0e50830de71568dfb486e85ef65995e7bb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "4ac6ea9686e17bf772e5921edf8e79cddf18c811e44af7295ea5534ade79d27e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "f279c61c765d3947f9b5387818a4865165d8e018843019bcd95841cd508dd275",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/dead_tree_1": [
+      {
+        "kind": "decoration",
+        "sha256": "12c5d846a3249634c09f9f2eca4a1247f48a2f98822d9c2114290ca77904c82c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/dead_tree_2": [
+      {
+        "kind": "decoration",
+        "sha256": "e5f7648ba27a2c189ee2ac6446936422b41ffc51fa80e728ef312cdccd66526b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/dead_tree_3": [
+      {
+        "kind": "decoration",
+        "sha256": "aedc74bde48c0c92f179b412737ad3016ca6a39b7443b2da6af6119e5ded0617",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/gallow": [
+      {
+        "kind": "decoration",
+        "sha256": "3c04ff077c92710d2c88edbd3773ef068dfd73144df2564f00d748038d6ea9ae",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "bbb612478a687e2d54ae4bdbeaf856ae949f242b14eb7c4c80527f8bfe8bb938",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/gilluotine": [
+      {
+        "kind": "decoration",
+        "sha256": "997b85b4063137822c0f3e1a60bb1eec099949ad50531c63c642a86788839ff4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "943f3581f1a728a1742982e7be4bae8a416e361d0fb6c5f68abde5a8850c4ba3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "aba21c48b953606dcc934b95fc5685afacddaf4a0ee4b16e937a8cb1845e335c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "aa74835aa703400bfe82cc5d78defa83f2c27ad78df23f20f8196386f8d38d14",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "ec17c76b0021ea5a2af43de00fc86e7ee200a38cc62b745d60398dc8534ee1c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "3b7209099b6fa72ff677adcfb1a82769b603586d18c3d8633e2c9bcf7b037fae",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/lamp_5": [
+      {
+        "kind": "decoration",
+        "sha256": "15d874ebb57a3baf3a2a92c1ffce2aac901abc1a3ef7baea2baf1a167432a5d5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "6476009a040bf9b21fb1a24b9f30a65bdfdb669ceeb3bb2ae1c1546376a86c65",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "ce930e614f837b341263ecce0ef32537b0419ea89357d2526fd408e6b4d9e3db",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/wagon": [
+      {
+        "kind": "decoration",
+        "sha256": "a5b331d417f8fe4954813ecbb38d435036063cacd3ed69eedcff097e7f168cda",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/well": [
+      {
+        "kind": "decoration",
+        "sha256": "00fcd32a4480ecc56536cdc0eada2505c31864d56be7c48ddd0221d7376e15c5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "7e397c35ce83d5713e38079b39145b14807ea49fa3e4059918c726ace1e9b6a4",
+        "beds": [
+          [
+            1,
+            5,
+            3
+          ],
+          [
+            3,
+            5,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            4,
+            5,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/house/big_3": [
+      {
+        "kind": "residence",
+        "sha256": "5341713c70627dffff3b9ab11b02a47a22e4cc85a6a0b4ee90b6c348e811d8c6",
+        "beds": [
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            5,
+            5,
+            3
+          ],
+          [
+            7,
+            5,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            5,
+            6
+          ],
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "b3312dfdb830ba23bb4563e115550762128201ac0e3b97c61b548067607d7931",
+        "beds": [
+          [
+            1,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "65c96572ba29691a1f6d4e3635fda33015fd2d3bb1c5f31650e3d893351a1e29",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "cfa8603ca494d3f6bc6773cd8e07b8f170f89be7840ff3f3d4b7d3b4640554f0",
+        "beds": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/house/small_4": [
+      {
+        "kind": "residence",
+        "sha256": "87ac610eeecfcad0b50d171b41e50b8828a469851693b741a4edc1e447f5ecc9",
+        "beds": [
+          [
+            1,
+            1,
+            7
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "f3160e2e3febc3f7a9f088fefb2da7172f2002cfef9197e4b99b37ed1a4a3f84",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/animal_shop": [
+      {
+        "kind": "service",
+        "sha256": "d583a578cdb8d8a900cf2055612bbb270c63bdbb52a5b3b24656adb0a35f6b7c",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "aa83ac4d521cd825a13003b8c7121d1847ae178c0339b1e6a04381f75b54a4f1",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "fdefdc568318f00b86bf21417723cc99675915c92bf1cddb48e63289827bc2d3",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "17328ab63f20ebebc8f3b891eda81e139ca5787bf3f6100dac9281e97afc0cc4",
+        "beds": [
+          [
+            5,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "7e078841cab53da8805076270e707f310139d250b8e7fec68f650739f7ef459d",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            3,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "4b9142c926ad2016c472efc6ba86d048f0f85986e079f52fa45b408ef6c41c54",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "a8fa311346d77637a73dbfe5059fec59e9baacd72fd978716be229316fe922ee",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            7
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "590655b0e33b0a2c9c3f441fdb0c8e31d28840c1735fe16a22cdbe06271043be",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/cartographer": [
+      {
+        "kind": "service",
+        "sha256": "271224117746c628fd6560022d7b41fe92368dd226261f3add6cb12defbf4634",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "f6e7eacc063fe4ff8c5087d52725dbd066a50880368364a2b25ba8420b973729",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            0,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/church": [
+      {
+        "kind": "service",
+        "sha256": "a1e283ea4eee26824216b9ce7612012d77f1c77658a5d4a72e73c362f26cddfd",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "3b7b6513e778ac9004d884a3eb47f8117c48a36348d249aac88970b7ac3655d7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "b1952a4022bb6450060dc38e984db5ec37a5c66973b49e466ab2af819d1bb81b",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "c26826c49ddc6975b8184150979528b8227e1e9e5ce1b2849518594a7a1f286f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            4
+          ],
+          [
+            4,
+            2,
+            12
+          ],
+          [
+            7,
+            1,
+            14
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "267c56f3e6a305fbf9e7fbd91054bc57013f69da6c3d89f112698d16480838ab",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "a3a465ac80561a8bca8948ee528ac22565fa111d9f72985767e50bdb168ed224",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            2
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "14d56cf9b00d37f800c077d0bef5ca687a5d04b64bb23901a5bf23c3e4b7b66f",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            2,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "b524763560c84d96cd71096668aa4a6d75e588cb6f7ca74e581c1f0539060f69",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "9642119c5306fb99a66469cfc69a7e02ffe4a8a994d1f8becaaaa6d7bca234e2",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "bf86a0be77ca942b8bc3b0b12ef0c8af6d25faebe6daea3950079f3569da2cc9",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "9dbb65cdaf8af8db16fd8c2cb576a63400f3384690583cde37304652b36b8588",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "82580d39c22a875df3999b9aed80f86347619db9b3dd9cfcb8c758ba031c1ff7",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/horticulturalist": [
+      {
+        "kind": "service",
+        "sha256": "c9b5e09ccf2af95475357ab0cccc9b126fb198dc09eb98a30629e6650ff38fe2",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "82668ca224bb93b0acc8b5bb62d6cf62ba67e8778146b1459cb8732e56962e6b",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "02fe54ee589818d0d80e22133444d5401f8c5def6e0a4d1e31222d8f535cccf1",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "7af9e068673f7f766dabe129bfe6ddcc57ee4312cdc77125a0fa47086709dc7a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "0b8cff3bb7da64524b644ac316a7ddcb54e42e5910c05012c1297216087eb202",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "b0fd9d9f1bfda0b80d99903545611bbe001c4e6488ef7a7eacbceb4c7728a021",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "c89b996925df60a1d33085f59138d4c7b7f7f48a1796b1e7789b0b9cff29d39d",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "cbc014570de886985b16f4c8913fed06db339044ac5794046e2d62c13b236a07",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            3,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "4f8429c80518df27774ddaca5127bd4dd457618faac9b06af4fa67acc3060985",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "661cd0f9138e91527519b4a825f50f77cb81ca8461fd7eb5f11b06f01b60aaba",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "7bab6fd1cfc287f8bc6056b45a5e32f823cef22d9dda26084a625f500115031a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/pen": [
+      {
+        "kind": "service",
+        "sha256": "2d55f3618831d474d78f434671a1388d72c2bbfe4bafe5e6f5279ee6a9a1a07b",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "1137bd8891361e01bc0b45b4d330c64b57e1ce8b551619204640f77b2862f231",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            5,
+            3,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "350dcf3148f0a615367b3ae9f795655a51e8c90a2f427c9f67bccc833b3e7722",
+        "beds": [
+          [
+            1,
+            6,
+            1
+          ],
+          [
+            1,
+            6,
+            3
+          ],
+          [
+            1,
+            6,
+            7
+          ],
+          [
+            9,
+            6,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            6,
+            6
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            5,
+            2,
+            8
+          ],
+          [
+            5,
+            6,
+            6
+          ],
+          [
+            6,
+            6,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "7414e9669e9b9b533157b0c5589193e5d832ce5fb6eee3fd9e4c73e4369342a4",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "b0708a8f222872f3368d986d301bfd66dafc7311491e05a246b17afdefd5ae90",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "611fe3fa0061f944f95c5c1ef557bf04dbad9b1773cbae9db6c4bf554fa4f74f",
+        "beds": [
+          [
+            9,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "4974d4b86a24d3f8b63c1869df1bf2f4b32d6224e2c3f13071d5b8f1da2385ab",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "c3326ae31d2fe2a57f80abc38c77921da944e8cfd1166cd6527b86088c096ee5",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "e4b65895784afa508faaa9f334042ede83f128d60ffefef1d9ce922469d24976",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "03293909faf648d21b109b1973a708dac36d091461ca31f5c6b9c82e4156e8cb",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            5,
+            0
+          ],
+          [
+            3,
+            6,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "578d910b4f94d7f91b003898ba649e314c857db80c4d16826379ecd2d4a6a105",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "82a7d5c508e0b44fee8a32de66841244a564b416d5e9281acd05298f95d70526",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/water_mill": [
+      {
+        "kind": "service",
+        "sha256": "198f448aac6de8b939a5784e372e6fc6ed5c9a154dcc87070326ea980cd24636",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "6b9180a4bd1274d3f5b70469c3f98fc42dc7faf79394f1ed336747dc0ce3d75e",
+        "beds": [
+          [
+            5,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "cd6426eb0985503f58bfd645404cb644c1df2ec60a89a1d37b4897b8bad731d3",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mesa/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "c37673e9455da4b2c8d3173fabf9364d8916fbe681c598a7e16e046693adcc84",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "5012ff10d535b51ce98ee0f871305b9e0da816e7d7da586f4b401c0c0eefaa4f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "79b1ea9eeee207ae8dc240daec9840bd85374b9ab6013646aa64f72b8c26db54",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mesa/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "acb883497bc758c5df66e15ab57d3f7aa5b63e25209127f4dbf4748330a5b1c2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/camel_spawn": [
+      {
+        "kind": "decoration",
+        "sha256": "b86c6a72779416021fd563f428cf292fc482a6846249a9954b867f3e9576729b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "51498c4f5b07357eb709b52c2fb37a5a3f7ff1295749d9505fc235fdcdf55977",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "ba69be4e86e254ffcde34330bdc2382ffe5123371607ab679270d45c79e62ffe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "e88bf4fff7041107588b4cee6123adf907c3999674be7086cbcafbfc07482f1f",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "large"
+}

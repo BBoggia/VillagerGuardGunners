@@ -36,9 +36,9 @@ final class ProjectCompatibilityContractTest {
     void targetsTheReviewedMinecraftAndForgeVersions() {
         assertAll(
                 () -> assertEquals("1.20.1", property("minecraft_version")),
-                () -> assertEquals("47.4.23", property("forge_version")),
+                () -> assertEquals("47.4.10", property("forge_version")),
                 () -> assertEquals("[1.20.1]", property("minecraft_version_range")),
-                () -> assertEquals("[47.4.23]", property("forge_version_range")),
+                () -> assertEquals("[47.4.10,48)", property("forge_version_range")),
                 () -> assertEquals("official", property("mapping_channel")),
                 () -> assertEquals("1.20.1", property("mapping_version")));
     }

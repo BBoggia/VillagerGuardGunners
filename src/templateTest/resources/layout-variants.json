@@ -1,0 +1,350 @@
+[
+  {
+    "building": "barracks",
+    "biome": "plains",
+    "layout": "qa_compact",
+    "size": [
+      7,
+      5,
+      7
+    ],
+    "weight": 1,
+    "lanternCount": 1,
+    "palette": [
+      {
+        "symbol": "P",
+        "name": "minecraft:birch_planks"
+      }
+    ],
+    "layers": [
+      [
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP"
+      ],
+      [
+        "...J...",
+        ".......",
+        ".......",
+        ".......",
+        "...A...",
+        ".......",
+        "......."
+      ],
+      [
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        "......."
+      ],
+      [
+        ".......",
+        ".q.....",
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        "......."
+      ],
+      [
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP"
+      ]
+    ],
+    "dutySlots": [
+      {
+        "key": "center_muster",
+        "offset": [
+          0,
+          0,
+          0
+        ],
+        "facing": "north",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "west_muster",
+        "offset": [
+          -1,
+          0,
+          0
+        ],
+        "facing": "west",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "east_muster",
+        "offset": [
+          1,
+          0,
+          0
+        ],
+        "facing": "east",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "entry_sentry",
+        "offset": [
+          0,
+          0,
+          -2
+        ],
+        "facing": "north",
+        "kind": "sentry",
+        "weapon_requirement": "any"
+      }
+    ]
+  },
+  {
+    "building": "barracks",
+    "biome": "plains",
+    "layout": "qa_courtyard",
+    "size": [
+      9,
+      6,
+      8
+    ],
+    "weight": 1,
+    "lanternCount": 2,
+    "palette": [
+      {
+        "symbol": "P",
+        "name": "minecraft:spruce_planks"
+      }
+    ],
+    "layers": [
+      [
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP"
+      ],
+      [
+        "....J....",
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        "....A....",
+        ".........",
+        "........."
+      ],
+      [
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        "........."
+      ],
+      [
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        "........."
+      ],
+      [
+        ".........",
+        ".q.......",
+        ".........",
+        ".........",
+        ".........",
+        ".........",
+        ".......q.",
+        "........."
+      ],
+      [
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP",
+        "PPPPPPPPP"
+      ]
+    ],
+    "dutySlots": [
+      {
+        "key": "center_muster",
+        "offset": [
+          0,
+          0,
+          0
+        ],
+        "facing": "north",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "west_muster",
+        "offset": [
+          -1,
+          0,
+          0
+        ],
+        "facing": "west",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "east_muster",
+        "offset": [
+          1,
+          0,
+          0
+        ],
+        "facing": "east",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "entry_sentry",
+        "offset": [
+          1,
+          0,
+          -3
+        ],
+        "facing": "north",
+        "kind": "sentry",
+        "weapon_requirement": "any"
+      }
+    ]
+  },
+  {
+    "building": "barracks",
+    "biome": "taiga",
+    "layout": "qa_compact",
+    "size": [
+      7,
+      5,
+      7
+    ],
+    "weight": 1,
+    "lanternCount": 1,
+    "palette": [
+      {
+        "symbol": "P",
+        "name": "minecraft:dark_oak_planks"
+      }
+    ],
+    "layers": [
+      [
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP"
+      ],
+      [
+        "...J...",
+        ".......",
+        ".......",
+        ".......",
+        "...A...",
+        ".......",
+        "......."
+      ],
+      [
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        "......."
+      ],
+      [
+        ".......",
+        ".q.....",
+        ".......",
+        ".......",
+        ".......",
+        ".......",
+        "......."
+      ],
+      [
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP",
+        "PPPPPPP"
+      ]
+    ],
+    "dutySlots": [
+      {
+        "key": "center_muster",
+        "offset": [
+          0,
+          0,
+          0
+        ],
+        "facing": "north",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "west_muster",
+        "offset": [
+          -1,
+          0,
+          0
+        ],
+        "facing": "west",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "east_muster",
+        "offset": [
+          1,
+          0,
+          0
+        ],
+        "facing": "east",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "entry_sentry",
+        "offset": [
+          0,
+          0,
+          -2
+        ],
+        "facing": "north",
+        "kind": "sentry",
+        "weapon_requirement": "any"
+      }
+    ]
+  }
+]

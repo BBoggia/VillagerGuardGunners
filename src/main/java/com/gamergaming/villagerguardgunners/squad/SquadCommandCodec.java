@@ -149,7 +149,7 @@ public final class SquadCommandCodec {
             case RALLY, HOLD, FALL_BACK -> POSITION_KEYS;
             case DEFEND -> DEFEND_KEYS;
             case FOCUS_TARGET -> FOCUS_KEYS;
-            case RESUME_ORDERS -> Set.of();
+            case PATROL_ROUTE_EDITOR, RESUME_ORDERS -> Set.of();
         };
     }
 }

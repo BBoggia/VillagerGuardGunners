@@ -1,0 +1,937 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]",
+    "quark": "[0,)"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:quark/minka_village"
+  ],
+  "templates": {
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_azalea": [
+      {
+        "kind": "decoration",
+        "sha256": "0b74d8d0c14ae6f16614614c223ab9141ad3d5b19e99924edfc0edd837b02c94",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_azalea_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "10c69f9e3055badf386d8b4bfdbc369f465f03eb9169e05650c0b6a70d54bdcb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_bonsai": [
+      {
+        "kind": "decoration",
+        "sha256": "cd3fb0a2330b1b7182a6b08f7bab6dca386d73bfb535af8bf75f5cfd9f44bb8b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_bonsai_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "805d01bb3d523d6c772c2b72e05a1922dc0717521265dce2e5719d9c3ac247e1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_bonsai_top": [
+      {
+        "kind": "decoration",
+        "sha256": "fa75955b52dd371177d1e2a3e9cae9d15179d7d8960f8b026f65d5129d1398fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_cherry1": [
+      {
+        "kind": "decoration",
+        "sha256": "09dc929f45989ea52b103a211ac18aa60c1377c522484ed6aff39047955397d7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_cherry1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "886105ed62e9f1f765ff1e982a8bb3eb41d458edc79dbff2daadb188efc62cf1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_cherry2": [
+      {
+        "kind": "decoration",
+        "sha256": "b287510ae63aeca6610b687eb59326fd1c3afc5dd10738a92818c63d5d7f89e1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_cherry2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b189e7b8856195a2afd035907d1cb38aa428555a30e9ed24018a06e540876f58",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_light1": [
+      {
+        "kind": "decoration",
+        "sha256": "1f3b7270eb5c9de1ffae6149cfac66166172f2fe4cad4b3f9cc2ceaa9605d1fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_light1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "539f0d0b5149b3cb55ca06136c3beec775e0b6534f579a52b8701424c4f19e1b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_light2": [
+      {
+        "kind": "decoration",
+        "sha256": "933ce9635edd9e981c8a187a8ec02b69b177acb538497b2ea00780253ae388ef",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_light2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f05dca440a387ff30b68c608314c448305b99d016809da8554905a9f4941d881",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_seat": [
+      {
+        "kind": "decoration",
+        "sha256": "aa4221e630461de689caada37931a94d7e915e79915e84bbe8be589628cfb515",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_seat_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "107964579592bf8a5c040cf16e459fefb66e3e8fde5ed3d9ccbd27e18b4aeed3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_stone": [
+      {
+        "kind": "decoration",
+        "sha256": "7d988b21fdd48fc07cc8f52caaee025e49481df2341b6b1cfcc3b0b04e8ce92f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_stone_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "6000e572dfc4560d9bb11377a9836ee3df767739103565083e74a5eab4a2d4be",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_wheel": [
+      {
+        "kind": "decoration",
+        "sha256": "dec0f51f377ce972f5039ecb6c66c966190d41e5a1a9a9fc31ab7bcbfd0b17b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/deco/minka_village_wheel_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "c374cf0bc37560ac350da89bcc713be23efa27dbbb298377a72876be517e339d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_basichouse1": [
+      {
+        "kind": "residence",
+        "sha256": "98e7cd023b6b78916891241e3f81f0c5ce43a15e4beef4caf6464c2b845221fa",
+        "beds": [
+          [
+            10,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_basichouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "829d1f762bf59b105a295d7e63c97c3fd1f78743f4ab8e365f8344621fdd3d74",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_basichouse2": [
+      {
+        "kind": "decoration",
+        "sha256": "4123846aecbaef3d82d3ea641437acef058f766c5e463b4da46363bd184c73b3",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            13
+          ],
+          [
+            5,
+            1,
+            14
+          ],
+          [
+            7,
+            0,
+            17
+          ],
+          [
+            9,
+            0,
+            17
+          ],
+          [
+            10,
+            0,
+            17
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_basichouse2_bottom": [
+      {
+        "kind": "residence",
+        "sha256": "eee0f797953d8df9698d487647c6fc8db63584fa9509f87a33737c21fbfff939",
+        "beds": [
+          [
+            12,
+            1,
+            3
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_basichouse3": [
+      {
+        "kind": "residence",
+        "sha256": "cbb50e8e406ba042ddda78d506daefef66fb312e70c97c2068f654b2b266fec5",
+        "beds": [
+          [
+            9,
+            8,
+            17
+          ],
+          [
+            10,
+            8,
+            17
+          ],
+          [
+            11,
+            8,
+            17
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            19
+          ],
+          [
+            4,
+            1,
+            20
+          ],
+          [
+            12,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_basichouse3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "25085879b26d79becb5d8ad441bae112d6397a9ec87f770f0d21bef8c02f5d01",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_blacksmith": [
+      {
+        "kind": "residence",
+        "sha256": "8ecc08469c51e14c5ef222cd3e814926c75e091a69da6b83cbdf79900217bb4f",
+        "beds": [
+          [
+            20,
+            5,
+            9
+          ],
+          [
+            20,
+            5,
+            10
+          ],
+          [
+            20,
+            5,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            18,
+            0,
+            13
+          ],
+          [
+            19,
+            0,
+            13
+          ],
+          [
+            20,
+            0,
+            13
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_blacksmith_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f63a68d27a9b426baeb2512f737bb9ed30aa1e1a41fdbf8cc7d0c679429e93d5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_cleric": [
+      {
+        "kind": "decoration",
+        "sha256": "1da4e0b89aa877c2ff2f64c6b7eaab6db07b52ccba2f80860772b8e4cb0a3e8c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_cleric_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "fe2f15d0fd728ea6c9495dca842d9fa9084598d4da759006f4952e7db2a84943",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_farmhouse1": [
+      {
+        "kind": "residence",
+        "sha256": "a037465290539a89621fbdf762904491d308ea6136dad54b8720b8b4184ebd0a",
+        "beds": [
+          [
+            8,
+            0,
+            11
+          ],
+          [
+            11,
+            0,
+            11
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_farmhouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "62c7d9b776c968020e29340c1f1eb60f2bcf82002b24bf878d8cf66a37fddeb1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_farmhouse2": [
+      {
+        "kind": "residence",
+        "sha256": "18bc6f31cc24355356779ac085e3e3fcbefa516a7779e5a6edeffe6d435c6380",
+        "beds": [
+          [
+            4,
+            1,
+            16
+          ],
+          [
+            4,
+            1,
+            18
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            14
+          ],
+          [
+            7,
+            1,
+            14
+          ],
+          [
+            12,
+            2,
+            26
+          ],
+          [
+            13,
+            2,
+            26
+          ],
+          [
+            15,
+            1,
+            16
+          ],
+          [
+            15,
+            1,
+            17
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_farmhouse2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "5b52e0059f93112e4ec384d3bdc90a46293a7affea7b19af1607695373b5d7e3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_fletcher": [
+      {
+        "kind": "decoration",
+        "sha256": "1f88179ff5d3bd89ac32e2c5b33e7fa5fbb95839bc76593445af0674c0fe20d7",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            3,
+            26
+          ],
+          [
+            4,
+            3,
+            27
+          ],
+          [
+            14,
+            3,
+            26
+          ],
+          [
+            14,
+            3,
+            27
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_fletcher_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "d9305169bab7b7def81c9137baa9a0e6e71aeff46972b30a957d862f445769fe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_manor": [
+      {
+        "kind": "residence",
+        "sha256": "42e1910e6fd51801bfbee0a1ab4b4a8b7ddce7910c54cd312a1b5e0e2161728f",
+        "beds": [
+          [
+            14,
+            11,
+            6
+          ],
+          [
+            14,
+            11,
+            24
+          ],
+          [
+            15,
+            11,
+            6
+          ],
+          [
+            15,
+            11,
+            24
+          ],
+          [
+            16,
+            11,
+            6
+          ],
+          [
+            16,
+            11,
+            24
+          ],
+          [
+            19,
+            12,
+            9
+          ],
+          [
+            19,
+            12,
+            12
+          ],
+          [
+            19,
+            12,
+            15
+          ],
+          [
+            19,
+            12,
+            18
+          ],
+          [
+            19,
+            12,
+            21
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            6,
+            5
+          ],
+          [
+            10,
+            1,
+            18
+          ],
+          [
+            10,
+            1,
+            19
+          ],
+          [
+            20,
+            1,
+            6
+          ],
+          [
+            20,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_manor_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "e13d800cb1fddfdf912d44136766ece31a5da5cd14cb25b65cfe85a583fd182f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_stables": [
+      {
+        "kind": "decoration",
+        "sha256": "a8869c2a9d947c828ec0245eb5ad98578f00d6ea28be8b68faecf07b8b533792",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/house/minka_village_stables_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "685f4157a8dc79f7ed4f2b3205de9fd2f135caa94945e3831a86c64c21220c3c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/mobs/minka_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "39d6beb97c0df94942f39b296eef509556d4706f45a6ebdbea5d45c188cd24ee",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/mobs/minka_village_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "feef1972f66b3a1ca0c011ae7f147f6fde0e8f3bf052d03017673b46a9c21e68",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/mobs/minka_village_villager_nitwit": [
+      {
+        "kind": "decoration",
+        "sha256": "7c29137c661bb4f46dabc0155515906e28548a9414f26fe3f98edfdfb3c5d0c9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_fountain": [
+      {
+        "kind": "road",
+        "sha256": "da9666daed239126b3016f8de599f4d84466028edae44f4d2207ea5d17f35203",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_fountain_bottom": [
+      {
+        "kind": "road",
+        "sha256": "0a18ea01172fcad7de7bb4151a9f29d151940898f82a565a9267bd015404c807",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_gates1": [
+      {
+        "kind": "road",
+        "sha256": "a009c15cf5376fad3995120916d4fa10ba562b02a417417613b1575e99938012",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_gates1_bottom": [
+      {
+        "kind": "road",
+        "sha256": "55272f061c7fd9b57184c56fa6bd1b94d0db700ead5dd54c54bdd46d0de5747a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_gates2": [
+      {
+        "kind": "road",
+        "sha256": "774124ce16636692506ad348a1bfaaa40de63ee2ac4cecf9753cd6bfa5fe3eef",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_gates2_bottom": [
+      {
+        "kind": "road",
+        "sha256": "8a824e3a0a2a5d92a222bd01611a295e0c81c0c29b541f5a42a328355ae5cf4a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path1": [
+      {
+        "kind": "road",
+        "sha256": "47bd763ee03407d939e4ea84fbebeafa67b153e9e7f7837b3c1b92ad29c2f0d2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path2": [
+      {
+        "kind": "road",
+        "sha256": "d27e9acdcc13bd3f0900f7e74bc737fb536a8253f57107adc1c685e371c02c6b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path3": [
+      {
+        "kind": "road",
+        "sha256": "f183d6d4171aade6206884a0cf9e59999277c7e710cc81f3135f0a03ebf61155",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path4": [
+      {
+        "kind": "road",
+        "sha256": "ad62ed81f344acfbb99bb90ee2fd38ad4dbdab958c89bef00e2af4139410f426",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path5": [
+      {
+        "kind": "road",
+        "sha256": "62e8132536c35ada2c1b341c986734c4454d48d1cae24998cc87858bedd9aa51",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path6": [
+      {
+        "kind": "road",
+        "sha256": "b38f7820c357ee45bd9a2193681a69ac19a9483da5c973248207bd6fd6af0593",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path7": [
+      {
+        "kind": "road",
+        "sha256": "63a58aeba90c2f0b7e4977cb6d17bd66af111b33eb28522ea2ad91505108125d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path8": [
+      {
+        "kind": "road",
+        "sha256": "1350f93e19b72e3fee1a275e980bbff8cd9355b74a3d2b98ac567b26bb6b18f3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "915f9688476ad2489291e4b447d00b568b749d85642cafc57fbc3e883b674840",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "cab06b5c1f57facddd7380eb72e2229cbe521a0c921c1404fb12e5353acf178f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "a0016929e0eeb97d38cec1bacde2de537aa45b84483d7dd370405c15aa1f122e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "eb25d934b1a71fe19f5ebde06fb41c3e8a7233015801ef83166f24eb5b6a303b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_large5": [
+      {
+        "kind": "road",
+        "sha256": "8639145eb0aaf43def3205cca6a2b0689b648a24dcd0e3db38c9af1d1cd18f44",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_large6": [
+      {
+        "kind": "road",
+        "sha256": "01466b3eca34111aa07505a088a7c5dc88d9bfccd489c5aab784092a9e84ceb9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_torii1": [
+      {
+        "kind": "road",
+        "sha256": "843181c4cef9f50886ab2f7be6ac426955da029288aa4f22088bb3b2a600c44f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_torii2": [
+      {
+        "kind": "road",
+        "sha256": "2bd2bf8332c655e626a93a25adf58e1a0a057916dde29cbe7ebe1f1143b4894e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_path_torii3": [
+      {
+        "kind": "road",
+        "sha256": "3e2fc417901b68638911112f60e9fce966725482cfc9d8f8a726ebf5ff3a408f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_pond": [
+      {
+        "kind": "road",
+        "sha256": "f689ecca5a5b01c2ac307d228d5f317c7d2621bb0cde4ad4b06e2516ddf5c040",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_pond_bottom": [
+      {
+        "kind": "road",
+        "sha256": "6dd54a5a7a9957655576452af3bd07e42062415f94d27a8ea51cd532eb8cbd9a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_torii": [
+      {
+        "kind": "road",
+        "sha256": "ca2aba299b5e58acd312b52e54118028bbae218c3e99d0b3e5e640a63939b7ce",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:minka_village/path/minka_village_torii_bottom": [
+      {
+        "kind": "road",
+        "sha256": "4aa06cc5cdc8218e6088865e1100d3df1712d2a1d51fd8d9336882421415a955",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/mobs/oasis_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "823c5ee4097f68f70e239e9ca0ebbc58467000700261100e1e00e47e5bc2a6c0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/mobs/oasis_village_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "65f1f11ccbc7d9c29f9b1f7ce25c2f20a1d68e5120181d66c81a62367df3caa0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

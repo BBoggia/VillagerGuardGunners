@@ -32,7 +32,7 @@ final class VillageDefenseBuildingsStepThreeContractTest {
 
         assertAll(
                 () -> assertEquals(1, VillageBuildingDefinitionFormat.VERSION),
-                () -> assertEquals(50, VillageBuildingDefinitionFormat.MAXIMUM_DOCUMENTS),
+                () -> assertEquals(192, VillageBuildingDefinitionFormat.MAXIMUM_DOCUMENTS),
                 () -> assertEquals(16_384,
                         VillageBuildingDefinitionFormat.MAXIMUM_DOCUMENT_CHARACTERS),
                 () -> assertEquals(16, VillageBuildingDefinitionFormat.MAXIMUM_JSON_DEPTH),
@@ -55,8 +55,9 @@ final class VillageDefenseBuildingsStepThreeContractTest {
 
         assertAll(
                 () -> assertEquals(
-                        Set.of("dataVersion", "biomes", "commonPalette", "buildings"),
+                        Set.of("dataVersion", "biomes", "commonPalette", "buildings", "layoutVariants"),
                         blueprint.keySet()),
+                () -> assertTrue(blueprint.getAsJsonArray("layoutVariants").isEmpty()),
                 () -> assertEquals(5, blueprint.getAsJsonObject("biomes").size()),
                 () -> assertEquals(5, blueprint.getAsJsonObject("buildings").size()),
                 () -> assertFalse(Files.exists(projectDirectory.resolve(
@@ -85,7 +86,7 @@ final class VillageDefenseBuildingsStepThreeContractTest {
                 () -> assertTrue(bootstrap.contains(
                         "VillageBuildingPoolIntegration::onServerAboutToStart")),
                 () -> assertTrue(integration.contains("VillageBuildingDefinitions.enabledEntries")),
-                () -> assertTrue(config.contains("CONFIG_VERSION = 15")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 21")),
                 () -> assertTrue(config.contains("restoreVersionThirteenDefaults")),
                 () -> assertTrue(config.contains("integratedWatchtowers")),
                 () -> assertTrue(build.contains("generateVillageBuildingTemplates")),
@@ -102,10 +103,10 @@ final class VillageDefenseBuildingsStepThreeContractTest {
                 () -> assertTrue(Files.isRegularFile(projectDirectory.resolve(
                         "docs/examples/village-buildings-datapack/data/vgg_example/"
                                 + "village_buildings/plains_sentry_post.json"))),
-                () -> assertTrue(read("docs/village-defense-buildings-step-3.md")
-                        .contains("Restart required")),
+                () -> assertTrue(read("docs/village-defense-buildings.md")
+                        .contains("server restart")),
                 () -> assertTrue(read("docs/configuration.md")
-                        .contains("Config version 13")));
+                        .contains("village-defense-buildings.md")));
     }
 
     private static String read(String relativePath) throws IOException {

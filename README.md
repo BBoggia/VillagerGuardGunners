@@ -1,441 +1,342 @@
 # Villager Guard Gunners
 
-Villager Guard Gunners is a focused Minecraft Forge add-on that lets Guard
-Villagers guards operate Timeless and Classics Zero (TaCZ) guns through TaCZ's
-native server-side firearm system.
+Villager Guard Gunners lets you equip Guard Villagers with Timeless and
+Classics Zero (TaCZ) guns, ammo, and sidearms.
 
-The add-on decides when a guard should aim, move, and pull the trigger. TaCZ
-remains responsible for projectiles, damage, spread, recoil, fire modes,
-magazines, reloads, bolt actions, heat, charge behavior, attachments, sounds,
-and synchronization. The old custom projectile and hand-authored weapon
-rebalance are not part of the current implementation.
+Guards can aim, move, fire, reload, use backup pistols, follow individual
+orders, join squads, restock from Village Armories, and protect their allies.
 
-## Supported versions
+## Features
 
-The 1.5 development branch is deliberately locked to this reviewed combination:
+- TaCZ gun aiming, firing, reloads, magazines, fire modes, attachments, sounds,
+  and effects.
+- Weapon-aware movement and aiming for pistols, SMGs, rifles, shotguns, sniper
+  rifles, machine guns, and launchers.
+- Three persistent ammo slots for loose ammo and ammo boxes.
+- Optional sidearms for empty, restricted, or unsafe primary weapons.
+- Quick ammo deposits, nearby drop pickup, reusable ammo-box preservation, and
+  emergency ammo sharing.
+- Per-guard rules of engagement, tactics, explosive permission, ammo
+  behavior, movement, and firing range.
+- Reusable Orders Ledgers for copying behavior without copying equipment or
+  ownership.
+- Squads and temporary Rally, Defend, Hold, Focus Target, Fall Back, and Resume
+  Orders commands.
+- Saved squad patrol routes authored with the Squad Command Ledger.
+- Craftable Village Armories with hopper and pipe support, squad access, and
+  automatic guard resupply.
+- Craftable Quartermaster stations with working villagers, opt-in equipment
+  profiles, protected player equipment, and linked Village Armory supplies.
+- Difficulty-scaled natural guard loadouts controlled by configuration and
+  datapacks.
+- Standalone Village Watchtowers with generated squads and stocked Armories.
+- Optional Village Defense Buildings integrated into vanilla village pools.
+- Optional regional building packs with furnished layouts for vanilla villages,
+  CTOV, Tidal Towns, Moog's Missing Villages, and Sky Villages.
+- Village readiness and automatic sentry, drill, overwatch, and muster duties.
+- Opt-in village population sizing and automatic patrol coverage, including
+  ordinary villages without Village Defense Buildings.
+- Medical pouches, supplied medic guards, and optional casualty recovery with
+  Recovery Cots and visible transport.
+- Friendly-fire, ally, and explosive-weapon protection.
+- Clear ammo and combat status in the guard inventory.
+
+## Requirements
+
+Villager Guard Gunners 1.7 targets this dependency combination:
 
 | Component | Version |
 | --- | --- |
 | Minecraft | 1.20.1 |
-| Forge | 47.4.23 |
+| Forge | 47.4.10 or newer 47.x release |
 | Guard Villagers | 1.20.1-1.6.19 |
 | Timeless and Classics Zero | 1.1.8-hotfix |
 | Fzzy Config | 0.7.6+1.20.1 |
 | Kotlin for Forge | 4.12.0 |
 | Java | 17 |
 
-All four mods listed after Forge are required on the client and server. Exact
-runtime dependency ranges are also declared in `META-INF/mods.toml`; an
-unreviewed upgrade is intentionally rejected by the source and artifact tests.
+Install Guard Villagers, TaCZ, Fzzy Config, Kotlin for Forge, and Villager Guard
+Gunners on both the client and server. The current build supports the version
+combination listed above.
 
-## Using the add-on
+See [Quartermaster service](docs/quartermaster-service.md) for automatic
+equipment stocking and station setup.
+See [building pack installation](docs/building-pack-installation.md) to choose
+and install the optional redesigned structures. Choose one all-buildings pack
+per village provider or download individual building families.
 
-1. Create and interact with a guard according to Guard Villagers' normal rules.
-2. Open the guard inventory with a player that Guard Villagers authorizes.
-3. Put a TaCZ gun in the guard's main-hand slot.
-4. Put compatible loose TaCZ ammunition or ammo boxes in the three dedicated
-   ammo slots.
-5. Give the guard a valid hostile target through normal Guard Villagers
-   behavior. The guard will aim, approach or retreat as needed, find a safer
-   firing lane, and delegate firing and reloads to TaCZ.
+## Getting Started
 
-The inventory's **Guard Orders** panel can specialize that individual guard's
-rules of engagement, tactical profile, explosive permission, ammunition
-pickup and sharing, combat movement, and maximum firing range. Every order
-defaults to inheriting the server configuration, and the server's safety and
-performance limits remain authoritative.
+1. Create a guard through normal Guard Villagers gameplay.
+2. Open the guard inventory and place a TaCZ gun in its main-hand slot.
+3. Add compatible loose ammo or ammo boxes to the dedicated ammo slots.
+4. You can also equip a valid pistol in the sidearm slot.
+5. Once the guard finds a valid target, it handles aiming, firing, reloading,
+   and movement on its own.
 
-Newly generated structure guards can also receive a difficulty-scaled TaCZ
-loadout automatically. The default pools favor pistols on Easy, add SMGs on
-Normal, and allow occasional rifles on Hard. Each successful guard receives a
-loaded native TaCZ gun plus one complete stack of its own compatible loose
-ammunition. Spawn sources, chance, nearby population caps, crossbow-only
-replacement, explosive opt-in, and datapack pool IDs are all controlled by the
-server configuration. Invalid or unsupported definitions fail without changing
-the guard, and custom pools can be supplied by datapacks. Successful natural
-issuance is authenticated across chunk unloads and server restarts so nearby
-population caps remain accurate; manually replacing or moving the issued gun
-does not leave a stale guard counted against the cap.
+The guard inventory shows its current ammo and combat status. Hover a
+status for a plain-language explanation of conditions such as aiming, range,
+visibility, friendly-fire safety, reloads, cooldowns, or empty reserves.
 
-Format-2 datapack pools can filter entries by dimension, biome, structure,
-difficulty, spawn source, raid state, and guard scoreboard tags while retaining
-an unconditional fallback. Permission-level-2 operators can validate TaCZ
-compatibility, inspect parsed weights and conditions, and preview a pool at a
-world position through `/vgg loadouts validate`, `/vgg loadouts inspect`, and
-`/vgg loadouts preview` without issuing items or consuming spawn random state.
+## Orders, Roles, and Squads
 
-Craft an **Orders Ledger** shapelessly from a Book and Quill and an Emerald to
-reuse a setup across guards. Use a blank ledger on a guard to capture its seven
-orders and optional datapack role, use the written ledger on another guard to apply them, or sneak-use it
-to overwrite the stored template. It copies behavior parameters only—never
-equipment, ammunition, ownership, patrol positions, or other guard data—and
-all operations recheck Guard Villagers permissions and distance on the server.
+The Guard Orders panel can override an individual guard's:
 
-Datapack-defined **guard roles** provide reusable behavioral defaults beneath
-those explicit orders. Roles never grant or move items, remain subordinate to
-all global safety controls and temporary squad-command precedence, and add no
-scan or tick handler. They can be assigned through natural-loadout format 4,
-an Orders Ledger, or permission-level-2 `/vgg roles` commands. The strict,
-bounded format and built-in unassigned examples are documented in
-[docs/guard-roles.md](docs/guard-roles.md).
+- rules of engagement;
+- tactical profile;
+- explosive permission;
+- ammo pickup and sharing;
+- combat movement; and
+- maximum firing range.
 
-The separate **Squad Command Ledger** assigns authorized guards to a stable
-squad and issues temporary Rally, Defend, Hold, Focus Target, Fall Back, and
-Resume Orders commands. Crouch-right-click in the air to select a mode, then
-use the ledger in the air, on a block, or directly on a Focus target. Commands
-affect only nearby loaded squad members, are deterministically capped, and
-expire across chunk unloads and restarts. They can override movement but never
-bypass rules of engagement, ally protection, explosive restrictions, or
-TaCZ's native firing and ammunition state. Rally clears on arrival; Resume
-Orders restores the unchanged Guard Villagers patrol/follow behavior.
+Each order can inherit the server default. An Orders Ledger can capture and
+apply these settings without moving equipment, ammo, ownership, patrol
+positions, or other guard data.
 
-The craftable **Village Armory** provides nine dedicated slots for TaCZ loose
-ammunition and ammo boxes. Players can stock it directly, and hoppers, pipes,
-and other Forge item-handler integrations can insert or extract from every
-side. A public armory accepts any guard for resupply; sneak-use a bound
-Squad Command Ledger on it to assign that squad, and repeat with the same
-ledger to return it to public access. Inventory and lock identity persist,
-contents drop when the block is broken, and comparator output reports
-fullness. The block has no ticker or world scan. The 1.3 development line now
-activates bounded automatic resupply: otherwise-idle guards below their reserve
-trigger query only the transient loaded-Armory index, reserve compatible supply,
-travel with interruptible low-priority navigation, and withdraw transactionally.
-Checks are UUID-staggered, candidate/path work is capped, and failures use
-cooldown or exponential backoff without loading a chunk.
+Datapack-defined guard roles provide reusable defaults beneath explicit Guard
+Orders. You can assign them through natural loadouts, Orders Ledgers, or
+operator commands. Roles don't grant items.
 
-Once a guard has a TaCZ gun equipped, an authorized player may crouch-right-
-click it while holding compatible loose ammunition or an ammo box. Quick
-deposit fills only the three dedicated ammo slots, accepts partial stacks when
-space is limited, and leaves rejected ammunition in the player's hand. Normal
-right-click still opens the inventory for equipment changes and pre-stocking.
-Quick deposit follows Guard Villagers' separate **give guard stuff** permission:
-with its default `giveGuardStuffHOTV=false`, a player may supply ammunition even
-when the player lacks the reputation or ownership needed to open and take from
-the inventory. It never grants inventory access. Guards with disabled AI and
-guns using TaCZ dummy or native-infinite reserves reject physical handoffs.
+A Squad Command Ledger assigns authorized guards to a squad and issues
+temporary field commands to nearby loaded members. Squad commands don't bypass
+rules of engagement, ally protection, ammo requirements, or explosive
+safety.
 
-Active armed guards also collect compatible TaCZ ammunition that comes within
-the configured passive-pickup radius. This does not make guards search or
-pathfind for drops. The dropped ammunition performs a staggered, twice-per-
-second bounded check, respects vanilla pickup delays and player-targeted
-items as well as the `mobGriefing` game rule, and leaves any capacity-limited
-remainder in the world. Empty finite ammo boxes do not trigger pickup checks.
+The ledger also includes a Patrol Route Editor mode. Use it on open ground to
+add waypoints, crouch-use it on a block to remove the last waypoint, or use it
+in the air to inspect the route. A route becomes active after its second
+waypoint. Guards pause briefly at each point, skip unreachable points after a
+limited number of attempts, and return to ordinary duty when every route chunk
+is unloaded.
 
-TaCZ's reusable finite boxes remain real items after their ammunition reaches
-zero. On the next reload or restocking action, the guard drops each depleted
-box intact beside itself to free the dedicated slot; this is event-driven and
-does not add a guard tick scan.
+See [per-guard orders](docs/per-guard-orders.md),
+[guard roles](docs/guard-roles.md), and
+[squad commands](docs/squad-commands.md) for the complete behavior and
+authorization rules.
 
-When TaCZ proves an armed guard cannot reload from its own reserves, that dry
-guard can make one bounded emergency request to nearby guards. By default the
-nearest guard with the same owner supplies up to one recipient magazine of
-loose ammunition while retaining one attachment-adjusted magazine for itself;
-two unowned guards may also share. The request does not move either guard,
-transfer ammo boxes, or continuously balance inventories.
+## Medical supplies
 
-The inventory keeps Guard Villagers' armor, follow, patrol, ownership, and
-reputation behavior. Ammunition persists with the guard and is exposed through
-Forge's item-handler capability for modded inventory automation. The Ammo
-heading is color-coded and shows a detailed TaCZ-native status tooltip when
-hovered, including feed type, magazine, chamber, compatible reserve, and
-incompatible or unreadable ammunition. A second color-coded status line explains
-the guard's current combat state, including weapon-order restrictions, aiming,
-range, line-of-sight,
-friendly-lane, reload, action-cycle, charge, cooldown, and dry-ammunition
-conditions. Hover it for a plain-language explanation. Quick deposit uses the
-same TaCZ-native compatibility result as the ammunition display.
+Craft bandages or use drinkable healing potions to treat injured guards. Sneak-use
+supplies to stock a guard's three-slot medical pouch, or use its inventory screen
+to stock, treat, and pack supplies. Treatment consumes one item only when healing
+succeeds. Medical supplies remain separate from guns and ammo.
 
-## Safety and behavior
+Enable **Medic** in a guard inventory to treat nearby allies from its pouch.
+Enable **Retreat** separately to let an injured guard seek a supplied medic.
+Both choices start off and respect player orders.
 
-- Guards do not fire through guards, villagers, iron golems, their owner,
-  owned/tamed entities, entities Minecraft considers allied, or entity types
-  supplied by the modpack ally tag, config, or compatibility API.
-- The same protection is enforced again for direct TaCZ hits and explosions.
-- Guard-owned TaCZ explosions preserve blocks by default while retaining native
-  effects against hostile entities. Server operators can disable this behavior.
-- Unsafe native burst rounds are canceled individually.
-- Server rules of engagement can preserve Guard Villagers' normal targets,
-  restrict proactive fire to hostile mobs, require recent aggression against a
-  guard or protected ally, or hold fire. Config and datapack type overrides
-  use deterministic deny-before-allow precedence.
-- TaCZ's effective range is the guard's preferred movement distance. The
-  selected tactical profile can adjust that approach distance and the guard's
-  retreat threshold, continuous-visibility requirement, and acceptable aim
-  error without changing TaCZ weapon statistics. Profiles may also impose a
-  narrower firing cap, while explosive weapons enforce a blast-aware minimum
-  standoff. The configurable maximum engagement range remains the global cap.
-- Visibility, movement, path recalculation, unsafe-shot caching, and TaCZ data
-  refresh work are bounded and staggered between guards.
-- The inventory combat status is derived from cached goal decisions and TaCZ's
-  synchronized action fields. Its single integer menu value is evaluated only
-  while that inventory is open and transmitted only when it changes.
-- Per-guard orders use the existing container-button protocol and seven small
-  change-detected values only while the inventory is open. The combat path
-  performs constant-time enum reads and refreshes existing cached TaCZ data
-  only when an order revision changes.
-- Orders Ledgers are interaction-driven and perform no idle scan or tick work.
-  Their strict versioned template is decoded only when used or displayed and
-  applies all seven orders atomically or not at all.
-- A permanently dry gun temporarily yields to Guard Villagers' normal melee
-  goal instead of retrying every tick.
+Optionally enable `medical.downed` for two-dose stabilization and revival after
+lethal injuries. It starts off; see [Casualty recovery](docs/casualty-recovery.md)
+for treatment, timers, and bypass damage.
+
+Enable `medical.transport` alongside downed guards to let supplied medics carry
+stabilized allies to craftable Recovery Cots. Transport starts off; see
+[casualty transport](docs/casualty-transport.md) for setup and route requirements.
+
+See [Medical supplies and medic guards](docs/medical-supplies.md) for controls,
+healing amounts, datapack profiles, permissions, and recovery behavior.
+
+## Quartermaster station
+
+Craft a Quartermaster station to organize guns, ammo, armor, and other supplies
+in 27 stock slots and nine return slots. Withdraw items to equip guards through
+their inventory screen. The owner can choose private, squad-creator, or public
+access and enable hopper or pipe transport. Breaking the station packs its
+contents and settings into one item for relocation.
+
+See [Quartermaster stations](docs/quartermaster-station.md) for crafting,
+permissions, and transport rules. A working Quartermaster can provide
+[automatic equipment service](docs/quartermaster-service.md) to enrolled guards.
+
+## Ammo and Village Armories
+
+Authorized players can crouch-right-click an armed guard with compatible
+ammo to deposit it without opening the full inventory. Guards can also
+collect compatible nearby drops and make one emergency request to a nearby
+ally when they cannot reload from their own reserves.
+
+The Village Armory is a nine-slot, ammo-only container. It supports
+hoppers, Forge item handlers, comparator output, persistent contents, and
+optional squad access. Low-ammo guards can locate a compatible loaded Armory,
+travel to it, and restock. Armories don't force chunks or scan
+blocks throughout the world.
+
+See [ammo quality of life](docs/ammunition-quality-of-life.md),
+[Village Armories](docs/village-armories.md), and
+[Armory resupply](docs/armory-resupply-contracts.md) for details.
+
+## Natural Loadouts and Village Structures
+
+Newly generated guards can receive a difficulty-scaled TaCZ gun and matching
+ammo. The defaults favor pistols on Easy, add SMGs on Normal,
+and allow occasional rifles on Hard. Server settings and datapacks control
+which spawn sources can receive loadouts, weapon pools, local population
+limits, crossbow replacement, and explosive weapons.
+
+Rare standalone Village Watchtowers can generate in newly explored,
+village-compatible Overworld biomes. A Watchtower can create a difficulty-scaled
+squad and a stocked squad Armory. These towers are independent structures and
+are not inserted into vanilla village roads or building pools.
+
+The optional Village Defense Buildings system adds biome-aware Barracks,
+public Armories, Sentry Posts, integrated Watchtowers, and Training Yards to
+vanilla village pools. Its master switch remains off by default so server
+operators can choose whether to extend village generation. Existing vanilla
+and third-party pool entries are preserved. Optional [regional Barracks](docs/regional-barracks-integration.md),
+[regional Armory packs](docs/regional-armory-integration.md),
+[regional Sentry Post packs](docs/regional-sentry-post-integration.md),
+[regional Watchtower packs](docs/regional-watchtower-integration.md), and
+[regional Training Yard packs](docs/regional-training-yard-integration.md) add furnished
+local designs for vanilla villages, Tidal Towns, and Moog's Missing Villages.
+Additional [custom village Armory packs](docs/custom-village-armories.md) cover
+selected CTOV themes and Sky Villages. The [Sky Villages building packs](docs/sky-village-defense-buildings.md)
+extend floating-island placement to all five building families. Optional [CTOV Barracks](docs/custom-village-barracks.md)
+add compact and courtyard layouts to six reviewed CTOV themes.
+The [CTOV Sentry Post pack](docs/custom-village-sentry-posts.md) adds roadside
+shelters and gateway lodges to the same themes.
+The [CTOV Watchtower pack](docs/custom-village-watchtowers.md) adds compact
+towers and gatehouse lookouts with two sheltered lookout positions.
+The [CTOV Training Yard pack](docs/custom-village-training-yards.md) adds
+practice yards and drill courtyards to complete these five building families
+for the six reviewed themes.
+For Better Villages, Lios, and Liberty's Villagers, see the
+[vanilla village provider guide](docs/vanilla-village-provider-buildings.md).
+
+These buildings form local defense networks. Bells place a network on Watch,
+confirmed threats raise an Alert, and raids begin a Siege. Loaded guards rotate
+through sentry, drill, overwatch, and muster positions as readiness changes.
+Positions that are blocked or no longer safe to stand on are left vacant until
+they are repaired.
+
+See [natural guard loadouts](docs/natural-guard-loadouts.md),
+[Village Watchtowers](docs/village-watchtowers.md), and
+[Village Defense Buildings](docs/village-defense-buildings.md). The
+[Village defense duties guide](docs/village-defense-duties.md) explains
+readiness, staffing, and patrol-route precedence. The
+[manual validation guide](docs/village-defense-buildings-manual-validation.md)
+covers natural terrain and modpack checks that cannot be inferred from the
+automated structure tests.
+
+## Safety and Behavior
+
+- Guards avoid firing through guards, villagers, iron golems, owners, tamed or
+  owned entities, scoreboard allies, and additional protected entity types.
+- Direct TaCZ hits and explosions repeat the ally check.
+- Guard-owned TaCZ explosions preserve blocks by default.
+- Unsafe burst rounds are canceled individually.
+- Rules of engagement can use normal Guard Villagers targets, hostile mobs
+  only, defensive retaliation, or hold fire.
+- Explosive weapons require a safe minimum distance.
+- Guards with empty or unusable guns seek safer reachable positions and keep
+  retrying their weapons. If no route passes the checks, they hold and retry.
+  Explicit movement commands still apply.
+- A usable sidearm stays equipped across target changes and brief target gaps
+  while its primary is dry.
+- Completed generated structures do not repair themselves, replace removed
+  guards, reroll supplies, or run recurring world scans.
+
+Modpack ally extensions are documented in
+[modpack ally protection](docs/modpack-ally-protection.md). Target selection is
+documented in [rules of engagement](docs/rules-of-engagement.md).
 
 ## Configuration
 
-Fzzy Config provides the server-authoritative file and synchronized UI:
+Fzzy Config provides synchronized server settings in:
 
 ```text
 config/villagerguardgunners/guard_gunners.toml
 ```
 
-Combat, movement, weapon-specific tactics, rules of engagement, safety,
-ammunition quality-of-life, explosion preservation, and advanced scheduling settings are documented in
-[docs/configuration.md](docs/configuration.md). TaCZ weapon damage, reload speed,
-accuracy, recoil, fire rate, and other balance values are not overridden by
-this add-on.
+Settings cover combat, movement, weapon tactics, rules of engagement, ally
+protection, explosive safety, ammo sharing, squads, Armory resupply, natural
+loadouts, Watchtowers, Village Defense Buildings, and performance-related
+scheduling. Sidearm behavior is selected through guard equipment and Guard
+Orders rather than a separate global settings section.
 
-Datapack authors and compatibility mods can extend the shared friendly-fire
-predicate without patching the add-on. See
-[docs/modpack-ally-protection.md](docs/modpack-ally-protection.md) for the entity
-tag, config precedence, provider API, and performance contract.
+See the [configuration guide](docs/configuration.md) for every option and its
+default.
 
-Target firing policy, restricted-mode overrides, and defensive retaliation are
-documented in [docs/rules-of-engagement.md](docs/rules-of-engagement.md).
+## Operator Commands
 
-Ammunition handoff, passive pickup, emergency sharing, ownership rules,
-supported reserve types, rollback controls, troubleshooting, and deliberately
-deferred features are documented in
-[docs/ammunition-quality-of-life.md](docs/ammunition-quality-of-life.md).
+Permission-level-2 operators can use:
 
-Individual guard policy, override precedence, authorization, persistence, and
-performance behavior are documented in
-[docs/per-guard-orders.md](docs/per-guard-orders.md).
+- `/vgg inspect <guard>` for combat, weapon, ammo, order, and natural
+  loadout status;
+- `/vgg loadouts` commands to validate, inspect, and preview datapack pools;
+- `/vgg squads` commands to inspect and maintain squad records;
+- `/vgg roles` commands to inspect and assign datapack roles;
+- `/vgg watchtowers` commands to review Watchtower configuration, groups,
+  generated guards, and rejected datapack entries; and
+- `/vgg villagebuildings` commands to review configuration, accepted entries,
+  live pool weights, and reload or startup errors; and
+- `/vgg villages` commands to inspect ordinary village records, observed homes,
+  discovery progress, guard affiliations, and active compatibility profiles.
 
-Large collections of TaCZ gun packs no longer fail login when TaCZ's combined
-common-data cache exceeds Minecraft's 1 MiB custom-payload limit. The add-on
-leaves normal TaCZ syncs untouched and chunks only oversized transfers through
-a bounded, checksum-verified compatibility channel. The cause, limits,
-diagnostics, and affected-save test procedure are documented in
-[docs/tacz-large-pack-sync.md](docs/tacz-large-pack-sync.md).
+These diagnostics do not issue equipment, locate structures, or load chunks.
 
-Squad identity, ledger interaction, temporary command behavior, precedence,
-persistence, and performance boundaries are documented in
-[docs/squad-commands.md](docs/squad-commands.md).
+## Documentation
 
-Armory crafting, inventory, automation, squad locking, comparator behavior,
-and the boundary between the storage foundation and guard resupply are
-documented in [docs/village-armories.md](docs/village-armories.md).
+- [Version 1.7 release notes](docs/releases/1.7.md)
+- [Current development changelog](CHANGELOG.md)
+- [CurseForge description](docs/curseforge-description.md)
+- [Configuration](docs/configuration.md)
+- [Village records and discovery](docs/village-records.md)
+- [Village population and initial guard generation](docs/village-population.md)
+- [Village mod compatibility assessment](docs/village-mod-compatibility.md)
+- [Settlement compatibility definitions](docs/village-compatibility-definitions.md)
+- [Village template support and limitations](docs/village-template-support.md)
+- [Automatic village patrol coverage](docs/village-patrol-coverage.md)
+- [Sidearms](docs/sidearms.md)
+- [Tactical intent and threat observations](docs/guard-tactical-intent.md)
+- [Tactical defaults and tuning tradeoffs](docs/guard-tactical-tuning.md)
+- [Per-guard orders](docs/per-guard-orders.md)
+- [Guard roles](docs/guard-roles.md)
+- [Squad commands](docs/squad-commands.md)
+- [Village Armories](docs/village-armories.md)
+- [Natural guard loadouts](docs/natural-guard-loadouts.md)
+- [Large TaCZ pack synchronization](docs/tacz-large-pack-sync.md)
+- [GitHub release process](docs/github-release-process.md)
+- [Release checklist](docs/release-checklist.md)
 
-Natural spawn eligibility, difficulty progression, datapack pool format,
-atomic gun/ammunition issuance, versioned save identity, lifecycle behavior,
-world-generation handoff, and bounded population-cap behavior are documented
-in [docs/natural-guard-loadouts.md](docs/natural-guard-loadouts.md).
-The repository also includes a copy-ready
-[example datapack](docs/examples/natural-loadout-datapack/README.md) and a
-[format-1 migration guide](docs/natural-loadout-migration.md).
+## Building and Testing
 
-## Diagnosing a guard
+Use JDK 17 from the repository root:
 
-Operators with permission level 2 can inspect one guard on demand:
-
-```mcfunction
-/vgg inspect <guard>
-```
-
-Example selector for the nearest guard:
-
-```mcfunction
-/vgg inspect @e[type=guardvillagers:guard,sort=nearest,limit=1]
-```
-
-The report separates the current AI decision from TaCZ's native state. It
-includes the guard's orders and effective policy, target distance, minimum,
-preferred, and maximum range, firing-window validity, cached line of sight,
-active visible-tick and aim requirements, movement, the ROE mode and decision
-reason, progressive muzzle/projectile/blast safety padding, friendly-fire blockers and their ally-classification reason, gun ID, fire mode,
-magazine and chamber state, actual compatible reserve units, reserve source,
-compatibility scan results, reload/bolt/cooldown/charge state, and the last
-TaCZ shoot result. It also shows the cached TaCZ gun type, tactical profile and
-selection source, projectile/explosion traits, and the cached tactical
-envelope. The command registers no recurring tick handler or overlay; its
-descriptive entity query runs only when an administrator invokes it.
-
-The report also identifies a guard's natural-loadout record as absent, active,
-or mismatched and includes its last selection/issuance result and persisted
-pool, gun, difficulty, source, schema, and issuance identity when available.
-
-## Building and testing
-
-From the repository root:
-
-```bash
+```text
 ./gradlew check
 ./gradlew runGameTestServer
 ```
 
-`check` runs unit and source contracts, compiles the correctness and performance
-GameTest source sets, builds/reobfuscates the JAR, and verifies that the release
-artifact contains the supported integration while excluding development tests
-and removed legacy systems.
+`check` runs unit and source checks, builds and reobfuscates the JAR, and
+verifies the packaged artifact. GameTests provide the Forge runtime validation.
+Manual client, multiplayer, third-party gun-pack, terrain, and mod-compatibility
+checks remain in the [release checklist](docs/release-checklist.md).
 
-The opt-in scalability matrix is intended for release comparisons on the same
-machine:
+The complete performance matrix runs both isolated suites in one server so
+every report is bound to the same production artifact. It also includes a
+100-guard automatic-duty workload that exercises unloaded patrol checks and
+maximum-size duty-slot validation:
 
-```bash
-./gradlew runGameTestServer -Pphase8Performance=true
-./gradlew verifyPhase8PerformanceReports
-./gradlew assembleReleaseCandidateEvidence
-./gradlew verifyAmmunitionReleaseCandidate
+```text
+./gradlew runGameTestServer -Pstep13Performance=true
+./gradlew verifyPhase8PerformanceReports verifyVillageBuildingPerformanceReport assembleVillageDefenseBuildingEvidence
 ```
 
-The 1.5 Village Defense Buildings workload is intentionally isolated from that
-older combat/logistics matrix:
+The earlier `phase8Performance` and `villageBuildingPerformance` properties
+remain available when only one component workload needs investigation.
 
-```bash
-./gradlew runGameTestServer -PvillageBuildingPerformance=true
-./gradlew verifyVillageBuildingPerformanceReport
-./gradlew verifyVillageDefenseBuildingsReleaseCandidate
-```
+The release artifact is written to
+`build/libs/villagerguardgunners-<version>.jar`.
 
-Run the final aggregate command without either performance property. It binds
-the exact JAR and village JSON/JFR pair, reruns the normal correctness server,
-and retains natural-terrain and mixed-mod checks as separate manual evidence.
-
-See [docs/phase-8-validation-and-performance.md](docs/phase-8-validation-and-performance.md)
-for the reference measurements and interpretation. Headless tests cannot prove
-client animation or observer synchronization, so a release candidate must also
-complete [docs/release-checklist.md](docs/release-checklist.md).
-
-The final command verifies the release JAR and exact 20-report/20-JFR set, parses
-each JFR, enforces same-run baseline-relative p95/p99 budgets, and requires every
-JSON report to name the SHA-256 of that exact production JAR. It then writes a
-deterministic artifact manifest containing the byte size and SHA-256 of the JAR
-and every performance evidence file, plus a conventional JAR checksum under
-`build/reports/release-candidate`. It deliberately records the separate
-correctness and manual-validation boundaries instead of claiming they ran as
-part of the bundle task.
-
-The final aggregate task must be run without `-Pphase8Performance`. It consumes
-the separately generated performance reports, runs the normal correctness
-GameTest server, and verifies the complete ammunition release
-evidence boundary. It does not replace the recordable multiplayer rows in the
-release checklist.
-
-`./gradlew prepareCurseForgeRelease` additionally runs
-`verifyManualReleaseChecklist` and intentionally refuses to create a public
-release handoff while any manual row is `Not run`/`Failed` or any checklist item
-remains unchecked.
-
-## Development layout
+## Project Layout
 
 - `src/main` — production code and assets
-- `src/test` — plain JUnit and source/artifact contracts
-- `src/gametest` — transformed Forge correctness GameTests
+- `src/test` — JUnit and source/artifact checks
+- `src/gametest` — Forge correctness GameTests
 - `src/perftest` — opt-in scalability workloads and JFR evidence
-- `docs` — architecture, configuration, validation, and release notes
+- `docs` — configuration, feature, compatibility, validation, and release docs
 
-Continuous integration runs `./gradlew check` on pushes and pull requests. It
-does not claim to replace the client, multiplayer-observer, or third-party gun
-pack checks in the manual release matrix.
-
-Version numbers, immutable annotated tags, GitHub Actions artifacts, and the
-GitHub/CurseForge publishing sequence are documented in
-[docs/github-release-process.md](docs/github-release-process.md).
-
-The 1.3 Village Defense Logistics line begins with the
-[Phase 0 baseline and compatibility contract](docs/village-defense-logistics-phase-0.md).
-Its feature-specific validation cases are recorded separately in the
-[Village Defense Logistics release matrix](docs/village-defense-logistics-release-matrix.md)
-alongside the main release checklist for the final 1.3 candidate.
-The first implementation boundary—the inactive state, need, request,
-precedence, expiry, and retry contracts—is documented in
-[Armory resupply contracts](docs/armory-resupply-contracts.md).
-
-The 1.4 Village Watchtowers line begins with the
-[Step 9 world-generation baseline](docs/village-watchtowers-phase-0.md). Its
-structure placement, guard-group, loadout, lifecycle, compatibility, and
-performance cases are tracked in the
-[Village Watchtowers validation matrix](docs/village-watchtowers-release-matrix.md)
-throughout the incremental world-generation implementation.
-The [Step 10 registry skeleton](docs/village-watchtowers-step-10.md) registers
-the codec and validates the built-in structure data while an empty biome tag
-and empty generation point keep incomplete towers from generating.
-The [Step 11 template and bounded placement](docs/village-watchtowers-step-11.md)
-adds the first 9 x 14 x 9 tower, centered persisted rotations, nine-point dry
-terrain validation, and village-compatible Overworld biome activation while
-leaving all guard, Armory, marker, and loot work disabled for later steps.
-The [Step 12 guard-post composition layer](docs/village-watchtowers-step-12.md)
-adds strict datapack-defined weighted groups, inherited loadout references,
-optional members, deterministic difficulty selection, and atomic
-last-known-good reload publication. It remains identifier-only: guard spawning
-and equipment issuance are reserved for later steps.
-The [Step 13 marker spawning and post identity](docs/village-watchtowers-step-13.md)
-adds one closed central template marker, deterministic one-shot Guard Villager
-creation, strict piece and guard provenance, Peaceful completion semantics, and
-duplicate prevention across piece revisits and persistence.
-The [Step 14 post integration](docs/village-watchtowers-step-14.md) adds the
-server-thread member handoff to existing natural-loadout and role transactions,
-one deterministic shared squad, and a rotation-safe locked Village Armory whose
-declared ammo-only loot is evaluated on the live server thread and committed
-once. Public/locked and empty/loot-stocked marker forms remain closed and
-bounded, and the completed tower adds no manager, recurring scan, retry loop,
-block-entity ticker, or chunk ticket. Role-specific built-in pools keep tower
-positions aligned with suitable weapon classes, zero-occupant towers still
-resolve their Armory squad exactly once, and nearby-cap queries terminate as
-soon as the configured limit is proven.
-The [Step 15 configuration and diagnostics](docs/village-watchtowers-step-15.md)
-adds schema-10 one-way generation, guard-count, Armory-placement, and initial-
-stock controls; documents datapack/config precedence; and provides bounded
-permission-level-2 status, group-publication, and loaded-post inspection
-commands without locating structures, loading chunks, or mutating towers. The
-current schema 11 adds a tower-only one-time gun-chance multiplier, defaulting
-to 1.5, while retaining every existing loadout and safety gate.
-The [Step 16 lifecycle and compatibility hardening](docs/village-watchtowers-step-16.md)
-preserves unreadable/future post records without executing them, prevents
-generic-loadout fallback for quarantined generated guards, proves removed or
-reassigned occupants and replaced Armories are never repaired, and adds
-bounded `/vgg watchtowers errors [page]` reload diagnostics for modpack
-operators.
-
-The 1.5 Village Defense Buildings line begins with the
-[baseline and additive-pool integration contract](docs/village-defense-buildings-1.5-plan.md).
-Its retained [validation matrix](docs/village-defense-buildings-release-matrix.md)
-separates automated pool, lifecycle, and template evidence from manual visual,
-mixed-mod, and performance gates. Steps 1 through 3 register a custom pool
-element and a default-off inert plains compatibility probe, then move its
-placement declaration into a strict, bounded, atomic
-[datapack format](docs/village-defense-buildings-step-3.md). Modpacks may own
-definition IDs and templates in their own namespaces, while synchronized
-one-way config switches can suppress individual building types. Definition
-changes accepted by `/reload` apply to village pools after a server restart.
-Step 4 adds the shared
-[deterministic anchor and one-shot lifecycle](docs/village-defense-buildings-step-4.md):
-valid templates may carry one type-matching anchor, and passive schema-1
-records prevent later garrison, Armory, or initial-stock work from running more
-than once. The main-thread claim has no ticker, scan, chunk ticket, forced
-load, or repair pass. Startup preflights pool, processor, template, and anchor
-dependencies before committing any pool changes; persisted identities are
-checked against their live dimension and world seed, and server-session reload
-state is cleared on shutdown. Step 5 adds the reviewable
-[biome-aware visual template matrix](docs/village-defense-buildings-step-5.md):
-all five building shells are packaged for all five vanilla village palettes,
-with a validated road connector and anchor in every template. Generation stays
-default-off pending manual visual and mixed-mod review. Step 6 adds
-[bounded village garrisons](docs/village-defense-buildings-step-6.md) to new
-Barracks, Sentry Posts, and integrated Watchtowers. Their difficulty-aware
-datapack groups reuse the existing role, squad, natural-loadout, ammunition,
-and TaCZ issuance pipeline; Peaceful buildings remain empty, repeated claims
-cannot duplicate guards, and no scan, respawn controller, forced chunk, or
-recurring village runtime is introduced. Step 7 activates
-[public village Armories](docs/village-defense-buildings-step-7.md) with
-bounded ammo-only initial stock and the existing event-driven resupply system.
-Training Yards remain passive. Step 8 adds the isolated
-[100-candidate performance and release-evidence gate](docs/village-defense-buildings-step-8.md)
-without treating compact performance evidence as natural-terrain or mixed-mod
-approval. Step 9 completes the
-[integrated Village Watchtower](docs/village-defense-buildings-step-9.md) with
-a compact 7x9x7 biome-aware shell, a supported internal route from its upper
-platform to ground level, a strict two-guard ceiling, and no Armory or runtime
-controller. It remains independent from the rare standalone Watchtower.
+Continuous integration runs `./gradlew check` for pushes and pull requests.
 
 ## License
 

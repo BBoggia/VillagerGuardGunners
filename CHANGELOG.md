@@ -1,102 +1,289 @@
 # Changelog
 
-All notable Villager Guard Gunners changes are recorded here.
+This changelog records player-, operator-, pack-author-, and API-visible
+changes. Internal implementation history and temporary validation evidence stay
+in local development notes.
 
 ## Unreleased
 
+## 1.7 - 2026-09-11
+
 ### Added
 
-- Began the 1.5 Village Defense Buildings foundation with stable Barracks,
-  Armory, Sentry Post, integrated Watchtower, and Training Yard identities.
-- Added a custom, serializable village pool element and a default-off plains
-  compatibility probe for validating additive jigsaw-pool integration before
-  any functional building template or marker behavior is enabled.
-- Added strict format-1 village-building datapack definitions with support for
-  modpack-owned IDs, all five planned building types, target pools, templates,
-  processor lists, projection, and bounded weights.
-- Added synchronized, default-on per-type suppression controls beneath the
-  default-off Village Defense Buildings master switch.
-- Added a copyable village-building datapack example and an authoring guide
-  covering schema, bounds, precedence, atomic reloads, and restart behavior.
-- Added closed `village_anchor:<building>` template markers, deterministic
-  building UUIDs, and strict schema-1 `VggVillageBuilding` persistence shared
-  by all five planned village building types.
-- Added passive at-most-once claims for anchor, garrison, Armory, and initial-
-  stock work so later functional steps cannot regenerate removed content.
-- Added biome-aware Barracks, Armory, Sentry Post, integrated Watchtower, and
-  Training Yard visual shells for plains, desert, savanna, snowy, and taiga
-  villages, generated from one bounded and reviewable source blueprint.
-- Added a 25-template Forge validation matrix covering every biome connector,
-  template bound, type-matching anchor, and real rotated placement for all five
-  building types.
-- Added bounded, difficulty-aware datapack garrisons for newly generated
-  Barracks, Sentry Posts, and integrated Watchtowers, with Peaceful producing
-  no occupants.
-- Added schema-14 village-garrison controls for staffing, the global four-guard
-  ceiling, and the one-time gun-chance multiplier.
-- Added public village Armories with bounded ammo-only initial stock, shared
-  generated identity, and the existing lock, loaded-index, and resupply paths.
-- Added schema-15 controls for village Armory placement and one-time stock.
-- Added an isolated, artifact-bound JFR workload for additive pool startup,
-  100 passive building placements, and 200 post-placement idle ticks.
-- Added a deterministic village-building evidence manifest and aggregate gate
-  that keeps natural-terrain and third-party compatibility review manual.
-- Completed the compact integrated Village Watchtower across all five village
-  palettes with a dedicated 20-case biome/rotation placement matrix.
+- Optional all-buildings datapacks bundle the five building families into one
+  download per provider: vanilla villages, CTOV, Tidal Towns, Moog's Missing
+  Villages, or Sky Villages. Individual family packs remain available.
+- Optional regional packs add furnished Barracks, Village Armories, Sentry Posts,
+  Watchtowers, and Training Yards, with two layouts per region. Separate packs
+  cover vanilla villages, Tidal Towns, Moog's Missing Villages, six CTOV themes,
+  and Sky Villages. Sky buildings include railed floating islands.
+- Structure authors can generate separate regional preview packs and define
+  layouts with their own geometry, palettes, pool weights, lighting, and duties.
+- Building datapacks support up to 192 entries and 24 target pools. Pack authors
+  can tune `selection_chance` separately from pool weight and opt rigid entries
+  into `terrain_safety` screening.
+- Added settlement profiles, resource-provider and entrance inspection, and
+  traversal-limit diagnostics for operators and pack authors.
 
-### Improved
+### Changed
 
-- Village-pool augmentation is startup-only, copy-on-write, strictly bounded,
-  idempotent across repeated installation attempts, and preserves existing
-  vanilla and third-party entries in their original order.
-- Missing target pools or processor lists now fail closed with one bounded
-  startup diagnostic instead of preventing the server from starting.
-- Village-building definitions now compile in deterministic ID order and
-  publish atomically. Invalid, duplicate, oversized, overly deep, or future-
-  format documents retain the complete last-known-good snapshot.
-- Live `/reload` no longer risks destructive template-pool edits: it validates
-  the next snapshot while startup remains the only pool-installation boundary.
-- Anchor claims now cross from world generation through one immutable server-
-  thread handoff with O(1) identity/position lookup and no scan, chunk load,
-  ticket, ticker, or repair manager.
-- Malformed, conflicting, duplicate, oversized, and future village-building
-  records fail closed while preserving unreadable data unchanged.
-- Village-building startup now preflights every target pool, processor list,
-  template, and anchor marker before committing any pool changes, then rolls
-  back the bounded mutation batch if a commit unexpectedly fails.
-- Village-building persistence now validates record dimensions and deterministic
-  world-seed provenance, caps the index at 65,536 records, serializes in linear
-  insertion order, and emits only bounded once-per-state diagnostics.
-- Village-building definition snapshots are cleared when a server stops so an
-  integrated-server restart cannot inherit another world's last-known-good
-  datapack state.
-- Village garrisons reuse the existing Guard Villagers spawn, role, squad,
-  natural-loadout, ammunition, and TaCZ transaction paths instead of adding a
-  parallel equipment or AI system.
-- Garrison placement verifies only bounded cells in already loaded chunks and
-  adds the selected group atomically, with zero recurring scan or respawn work.
-- Village Armory placement claims placement and initial stock together, never
-  overwrites another block or owner, and fails closed instead of duplicating
-  stock after a crash or repeat callback.
-- Village performance evidence now runs in a private GameTest template
-  namespace, independently from the older combat and logistics matrix.
-- Integrated Village Watchtowers now retain a continuous, fully supported
-  ladder from the lower level through the upper platform; build-time checks
-  prevent broken access, unsafe guard cells, or accidental Armory placement.
+- Guards with empty or unusable guns seek safer reachable positions. Reloading
+  guards make space before enemies reach them. Injured or overwhelmed guards
+  can withdraw or hold, avoid hazardous routes, and retry blocked exits.
+- Guards keep a usable sidearm active across target changes and brief contact
+  gaps when the primary is out of ammo, then restore the primary after combat.
+- Guards stop pursuing when their enemy observations and attack evidence expire.
+  Operator inspection explains tactical decisions.
+- Vanilla regional packs favor redesigned layouts, reduce matching small
+  built-in buildings' frequency, and screen some flooded or deeply buried sites.
+  Base-mod-only generation keeps its existing settings.
+- Guards can find longer noncombat routes between floors in nearby buildings.
+- Automatic village patrols support dry, unlit campfire decks and transitions
+  across waterlogged top slabs and closed top trapdoors, checking surface height.
+- Village discovery supports more than 64 village structure types and shares
+  layout work across chunks to reduce delays in large villages.
 
 ### Fixed
 
-- Preserved compatibility with Step 2 structure starts that predate the
-  explicit `building_type` field while keeping that field in every new encoding.
-- Fixed real template placement so valid `village_anchor` structure blocks are
-  consumed and claimed after vanilla placement instead of being silently
-  discarded by vanilla's structure-block ignore processor.
-- Rejected missing templates and invalid or type-mismatched anchor templates
-  before any village-pool mutation, with bounded entry-specific diagnostics.
-- Made worker-thread anchor publication queue exactly one immutable main-thread
-  claim and documented its crash/retry boundary for future idempotent actions.
-- Removed the packaged Step 2 compatibility probe now that reviewed VGG
-  templates exist; its ID remains codec-reserved for older development worlds.
+- Fixed packaged startup crashes involving Recovery Cot name tags and guard
+  checkpoint movement.
+- Fixed managed village generation suppressing ordinary guards at Guard
+  Villagers' default spawn marker. Existing frozen allowances remain unchanged.
+- Guards stop advancing when combat requires holding or repositioning, release
+  aim during retreat, and preserve horizontal Defend limits after terrain changes.
+- Guards retain combat control through brief contact gaps, yield to medical
+  interruptions, and clear combat movement after changing dimensions. Removing
+  a gun during an action does not start duty or equipment service prematurely.
+- Guards remain at valid defense posts instead of returning toward vanilla
+  village points of interest. Armory blocks rotate and mirror with templates.
+- Quartermaster service stops when the station's job-site claim is released.
+- Medics try alternate cot approaches and recheck floor support and passenger
+  clearance. Carriers retain their destination and screen remaining routes
+  after replanning without rejecting completed segments.
+- Automatic patrols recheck support and headroom before and during travel.
+  Unchanged terrain surveys and new home observations no longer restart patrols.
+- Village membership, home associations, bells, and damage alarms respect local
+  elevation. Nearby courtyard homes remain recognized; uncertain observations
+  preserve existing home records. Existing guard affiliations remain unchanged.
+
+### Compatibility
+
+- Added settlement and building classifications for the tested village mods,
+  including CTOV size families and exclusions for hostile Witch settlements.
+  Friendly defense buildings are also excluded from their road, decoration,
+  and entity pools.
+- Residential demand uses verified bed-bearing fragments where available.
+  Better Villages and Lios replacements use the winning resource's metadata;
+  unknown replacements do not inherit stale hints.
+- Added a version-gated Integrated API piece reader and a targeted correction
+  for Integrated Villages 1.3.2's broken village tag on Forge 47.4.10, preserving
+  other packs' contributions.
+
+## 1.6 - 2026-09-05
+
+### Added
+
+- Added craftable Recovery Cots and optional casualty transport. Supplied medics
+  can carry stabilized allies to nearby cots before continuing treatment. Enable
+  `medical.transport` alongside downed guards to try it; it starts off.
+
+- Added optional downed guards, supply-based stabilization and revival, casualty
+  status labels, and medic rescue priorities. Enable `medical.downed` to try it;
+  it starts off. Disabling it lets existing casualties recover at low health.
+
+- Added opt-in medic duty, finite-supply healing for nearby allied guards, and
+  separate medical retreat controls. Medics respect player orders and pause
+  treatment when interrupted; supplied guards can resume automatic duties.
+
+- Added the Quartermaster profession and opt-in guard equipment service during
+  work hours. Guards can restock their current loadout or maintain a selected
+  profile using physical guns, armor, ammo, and medical supplies.
+- Added separate guard service permissions, links to nearby Village Armories,
+  equipment replacement controls, and supply status in the guard inventory.
+  Existing equipment stays protected until replacement is enabled.
+- Added datapack equipment profiles and operator commands for inspecting and
+  recovering inventories whose service ownership needs reconciliation.
+
+- Added craftable bandages, direct treatment with bandages and drinkable healing
+  potions, and a separate three-slot medical pouch in each guard inventory.
+  Canceled or ineffective treatment costs no supplies, and consumed potions
+  return their bottle to the source slot.
+- Added medical pouch packing and recovery on death or conversion, validated
+  datapack treatment profiles, and dedicated medical-supply automation access.
+
+- Added a craftable Quartermaster station with 27 stock slots, nine return slots,
+  private, squad-creator, and public inventory access, and optional hopper/pipe
+  transport. Players can withdraw supplies to equip guards manually.
+- Quartermaster stations retain their supplies and access settings when moved
+  as packed items, and retry canceled item drops after saving and loading.
+- Added optional size-based initial guard generation for new villages. Ordinary
+  guards and Village Defense Building garrisons share one allowance; deaths do
+  not trigger replacements. Enable `villagePopulation.managedGeneration` to try
+  it; it starts off.
+- Added persistent counts of known village residents, including unloaded and
+  unarmed guards, with `/vgg defense population` diagnostics and a Squad Command
+  Ledger summary. Existing villages keep their guards without automatic additions.
+
+- Added saved village records for ordinary villages, with `/vgg villages`
+  diagnostics for discovery progress, observed homes, and guard affiliations.
+  Village records preserve separate identities when defense networks merge.
+- Added optional automatic outdoor village coverage for eligible residents,
+  including ordinary villages. Guards rotate destinations, resume after combat,
+  and release blocked paths. Enable `villageDefense.automaticCoverage` to try it;
+  it starts off.
+- Added `/vgg defense coverage` area diagnostics and a local village summary
+  when inspecting a route with the Squad Command Ledger.
+- Added a Java coverage-planning API with bounded village areas, guard
+  eligibility, fair assignment rounds, and exclusive temporary work reservations.
+  The optional live coverage layer supplies terrain validation and movement.
+- Added persistent village defense readiness. Bells place nearby defense
+  networks on Watch, confirmed threats raise an Alert, active raids begin a
+  Siege, and quiet villages move through Recovery before returning to Peace.
+- Added automatic defense duties for loaded guards. Garrisons rotate through
+  sentry, drill, overwatch, and muster positions according to the village's
+  current readiness and the weapon each position requires.
+- Added saved squad patrol routes. A bound Squad Command Ledger can add,
+  inspect, remove, and clear waypoints, and assigned guards follow completed
+  routes while ordinary combat and higher-priority commands retain control.
+- Added datapack-defined duty positions for Village Defense Buildings, with
+  rotation-aware offsets, facing, duty type, and optional ranged-weapon
+  requirements.
+- Added permission-level-2 `/vgg defense` diagnostics for readiness, defense
+  networks, duty positions, staffing, and event activity.
+- Added synchronized settings for readiness timing, automatic duties, patrol
+  speed, waypoint pauses, and unreachable-waypoint limits.
+
+### Changed
+
+- Recovery Cots provide faster casualty revival and rest. When transport is
+  enabled, emergency field revival takes eight seconds followed by twenty
+  seconds of rest; cot revival takes two seconds followed by five seconds of
+  rest. Both use the same supplies and restore up to two hearts.
+- Manual revival follows the same treatment timing, with progress feedback and
+  no supply cost when interrupted. Server operators can adjust the durations.
+
+### Fixed
+
+- Medics deliver casualties onto their Recovery Cots and align them with the
+  mattress. Resting patients stop their walking animation, keep their cot through
+  recovery, and get up beside it.
+- Medics can try another cot after a failed route and leave time for emergency
+  field care. Broken cots preserve successful revival and time already rested.
+
+- Medic work now respects follow orders even when the guard's owner is offline.
+
+- Fixed medics repeatedly overlooking nearby patients in crowded villages.
+- Downed guards immediately release automatic building-duty positions for other
+  guards to cover.
+- Earlier healing cooldowns no longer block emergency stabilization. Treatment
+  profiles with long cooldowns leave time to administer the second revival dose.
+
+
+- Guards joining a village now wait briefly for Minecraft to finish registering
+  them, so early join events do not permanently lose their village affiliation.
+- Village discovery now expands an initial population footprint into the full
+  referenced village layout when that layout is available.
+- Managed guard recovery now rejects copied or incomplete claims, validates saved
+  plans against their journal, and blocks legacy spawning when a known managed
+  building has lost its binding. Rejected plan changes leave the journal intact.
+
+- Village Armory menu transfers now mark inventory changes for saving and
+  update comparators, including partial shift-click withdrawals.
+- Village Armories retain their ammo slot arrangement after saving and loading.
+- Guards retain empty ammo boxes when another mod cancels their item spawn.
+- Village Defense Building activation retries now wait between attempts,
+  giving temporary placement and spawn failures time to clear.
+- Patrol routes whose waypoints are all unloaded no longer keep control of a
+  guard or suppress normal defense-post and Guard Villagers movement. Route
+  checks never load waypoint chunks.
+- Guards now skip an unloaded or unreachable waypoint after the configured
+  number of attempts when another loaded patrol waypoint is available.
+- Blocked, flooded, unsupported, or out-of-bounds defense positions are no
+  longer staffed while their chunk is loaded. Repaired positions return to
+  rotation automatically.
+
+### Improved
+
+- Clarified server settings, medical timing and dependencies, patrol choices,
+  target protection, and Quartermaster controls. Nested loadout, tactical, and
+  medical settings now use their intended labels and tooltips.
+- Added restart notices for Village Defense Building layout changes and live
+  previews of cot/field care times. Existing defaults and saved keys are kept.
+- The settings editor rejects inverted village guard limits and Armory ammo
+  thresholds with instructions for correcting them.
+
+- Reduced repeated building-registry work during village defense updates.
+
+### Compatibility
+
+- Lowered the minimum supported Forge version from 47.4.23 to 47.4.10 while
+  retaining support for newer Forge 47.x releases.
+
+## 1.5 - 2026-09-01
+
+### Added
+
+- Added optional Village Defense Buildings for vanilla villages: Barracks,
+  public Armories, Sentry Posts, integrated Watchtowers, and Training Yards.
+  Each building has biome-aware plains, desert, savanna, snowy, and taiga
+  variants.
+- Added small guard groups to Barracks, Sentry Posts, integrated Watchtowers,
+  and Training Yards. Peaceful villages remain unstaffed, and server settings
+  control staffing, guard limits, and the chance that garrison guards receive
+  guns.
+- Added Training Yards with an open drill court, covered firing line, raised
+  targets, reinforced backstop, and one or two Rifleman, Marksman, or Breacher
+  guards. The targets are decorative and don't consume ammo.
+- Added public Village Armories with configurable ammo-only starting stock.
+  Guards can restock from them, and players can use hoppers, pipes,
+  comparators, and the Armory inventory.
+- Added server settings for each building type, garrisons, gun chances,
+  Village Armories, and starting stock. The master switch is off by default.
+- Added datapack support and a copyable example for custom village buildings,
+  garrisons, roles, loadout pools, and Armory stock.
+- Added permission-level-2 `/vgg villagebuildings` commands so operators can
+  review the loaded settings, village-pool weights, and reported problems.
+
+### Improved
+
+- Made Sentry Posts twice as common as each of the other Village Defense
+  Buildings while leaving vanilla and modded village entries unchanged.
+- Invalid village-building datapacks now keep the last working settings. A
+  server restart is still required before village-pool changes take effect.
+- Completed buildings remember their guards, Armories, and starting stock, so
+  revisiting them doesn't replace removed guards or refill supplies.
+- Completed buildings don't force chunks, repair themselves, or repeatedly
+  scan the world.
+- Added an interior route to integrated Village Watchtowers that guards can
+  follow between the ready room and upper deck.
+- Reworked Sentry Posts with a three-block-wide checkpoint entrance, mixed
+  solid and low cover, clearer raised firing lanes, and a dedicated Sentry
+  role that stays bound to the post during ordinary combat.
+- Reworked integrated Village Watchtowers with a roomier fortified ready room,
+  compact interior stairs, biome-matched fence railings, a taller observation
+  opening, and a more detailed roof.
+  Guards with TaCZ guns or crossbows take deck duty, while melee and unarmed
+  guards remain downstairs.
+
+### Fixed
+
+- Fixed fences, iron bars, walls, stairs, doors, and similar blocks not
+  connecting correctly after a building changed biome style or rotation.
+- Fixed building entrances becoming solid biome blocks and decorative lanterns
+  losing their support.
+- Fixed interrupted building setup duplicating guards, Village Armories,
+  blocks, or starting supplies. Unfinished setup can resume after a restart
+  without forcing chunks.
+- Fixed failed Village Armory setup leaving behind an unusable block.
+- Fixed definitions with a missing building type being treated as Barracks.
+  The original legacy entry remains supported.
+- Reduced repeated village-building warnings for intentionally empty
+  difficulty pools and repeated unavailable-chunk or missing-group outcomes.
+- Fixed some village buildings failing to set up their guards or Village
+  Armories after generation. Missing or mismatched building templates are now
+  rejected before they affect villages.
+- Added one warning when a world reaches its generated-squad limit without
+  preventing players from creating or recovering squads.
 
 ## 1.4 - 2026-08-31
 

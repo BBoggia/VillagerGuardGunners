@@ -52,7 +52,7 @@ public final class GuardAmmoMaintenance {
     public static int ejectEmptyFiniteBoxes(Guard guard) {
         if (guard == null
                 || guard.level().isClientSide
-                || !guard.isAlive()) {
+                || com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) || !guard.isAlive()) {
             return 0;
         }
 
@@ -86,7 +86,12 @@ public final class GuardAmmoMaintenance {
                 }
 
                 ItemEntity droppedBox = guard.spawnAtLocation(extracted.copy());
-                if (droppedBox == null) {
+                // spawnAtLocation returns an entity even if Forge cancels
+                // its world insertion. Drop capture is a valid handoff too.
+                if (droppedBox == null
+                        || (!droppedBox.isAddedToWorld()
+                                && (guard.captureDrops() == null
+                                        || !guard.captureDrops().contains(droppedBox)))) {
                     handler.setStackInSlot(slot, original);
                     continue;
                 }

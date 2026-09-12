@@ -26,9 +26,13 @@ final class VillageDefenseBuildingsStepSevenContractTest {
                 + "worldgen/village/VillageBuildingSavedData.java");
         String anchor = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "worldgen/village/VillageBuildingAnchorLifecycle.java");
+        int placement = lifecycle.indexOf("GuardPostArmoryPlacer.place(");
+        int claim = lifecycle.indexOf("Status claimStatus = claimSetup(data, identity);", placement);
 
         assertAll(
-                () -> assertTrue(lifecycle.contains("GuardPostArmoryPlacer.place(")),
+                () -> assertTrue(placement >= 0),
+                () -> assertTrue(claim > placement,
+                        "Armory setup must be claimed only after successful placement"),
                 () -> assertTrue(lifecycle.contains("GuardPostMarker.ArmoryAccess.PUBLIC")),
                 () -> assertTrue(lifecycle.contains("level.hasChunkAt(position)")),
                 () -> assertTrue(lifecycle.contains("level.getBlockState(position).isAir()")),
@@ -40,7 +44,8 @@ final class VillageDefenseBuildingsStepSevenContractTest {
                         "claimed.claim(VillageBuildingAction.INITIAL_STOCK)")),
                 () -> assertTrue(anchor.contains(
                         "VillageBuildingArmoryLifecycle.activate(liveLevel, identity, rotation)")),
-                () -> assertTrue(anchor.contains("MAXIMUM_FUNCTIONAL_LOAD_RETRIES = 40")));
+                () -> assertTrue(anchor.contains("MAXIMUM_FUNCTIONAL_LOAD_RETRIES = 10")),
+                () -> assertTrue(anchor.contains("MAXIMUM_RETRY_DELAY_TICKS = 40")));
     }
 
     @Test
@@ -69,10 +74,10 @@ final class VillageDefenseBuildingsStepSevenContractTest {
         String config = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "config/VillagerGuardGunnersConfig.java");
         String build = read("build.gradle");
-        String docs = read("docs/village-defense-buildings-step-7.md");
+        String docs = read("docs/village-defense-buildings.md");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 15")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 21")),
                 () -> assertTrue(config.contains("placeArmoryBlocks")),
                 () -> assertTrue(config.contains("stockArmories")),
                 () -> assertTrue(config.contains("restoreVersionFifteenDefaults")),
@@ -80,7 +85,7 @@ final class VillageDefenseBuildingsStepSevenContractTest {
                         "loot_tables/chests/village_armory.json")),
                 () -> assertTrue(build.contains(
                         "VillageBuildingArmoryLifecycle.class")),
-                () -> assertTrue(docs.contains("zero recurring")),
+                () -> assertTrue(docs.contains("no recurring")),
                 () -> assertTrue(docs.contains("public")),
                 () -> assertTrue(docs.contains("Training Yard")));
     }

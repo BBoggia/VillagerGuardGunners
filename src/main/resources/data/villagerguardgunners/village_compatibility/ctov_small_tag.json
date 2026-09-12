@@ -1,0 +1,16 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 10,
+  "intent": "friendly",
+  "structure_tags": [
+    "ctov:small_village"
+  ],
+  "size_family": "small",
+  "templates": {},
+  "traversal_limits": [
+    "unverified_variant"
+  ]
+}

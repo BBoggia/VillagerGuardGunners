@@ -27,7 +27,7 @@ final class ArmoryResupplyStepFiveContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/armory/resupply/ArmoryResupplySettings.java");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 15")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 21")),
                 () -> assertTrue(config.contains("previousVersion < 9")),
                 () -> assertTrue(config.contains("restoreVersionNineDefaults()")),
                 () -> assertTrue(config.contains("public ArmorySettings armoryResupply")),
@@ -35,8 +35,8 @@ final class ArmoryResupplyStepFiveContractTest {
                 () -> assertTrue(config.contains("ValidatedInt checkIntervalTicks")),
                 () -> assertTrue(config.contains("ValidatedDouble searchRadius")),
                 () -> assertTrue(config.contains("ValidatedInt maximumCandidateArmories")),
-                () -> assertTrue(config.contains("ValidatedInt lowReserveMagazines")),
-                () -> assertTrue(config.contains("ValidatedInt targetReserveMagazines")),
+                () -> assertTrue(config.contains("RelatedIntSetting lowReserveMagazines")),
+                () -> assertTrue(config.contains("RelatedIntSetting targetReserveMagazines")),
                 () -> assertTrue(config.contains("ValidatedDouble movementSpeed")),
                 () -> assertTrue(config.contains("ValidatedInt requestLifetimeTicks")),
                 () -> assertTrue(config.contains("ValidatedInt reservationLifetimeTicks")),

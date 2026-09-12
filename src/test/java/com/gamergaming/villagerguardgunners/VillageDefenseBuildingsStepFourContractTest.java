@@ -46,7 +46,10 @@ final class VillageDefenseBuildingsStepFourContractTest {
                 () -> assertTrue(identity.contains("CURRENT_SCHEMA_VERSION = 1")),
                 () -> assertTrue(codec.contains("BUILDING_TAG = \"VggVillageBuilding\"")),
                 () -> assertTrue(record.contains("claimedActions")),
-                () -> assertTrue(data.contains("DATA_VERSION = 1")),
+                () -> assertTrue(data.contains("LEGACY_DATA_VERSION = 1")),
+                () -> assertTrue(data.contains("DATA_VERSION = 2")),
+                () -> assertTrue(record.contains("pendingActivation")),
+                () -> assertTrue(data.contains("pendingByChunk")),
                 () -> assertTrue(data.contains("MAXIMUM_RECORDS = 65_536")),
                 () -> assertTrue(data.contains("ALREADY_CLAIMED")),
                 () -> assertTrue(data.contains("unreadableRoot.copy()")),
@@ -54,8 +57,9 @@ final class VillageDefenseBuildingsStepFourContractTest {
     }
 
     @Test
-    void lifecycleUsesMainThreadHandoffWithoutRuntimeManagement() throws IOException {
+    void lifecycleUsesMainThreadHandoffAndBoundedDeferredRecovery() throws IOException {
         String lifecycle = read(village("VillageBuildingAnchorLifecycle.java"));
+        String recovery = read(village("VillageBuildingActivationRecovery.java"));
         String villageSources = readAll("src/main/java/com/gamergaming/"
                 + "villagerguardgunners/worldgen/village");
 
@@ -63,21 +67,24 @@ final class VillageDefenseBuildingsStepFourContractTest {
                 () -> assertTrue(lifecycle.contains("server.isSameThread()")),
                 () -> assertTrue(lifecycle.contains("server.execute(claim)")),
                 () -> assertTrue(lifecycle.contains("server.getLevel(dimension)")),
+                () -> assertTrue(recovery.contains("onChunkLoad(ChunkEvent.Load event)")),
+                () -> assertTrue(recovery.contains("pendingActivationsIn(chunkPosition)")),
                 () -> assertFalse(lifecycle.contains("getChunk(")),
                 () -> assertFalse(lifecycle.contains("getEntities")),
-                () -> assertFalse(villageSources.contains("TickEvent")),
+                () -> assertFalse(lifecycle.contains("TickTask")),
                 () -> assertFalse(villageSources.contains("addRegionTicket")),
-                () -> assertFalse(villageSources.contains("setChunkForced")));
+                () -> assertFalse(villageSources.contains("setChunkForced")),
+                () -> assertTrue(recovery.contains("onServerTick(TickEvent.ServerTickEvent event)")));
     }
 
     @Test
-    void releaseArtifactAndDocumentationRetainStepFour() throws IOException {
+    void releaseArtifactAndDocumentationRetainBuildingPersistence() throws IOException {
         String build = read("build.gradle");
         assertAll(
                 () -> assertTrue(build.contains("VillageBuildingAnchorMarker.class")),
                 () -> assertTrue(build.contains("VillageBuildingSavedData.class")),
-                () -> assertTrue(read("docs/village-defense-buildings-step-4.md")
-                        .contains("No functional building actions")),
+                () -> assertTrue(read("docs/village-defense-buildings.md")
+                        .contains("Each generated building receives a stable identity")),
                 () -> assertTrue(read("docs/village-defense-buildings-release-matrix.md")
                         .contains("VBUILD-ANCHOR-01")));
     }

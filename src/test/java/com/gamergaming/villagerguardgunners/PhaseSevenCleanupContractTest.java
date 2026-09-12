@@ -36,6 +36,18 @@ final class PhaseSevenCleanupContractTest {
                 "").replace(
                         read("src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/GuardPostSpawner.java"),
                         "");
+        String recovery = read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/QuartermasterRecovery.java");
+        // Item-entity recovery does not implement custom gun projectiles.
+        productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
+                recovery, recovery.replace("addFreshEntity(", "recoveredItemInsertion("));
+        String medicalRecovery = read("src/main/java/com/gamergaming/villagerguardgunners/medical/MedicalRecovery.java");
+        productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
+                medicalRecovery, medicalRecovery.replace("addFreshEntity(", "recoveredMedicalItemInsertion("));
+        for (String file : List.of("VillagePopulationRuntime.java", "VillagePopulationPlacement.java")) {
+            String population = read("src/main/java/com/gamergaming/villagerguardgunners/village/population/" + file);
+            productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
+                    population, population.replace("addFreshEntity(", "populationEntityInsertion("));
+        }
     }
 
     @Test
@@ -137,9 +149,9 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardMixin\",\"ItemEntityMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"VillagerToGuardMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.StructureTemplatePoolAccessor\"]")),
+                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\"]")),
                 () -> assertTrue(mixins.contains(
-                        "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\"]")),
+                        "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\",\"client.CasualtyRendererMixin\",\"client.CotNameTagMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));
     }
 
@@ -194,7 +206,28 @@ final class PhaseSevenCleanupContractTest {
         String villageBuildingState = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/worldgen/village/"
                         + "VillageBuildingSavedData.java");
+        String villageDefenseNetworkState = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/defense/network/"
+                        + "VillageDefenseNetworkSavedData.java");
+        String villageDefenseDutyState = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/defense/duty/"
+                        + "VillageDefenseDutySavedData.java");
+        String villageBuildingActivation = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/village/"
+                        + "VillageBuildingAnchorLifecycle.java");
+        String generatedSquadCapacity = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/"
+                        + "GuardPostSquads.java");
+        String squadRegistryState = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/squad/"
+                        + "SquadRegistrySavedData.java");
+        String villagePopulation = read("src/main/java/com/gamergaming/villagerguardgunners/village/population/VillagePopulationRuntime.java");
+        String medicalReload = read("src/main/java/com/gamergaming/villagerguardgunners/medical/TreatmentProfiles.java");
         String performanceSensitiveSource = productionSource
+                .replace(medicalReload, "")
+                .replace(read("src/main/java/com/gamergaming/villagerguardgunners/village/compat/SettlementDefinitions.java"), "")
+                .replace(read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/service/EquipmentProfiles.java"), "")
+                .replace(villagePopulation, "")
                 .replace(legacyNotice, "")
                 .replace(naturalLoadoutReload, "")
                 .replace(guardRoleReload, "")
@@ -203,9 +236,17 @@ final class PhaseSevenCleanupContractTest {
                 .replace(largePackSyncClient, "")
                 .replace(villagePoolStartup, "")
                 .replace(villageDefinitionReload, "")
-                .replace(villageBuildingState, "");
+                .replace(villageBuildingState, "")
+                .replace(villageDefenseNetworkState, "")
+                .replace(villageDefenseDutyState, "")
+                .replace(villageBuildingActivation, "")
+                .replace(generatedSquadCapacity, "")
+                .replace(squadRegistryState, "");
 
         assertAll(
+                () -> assertTrue(villagePopulation.contains("if (state.rejected == 1) LOGGER.warn(")),
+                () -> assertFalse(villagePopulation.contains("LOGGER.info(")),
+                () -> assertFalse(villagePopulation.contains("LOGGER.debug(")),
                 () -> assertFalse(performanceSensitiveSource.contains("LogUtils")),
                 () -> assertFalse(performanceSensitiveSource.contains("Logger")),
                 () -> assertFalse(performanceSensitiveSource.contains(".info(")),
@@ -222,11 +263,30 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(naturalLoadoutReload.contains("LOGGER.debug(")),
                 () -> assertFalse(naturalLoadoutReload.contains("tick(")),
                 () -> assertFalse(naturalLoadoutReload.contains("getEntitiesOfClass(")),
+                () -> assertTrue(squadRegistryState.contains("LOGGER.error(")),
+                () -> assertFalse(squadRegistryState.contains("LOGGER.info(")),
+                () -> assertFalse(squadRegistryState.contains("LOGGER.debug(")),
                 () -> assertTrue(villageBuildingState.contains("LOGGER.warn(")),
                 () -> assertTrue(villageBuildingState.contains("LOGGER.error(")),
                 () -> assertFalse(villageBuildingState.contains("LOGGER.info(")),
                 () -> assertFalse(villageBuildingState.contains("LOGGER.debug(")),
-                () -> assertFalse(villageBuildingState.contains("tick(")));
+                () -> assertFalse(villageBuildingState.contains("tick(")),
+                () -> assertTrue(villageDefenseNetworkState.contains("LOGGER.warn(")),
+                () -> assertTrue(villageDefenseNetworkState.contains("LOGGER.error(")),
+                () -> assertFalse(villageDefenseNetworkState.contains("LOGGER.info(")),
+                () -> assertFalse(villageDefenseNetworkState.contains("LOGGER.debug(")),
+                () -> assertFalse(villageDefenseNetworkState.contains("tick(")),
+                () -> assertTrue(villageDefenseDutyState.contains("LOGGER.warn(")),
+                () -> assertTrue(villageDefenseDutyState.contains("LOGGER.error(")),
+                () -> assertFalse(villageDefenseDutyState.contains("LOGGER.info(")),
+                () -> assertFalse(villageDefenseDutyState.contains("LOGGER.debug(")),
+                () -> assertFalse(villageDefenseDutyState.contains("tick(")),
+                () -> assertTrue(villageBuildingActivation.contains("LOGGER.warn(")),
+                () -> assertFalse(villageBuildingActivation.contains("LOGGER.info(")),
+                () -> assertFalse(villageBuildingActivation.contains("LOGGER.debug(")),
+                () -> assertTrue(generatedSquadCapacity.contains("LOGGER.warn(")),
+                () -> assertFalse(generatedSquadCapacity.contains("LOGGER.info(")),
+                () -> assertFalse(generatedSquadCapacity.contains("LOGGER.debug(")));
         assertAll(
                 () -> assertTrue(guardRoleReload.contains("LOGGER.error(")),
                 () -> assertTrue(guardRoleReload.contains("LOGGER.info(")),

@@ -1,0 +1,870 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:mossy_mounds"
+  ],
+  "templates": {
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_armorer": [
+      {
+        "kind": "residence",
+        "sha256": "a4fced93ed60de278d65a61a8efa9380d23c60ae1da9bb85bcfd04c9c149aaaa",
+        "beds": [
+          [
+            14,
+            17,
+            33
+          ],
+          [
+            15,
+            17,
+            33
+          ],
+          [
+            20,
+            13,
+            35
+          ],
+          [
+            20,
+            14,
+            16
+          ],
+          [
+            21,
+            13,
+            35
+          ],
+          [
+            21,
+            14,
+            16
+          ]
+        ],
+        "entrances": [
+          [
+            16,
+            5,
+            35
+          ],
+          [
+            17,
+            5,
+            35
+          ],
+          [
+            18,
+            13,
+            35
+          ],
+          [
+            19,
+            5,
+            35
+          ],
+          [
+            20,
+            5,
+            35
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_armorer_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "6cfd1db0988cbf10ad0c74396ede238f698d3d084dfdaf7d9bda39621a8cb37b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_basichouse1": [
+      {
+        "kind": "residence",
+        "sha256": "d459ce7994f8a2212d73d7a12595c479b4a0ece9545e6b2e4892b3e5ced4daad",
+        "beds": [
+          [
+            11,
+            2,
+            24
+          ],
+          [
+            11,
+            2,
+            25
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            2,
+            16
+          ],
+          [
+            23,
+            2,
+            16
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_basichouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "e92616498e8b5839aec8a68eeee2061deb0d296fe34f1ac6a0ca105a12d36b8f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_basichouse2": [
+      {
+        "kind": "residence",
+        "sha256": "5bdd7d6587baff4277a3e9e2f131b834d7649b77e306c1c978aaae7d8ec652d8",
+        "beds": [
+          [
+            14,
+            1,
+            10
+          ],
+          [
+            14,
+            1,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            16,
+            2,
+            17
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_basichouse2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f0095c7a3187fa0182dda1903f47af8e1402795462d443237b988ce6c42ee7d1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_cartographer": [
+      {
+        "kind": "residence",
+        "sha256": "fd8eedd78e2d72f5b3cf3d11d519556c312212a40ae8b55b15385cf72ea0c431",
+        "beds": [
+          [
+            13,
+            5,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            21,
+            1,
+            16
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_cartographer_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "77193c372cc7a5458401d203087423f6575c4617c74378586aeeb327df45b6a3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_cleric": [
+      {
+        "kind": "residence",
+        "sha256": "84821550b9be24bae2ea5c04683a58fead0d1266a4e3a640b25b8f8cac322542",
+        "beds": [
+          [
+            17,
+            10,
+            15
+          ]
+        ],
+        "entrances": [
+          [
+            19,
+            3,
+            15
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_cleric_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b7f7842ff02c3a7888a28dc037a54cc67244fe2e2646ef0d2cc7012ebe94f7df",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_engineer": [
+      {
+        "kind": "residence",
+        "sha256": "38775b094fc4da44db9f93d7000270907370b2412bf10b4678f2fa8b82a431e6",
+        "beds": [
+          [
+            15,
+            7,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            1,
+            7
+          ],
+          [
+            8,
+            1,
+            8
+          ],
+          [
+            12,
+            2,
+            19
+          ],
+          [
+            15,
+            7,
+            10
+          ],
+          [
+            18,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_engineer_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "a464e522990034e0f0e5aeae56b7f002a9ea0b04d2128830b558363364e276bb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_farmhouse": [
+      {
+        "kind": "residence",
+        "sha256": "f617ae931919d141528e782a37adcc4d091fb81033d97eb9a54ad821aae6a21e",
+        "beds": [
+          [
+            25,
+            18,
+            22
+          ],
+          [
+            26,
+            18,
+            22
+          ],
+          [
+            27,
+            18,
+            22
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_farmhouse_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "8c4b878ca12ec04f19e58a17bcaceee75cd3637212a85666a08bfb88296376a9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_fisherman": [
+      {
+        "kind": "residence",
+        "sha256": "52afb2e04f629701e28d28be756ad3f90803f4fe4b7615b7e4578095c8e7cdac",
+        "beds": [
+          [
+            17,
+            11,
+            11
+          ],
+          [
+            17,
+            11,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            3,
+            10
+          ],
+          [
+            8,
+            11,
+            10
+          ],
+          [
+            8,
+            11,
+            11
+          ],
+          [
+            13,
+            11,
+            16
+          ],
+          [
+            19,
+            4,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_fisherman_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f927fac566c53173b30d7f3ab7b0d3ff1c2ca72784ba9b1ead4d541e5ac1cc17",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_library": [
+      {
+        "kind": "residence",
+        "sha256": "35ae3da652eb2765f9119b0b28dceea279d4a632dff50811af9c76cecde339eb",
+        "beds": [
+          [
+            14,
+            0,
+            31
+          ]
+        ],
+        "entrances": [
+          [
+            21,
+            0,
+            26
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_library_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "21487b96dae75ce506cb687923c006a132418d593204dabe47061e79e1ffe55d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_mason": [
+      {
+        "kind": "residence",
+        "sha256": "c1f675c252b01b90e9ce06f9a262aa6d550858ebb900a70a70a27ec2a929d5e1",
+        "beds": [
+          [
+            16,
+            14,
+            30
+          ],
+          [
+            17,
+            14,
+            30
+          ]
+        ],
+        "entrances": [
+          [
+            13,
+            14,
+            27
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_mason_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "9290976bdb652e60f6f9e358d1d799415677b931821bbbabf4516f5ca5265711",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_shepard": [
+      {
+        "kind": "residence",
+        "sha256": "bdf394ef076f86d35cd100b1ac3a2d36a7a09789c680df36d260aa67c1ba97de",
+        "beds": [
+          [
+            10,
+            16,
+            12
+          ],
+          [
+            10,
+            16,
+            13
+          ]
+        ],
+        "entrances": [
+          [
+            16,
+            0,
+            28
+          ],
+          [
+            16,
+            8,
+            25
+          ],
+          [
+            17,
+            8,
+            13
+          ],
+          [
+            17,
+            16,
+            13
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_shepard_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "bae04ff5b23271371c77e81d4a238fe73c6fc47b083aba1be2bc0badedc5f686",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_tavern": [
+      {
+        "kind": "service",
+        "sha256": "8a334fcb35a47201956cc3f87e256219faa07f5e24374c8f02739d13c1dc2a92",
+        "beds": [],
+        "entrances": [
+          [
+            16,
+            1,
+            41
+          ],
+          [
+            24,
+            1,
+            23
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/house/mossy_mounds_tavern_bottom": [
+      {
+        "kind": "service",
+        "sha256": "71abf8531f6774a6b5dd3c0fde75b66fdb294cd4e66024bb48b0c609da642a37",
+        "beds": [],
+        "entrances": [
+          [
+            13,
+            1,
+            31
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/mobs/mossy_mounds_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "19e8f63a3f24e572e9ca4e4fc712dac79c803898f1ec290b04b0ceeefab31d69",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/mobs/mossy_mounds_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "b83b21938f27eaf5570faf8be55b3efba0ea220d88bdd95a3c3e49279fd68564",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/mobs/mossy_mounds_villager_guard": [
+      {
+        "kind": "decoration",
+        "sha256": "5f36499ef7f0fd0de753f878889ba6e847f16f58d6eaa226917ca4672349e637",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/mobs/mossy_mounds_villager_nitwit": [
+      {
+        "kind": "decoration",
+        "sha256": "001b9036e5a2bf5278cf85c208963d2ca0f59fc47403399abcb8ecd5115c86f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/party_tree/mossy_mounds_party_tree": [
+      {
+        "kind": "decoration",
+        "sha256": "46a32a004eaddc96bbd9d963cb5263ba351e3cf965c17be99a02de811613febb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/party_tree/mossy_mounds_party_tree_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "c22d91db3de3a5560e1d3d0465d78e4e8756aa6fb08dda948561956b42c36aba",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_bridge": [
+      {
+        "kind": "road",
+        "sha256": "b68a80a5324e64f8324aa4495d78069ccbc1801d95c059a7d0803865c7844001",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_bridge_bottom": [
+      {
+        "kind": "road",
+        "sha256": "f87b9325b543b15c96729ec0f70fa1219430e9d874e45cd085ea87aa180f1fa5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_campfire": [
+      {
+        "kind": "road",
+        "sha256": "2ded870141ddbb242ff8074f2b8dcbe5ea900997a19dc4c8f07457c015859e04",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_campfire_bottom": [
+      {
+        "kind": "road",
+        "sha256": "2c796c42e7bc581a62ae9c3f857cc501e13a54d5c752d7fa1eb55805716f4205",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_farm1": [
+      {
+        "kind": "road",
+        "sha256": "a51bb99b48575ce11233ba94f718e2db238fe6c60b6529b781a86b184f1bc3ee",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_farm1_bottom": [
+      {
+        "kind": "road",
+        "sha256": "353b35ec90400223ba92eee6df5f83a90af7aca8e21136c6433bd54aef8661d8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_farm2": [
+      {
+        "kind": "road",
+        "sha256": "460e0ecb9d7545f1be2d61b16723a090c5cd67400561ad610444c213453c77ab",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_farm2_bottom": [
+      {
+        "kind": "road",
+        "sha256": "3b6d18827ef984223f508d2d180ce51940d54cfb5237201ab86d6dc74035f6c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_farm3": [
+      {
+        "kind": "road",
+        "sha256": "5e0e8918656a32d391ea83c8fcb9a7cb15ba5a8090d8628190805a4231ac1dfe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_farm3_bottom": [
+      {
+        "kind": "road",
+        "sha256": "9bc55ca74545d3610e4ffda6e54c262d3c2c52dfd0dc0d94d4d51ec7907ab374",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_farm4": [
+      {
+        "kind": "road",
+        "sha256": "ea8dd1a964b211f2fac77d4d1d4d47406ef509351328d9d0973636593db345a9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_farm4_bottom": [
+      {
+        "kind": "road",
+        "sha256": "b3051b914011b52518f6b02b548b609c315cb9cfe2fc46f1d5c87a111472a749",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path1": [
+      {
+        "kind": "road",
+        "sha256": "89374e3f314f6bf12f76e6d24c48b0a5eec05eae25d93ace5b2879445701db40",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path2": [
+      {
+        "kind": "road",
+        "sha256": "d30c0cc1b63b8afd16bbd26d46521d8af3fa4ac19c1a2d837098c24794587f3d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path3": [
+      {
+        "kind": "road",
+        "sha256": "941f5f65511868963f8f9b24deca9e89bdfcd7549f833bd17d85e5ce909c6299",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path4": [
+      {
+        "kind": "road",
+        "sha256": "78cd0597161cad95eaacb8cf4334541d7c3cb6680823f60f1b28872b01b2156f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path5": [
+      {
+        "kind": "road",
+        "sha256": "77fe8cdcf84b65addcabec7792a32eceecd1da53aa556fd5f76c7ed5366e0467",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path6": [
+      {
+        "kind": "road",
+        "sha256": "1a4e936267a464859b057a2ff7254915351fb20b05a166e20e7e5a908488f95c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path7": [
+      {
+        "kind": "road",
+        "sha256": "5238dfaf3e8bc5df97eccc664f33118ffd139e074883f50cb8a4b8ed5ca58132",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_farmhouse": [
+      {
+        "kind": "road",
+        "sha256": "6836d4da538a8226afbb7933fd289ae0cd6b6feb910e23f11be142d2f7838e40",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "15c608f0aa8def1c93604810604405aeea73a3a4fe04ae597b1fce47263e46b4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "db18a3e1d21db2eb3ebf58ff7f4fde72cb4d0c354c17604ba0fafbe4450e8218",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "59e186151f2589d456989d17c93721c4932e6276d0eaf39e0e7054d00233853e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "f155dd6ca0c4b8be5716d9504f4ac17bb8d91601c29ed6acf51afce83e872a1e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_large5": [
+      {
+        "kind": "road",
+        "sha256": "667df8ecf75104a4be3da15ca4b2b0409d2b767dd9764d3b577a32b7716ed2f4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_large6": [
+      {
+        "kind": "road",
+        "sha256": "1e3aca55726bd43ab445d32998501816ad7cafa7af74319671b50200cbf89bec",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_tavern": [
+      {
+        "kind": "road",
+        "sha256": "fc8880223ee18df709f59f3cc0b983fb48396dc29cc436dba3a1ad71da341360",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_tree1": [
+      {
+        "kind": "road",
+        "sha256": "8c12cf922493519f0fa1fa6dc5bd1a7fabf2341bdee2fbb986d7b6852b584120",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_path_tree2": [
+      {
+        "kind": "road",
+        "sha256": "22b1e326b695abe7a126adc6b6248afeff9d06c72c79b739b17b16b87887102b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_pond": [
+      {
+        "kind": "road",
+        "sha256": "c80fbcc389833b4dd94a8bb6f4bea0ee023f096650f23fc6975e7c2356d03bb7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_pond_bottom": [
+      {
+        "kind": "road",
+        "sha256": "94bcbc33e5dbd16a45fa0b74f1542e817da5d4debcba98cf5c80eadd116bd1c0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_table1": [
+      {
+        "kind": "road",
+        "sha256": "832a5ebb8f42983b8d78ead9a295ceb4749599f963354f0203050552a2aea2a5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_table1_bottom": [
+      {
+        "kind": "road",
+        "sha256": "f84feb8083017ba0d3ce17ccd77ae45a2a1cf4371f069963c9da3dda492d6fb2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_table2": [
+      {
+        "kind": "road",
+        "sha256": "45ab7d834f17668a6a96906adc65463a7308610908e64ccc070bf2c742283dd0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_table2_bottom": [
+      {
+        "kind": "road",
+        "sha256": "e0e9a83c1bf1aea24ea471a73631ae25f59e04a0980062a5d59c98a3cb371ad1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_tree": [
+      {
+        "kind": "road",
+        "sha256": "1e057336f29e2bdc0b917fa753e342aac3b24065377ed3f66d04256af4fd8f5e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_tree_bottom": [
+      {
+        "kind": "road",
+        "sha256": "c31cd327593d1667f35e29b6dfa6916bd8621d7ead4e0caf12fcf1bb5fac9798",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_wagon": [
+      {
+        "kind": "road",
+        "sha256": "341debf0def6cb3f6ab3875fb6c0bdfe6e0515af0a4c9e0604ed39ee73eb039d",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            3,
+            5
+          ],
+          [
+            13,
+            3,
+            5
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mossy_mounds/path/mossy_mounds_wagon_bottom": [
+      {
+        "kind": "road",
+        "sha256": "fde9a13172afd8229d4c936f21fd036af880430945c081978dc27c279ee52bfb",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

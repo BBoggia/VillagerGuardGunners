@@ -106,24 +106,41 @@ public final class NativeGunController {
         return stack.getItem() instanceof IGun;
     }
 
-    /**
-     * Cheap goal-selector check. A changed stack is allowed through once so the
-     * controller can resolve its TaCZ gun data and clear old dry/suspended state.
-     */
+    /** Gun ownership is independent of native retry and metadata refresh timers. */
     public boolean canUseGunGoal(ItemStack heldStack) {
-        if (heldStack != trackedStack) {
-            return true;
-        }
+        return isGun(heldStack);
+    }
 
-        long gameTime = guard.level().getGameTime();
-        if (weaponState.isSuspended() || !hasValidFiringWindow()) {
-            // Let Guard Villagers' lower-priority combat goals run while this
-            // weapon has no coherent, readable firing window. Retry only in
-            // the existing low-frequency metadata slot so a broken datapack
-            // or contradictory explosive standoff cannot thrash the selector.
-            return gameTime >= nextGunDataRefreshGameTick;
+    /** Reads bound state only; never scans reserves or invokes property scripts. */
+    public WeaponReadiness captureReadiness() {
+        if (guard.getMainHandItem() != trackedStack || trackedGun == null) {
+            return WeaponReadiness.UNBOUND;
         }
-        return weaponState.mayEngage(gameTime);
+        if (weaponState.isSuspended() || gunData == null) {
+            return WeaponReadiness.SUSPENDED;
+        }
+        if (!hasValidFiringWindow()) {
+            return WeaponReadiness.INVALID_FIRING_WINDOW;
+        }
+        try {
+            var nativeData = operator.getDataHolder();
+            if (nativeData.reloadStateType.isReloading()
+                    || operator.getSynReloadState().getStateType().isReloading()) {
+                return WeaponReadiness.RELOADING;
+            }
+            if (weaponState.isDryConfirmed()) {
+                return WeaponReadiness.DRY;
+            }
+            if (nativeData.isBolting || operator.getSynIsBolting() || needsManualBolt(trackedStack)) {
+                return WeaponReadiness.CYCLING_ACTION;
+            }
+            if (hasLiveDrawCooldown(nativeData.drawTimestamp) || operator.getSynDrawCoolDown() > 0L) {
+                return WeaponReadiness.DRAWING;
+            }
+            return needsReload(trackedStack) ? WeaponReadiness.NEEDS_RELOAD : WeaponReadiness.READY;
+        } catch (RuntimeException ignored) {
+            return WeaponReadiness.SUSPENDED;
+        }
     }
 
     public void startAiming() {
@@ -158,8 +175,14 @@ public final class NativeGunController {
             boolean mayFire,
             BooleanSupplier safeToFire,
             BooleanSupplier burstSafetyCheck) {
+        tick(target, mayFire, safeToFire, burstSafetyCheck, true);
+    }
+
+    /** Maintenance remains available without a target or an aimed firing pose. */
+    public void tick(LivingEntity target, boolean mayFire, BooleanSupplier safeToFire,
+            BooleanSupplier burstSafetyCheck, boolean aimAtTarget) {
         try {
-            tickSafely(target, mayFire, safeToFire, burstSafetyCheck);
+            tickSafely(target, mayFire && target != null && aimAtTarget, safeToFire, burstSafetyCheck, aimAtTarget);
         } catch (RuntimeException exception) {
             // Third-party gun definitions can run Lua/property hooks from most
             // TaCZ operations. A malformed script suspends this weapon instead
@@ -172,18 +195,17 @@ public final class NativeGunController {
             LivingEntity target,
             boolean mayFire,
             BooleanSupplier safeToFire,
-            BooleanSupplier burstSafetyCheck) {
+            BooleanSupplier burstSafetyCheck,
+            boolean aimAtTarget) {
         if (guard.level().isClientSide || !synchronizeWeapon()) {
             return;
         }
 
         long nowTimestamp = currentRelativeTimestamp();
-        boolean weaponMayEngage = weaponState.mayEngage(guard.level().getGameTime());
-        updateNativeBurstSafety(nowTimestamp, mayFire && weaponMayEngage);
-        if (!weaponMayEngage) {
-            // HOLD_FIRE deliberately keeps the gun goal selected while dry.
-            // Preserve the normal retry cadence instead of issuing a rejected
-            // native reload request every server tick during that hold.
+        boolean mayAttemptAction = weaponState.mayAttemptAction(guard.level().getGameTime());
+        updateNativeBurstSafety(nowTimestamp, mayFire && mayAttemptAction);
+        if (!mayAttemptAction) {
+            // Retain defensive ownership while native reload retries are bounded.
             operator.aim(false);
             triggerState.reset();
             fireCadence.reset();
@@ -191,8 +213,20 @@ public final class NativeGunController {
         }
 
         triggerState.tick();
-        updateAim(target);
-        operator.aim(true);
+        if (weaponState.isDryConfirmed()) {
+            if (!trackedGun.useInventoryAmmo(trackedStack) && !needsReload(trackedStack)) {
+                // A player or service supplied a loaded stack in place.
+                weaponState.clearDry();
+            } else {
+                requestReload(trackedStack);
+                if (weaponState.isDryConfirmed()) {
+                    operator.aim(false);
+                    return;
+                }
+            }
+        }
+        if (aimAtTarget && target != null) updateAim(target);
+        operator.aim(aimAtTarget && target != null);
 
         if (!mayFire) {
             decayCharge();
@@ -509,13 +543,35 @@ public final class NativeGunController {
     /** True only after TaCZ reload and guard-ammunition sharing both failed. */
     public boolean isCurrentWeaponDryConfirmed() {
         return guard.getMainHandItem() == trackedStack
-                && weaponState.remainingDryTicks(guard.level().getGameTime()) > 0L;
+                && weaponState.isDryConfirmed();
     }
 
     /** Reads the already-cached current tactical traits, refreshing scripts once this tick. */
     public boolean isCurrentWeaponExplosive() {
         return refreshDynamicExplosionTacticalState()
                 && currentWeaponIsExplosiveFromCache();
+    }
+
+    /** Movement gate that also sees queued burst/charge work after a combat goal exits. */
+    public boolean isEquipmentServiceSafe() {
+        try {
+            var data = operator.getDataHolder();
+            return isCoverageMovementSafe() && !hasLiveDrawCooldown(data.drawTimestamp)
+                    && !hasLiveShootCooldown(data.shootTimestamp);
+        } catch (RuntimeException exception) { return false; }
+    }
+
+    public boolean isCoverageMovementSafe() {
+        try {
+            var data = operator.getDataHolder();
+            if (isNativeBurstActive(currentRelativeTimestamp()) || !triggerState.canAttemptAction()
+                    || triggerState.getChargeProgress() > 0.0F || guard.isUsingItem()) return false;
+            // Removing a gun does not itself settle its pending native action.
+            return !data.reloadStateType.isReloading() && !data.isBolting && data.meleePrepTickCount < 0
+                    && !operator.getSynReloadState().getStateType().isReloading() && !operator.getSynIsBolting()
+                    && operator.getSynMeleeCoolDown() <= 0 && operator.getSynDrawCoolDown() <= 0
+                    && operator.getSynShootCoolDown() <= 0;
+        } catch (RuntimeException exception) { return false; }
     }
 
     /**
@@ -635,7 +691,7 @@ public final class NativeGunController {
         if (weaponState.isSuspended()) {
             return GuardCombatStatus.WeaponActivity.WEAPON_ERROR;
         }
-        if (weaponState.remainingDryTicks(guard.level().getGameTime()) > 0L) {
+        if (weaponState.isDryConfirmed()) {
             return GuardCombatStatus.WeaponActivity.OUT_OF_AMMO;
         }
         if (!hasCurrentWeaponData(guard.getMainHandItem())) {
@@ -733,6 +789,8 @@ public final class NativeGunController {
                 heldStack == trackedStack && trackedGunId != null,
                 hasCurrentWeaponData(heldStack),
                 weaponState.isSuspended(),
+                captureReadiness(),
+                weaponState.isDryConfirmed(),
                 weaponState.remainingDryTicks(guard.level().getGameTime()),
                 loadedAmmo,
                 chambered,
@@ -1008,8 +1066,8 @@ public final class NativeGunController {
                 || trackedGunType == null
                 || gunData == null
                 || weaponState.isSuspended()) {
-            // Preserve first-use synchronization: canUseGunGoal will populate
-            // the native cache later in the same goal-selection pass.
+            // Preserve first-use synchronization: startAiming or tick will
+            // populate the native cache after goal selection.
             return true;
         }
 
@@ -1217,8 +1275,13 @@ public final class NativeGunController {
                 gunStack.copy(),
                 gunData,
                 GuardAmmoAccess.getTaCZInventoryHandler(guard));
-        if (failedReloadHasUsableReserve(nativeCanReload, ammunition)) {
-            // An event or gun script may temporarily decline the request.
+        boolean inventoryFeedAvailable = trackedGun.useInventoryAmmo(gunStack)
+                && trackedGun.hasInventoryAmmo(guard, gunStack, operator.needCheckAmmo());
+        if (failedReloadHasUsableReserve(nativeCanReload, ammunition)
+                || failedReloadHasUsableReserve(inventoryFeedAvailable, ammunition)) {
+            // Inventory-fed guns never reload. A replenished native feed can
+            // resume; a magazine reload may instead be temporarily declined.
+            weaponState.clearDry();
             triggerState.defer(SHORT_RETRY_TICKS);
             return;
         }
@@ -1232,8 +1295,8 @@ public final class NativeGunController {
             return;
         }
 
-        // Usually no compatible ammunition. Yield this goal for about a second
-        // so Guard Villagers' normal lower-priority melee goal can take over.
+        // Exhaustion survives the timer. Retry supply checks without releasing
+        // MOVE/LOOK ownership or authorizing an offensive path.
         weaponState.markDry(guard.level().getGameTime(), DRY_RETRY_TICKS);
         operator.aim(false);
         triggerState.reset();
@@ -1480,6 +1543,8 @@ public final class NativeGunController {
             boolean controllerBound,
             boolean weaponDataReady,
             boolean suspended,
+            WeaponReadiness readiness,
+            boolean dryConfirmed,
             long dryRetryTicks,
             int loadedAmmo,
             boolean chambered,

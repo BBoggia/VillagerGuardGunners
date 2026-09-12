@@ -1,0 +1,1727 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:medium/village_desert"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "934a4b70db2dfb6f81dbd4a0dfd2230de165ba6355d3341f4d2b3696b92a7bf7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "d7bd5cb20ba9bcbaf0bfe3b63f672e4fbcbfebab9b944e77d0886b0cefb7c46a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/big_bush": [
+      {
+        "kind": "decoration",
+        "sha256": "ec8dd1bdaa351264645704f232bec196bd19133f56e05b634a1c33f2d2b90572",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/bush": [
+      {
+        "kind": "decoration",
+        "sha256": "aa9c745ee68383ce083e86b6d3d106f2c49bb093b202e83646a25a5d8f7f8c7d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "5392f34eab4d9ced1c5d9389be679f14401160fad6139c5996c70fa5270e1ed2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "69a04bb88862eab201273e4d6395b786e465a34b3ab7848c1a240f4fd9e7f6fd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "4c5fe1e61256227cbfdf025fb5d4a4533c87d96938e05b09262bd3564108bddd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "33a6ef193bdd0909f9aa9c0c460a8c302f0b55fe02fa858cd65911524f28668f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "2066a321b03e50ef1eb6dc638b98bae055d1216bf54a9d4ac4ce1059fdaa5db1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "c2d7bb88d1774701f2ae3e37541fe8b8e2ba2602366a45541c12a8dd68c4fc2f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "998c848826c2b835dee602bf4c9a38aaa510a5fb0312309fdc955c4234eb6b13",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/melon_1": [
+      {
+        "kind": "decoration",
+        "sha256": "20f070c8e56a8fe75e356330dccd3333708b0ff36d8b866e941776f8c3610ec2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/melon_2": [
+      {
+        "kind": "decoration",
+        "sha256": "db372b8edc1fdc921ab280193fcb799dac57719065b781fcbb2abcbb12b40be4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/oasis": [
+      {
+        "kind": "decoration",
+        "sha256": "ca3537d7e1630041e2c1f920c73287a78cd44093f0089f0c21c92ff1fafe9950",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/obelisk": [
+      {
+        "kind": "decoration",
+        "sha256": "70bae7dae0627fc8bc5dfc1d78539ea9fda6421bc71d07b953f41fcabc0c7938",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/palm": [
+      {
+        "kind": "decoration",
+        "sha256": "086867893234ec4fd317d75610696fb0d10a9d8e4dbbee569711276c0a082eb5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "bff52012920e2e61c1dc3b3da1c2253383eed6688ad1f8a10f4f3468f7a11b26",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/shrub": [
+      {
+        "kind": "decoration",
+        "sha256": "785d1955d50a4b8b7beb54ad947f409fbff06e0825456ac8e79946cc76bec8e2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/stall": [
+      {
+        "kind": "decoration",
+        "sha256": "fe61463657dd906f3163b5967bba7bbce7c48206c5d92a179d0e343560cd2411",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/stall_2": [
+      {
+        "kind": "decoration",
+        "sha256": "24e727d3cf9dc14cfa83f2658b045e753cd18381705bf748833e28a3a25ad1c4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "195e436c1cf56d5b297ab185f724659556d85badf9b16d8a142624269763eb69",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/deco/well": [
+      {
+        "kind": "decoration",
+        "sha256": "bcade0782437f99bf3fc5065ef80f8c58981f25a2c1027e48666328dfec4cd56",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "ec611e5ec418554ca765f2a7a055f3de59a77d015dba752d7bec990e47300bfa",
+        "beds": [
+          [
+            1,
+            6,
+            11
+          ],
+          [
+            3,
+            6,
+            11
+          ],
+          [
+            5,
+            6,
+            11
+          ],
+          [
+            7,
+            6,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            6,
+            0,
+            0
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/big_2": [
+      {
+        "kind": "residence",
+        "sha256": "004dd6837eb31c59df5413fa79ad485eb6c86731cac0f35e7a6d9070c83c09f6",
+        "beds": [
+          [
+            1,
+            6,
+            11
+          ],
+          [
+            3,
+            6,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "ec2d934020cc2174d25981f102f20fa4da01140d15257f15794eb5dd8045687d",
+        "beds": [
+          [
+            7,
+            6,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "cc430c0d85f0a5fc3fa237066c402454d5a415264c0d53c2c03ff6a7f50610c4",
+        "beds": [
+          [
+            10,
+            6,
+            5
+          ],
+          [
+            10,
+            6,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/med_3": [
+      {
+        "kind": "residence",
+        "sha256": "069fe7cd26eb5a8ace3de3cc2048d62afcee4a86fdd310c4fcca1ed6d98a9709",
+        "beds": [
+          [
+            6,
+            6,
+            5
+          ],
+          [
+            7,
+            6,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "35bbea21981a7dd123755990fb19ddb095ba1e691ffe8449ee51ba2496c99da6",
+        "beds": [
+          [
+            1,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            7,
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "711589dfce87cee44aeeb6ca0b3292b896743ff3fd8d6d6295cc666c87e6bbf7",
+        "beds": [
+          [
+            6,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "7ff68343a3d624432ccd90ebc285c3f3c33ef9812cf9d9ff5c83209c0e9c335c",
+        "beds": [
+          [
+            5,
+            1,
+            1
+          ],
+          [
+            7,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/small_4": [
+      {
+        "kind": "residence",
+        "sha256": "26b7e6410452abf5cc604ff80b3c232b88a1ff222feccf93fbdfe5ed35592a63",
+        "beds": [
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/house/small_5": [
+      {
+        "kind": "residence",
+        "sha256": "5b977ec48c5892c1e7239a55f6da7cdfffe7ae4bef726a175df5e4928db9c473",
+        "beds": [
+          [
+            4,
+            6,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "75d71d7d3573421bffb2fed8a6e7df61c3ce2170a646ba60ccfcc7419e6a049a",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "a00b25f62552686d0a89ebab2d79fa4a2eb76ad149f088a4101f910c3df1efc2",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            1
+          ],
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "342dd9ed0e49e80009a1e239ee48d46edc61162103fada5f84ca33d435198465",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            8
+          ],
+          [
+            5,
+            6,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "4dad4dfc5dfacd6c9f8ceca1c6571882469e4cad05bc50da2440bff35a2a0464",
+        "beds": [
+          [
+            2,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "d2ea7229cd5423331b15e657d2d3b0a4d279e89503b117eb7025f8f252caf75c",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "19c3a08b310deeac02ee76d6170b1f1c630f5e50b55a2c71892228bfb719f775",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "612b73f813d7f8d4f99b436b264c11db67ff7861bfb5c0a706dcc8f56aca05ca",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            7
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "a633844a283f0c10fb2f20702fb4c1f21dc358de1ea0d35aae339a4c351be5a1",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            8
+          ],
+          [
+            12,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "64f853e5b5fef2530e313cb078ff370c6ed0a86bc644bf15cb790410ae2080ed",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            2,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "85d80521a59eb1821a9bcdd91e36353d37956f1be488e296bb7aa5c49b806893",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            0,
+            0
+          ],
+          [
+            8,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "505b716c36e7519a468b43af91034dbcd5e0888814e6c365c41f3dfb441e45c9",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/computer_lab": [
+      {
+        "kind": "service",
+        "sha256": "c2e35314316d42afb7d9b263bb20cf2adb0e12914638a2f67b3c6adbda58934b",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            8
+          ],
+          [
+            5,
+            4,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "f6b8dc2cae7417965579d5a65ec0ecb5ed763c9d32edebce1800fca1e675ea6e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            8
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "2f5d56d5fb06a923d5372cc037d02895a7634615fbfac3652f81cb3b826b2cb7",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            9
+          ],
+          [
+            3,
+            7,
+            9
+          ],
+          [
+            7,
+            1,
+            14
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "e8a59743a5843c4d619f46760cf00046c6a604f54e300393ed64e6032098f943",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            8
+          ],
+          [
+            12,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "3e6dd00ff53017aabed7938a82925ebc581d19fb26bcb554b1900f6c52f93793",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            3,
+            8
+          ],
+          [
+            12,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/fishing_oasis": [
+      {
+        "kind": "service",
+        "sha256": "0472a27c5b40ffd42b157cd2359b2dddf30c65ca04cc18b30f918da954a8d34e",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            4,
+            2
+          ],
+          [
+            7,
+            3,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "2f838415a47d2fbf23781d5d9cc47de3207d229fb99031139bebde1946833c7c",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "b8ffc49486149e367f9fc2dbcd43e10e411b2f5685d5437023a42842321b9545",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            4
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "a3052932c1b1feba14bad01946dcdb535128adc9f55d2d422195815fe0a396bd",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "7bff7f28fdc778f4bef885b655ce4dcbe8065e3c36c6bf6aa2c89e1e19f4e5e1",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/horticulturist": [
+      {
+        "kind": "service",
+        "sha256": "cf893ec36921c57ce7147b469c6b494a29abda25af924fce08a3ae5b0360bc58",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "f8cfa69eb109b9c5e205064537fe3d3f9cc98707e74884594ee7810b93dcbab4",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            0,
+            6
+          ],
+          [
+            2,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "1b5c9c269138f10d90b656e870f5c53c1ccfc602814906d04f28a1af7fe9caf1",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "7ac47b15a1320324c63d95b340fba5e4bcd577d1a745d882cec7a7a9e1a44a42",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "fcdc702661b7786f42779ec55f430674f1eec898fd0aeb3b91226a6b0fbaea19",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "a58034d2ffc075e30bdf61784d413d04f7714f4112ec7c2f8d4e7251426d3222",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "463fbd9258bcdc72e2f82ebe2450e0ca70c88a281de73b4a8370dab29d9d6414",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "dfbd0f9e6871db8d21ba291b126da5f24d05c2f58dc7c545806394126680a03b",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "4aa98eeddbe05cc5ade365cda090603dfb2dfff2436ffd5035de51c97a8dbfba",
+        "beds": [],
+        "entrances": [
+          [
+            13,
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "b932e3c75374e0de0e4dba05e873da4bff0f9a0aa15c3d20a45b22527d4c6a6d",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/observatory": [
+      {
+        "kind": "service",
+        "sha256": "35b0663957dea6b01209663479222638d19024d77088f3cb5355169d0c4083f9",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "f998e526a17e89a038c24590788c807e080103ff625223b2bf9ec5acfb05c3c0",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "6f4a60ab93fda5d002bd1790fe939519ab9144c892d6a3d71acc88916d572a15",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            3,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "f48c980ba2eed307d1c95539ddb3e29adad95cd0118f81f3ee8d23dc932082a2",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            8
+          ],
+          [
+            12,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "97e5b7ba45a785a58aef5ca1333d8603ca88180453004fa605e9a43c4b4124f0",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "567d02aef280db386ffd1cb6b2a91763bafe51ef4bd1e77757fb3a0d91d7c5c9",
+        "beds": [
+          [
+            11,
+            2,
+            2
+          ],
+          [
+            11,
+            4,
+            2
+          ],
+          [
+            13,
+            2,
+            2
+          ],
+          [
+            13,
+            4,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            2,
+            3
+          ],
+          [
+            7,
+            1,
+            8
+          ],
+          [
+            7,
+            2,
+            3
+          ],
+          [
+            7,
+            2,
+            7
+          ],
+          [
+            8,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/priest_tower": [
+      {
+        "kind": "unsupported",
+        "sha256": "2321ceeec37a30822efd418c772845e4de9c0309a0d359b257030078c1244299",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "5045ee0bae7c7730fd8e880f9f9dcb8482ce2a3a2e69040c3280854d8375b3c8",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "59654845a6af28f32732ec619a1e3bccc634da4426b55910e216510e0277f264",
+        "beds": [
+          [
+            2,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "aa70e948d0c866417943794de0cabf428a6298a4028b8d8402c394220df8fcc7",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "1c1c00185cb173b4141fe86da78117f92acc08d3e158801dcdbff0c2878bd20f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/shepherd": [
+      {
+        "kind": "service",
+        "sha256": "e0d24eb63c32b80654aac9e5a85294ee0afda9bbe06ad694b168ff0d80debcf2",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            2,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "ef8ccfa6118b54b8d6cd797fcd86fcd68486efa8f0889e5d425da19436e39f06",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/tannery": [
+      {
+        "kind": "service",
+        "sha256": "f1827a08d91e89a52c662d61e56e0ed2d5b508570be65f46269971bb7c91d681",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "c44584d5b7bebb2673902faf0d8a718f9be758e1b06be84ec5fb63afce353e12",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            5,
+            8
+          ],
+          [
+            4,
+            6,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "c63b63b5a13840a38bd727353c85116b6cda37a1c829b8b57099e867ca1bd498",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "f726d945f5db4d87558a87c1ce471e1791f4990dc2ce155b07d431d6aea4512a",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/water_mill": [
+      {
+        "kind": "service",
+        "sha256": "bb4dc302b4d48a5e473e781c239b301fca18073b5ab1998b22b1554cc4e8f427",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "9ccb3099c2986d455a89d606b569d6a6db9414ca138a342da533e7d19083472b",
+        "beds": [
+          [
+            4,
+            13,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "38c9430df1e6b8c4cc0caf43789649d8ff40719ebe4dd6f937f853404d4b2fbc",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "1cddf216de711dca1f613280a861e7128975854a9ce0df918cd793cf9abaa33e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "7c7496e08db682556eb71e478af8b44c6e64a600f7cce06ff9c2d95173714fd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "1c992aac79e725e88d77078c898f565534134a5eee69c69a3e520b971ec89a02",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "339e99b681cd166e51c9bc1f60ba1bc324e8dcece857e2770bee4b3585630741",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "62a1528b93a741c95fa4e80044b4962570c71efa0f3698647d6b75ffbfc4f770",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "75c01b1e5415ff1aba2ef7c285b07d5305941011f2491261b8272a218de33c6e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "5d9e55629dc49b02341d6f914d00b25623cd4b7c880cff0a72467ba08b802b9c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "0d71aaac89548159de202575e6d8143dd2161816ebe9ede5572cb31a924a66f8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "f182d73fce2fad808b916682917d6080acfff2b76e35e5105a0b3f1ee9eb62ff",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/desert/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "99e4f9f684c776b0553c308c147d0788b0219e248ff0cdff6f4da54f42df74ea",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            14
+          ],
+          [
+            11,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/camel_spawn": [
+      {
+        "kind": "decoration",
+        "sha256": "b86c6a72779416021fd563f428cf292fc482a6846249a9954b867f3e9576729b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "51498c4f5b07357eb709b52c2fb37a5a3f7ff1295749d9505fc235fdcdf55977",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "ba69be4e86e254ffcde34330bdc2382ffe5123371607ab679270d45c79e62ffe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "e88bf4fff7041107588b4cee6123adf907c3999674be7086cbcafbfc07482f1f",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "medium"
+}

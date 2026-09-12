@@ -1,0 +1,553 @@
+// Build-time resource compiler; no Minecraft runtime classes are loaded here.
+ext.generateVillageBuildingResources = { Map root, File outputDirectory ->
+    int dataVersion = root.dataVersion as int
+    Map<String, Map<String, Object>> biomes = root.biomes as Map
+    Map<String, Map<String, Object>> buildings = root.buildings as Map
+    List<Map<String, Object>> commonPalette = root.commonPalette as List
+    Set<String> expectedBiomes =
+            ['plains', 'desert', 'savanna', 'snowy', 'taiga'] as Set
+    Set<String> expectedBuildings =
+            ['barracks', 'armory', 'sentry_post', 'watchtower', 'training_yard'] as Set
+    Map<String, Integer> expectedWeights = [
+            barracks: 1,
+            armory: 1,
+            sentry_post: 2,
+            watchtower: 1,
+            training_yard: 1
+    ]
+    Map<String, String> expectedWatchtowerFences = [
+            plains : 'minecraft:oak_fence',
+            desert : 'minecraft:acacia_fence',
+            savanna: 'minecraft:acacia_fence',
+            snowy  : 'minecraft:spruce_fence',
+            taiga  : 'minecraft:spruce_fence'
+    ]
+    if (dataVersion != 3465
+            || biomes.keySet() != expectedBiomes
+            || buildings.keySet() != expectedBuildings) {
+        throw new GradleException(
+                'Village-building blueprint must contain the reviewed 1.20.1 biome and building sets')
+    }
+
+    List<Map> jobs = resolveVillageBuildingLayouts(root)
+    project.delete(outputDirectory)
+    int generated = 0
+    jobs.each { job ->
+            String biome = job.biome
+            String building = job.building
+            boolean legacy = job.legacy
+            Map biomeDefinition = biomes[biome]
+            String targetPool = biomeDefinition.targetPool
+            String streetPool = biomeDefinition.streetPool
+            String connectorState = biomeDefinition.connectorState
+            Map buildingDefinition = job.definition
+            List<Integer> size = buildingDefinition.size as List<Integer>
+            int weight = buildingDefinition.weight as int
+            List<List<String>> layers = buildingDefinition.layers as List<List<String>>
+            if (size.size() != 3
+                    || size.any { it <= 0 || it > 16 }
+                    || size.inject(1) { product, value -> product * value } > 4096
+                    || (legacy && weight != expectedWeights[building])) {
+                throw new GradleException(
+                        "Village-building ${building} has invalid bounded dimensions or reviewed weight")
+            }
+            int width = size[0]
+            int height = size[1]
+            int depth = size[2]
+            if (layers.size() != height
+                    || layers.any { it.size() != depth }
+                    || layers.flatten().any { it.length() != width }) {
+                throw new GradleException(
+                        "Village-building ${building} layers must exactly match ${width}x${height}x${depth}")
+            }
+
+            List<Map<String, Object>> palette = []
+            palette.addAll(commonPalette.collect { new LinkedHashMap<>(it) })
+            palette.addAll((biomeDefinition.palette as List<Map<String, Object>>)
+                    .collect { new LinkedHashMap<>(it) })
+            palette = mergeVillageLayoutPalette(palette, job.definition.palette ?: [])
+            palette.add([
+                    symbol: 'J',
+                    name: 'minecraft:jigsaw',
+                    properties: [orientation: 'north_up'],
+                    nbt: [
+                            final_state: connectorState,
+                            id: 'minecraft:jigsaw',
+                            joint: 'aligned',
+                            name: 'minecraft:building_entrance',
+                            pool: streetPool,
+                            target: 'minecraft:building_entrance'
+                    ]
+            ])
+            palette.add([
+                    symbol: 'A',
+                    name: 'minecraft:structure_block',
+                    properties: [mode: 'data'],
+                    nbt: [
+                            id: 'minecraft:structure_block',
+                            metadata: "village_anchor:${building}",
+                            mode: 'DATA'
+                    ]
+            ])
+
+            Map<String, Integer> states = [:]
+            Map<String, Map<String, Object>> paletteBySymbol = [:]
+            palette.eachWithIndex { entry, index ->
+                String symbol = entry.symbol as String
+                String name = entry.name as String
+                if (symbol.length() != 1
+                        || states.put(symbol, index) != null
+                        || !(name ==~ '[a-z0-9_.-]+:[a-z0-9/._-]+')) {
+                    throw new GradleException(
+                            "Village-building palette contains an invalid or duplicate symbol: ${symbol}")
+                }
+                paletteBySymbol[symbol] = entry
+            }
+            List<String> symbols = layers.flatten().collectMany { it.toList() }
+            Set<String> unknownSymbols = symbols.findAll {
+                !states.containsKey(it)
+            } as Set<String>
+            if (!unknownSymbols.isEmpty() || symbols.count { it == 'J' } != 1
+                    || symbols.count { it == 'A' } != 1) {
+                throw new GradleException(
+                        "Village-building ${building} requires known symbols and exactly one connector and anchor")
+            }
+            if (connectorState != 'minecraft:air') {
+                throw new GradleException(
+                        "Village-building ${building} entrance connector must finalize as air")
+            }
+            if (legacy && building == 'watchtower'
+                    && paletteBySymbol.f?.name != expectedWatchtowerFences[biome]) {
+                throw new GradleException(
+                        "The integrated Village Watchtower requires the reviewed ${biome} fence palette")
+            }
+            List<Integer> connector = null
+            layers.eachWithIndex { layer, y ->
+                layer.eachWithIndex { row, z ->
+                    int x = row.indexOf('J')
+                    if (x >= 0) {
+                        connector = [x, y, z]
+                    }
+                }
+            }
+            if (connector == null
+                    || connector[1] != 1
+                    || layers[0][connector[2]].charAt(connector[0]) in ['.', 'V']
+                    || layers[2][connector[2]].charAt(connector[0]) != '.') {
+                throw new GradleException(
+                        "Village-building ${building} entrance lost its supported two-block clearance")
+            }
+            int lanterns = 0
+            layers.eachWithIndex { layer, y ->
+                layer.eachWithIndex { row, z ->
+                    row.toList().eachWithIndex { symbol, x ->
+                        if (symbol == 'Q') {
+                            lanterns++
+                            if (y == 0 || layers[y - 1][z].charAt(x) in ['.', 'V', 'J', 'A']) {
+                                throw new GradleException(
+                                        "Village-building ${building} has an unsupported standing lantern")
+                            }
+                        } else if (symbol == 'q') {
+                            lanterns++
+                            if (y + 1 >= height
+                                    || layers[y + 1][z].charAt(x) in ['.', 'V', 'J', 'A']) {
+                                throw new GradleException(
+                                        "Village-building ${building} has an unsupported hanging lantern")
+                            }
+                        }
+                    }
+                }
+            }
+            if (lanterns != (legacy ? 1 : buildingDefinition.lanternCount)) {
+                throw new GradleException(
+                        "Village-building ${building} has an incorrect supported lantern count")
+            }
+            if (legacy && building == 'barracks') {
+                if (size != [13, 10, 11]
+                        || symbols.count { it == 'K' } != 8
+                        || symbols.count { it == 'C' } != 1) {
+                    throw new GradleException(
+                            'The Barracks must retain its reviewed lodge bounds and interior cues')
+                }
+                List<List<Integer>> guardCells = [
+                        [6, 6],
+                        [5, 6],
+                        [7, 6],
+                        [6, 5]
+                ]
+                guardCells.eachWithIndex { cell, memberIndex ->
+                    int x = cell[0]
+                    int z = cell[1]
+                    char expectedFeet = memberIndex == 0 ? 'A' : '.'
+                    if (layers[0][z].charAt(x) != 'P'
+                            || layers[1][z].charAt(x) != expectedFeet
+                            || layers[2][z].charAt(x) != '.') {
+                        throw new GradleException(
+                                "The Barracks lost safe muster cell ${memberIndex}")
+                    }
+                }
+                if (layers[1][0].charAt(6) != 'J'
+                        || layers[1][1].charAt(6) != '.'
+                        || layers[1][2].charAt(6) != 'd'
+                        || layers[2][2].charAt(6) != 'D'
+                        || (3..5).any {
+                            layers[1][it].charAt(6) != '.'
+                                    || layers[2][it].charAt(6) != '.'
+                        }) {
+                    throw new GradleException(
+                            'The Barracks lost its direct road-to-muster route')
+                }
+                if (layers[4][5].charAt(0) != 'S'
+                        || layers[5][5].charAt(2) != 'R'
+                        || layers[5][5].charAt(10) != 'r'
+                        || layers[9][5].charAt(6) != 'S'
+                        || layers[0][4].substring(4, 9) != 'PPPPP'
+                        || layers[4][2].substring(3, 10) != 'XXXXXXX'
+                        || layers[4][9].substring(3, 10) != 'XXXXXXX'
+                        || layers[5][3].substring(3, 10) != 'XXXXXXX'
+                        || (1..10).any { layers[8][it].charAt(6) != 'Z' }
+                        || (5..9).any { y ->
+                            (1..10).any { z -> layers[y][z].contains('V') }
+                        }
+                        || (1..3).any { layers[it][10] != '.............' }) {
+                    throw new GradleException(
+                            'The Barracks lost its floor, roofs, ridge beam, or terrain clearance')
+                }
+            }
+            if (legacy && building == 'armory') {
+                if (size != [9, 8, 10]
+                        || symbols.count { it == 'I' } != 8
+                        || symbols.count { it == 'C' } != 1
+                        || symbols.count { it == 'T' } != 2) {
+                    throw new GradleException(
+                            'The Armory must retain its reviewed depot bounds and interior cues')
+                }
+                if (layers[1][0].charAt(4) != 'J'
+                        || layers[1][1].charAt(4) != '.'
+                        || layers[1][2].charAt(4) != 'd'
+                        || layers[2][2].charAt(4) != 'D'
+                        || (3..6).any {
+                            layers[1][it].charAt(4) != '.'
+                                    || layers[2][it].charAt(4) != '.'
+                        }) {
+                    throw new GradleException(
+                            'The Armory lost its direct road-to-service-counter route')
+                }
+                if (layers[0][7].charAt(4) != 'P'
+                        || layers[1][7].charAt(4) != 'A'
+                        || layers[2][7].charAt(4) != '.'
+                        || layers[1][7].charAt(3) != '.'
+                        || layers[1][7].charAt(5) != '.'
+                        || layers[4][1].substring(2, 7) != 'XXXXX'
+                        || layers[3][2].substring(3, 6) != 'XXX'
+                        || layers[3][8].substring(3, 6) != 'XXX'
+                        || layers[4][5].substring(1, 8) != 'XXXXXXX'
+                        || (1..9).any { layers[7][it].charAt(4) != 'Z' }
+                        || (4..7).any { y ->
+                            (1..9).any { z -> layers[y][z].contains('V') }
+                        }
+                        || (1..3).any { layers[it][9] != '.........' }) {
+                    throw new GradleException(
+                            'The Armory lost its service counter, beams, roof, or terrain clearance')
+                }
+            }
+            if (legacy && building == 'sentry_post') {
+                if (size != [7, 7, 8]
+                        || symbols.count { it == 'G' } != 2
+                        || symbols.count { it == 'H' } != 4
+                        || symbols.count { it == 'C' } != 1
+                        || symbols.count { it == 'n' } != 1
+                        || symbols.count { it == 'T' } != 0) {
+                    throw new GradleException(
+                            'The Sentry Post must retain its compact open checkpoint plan')
+                }
+                if (layers[1][0].charAt(3) != 'J'
+                        || (1..3).any {
+                            layers[1][it].charAt(3) != '.'
+                                    || layers[2][it].charAt(3) != '.'
+                        }
+                        || layers[0][4].charAt(3) != 'P'
+                        || layers[1][4].charAt(3) != 'A'
+                        || layers[2][4].charAt(3) != '.') {
+                    throw new GradleException(
+                            'The Sentry Post lost its road-to-sentry route or safe guard cell')
+                }
+                if ((3..5).any { layers[2][it] != '.......' }
+                        || layers[1][2] != 'LH...HL'
+                        || layers[1][3] != 'W.....W'
+                        || layers[1][4] != 'H..A..H'
+                        || layers[1][5] != 'WC...nW'
+                        || layers[1][6] != 'LWWWWWL'
+                        || layers[2][6] != 'LWGWGWL'
+                        || layers[3][1] != '.L...L.'
+                        || layers[3][2] != 'L.....L'
+                        || layers[3][3] != '.......'
+                        || layers[3][4] != '.......'
+                        || layers[3][5] != '...q...'
+                        || layers[3][6] != 'XXXXXXX'
+                        || layers[4][4].substring(1, 6) != 'BBBBB'
+                        || (1..7).any { layers[6][it].charAt(3) != 'Z' }
+                        || (4..6).any { y ->
+                            (1..7).any { z -> layers[y][z].contains('V') }
+                        }
+                        || (1..3).any { layers[it][7] != '.......' }) {
+                    throw new GradleException(
+                            'The Sentry Post lost its observation lanes, frame, roof, or terrain clearance')
+                }
+            }
+            if (legacy && building == 'watchtower') {
+                if (size != [9, 13, 10]) {
+                    throw new GradleException(
+                            'The integrated Village Watchtower must retain its reviewed 9x13x10 bounds')
+                }
+                List<List<Object>> route = [
+                        [4, 0, 7, 'P', 'A'],
+                        [4, 1, 6, 'N', '.'],
+                        [4, 2, 5, 'N', '.'],
+                        [4, 3, 4, 'N', '.'],
+                        [4, 4, 3, 'N', '.'],
+                        [4, 5, 2, 'N', '.']
+                ]
+                route.eachWithIndex { step, index ->
+                    int x = step[0] as int
+                    int y = step[1] as int
+                    int z = step[2] as int
+                    char expected = step[3] as char
+                    char expectedFeet = step[4] as char
+                    if (layers[y][z].charAt(x) != expected
+                            || layers[y + 1][z].charAt(x) != expectedFeet
+                            || layers[y + 2][z].charAt(x) != '.') {
+                        throw new GradleException(
+                                "The integrated Village Watchtower stair route is blocked at step ${index}")
+                    }
+                }
+                [[4, 7], [3, 7]].each { position ->
+                    int x = position[0]
+                    int z = position[1]
+                    if (layers[5][z].charAt(x) != 'B'
+                            || layers[6][z].charAt(x) != '.'
+                            || layers[7][z].charAt(x) != '.'
+                            || layers[8][z].charAt(x) != '.'
+                            || layers[9][z].charAt(x) != '.') {
+                        throw new GradleException(
+                                'The integrated Village Watchtower lost a safe upper guard cell')
+                    }
+                }
+                if (layers[1][0].charAt(4) != 'J'
+                        || layers[1][1].substring(3, 6) != '...'
+                        || layers[2][1].substring(3, 6) != '...'
+                        || layers[5][3].charAt(4) != '.'
+                        || layers[5][4].charAt(4) != '.'
+                        || layers[5][5].charAt(4) != '.'
+                        || layers[1][6] != 'VL..N..LV'
+                        || layers[2][5] != 'VL..N..LV'
+                        || layers[3][4] != 'VL..N..LV'
+                        || layers[4][3] != '.Z..N..Z.'
+                        || layers[5][2] != 'BBBBNBBBB'
+                        || layers[6][1] != 'LfffffffL'
+                        || layers[6][2] != 'f.......f'
+                        || layers[6][4] != 'f..I.I..f'
+                        || layers[6][5] != 'f..I.I..f'
+                        || layers[6][6] != 'f..III..f'
+                        || layers[6][9] != 'LfffffffL'
+                        || layers[8][4] != '.........'
+                        || layers[9][4].charAt(4) != 'q'
+                        || layers[10][1] != 'HnnnnnnnH'
+                        || layers[10][9] != 'HNNNNNNNH'
+                        || layers[12][3] != '..HHHHH..'
+                        || symbols.count { it == 'I' } != 17
+                        || symbols.count { it == 'f' } != 28) {
+                    throw new GradleException(
+                            'The integrated Village Watchtower lost its entrance, deck, roof, or fortified window details')
+                }
+            }
+            if (legacy && building == 'training_yard') {
+                if (size != [11, 5, 10]
+                        || symbols.count { it == 'T' } != 2
+                        || symbols.count { it == 'Y' } != 2) {
+                    throw new GradleException(
+                            'The Training Yard must retain its reviewed bounds and decorative targets')
+                }
+                [[5, 'A'], [4, '.']].eachWithIndex { spawnCell, memberIndex ->
+                    int x = spawnCell[0] as int
+                    char expectedFeet = spawnCell[1] as char
+                    int z = 3
+                    if (layers[0][z].charAt(x) != 'P'
+                            || layers[1][z].charAt(x) != expectedFeet
+                            || layers[2][z].charAt(x) != '.') {
+                        throw new GradleException(
+                                "The Training Yard lost safe guard cell ${memberIndex}")
+                    }
+                }
+                if (layers[1][0].charAt(5) != 'J'
+                        || (1..2).any {
+                            layers[1][it].charAt(5) != '.'
+                                    || layers[2][it].charAt(5) != '.'
+                        }
+                        || (4..8).any {
+                            layers[1][it].charAt(5) != '.'
+                                    || layers[2][it].charAt(5) != '.'
+                        }) {
+                    throw new GradleException(
+                            'The Training Yard lost its road, firing line, or center drill lane')
+                }
+                [[3, 7], [7, 7]].each { targetCell ->
+                    int x = targetCell[0]
+                    int z = targetCell[1]
+                    if (layers[1][z].charAt(x) != 'Y'
+                            || layers[2][z].charAt(x) != 'T'
+                            || layers[3][z].charAt(x) != '.') {
+                        throw new GradleException(
+                                'The Training Yard lost a supported raised target')
+                    }
+                }
+                [[3, 6], [7, 6]].each { approachCell ->
+                    int x = approachCell[0]
+                    int z = approachCell[1]
+                    if (layers[0][z].charAt(x) != 'F'
+                            || layers[1][z].charAt(x) != '.'
+                            || layers[2][z].charAt(x) != '.') {
+                        throw new GradleException(
+                                'The Training Yard lost a clear target approach cell')
+                    }
+                }
+                if (layers[1][2] != 'SSSS...SSSS'
+                        || layers[3][2].substring(2, 9) != 'XXXXXXX'
+                        || layers[3][4].substring(2, 9) != 'XXXXXXX'
+                        || layers[2][3].charAt(7) != '.'
+                        || layers[3][3].charAt(7) != 'q'
+                        || layers[4][3].charAt(7) != 'S'
+                        || layers[4][2].substring(2, 9) != 'SSSSSSS'
+                        || layers[4][3].substring(2, 9) != 'SSSSSSS'
+                        || layers[4][4].substring(2, 9) != 'SSSSSSS'
+                        || layers[1][9] != 'LWWLWWWLWWL'
+                        || layers[2][9] != 'LWWLWWWLWWL'
+                        || layers[3][9] != 'XXXXXXXXXXX'
+                        || layers[4][9] != 'SSSSSSSSSSS') {
+                    throw new GradleException(
+                            'The Training Yard lost its entrance, shelter, or target backstop')
+                }
+            }
+
+            if (!legacy) validateVillageLayoutGeometry(job, paletteBySymbol)
+
+            File template = new File(
+                    outputDirectory,
+                    "data/villagerguardgunners/structures/${job.templatePath}.nbt")
+            template.parentFile.mkdirs()
+            template.withOutputStream { fileStream ->
+                new java.util.zip.GZIPOutputStream(fileStream).withCloseable { gzipStream ->
+                    new DataOutputStream(gzipStream).withCloseable { output ->
+                        Closure<Void> namedTag =
+                                { int type, String name, Closure<Void> payload ->
+                                    output.writeByte(type)
+                                    output.writeUTF(name)
+                                    payload.call()
+                                    null
+                                }
+                        Closure<Void> stringTag = { String name, String value ->
+                            namedTag(8, name) { output.writeUTF(value) }
+                            null
+                        }
+                        Closure<Void> intTag = { String name, int value ->
+                            namedTag(3, name) { output.writeInt(value) }
+                            null
+                        }
+                        Closure<Void> intListTag = { String name, List<Integer> values ->
+                            namedTag(9, name) {
+                                output.writeByte(3)
+                                output.writeInt(values.size())
+                                values.each { output.writeInt(it) }
+                            }
+                            null
+                        }
+
+                        output.writeByte(10)
+                        output.writeUTF('')
+                        intTag('DataVersion', dataVersion)
+                        intListTag('size', size)
+                        namedTag(9, 'palette') {
+                            output.writeByte(10)
+                            output.writeInt(palette.size())
+                            palette.each { entry ->
+                                stringTag('Name', entry.name as String)
+                                Map<String, String> properties =
+                                        (entry.properties ?: [:]) as Map<String, String>
+                                if (!properties.isEmpty()) {
+                                    namedTag(10, 'Properties') {
+                                        properties.keySet().sort().each { property ->
+                                            stringTag(property, properties[property])
+                                        }
+                                        output.writeByte(0)
+                                    }
+                                }
+                                output.writeByte(0)
+                            }
+                        }
+                        namedTag(9, 'blocks') {
+                            output.writeByte(10)
+                            // A structure void is an authoring omission, not a placed invisible block.
+                            // Preserve existing resource bytes; independent layouts use native sparse NBT.
+                            output.writeInt(legacy ? width * height * depth : symbols.count { it != 'V' })
+                            layers.eachWithIndex { layer, y ->
+                                layer.eachWithIndex { row, z ->
+                                    row.toList().eachWithIndex { symbol, x ->
+                                        if (!legacy && symbol == 'V') return
+                                        intListTag('pos', [x, y, z])
+                                        intTag('state', states[symbol])
+                                        Map<String, Object> blockEntityData =
+                                                (paletteBySymbol[symbol].nbt ?: [:]) as Map
+                                        if (!blockEntityData.isEmpty()) {
+                                            namedTag(10, 'nbt') {
+                                                blockEntityData.keySet().sort().each { key ->
+                                                    stringTag(key, blockEntityData[key] as String)
+                                                }
+                                                output.writeByte(0)
+                                            }
+                                        }
+                                        output.writeByte(0)
+                                    }
+                                }
+                            }
+                        }
+                        namedTag(9, 'entities') {
+                            output.writeByte(10)
+                            output.writeInt(0)
+                        }
+                        output.writeByte(0)
+                    }
+                }
+            }
+
+            Map<String, Object> definition = [
+                    format: 1,
+                    building_type: building,
+                    target_pool: targetPool,
+                    template: "villagerguardgunners:${job.templatePath}",
+                    processors: 'minecraft:empty',
+                    projection: 'rigid',
+                    weight: weight
+            ]
+            if (!legacy) definition.duty_slots = buildingDefinition.dutySlots
+            File definitionFile = new File(
+                    outputDirectory,
+                    "data/villagerguardgunners/village_buildings/${job.entryPath}.json")
+            definitionFile.parentFile.mkdirs()
+            definitionFile.setText(
+                    groovy.json.JsonOutput.prettyPrint(
+                            groovy.json.JsonOutput.toJson(definition)) + '\n',
+                    'UTF-8')
+            generated++
+    }
+    if (generated != jobs.size()) {
+        throw new GradleException(
+                "Village-building generator produced ${generated} templates instead of ${jobs.size()}")
+    }
+    return jobs
+}
+
+ext.publishVillageBuildingResources = { Map root, File outputDirectory, File staged ->
+    def jobs = generateVillageBuildingResources(root, staged)
+    project.sync { from staged; into outputDirectory }
+    jobs
+}

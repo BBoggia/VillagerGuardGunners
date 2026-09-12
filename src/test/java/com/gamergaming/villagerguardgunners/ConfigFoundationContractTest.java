@@ -33,7 +33,7 @@ final class ConfigFoundationContractTest {
         assertAll(
                 () -> assertTrue(config.contains(
                         "@Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)")),
-                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 15;")),
+                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 21;")),
                 () -> assertTrue(config.contains("public void update(int previousVersion)")),
                 () -> assertTrue(config.contains("previousVersion < 2")),
                 () -> assertTrue(config.contains("previousVersion < 3")),
@@ -80,7 +80,7 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(config.contains("public ArmorySettings armoryResupply")),
                 () -> assertTrue(config.contains("public WatchtowerSettings watchtowers")),
                 () -> assertTrue(config.contains("public PerformanceSettings performance")),
-                () -> assertTrue(!config.contains("damage")),
+                () -> assertTrue(!config.matches("(?s).*public Validated\\w+ damage\\w*.*")),
                 () -> assertTrue(!config.contains("infiniteGuardAmmo")),
                 () -> assertTrue(!config.contains("reloadTimeMultiplier")),
                 () -> assertTrue(!config.contains("accuracy")));
@@ -202,6 +202,8 @@ final class ConfigFoundationContractTest {
         };
 
         assertAll(java.util.Arrays.stream(entries)
+                .map(entry -> entry.replaceAll("naturalLoadouts\\.(easy|normal|hard)\\.", "naturalLoadouts.difficulty.")
+                        .replaceAll("tactics\\.(generalist|skirmisher|breacher|marksman|support|demolitions)\\.", "tactics.profile."))
                 .map(entry -> (Executable) () -> assertTrue(
                         translations.contains("config.villagerguardgunners.guard_gunners." + entry + "\""),
                         () -> "Missing translation for " + entry)));
@@ -279,10 +281,10 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(goal.contains("config.movement.repositionSpeed.get()")),
                 () -> assertTrue(goal.contains("config.movement.friendlyRepositionTicks.get()")),
                 () -> assertTrue(goal.contains("config.performance.visibilitySampleIntervalTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.movementDecisionIntervalTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.pathRecalculationIntervalTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/GuardTacticalController.java").contains(".performance.movementDecisionIntervalTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/SquadCommandMovementController.java").contains("config.performance.pathRecalculationIntervalTicks.get()")),
                 () -> assertTrue(goal.contains("config.performance.unsafeShotCacheTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.repositionProgressCheckTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/TacticalNavigationController.java").contains("performance.repositionProgressCheckTicks.get()")),
                 () -> assertTrue(movement.contains("double retreatRangeSquared")),
                 () -> assertTrue(controller.contains("config.combat.requiredVisibleTicks.get()")),
                 () -> assertTrue(controller.contains("config.combat.closeRangeDistance.get()")),

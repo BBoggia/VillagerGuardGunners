@@ -71,7 +71,7 @@ final class NativeCombatSourceContractTest {
     }
 
     @Test
-    void dryGunYieldsTheGunGoalSoGuardVillagersCanSelectMelee() throws IOException {
+    void dryGunRetainsOwnershipAndNativeReloadSafety() throws IOException {
         String controller = read("src/main/java/com/gamergaming/villagerguardgunners/combat/NativeGunController.java");
         String goal = read("src/main/java/com/gamergaming/villagerguardgunners/ai/GuardGunCombatGoal.java");
 
@@ -119,20 +119,21 @@ final class NativeCombatSourceContractTest {
     @Test
     void phaseFourBoundsAndStaggersCombatAiWork() throws IOException {
         String goal = read("src/main/java/com/gamergaming/villagerguardgunners/ai/GuardGunCombatGoal.java");
+        String tactics = read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/GuardTacticalController.java");
         String controller = read("src/main/java/com/gamergaming/villagerguardgunners/combat/NativeGunController.java");
         String shieldMixin = read("src/main/java/com/gamergaming/villagerguardgunners/mixin/RaiseShieldGoalMixin.java");
         String mixinConfig = read("src/main/resources/mixins.villagerguardgunners.json");
 
         assertAll(
-                () -> assertTrue(goal.contains("config.performance.movementDecisionIntervalTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.pathRecalculationIntervalTicks.get()")),
+                () -> assertTrue(tactics.contains(".performance.movementDecisionIntervalTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/SquadCommandMovementController.java").contains("config.performance.pathRecalculationIntervalTicks.get()")),
                 () -> assertTrue(goal.contains("GuardCombatMovement.firstDueTick")),
                 () -> assertTrue(goal.contains("commandMovement.moveTowardCombatTarget(")),
                 () -> assertTrue(goal.contains("config.movement.approachSpeed.get()")),
-                () -> assertTrue(goal.contains("getMoveControl().strafe")),
-                () -> assertTrue(goal.contains("config.performance.repositionProgressCheckTicks.get()")),
-                () -> assertTrue(goal.contains("madeLateralProgress(")),
-                () -> assertTrue(goal.contains("repositionDirection = -repositionDirection")),
+                () -> assertTrue(goal.contains("tacticalNavigation.tick(")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/TacticalNavigationController.java").contains("performance.repositionProgressCheckTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/TacticalNavigationController.java").contains("remainingDistance(")),
+                () -> assertTrue(mixinConfig.contains("TacticalPathNavigationMixin")),
                 () -> assertTrue(goal.contains("gunController.getPreferredApproachDistance()")),
                 () -> assertTrue(goal.contains("gunController.getRetreatDistance()")),
                 () -> assertTrue(goal.contains("gunController.getMaximumFiringRange()")),
@@ -180,16 +181,16 @@ final class NativeCombatSourceContractTest {
     }
 
     @Test
-    void unreadableOrContradictoryTacticsYieldToLowerPriorityCombat() throws IOException {
+    void unreadableOrContradictoryTacticsBlockOffensiveMovement() throws IOException {
         String controller = read("src/main/java/com/gamergaming/villagerguardgunners/combat/NativeGunController.java");
         String goal = read("src/main/java/com/gamergaming/villagerguardgunners/ai/GuardGunCombatGoal.java");
 
         assertAll(
-                () -> assertTrue(controller.contains("|| !hasValidFiringWindow()")),
-                () -> assertTrue(controller.contains("return gameTime >= nextGunDataRefreshGameTick")),
+                () -> assertTrue(controller.contains("if (!hasValidFiringWindow())")),
+                () -> assertTrue(controller.contains("gameTime >= nextGunDataRefreshGameTick")),
                 () -> assertTrue(goal.contains(
-                        "&& (!continuing || gunController.hasValidFiringWindow());")),
-                () -> assertTrue(goal.contains("EngagementReason.HOLD_FIRE")),
+                        "!gunController.captureReadiness().permitsOffensiveMovement()")),
+                () -> assertTrue(goal.contains("engagementReason.releaseTarget()")),
                 () -> assertTrue(controller.contains("private boolean refreshEngagementRange()")),
                 () -> assertTrue(controller.contains("return false;")));
     }
@@ -207,13 +208,12 @@ final class NativeCombatSourceContractTest {
         String burstGate = goal.substring(
                 goal.indexOf("private boolean hasClearScheduledBurstShot("),
                 goal.indexOf("private void recordShotSafety("));
-        int movementDecisionGate = movementLoop.indexOf(
-                "if (gameTime >= nextMovementDecisionGameTick)");
+        String tactics = read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/GuardTacticalController.java");
 
         assertAll(
-                () -> assertTrue(goal.contains("retreatDistance * retreatDistance")),
+                () -> assertTrue(goal.contains("gunController.getRetreatDistance()")),
                 () -> assertTrue(goal.contains(
-                        "preferredApproachDistance * preferredApproachDistance")),
+                        "gunController.getPreferredApproachDistance()")),
                 () -> assertTrue(preferredAccessor.contains(
                         "cachedTacticalState.envelope().preferredApproachDistance()")),
                 () -> assertTrue(preferredAccessor.contains(
@@ -224,11 +224,9 @@ final class NativeCombatSourceContractTest {
                         "cachedTacticalState.envelope().aimToleranceDegrees()")),
                 () -> assertTrue(preferredAccessor.contains("hasUsableCachedTacticalState()")),
                 () -> assertFalse(preferredAccessor.contains("TacticalEnvelope.resolve(")),
-                () -> assertTrue(movementDecisionGate >= 0),
-                () -> assertTrue(movementLoop.indexOf(
-                        "gunController.getRetreatDistance()") > movementDecisionGate),
-                () -> assertTrue(movementLoop.indexOf(
-                        "gunController.getPreferredApproachDistance()") > movementDecisionGate),
+                () -> assertTrue(tactics.contains("now < nextDecision && !urgent")),
+                () -> assertTrue(movementLoop.contains("switch (intent)")),
+                () -> assertFalse(movementLoop.contains("GuardCombatMovement.selectState(")),
                 () -> assertTrue(goal.contains(
                         "gunController.canFireAtDistanceSquared(distanceSquared)")),
                 () -> assertTrue(preferredAccessor.contains(

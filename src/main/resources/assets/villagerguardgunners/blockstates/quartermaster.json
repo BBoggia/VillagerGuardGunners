@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "villagerguardgunners:block/quartermaster"
+    },
+    "facing=east": {
+      "model": "villagerguardgunners:block/quartermaster",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "villagerguardgunners:block/quartermaster",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "villagerguardgunners:block/quartermaster",
+      "y": 270
+    }
+  }
+}

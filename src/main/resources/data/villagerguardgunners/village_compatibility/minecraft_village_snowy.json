@@ -1,0 +1,3301 @@
+{
+  "format": 2,
+  "mods": {},
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "minecraft:village_snowy"
+  ],
+  "templates": {
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_1": [
+      {
+        "kind": "decoration",
+        "sha256": "645d5899334b45a1cee4c0a4bc2f8a171e8b25703f67db3ad96c1bcef3dbf877",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_2": [
+      {
+        "kind": "decoration",
+        "sha256": "2a956d2b921f3345b8eba187f328efd4c7c23c63ed1274790482d6a125efd556",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_3": [
+      {
+        "kind": "decoration",
+        "sha256": "20b86e80231a3291673cf59669c78bc894d545199c8a9c2c6e6958bfc6206b18",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_4": [
+      {
+        "kind": "decoration",
+        "sha256": "d5fc411b7bb2a1024eec98e9c90e057761c84a2e45123830281d0509445f45f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_5": [
+      {
+        "kind": "decoration",
+        "sha256": "869ec27336f412201ba40286b1e0bbaee5fdb40d1467b14fe7e207dac377ce01",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/misc/cart4": [
+      {
+        "kind": "decoration",
+        "sha256": "e8d2337713d5468fb45f5c5d8e65ee71b4e11361399352e37037700d02628790",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_01": [
+      {
+        "kind": "decoration",
+        "sha256": "ae5012ceaefca85e21c1280135afba990260d1e237ab871f24177a26f7f734eb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ac4577e3e22670fe97a32a10085ae23b2bf541dc2ac6b1a8c47934a34b47f0cf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_02": [
+      {
+        "kind": "decoration",
+        "sha256": "277471ea07ea0c5e3fc6bc5c81d91a7d65a6b80ce10bb81ba62d7feab46b51c2",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "af212c192014edeec743451817e3ab47e40d14142a670b6c6eb62711ed6d4d28",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_03": [
+      {
+        "kind": "decoration",
+        "sha256": "e69f3cd4ff858971644b69dfe5eb45df924ebc68dacd8c4b0d7eac07bf20839b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ac5740bbd271e5d53bddcb1a28a5286a7846a03a0a662d044072d63704da0417",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_04": [
+      {
+        "kind": "decoration",
+        "sha256": "b2c988756589545a5fbbb56e02ca0f48cd47db62d41335e4eec940223f5ed29a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "8148f1a441a10cf74a253af4b75150417ec17999dbcd44f207797365a811a934",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_animal_pen_1": [
+      {
+        "kind": "decoration",
+        "sha256": "e2cdb6195dc6450b61075e3dbb30abad12927c1e202d23087a92f3204f9c18ad",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "1bcdba8fd1b4d30bcb995d488a676776ac63cc3dbf49986e5d7993c5f87ddc7b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "30ad2fb97c14f93d224e079d857fd60d1376a6db88102385f91908472dac38bd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_animal_pen_2": [
+      {
+        "kind": "decoration",
+        "sha256": "57e18dd7c8a34cea023562704f17b08fa04cc4bbf668f7f97fec706c161283e4",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "64bf7292671e1bbbfa8643cbf94b90a936f568678d2bf5ce1173f892fe239b7d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "b5bc293e76300c088204eff943ab9cd597b21a7edf0bb9e8af27dfbc5e3de530",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_armorer_house_1": [
+      {
+        "kind": "service",
+        "sha256": "f9b93c32ef5baba60bd5a09317754a848fd8e1ee4dafb0e3149d4a04d6b9ce4d",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            1,
+            0
+          ],
+          [
+            9,
+            2,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "077ec452c78c22f22e234f3e96454fab24f33f90405936ffb5bcf3237e97464e",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            3,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "ac8665dfa8e2bc83bd048568750908ac3af228de7123222289ad231246876b88",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_armorer_house_2": [
+      {
+        "kind": "service",
+        "sha256": "65c23d6e98143c4584764ad91ce738eb8c2355f5b51205ae824806c81bc1528a",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            5
+          ],
+          [
+            7,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "13d5c41f74de2e98e228564568c187a2e29faab0209b5ddd20ae09c55499121c",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            15
+          ],
+          [
+            3,
+            2,
+            15
+          ],
+          [
+            3,
+            2,
+            16
+          ],
+          [
+            14,
+            10,
+            12
+          ],
+          [
+            15,
+            10,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "b21add7becd6daba816368109ecde217ca6046bec344e9f35899de9b90528e6a",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_butchers_shop_1": [
+      {
+        "kind": "service",
+        "sha256": "aec913c6bbf30c2391acd694c9dd6cad2c9f82450b8801efa979c55009f92bd1",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            7,
+            7
+          ],
+          [
+            3,
+            8,
+            7
+          ],
+          [
+            5,
+            3,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "bd94e0fe5572572ba4ac878bd687258a23f567a5eb5a98eabfcf610ad3c9d369",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            6
+          ],
+          [
+            5,
+            2,
+            7
+          ],
+          [
+            5,
+            2,
+            20
+          ],
+          [
+            5,
+            2,
+            21
+          ],
+          [
+            10,
+            2,
+            12
+          ],
+          [
+            10,
+            2,
+            13
+          ],
+          [
+            11,
+            10,
+            8
+          ],
+          [
+            13,
+            2,
+            26
+          ],
+          [
+            13,
+            2,
+            27
+          ],
+          [
+            13,
+            10,
+            8
+          ],
+          [
+            14,
+            2,
+            4
+          ],
+          [
+            15,
+            2,
+            4
+          ],
+          [
+            18,
+            2,
+            22
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "af441ac9d4372a817fb03624e24bbb13c275d7a2ce359f8b1ddd963a8bbd958a",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_butchers_shop_2": [
+      {
+        "kind": "service",
+        "sha256": "ba39864b7e58a0e49f183eaeba4c5a3598c6d27368abeabe48a97390db036a7f",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            7
+          ],
+          [
+            8,
+            1,
+            0
+          ],
+          [
+            13,
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "058019e2cd6b9d5cafad2524087d066959745d782c7191e9a61f01dee120eb40",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            8,
+            2,
+            14
+          ],
+          [
+            20,
+            2,
+            10
+          ],
+          [
+            20,
+            2,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "4feb41affa5fc0861bf514dd565b298eaa81d31935bc519cd75beeaf8b0af298",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_cartographer_house_1": [
+      {
+        "kind": "service",
+        "sha256": "b7bba57266ac9a3fdf9423b3b3dd0fdab315dcf77d8ef8119cd9b93c6888e0b5",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            1,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "44e40a5421c1a37e97d425175e123c71d162bc7a3d9a8d01d11469d5888c667b",
+        "beds": [
+          [
+            5,
+            6,
+            5
+          ],
+          [
+            6,
+            6,
+            5
+          ],
+          [
+            13,
+            6,
+            24
+          ],
+          [
+            14,
+            6,
+            24
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            2,
+            18
+          ],
+          [
+            9,
+            6,
+            11
+          ],
+          [
+            16,
+            6,
+            17
+          ],
+          [
+            25,
+            2,
+            11
+          ],
+          [
+            25,
+            2,
+            12
+          ],
+          [
+            28,
+            1,
+            12
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "63afce205c451ed2a65417329537b07b7a94de42d3160697527f62e52addd89f",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            5
+          ],
+          [
+            2,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_farm_1": [
+      {
+        "kind": "service",
+        "sha256": "86fc99fadbaaf60c266ac9172b15031502fffacd7821c92e8a83369f6b067af2",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "f38bbc07e7e9e9b54c4d9e7002699bccaa7382eaf8dac55e47ac4e5f65c3ffc3",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "d58badb42956e45633e761bfb4ac00ccf0996c5673f3f7fa2696a29e4edb59ea",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_farm_2": [
+      {
+        "kind": "service",
+        "sha256": "69a9e2287927084c30c4f926b51693713444671e11cb1c73f07b5c213a288531",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "248d0e8457215d59ebb9282325de1afcd333cccac69c910b80784d2f21fc7be9",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "ddf8782fd0a3224078c1926ec2bea5c39c14c4085b0e22555b4d5cb80f29859a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_fisher_cottage": [
+      {
+        "kind": "decoration",
+        "sha256": "af888781fdf5b04b8d38c3527f7bb5310db27749b64f2945138e00161b424a3d",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            8,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "24caddc81405cf0f9899370daeb8509e9d0903a91bb8b4ba58898bbc9691c709",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            5,
+            5
+          ],
+          [
+            3,
+            6,
+            5
+          ],
+          [
+            3,
+            6,
+            6
+          ],
+          [
+            12,
+            6,
+            9
+          ],
+          [
+            13,
+            6,
+            5
+          ],
+          [
+            13,
+            6,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "c3a818ba8776068599d05aefcbcf61962cba1f3533ce3d6eb740dca0552f81a1",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_fletcher_house_1": [
+      {
+        "kind": "service",
+        "sha256": "500c01a186b48b50dfc29ea77618c10aa866ae63498bfb55a9ca254d70cab6f2",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "3508b045db834e701b60bc5cdf8b35e470c2c616b6ec8b473db395943efc7592",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            3,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "fe3b88752eb0abb1113a5a33b9a79257ae8059ef0e321be86ce01d0daa36762b",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_library_1": [
+      {
+        "kind": "service",
+        "sha256": "142d5239e61274b8eebd94230409c4351dec2880027c39697917380d33d98c29",
+        "beds": [],
+        "entrances": [
+          [
+            12,
+            4,
+            18
+          ],
+          [
+            15,
+            3,
+            20
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "5a95b2b246db7ed5e26098e22fa9218d7b0626df8bd987c87bedc6054738d993",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            15
+          ],
+          [
+            3,
+            2,
+            15
+          ],
+          [
+            3,
+            2,
+            16
+          ],
+          [
+            18,
+            10,
+            17
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "923a2909babda9f611dc57050e42d95431fcdb2674cabcf8fed3ab7a41912dbd",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_masons_house_1": [
+      {
+        "kind": "service",
+        "sha256": "f42ec25d914b7866b8367cd7b93214dbb5078bcc11620e9e5f78072e03943623",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            14
+          ],
+          [
+            9,
+            1,
+            15
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "caeafba20074dce9cf2dbe27066213f313e1336e23cb548473ad5bf5bd45ae1e",
+        "beds": [],
+        "entrances": [
+          [
+            20,
+            2,
+            10
+          ],
+          [
+            20,
+            2,
+            11
+          ],
+          [
+            23,
+            1,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "05b2b726e9fdecd696234fd7ddb0064bb477cc34a0dae9134276fa1e6a96b691",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            2,
+            6
+          ],
+          [
+            5,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_masons_house_2": [
+      {
+        "kind": "service",
+        "sha256": "701248589da84690dc6c5a45629db3be6d1910e6be85deabce562872cce8af0f",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "7e236c09ced630ce4c7b1eca1b1cc171a13384f47ff4d937c5c6cbd41fde28f8",
+        "beds": [
+          [
+            24,
+            10,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            20,
+            2,
+            4
+          ],
+          [
+            25,
+            2,
+            10
+          ],
+          [
+            25,
+            2,
+            11
+          ],
+          [
+            28,
+            1,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "2ae8231b9b429f723526296b33e212302e40ba8de508c35d20a428447e491cb5",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "16f46938a41928ff8931492ed6ce127d57e0a4f24ef13ad3a52666234e9a7802",
+        "beds": [
+          [
+            12,
+            7,
+            16
+          ],
+          [
+            15,
+            2,
+            17
+          ],
+          [
+            16,
+            2,
+            17
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            1
+          ],
+          [
+            7,
+            2,
+            3
+          ],
+          [
+            13,
+            7,
+            14
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "1beee640ba3e3bd6b9eda259d7c16f38dc8a016303c38786611c84006ee3c5bf",
+        "beds": [
+          [
+            3,
+            6,
+            6
+          ],
+          [
+            3,
+            6,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            3,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "1fa962c6ad516ff0461171f925722aeede10c23867aa064cbb47b189452644a2",
+        "beds": [
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "8fb0db5b58fbb3c885cd32b6afabcf746a43ae21134c071aee06a016a1e8deea",
+        "beds": [
+          [
+            3,
+            7,
+            5
+          ],
+          [
+            4,
+            7,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            12,
+            7
+          ],
+          [
+            4,
+            12,
+            7
+          ],
+          [
+            7,
+            2,
+            1
+          ],
+          [
+            9,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "5b9e97e715ce4f187d03c91e99fde7ce07092a541483587a210eaec3dba70e74",
+        "beds": [
+          [
+            3,
+            6,
+            8
+          ],
+          [
+            3,
+            6,
+            9
+          ],
+          [
+            10,
+            6,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            3,
+            2,
+            9
+          ],
+          [
+            3,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "e397605c0039ef751692694eafce1ab8c4831f8c394c1786163121994153184c",
+        "beds": [
+          [
+            4,
+            1,
+            3
+          ],
+          [
+            10,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            1
+          ],
+          [
+            7,
+            0,
+            0
+          ],
+          [
+            9,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_medium_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "b816261d7ada619c307a4fb4167bdf95ed19f3fa3ba165456267650afb8772bb",
+        "beds": [
+          [
+            4,
+            2,
+            5
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            2,
+            2
+          ],
+          [
+            14,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "60324377df1c63cd1d82060a96e000a3261383bf7afe300541b479d22dffcb60",
+        "beds": [
+          [
+            3,
+            6,
+            5
+          ],
+          [
+            3,
+            6,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            3,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "6bfb4b03e1a887e63906d1cd4cc33ea0c339ae02ae58d6553f3364d0ec9560a7",
+        "beds": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_shepherds_house_1": [
+      {
+        "kind": "service",
+        "sha256": "38d9f336914de7f39f2fea7d0f2c2a7f243e4d7984245873d44dafeae2be072e",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            11,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "e5fcfecb997e95ce3d0216ad4c708ef34b7ad4123b94a9f1f00449b9375bdde6",
+        "beds": [
+          [
+            4,
+            6,
+            12
+          ],
+          [
+            5,
+            6,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            18
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "9bd7a9511c62c18ca371d06bc91e34f47e03a0ee33f3759110ff9e7d6e23fb0e",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            6
+          ],
+          [
+            1,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "bfcc7829b9c94ae90a82fd7902c06923eaeabea2342dfd42eed37b0fa07eae93",
+        "beds": [
+          [
+            4,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            1
+          ],
+          [
+            7,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "13379fb383374215fb2f8727f46096e58806474757fbfe98a8a760d793487aca",
+        "beds": [
+          [
+            6,
+            6,
+            13
+          ],
+          [
+            7,
+            6,
+            3
+          ],
+          [
+            9,
+            6,
+            3
+          ],
+          [
+            10,
+            6,
+            13
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            11
+          ],
+          [
+            3,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "c0336195015d6f78677dbee3c39b72b9b987fcd34ecfd8e1af36684dcf58c29a",
+        "beds": [
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "7378dc3cbdbe4b023a6773f3645aeb403d6b6445b7d57fc8ad7cb00b573cbafd",
+        "beds": [
+          [
+            7,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            6,
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "2a7cf74de51427da0a8a0ef6ab2220ee7ead08159f6168e3093ad63128a5fda2",
+        "beds": [
+          [
+            6,
+            6,
+            13
+          ],
+          [
+            9,
+            6,
+            13
+          ],
+          [
+            10,
+            6,
+            13
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            11
+          ],
+          [
+            3,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "58126361d6a3bdff9e81c9b2533cd2bc2b42bcdb3a02e96ff03d5f6d43277007",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "f9107af24d6df8259cb2fef8db60c0597e21467b862ffed90094b00559703848",
+        "beds": [
+          [
+            2,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "7f909e2d5d10fc625d492dfb454be04c826a83f1c2594aadccc6242559c69dfa",
+        "beds": [
+          [
+            9,
+            6,
+            13
+          ],
+          [
+            12,
+            6,
+            6
+          ],
+          [
+            12,
+            6,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            2,
+            5
+          ],
+          [
+            12,
+            2,
+            6
+          ],
+          [
+            15,
+            1,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "1ccc37c4cb42866e1e548dde5949afd4f9a3e29fec94f7b975fe10e2f72006ab",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            3,
+            0,
+            6
+          ],
+          [
+            3,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "969f1b05524108a5e7ea61a5a54e16beba35ed7c088b3c8812e14fbf0ae7d021",
+        "beds": [
+          [
+            3,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "95d1f7355b2633ce494fac763381ef535098ab05719fc43f47ec03158aec5fa4",
+        "beds": [
+          [
+            9,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            3
+          ],
+          [
+            5,
+            2,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "382098d0f8d4b905a924cc7863b252a66e074a61543eb758c8e8b94e3fb9f28d",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "85d96d155c83bfebcaf03380211df537c77a2485d3e216fb48a1cf3879b0ebf2",
+        "beds": [
+          [
+            3,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "3fde7149751e425bd609eebc72b5d6afe422da2385a4cad97260d996a0142a0f",
+        "beds": [
+          [
+            5,
+            6,
+            3
+          ],
+          [
+            9,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            3
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "3edd9e92ecf9acfc327cae896f78cc692e371c087ef04f2c6947a14519c2e323",
+        "beds": [
+          [
+            4,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_small_house_6": [
+      {
+        "kind": "residence",
+        "sha256": "bdbcf7d7f4f5677b33501572718a9e6f04f9a9f3f540510ef91e2ba3c5f8e508",
+        "beds": [
+          [
+            3,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "07ad8a236a4ea269a88eb79b6304e97d94fb8040d5e4d699fa65cf09918f596f",
+        "beds": [
+          [
+            13,
+            6,
+            6
+          ],
+          [
+            13,
+            6,
+            7
+          ],
+          [
+            13,
+            6,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            3
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "c505d14ba0ca6c0aa00a9c9dfb7f2d8d601308beecd7936af0802199d28fd1bd",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "df03741f3200475c2469051d6cc8b3a5816f78c00f68c1cde6b02bef5dd13cfb",
+        "beds": [
+          [
+            2,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "764a3b78374ce5c2ee1faa442a4817570452c49d1044f23056e31202d23dd0d3",
+        "beds": [
+          [
+            3,
+            6,
+            5
+          ],
+          [
+            3,
+            6,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            3,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "78dc89baa28c13e861f523e2b4a8f1486d52a3e0a923890654e3d8dff7314337",
+        "beds": [
+          [
+            3,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "d5444c2b2eba1d741763aa4f66895915d36a3f19fe611dbbe2cf3586402944d1",
+        "beds": [
+          [
+            3,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "d52dcac6b9bd8a52fd0bb8126694ce7d84a17e81e19895205d8b10c4db5237ea",
+        "beds": [
+          [
+            4,
+            6,
+            5
+          ],
+          [
+            9,
+            6,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            3,
+            2,
+            9
+          ],
+          [
+            3,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "284c9cbd623958da91199a0103dafb63df1d5dfc054a3e78a6396bb91ed40a8c",
+        "beds": [
+          [
+            3,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_tannery_1": [
+      {
+        "kind": "residence",
+        "sha256": "b0d06ed290473a5b876b00d7d8b158cb12a8b95e4d1a8396cfd40412eecf2581",
+        "beds": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            15,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            9,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "b665614c0805aadb086936abcbe8499b128fcd301fa8713f15a45701a4decc13",
+        "beds": [
+          [
+            8,
+            6,
+            3
+          ],
+          [
+            13,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            12
+          ],
+          [
+            3,
+            2,
+            12
+          ],
+          [
+            3,
+            2,
+            13
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "385c6cf28dd1fcb05268cd189df92cffc0788e26568d7b050f27d0299036302f",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_temple_1": [
+      {
+        "kind": "service",
+        "sha256": "0f1e9bdcd9b7235740f666c836b0720162f2fb44576fc5d792f65011a8c840a8",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            14
+          ],
+          [
+            6,
+            2,
+            13
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "e415f977a22acf5d435ba116090997c4d3e178b2ade41e11dc2bf113aecd5c1a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            14
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "a5384677e8656d5e19726282cce9a301425c7ab75f0d04887dc97b249d640d26",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_tool_smith_1": [
+      {
+        "kind": "service",
+        "sha256": "0de243dcb38045760cba8474d8ccfcf6cd466e61bcf4d1e92813c0428c5bb9bc",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            1,
+            14
+          ],
+          [
+            11,
+            2,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "2ce7deb1379ba523ec78710f5ae64d5ea1811fc408a540d2cfe45befb4d437d1",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            9,
+            2,
+            13
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "89566ccd3c39644913f11c4c21a54dcf9573bfe214ce8e940e52cfd7a28c4afb",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            1,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/houses/snowy_weapon_smith_1": [
+      {
+        "kind": "decoration",
+        "sha256": "6f166388aca0ebe8386b300fd83e5ef9d7c5b47ae9281818c72f4e4cc471dcaf",
+        "beds": [],
+        "entrances": [
+          [
+            14,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "21a64a0e5a0af80ed4e023bd237bb1de18c188154831daa6ef9fc4404920451a",
+        "beds": [
+          [
+            3,
+            10,
+            9
+          ],
+          [
+            17,
+            10,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            3,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "eba0701287be6daa47529b7b041515feed6a93815f0d75ae2a1be5a1bb6b4879",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/snowy_lamp_post_01": [
+      {
+        "kind": "decoration",
+        "sha256": "8aa5528366edad0beea0dd5b541bcb5493b0d9d146f6c4f696ec4738f9d3228f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/snowy_lamp_post_02": [
+      {
+        "kind": "decoration",
+        "sha256": "5d6d05512708aca21be13fe00cfd62e5c15ee84115923490f98cf4b88df9956c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/snowy_lamp_post_03": [
+      {
+        "kind": "decoration",
+        "sha256": "3b110a9e562873f14f8b474708933b9da7a75177c6d4dd48e9faa046fb98f17d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "3b46fd9b21bf0edd2ae951376409f0b5d88acc22ad450bc3c8c993796363428d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "7959a0e757b4bed972aa7758ecfaf6e5927327c31d17b0854cac8275a88d73b2",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "360d983270defd2a134821d635b7c4a9f219651a980b7ffe6a12dfe44dd5299f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "54de2022c77e625d7bbcfafd6f946b05b7ccaa61ba361280702001eb55233681",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "b528d8078f1768bff44661625420b87fd3ece47a08db1654699728a9fb9139cc",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "af8e7b683a9a9b56b43b6ea38df092d26b01495d9301274e341365ef9d938fa3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "c8c36b584b6e29d68a1fe9f4628c36398af0fd6ce58351524810ddbfd97fc294",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c4fe82ff1f98703516975ab3e76dc22638267ffc2919dff2eee2c159d2324e0d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "cd4a4027ccec4059e7ed585a3346d5ab8a5d94d9e91a189d7ff31cc7dbaaa73c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "ed95a0a4866e129aa157d6ef94667c246ead8e3b929a11ac9237f199630b922d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "68bcaafccad8d0b8fd67fa7535114bf7b6c760b75bbbc8137be9873d78ef397e",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "a969ef6d5889a5b525800ede84cbb6d034834e04562f2868a33681cfa66f10f6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "d68d6052c4af314824405ae6ad44169818af87d106ae8934dbed864298c8ff27",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "700d068fecb84cf67a62833c1bbd7a2253e44a211f4b54507533374d88addcaf",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c2d434f723950222f2913b83a9740cf7249b4744ffc91c4ece2f0c5d7d7a3680",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "80839d087638bf14b80bdb3c0d5d306cadb7b0803f4186fb8a9a9ed075b9c901",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "4f33dcb2028d49baad7268f5b0dcd3b489b2bbdf825dc595c41699cc8a14d3c4",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "a6ed4113a99d110cb5cc1e506036cce2eb2f67458017eb4f3688176230bc5c17",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "04c9e78dfc0e0578ddf059a191ec1ea538ed65377c99bf87c92b635db64755a8",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "cb866aa7a0d9c888d20b9084d408682cdcc52026a81fde5426e70bbbc876bff1",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "03d645e6aed58d56dbe391455c3e44c3382f8fcc88afe3929690ca3aa428b273",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "0dc297ec17888a6cff1968b6bc4fe8a0f3cf5b1a160edb141cf6bb1c2c53946f",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "cb866aa7a0d9c888d20b9084d408682cdcc52026a81fde5426e70bbbc876bff1",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "9781b5ef973e4661da3bbb294099c2acbd3275135e0ad93a87ca336b3a82ac5d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/lamp1": [
+      {
+        "kind": "road",
+        "sha256": "e07e8d324f565385c4008f314658ac6041df888f99123d4ee480cd4ba9beb65c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/lamp2": [
+      {
+        "kind": "road",
+        "sha256": "f8296c026ce891fe6591dd00112bebb0fcc1b48d26ee93883b2f6fea63e6834f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/lamp3": [
+      {
+        "kind": "road",
+        "sha256": "603fbca38ae0a098ac20be1d6caf7bb63c421c6aa4dc516241cc065f373ed2bf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/lamp4": [
+      {
+        "kind": "road",
+        "sha256": "9f1a62e17c093b57b292a67dd2face77cda57fa5caf2e1bd4c47b337766f7831",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/square_01": [
+      {
+        "kind": "road",
+        "sha256": "799ee014061868c524b594ab348b23b6e869cba5420a2b45c535b54b86b0ed7a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ad13ec0af1d37c02eec607ba983118982d9e5dfc4e020faeed8b50e74d66a21d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "2a5b3db0a61659f4a18cba3dfb6f1b5cc11133e4d494e756e866ecd09f1177bb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "8d1a8ef1af5af53a2de9385c242f6a54e2bfbc3ca803c7e9bea24afd534fbc3a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "8de4a9c0c78518c6a77cc3c3c7df32374714b82dd82e5a9d7587609e63b18614",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "dca92c9a59096b42e6b111356222001c1548aa47958f69a8c84fbed28cd05e5f",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "0133e10d9fc1b5b34cd78970e6f1fbce59e5fcf55166a585e77b52cae35a9b58",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "9c8e685e3b969a031a15ae85e4579ab2f89f0143be2d4d03b3597502944e3615",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "f4b8f44e972773e2d0cce86e374a9c85730233cff3df85dcb740090be1c951a7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "20a1379b7dc033570e848401531688e6efbfaefffeb73738d8e1ac3054def44d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "df908de49dabafcd725587494798934a4dd4dc7fc1716220edf475863a859cc0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "d674f4151853a347d1331a0763367abf9a8b1a8c239ea6fe5cc6aeb3b4057628",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ff38dc264b5224a7486c312e72c847cfb1bee6daf2632005f382bc1543cf197e",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "df2819a5c26d5350779754d76924ac571f4620fd76f16e480bc71d1510dd900e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "7603788388dddce934a85879f30b98b08c0875a719eaf71622d2923c53c62e05",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "766f394c7030fb41699a726b20d9aa5426e3dff420b0c7c60c0b14216aa8f31a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "a42426f45a100a5ae1c67cb343355ea6315aed06ec8ad2ed04a6717b35853037",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/straight_08": [
+      {
+        "kind": "road",
+        "sha256": "754f2ca019237ff9aefbb727ed7b4061e75276980b79d42be6084779e9641df8",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "d4161757e421b29467ce3c4f65dbe198e00a715098ddbbe0d9a7665cb7d21732",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "527a21d66a13a35fe44e5b800ee1f3064d30b3c5e2e0f1f6f1f625bc45a87585",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "3d95d5774fa18f175dbd227c3570faaec4c116359c6a8bd2b71cf9b8ea0d0739",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "7a24fd7b722d5515bbfd72c72114b9074693f8c2290dd45024f58feab06c9d0e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/town_centers/snowy_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "84c475856668335bb05db9ac35b3fcd94620de55cdd160adef600b795638e084",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "53f1433e8f6f7a9d07910a95209830379347ff6626bd84cca6fefa4261eabad9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "a6ecd0c567019e316a957311ef901d2ab2d9a61a438bae9de4b871718666ffe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/town_centers/snowy_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "a733c783dd55c7674866413bc14517450679ab1ca9eb13e6c2a61b62b3f124aa",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "4f07e795a5e814ea729c6f213d926b38c19e263dcd3553a5b0f970dee01d5777",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "ad68a3dc94882c056eac9eec0a20873775b099b1a1deef91aca05e08c7b758e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/town_centers/snowy_meeting_point_3": [
+      {
+        "kind": "gathering",
+        "sha256": "91e56c9fdd1131a06b201a979a9ed084bc4f1275c157d8d5a69d3e2833b37e5d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "130f394f7da86a8ed92277c52254b58f84351bb1db47dfda60a9d223d6cd6e09",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "5968f6a4c1ec0d88ee6f72f7dd441b42e6f966bb32009e5842415a581fc9d76d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "8f8c806a53b773a519a61a163de3e4fe8b33d33a1d107a11f679edbf2e275df9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "3b5a3102600a5b25de6c406ab0c207a0f2f18fa69f0088b1db993c389fdcc64f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "fdd25fcf000e94242a1312bd742b6a2c821e77cfd42edcb2292104c77394b7f0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "3515525e16e38666de2ae504c2b48f33c6f9e030dce059fd8a2064a4b8b264ec",
+        "beds": [
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "87e763d1923849ac60d0b76b82c329fe4e96d63b4e846ab32dd6008f992c1980",
+        "beds": [
+          [
+            4,
+            1,
+            3
+          ],
+          [
+            10,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            1
+          ],
+          [
+            7,
+            0,
+            0
+          ],
+          [
+            9,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_medium_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "73523d3c599629ffa21155650d3c25c65b09da0495821c4279d5f3f4004ad847",
+        "beds": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "28d9ef2906a64bec8875ec67d02c0cd744fda2bd55b5f6feaf5157eb9f74e24e",
+        "beds": [
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "82aa09d5d9cfc2cf4a9991efcfb7b91498b2d6442ca8568d04d3a24cb1d0ecd8",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "e1ad058670495fd82301d4fdd9052a2fc36a5c16b2f7f57d354fde0b36b54b0b",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            3,
+            0,
+            6
+          ],
+          [
+            3,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "df62fe9cfc0464da6de8a3b5683e401208b40293f94c0b915477340cc0cf98f8",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "ed2c867215938265aa14c4c89ed29ae17d5ce058fbd2212f56446cd1fc2adab8",
+        "beds": [
+          [
+            4,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_small_house_6": [
+      {
+        "kind": "residence",
+        "sha256": "636ed21209cc9f7809673b3e50c4054d283d3d4e1d0736cea4356db701316147",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "c003761a1f9f0da576738664ce911a841ec35c0f0dcf5a789856ca934e8098fb",
+        "beds": [
+          [
+            3,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/houses/snowy_small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "226fea0e59321a686cad6f32f5472ec838aac8d8076d5f5ca94719df6b1a05fe",
+        "beds": [
+          [
+            3,
+            0,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "312b4248127a935dd78f39b201b31c9c597752c5e0767036a0962bccaf01fcc2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "807dc8cdbe4f4bd77a09c33247e29a560d10dde43e94dbaff1a962a5fc8f6743",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "f6c7fc97e8614501cb8f4fbd05e4434465325199de4d4001e0dd0ec7f2c5be4f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "1fda5fa8649efe2a4eff2aaaf8f4235ca231360b8c26c3d8afd9d5db8648c69f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "1a275cea1b6f4fd35d9fa661a9361abc45392f011354e13ab8eae49a565bcd8b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "21043d89be58493b7fe04bf894cbc84d97c83ebd42f04d40473d673703984f14",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "68db099bc9d7c49d208a68609f26f44a5c89feb0b03884ecd1b49acad27388c0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "fd3cfbd0015ce4b45967c47d79f48307723c10d86ea4e38f55742174ca8ba041",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/square_01": [
+      {
+        "kind": "road",
+        "sha256": "0d1ffaaf363557c6af87a75fb6208b8809c0348e9798faced6f9617ef5e2e97e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "3bac86e158b9b4333911d763a7f809f84a0e92fb92406ac74bb06fd4dbacb0bd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "d4334f56c5a112444c1901ec06043f0654d39fbe48e66ae1ec8bac1bbb71e5d2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "bd9df65b6b387f7fa7db1738856d80b46f03c3aefadf735f04263f343255d669",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "fd9c382ead594282a5986e7b43e127c1d255fbdd7c2a4f06dd82cc84c27f18db",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "d8f0f98005297e9b21bce453daff6851d4dbcf3499bc0d211b6f95815d5166f6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/straight_08": [
+      {
+        "kind": "road",
+        "sha256": "58df69a9e6869742ce52e260988bec207ff9928b121116510dd996f8e1e5fe88",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "7a73824053bf53bfd6bc7a92b24d86d2804fad312d11f16d741c2b2900036e15",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/town_centers/snowy_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "3ec488484031c93697093e3263c3f6f1b110b9efbc60e1558e5fe12fe4ecb1ea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/town_centers/snowy_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "7a8116e03ec70d0e4e6ba73f099cf4a874ea580423fb4725440d1a37f0139fb5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/town_centers/snowy_meeting_point_3": [
+      {
+        "kind": "gathering",
+        "sha256": "b2b46360dfcd5d8ee17d9381168694fdf8ee9994fde45dd2bfdd550eb9eaff0a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "fa6a2ba936e45dc089213c95aa4c128c345a98234e1a7a9b0d97edfe64a2bf30",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/zombie/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "7431d6c78c56d9d86ef3ef5d86005eb591288bd7a5e9373ae26b30ea7986eccc",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

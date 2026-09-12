@@ -5,6 +5,7 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ai.GuardAutomaticDutyMovementGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
 import com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
@@ -15,6 +16,8 @@ import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettin
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalEnvelope;
+import com.gamergaming.villagerguardgunners.defense.duty.GuardAutomaticDutyMovementController;
+import com.gamergaming.villagerguardgunners.defense.duty.GuardPatrolRouteMovementController;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
 import com.gamergaming.villagerguardgunners.role.GuardRoleDefinition;
@@ -46,10 +49,14 @@ public final class GuardGunnerCommands {
     static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("vgg")
                 .requires(source -> source.hasPermission(REQUIRED_PERMISSION_LEVEL))
+                .then(com.gamergaming.villagerguardgunners.quartermaster.service.ServiceCommands.build())
                 .then(NaturalGuardLoadoutCommands.build())
                 .then(SquadRegistryCommands.build())
                 .then(GuardRoleCommands.build())
                 .then(WatchtowerCommands.build())
+                .then(VillageBuildingCommands.build())
+                .then(VillageDefenseCommands.build())
+                .then(VillageRegistryCommands.build())
                 .then(Commands.literal("inspect")
                         .then(Commands.argument("guard", EntityArgument.entity())
                                 .executes(context -> inspect(
@@ -77,7 +84,42 @@ public final class GuardGunnerCommands {
         }
 
         GuardGunCombatGoal.Diagnostics snapshot = gunGoal.captureDiagnostics();
+        GuardAutomaticDutyMovementGoal dutyGoal = guard.goalSelector.getAvailableGoals().stream()
+                .map(wrappedGoal -> wrappedGoal.getGoal())
+                .filter(GuardAutomaticDutyMovementGoal.class::isInstance)
+                .map(GuardAutomaticDutyMovementGoal.class::cast)
+                .findFirst()
+                .orElse(null);
+        GuardAutomaticDutyMovementController.RuntimeSnapshot automaticDuty =
+                dutyGoal == null ? null : dutyGoal.captureDiagnostics();
+        GuardPatrolRouteMovementController.RuntimeSnapshot patrolRoute =
+                dutyGoal == null ? null : dutyGoal.capturePatrolDiagnostics();
         NativeGunController.Diagnostics nativeState = snapshot.nativeState();
+        var tacticalController = gunGoal.tacticalController();
+        var threat = tacticalController.assessment();
+        var route = gunGoal.tacticalNavigation();
+        send(source, line("Movement ownership", gunGoal.movementOwner()
+                + ", combatRetained=" + gunGoal.retainsCombatOwnership()
+                + ", lastInterruption=" + gunGoal.lastInterruption(), ChatFormatting.GRAY));
+        send(source, line("Tactical route", route.status() + ", destination=" + route.destination()
+                + ", pathAttempts=" + route.pathAttempts() + ", failedDestinations=" + route.failedDestinations()
+                + ", candidates=" + route.candidatesChecked(), ChatFormatting.GRAY));
+        long now = guard.level().getGameTime();
+        send(source, line("Tactical intent", tacticalController.decision().intent()
+                + ", reason=" + tacticalController.decision().reason()
+                + ", readiness=" + nativeState.readiness()
+                + ", enteredTicksAgo=" + Math.max(0, now - tacticalController.enteredAt())
+                + ", continuation=" + tacticalController.hasContinuation(), ChatFormatting.GRAY));
+        send(source, line("Observed threats", "count=" + threat.threats()
+                + ", complete=" + threat.complete()
+                + ", assessmentAge=" + (threat.sampledAt() == Long.MIN_VALUE ? "never" : now - threat.sampledAt())
+                + ", nearest=" + decimal(threat.nearestDistance())
+                + ", pressure=" + decimal(threat.pressure()) + ", support=" + decimal(threat.support())
+                + ", sectors=" + threat.occupiedSectors() + ", explosive=" + threat.explosiveDanger()
+                + ", recentDamage=" + decimal(threat.recentDamageFraction())
+                + ", candidates=" + tacticalController.tracker().candidateCount()
+                + ", sightChecks=" + tacticalController.tracker().sightChecks(), ChatFormatting.GRAY));
+
         GuardWeaponAmmunition.LoadoutSummary ammunition =
                 GuardWeaponAmmunition.captureSummary(
                         guard,
@@ -141,6 +183,31 @@ public final class GuardGunnerCommands {
                         + ", movement=" + effectiveOrders.movement()
                         + ", maximumRange=" + effectiveOrders.maximumRange() + "}",
                 roleId != null && role == null ? ChatFormatting.YELLOW : ChatFormatting.GRAY));
+        send(source, line(
+                "Automatic duty",
+                "owner=" + (dutyGoal == null ? "unavailable" : dutyGoal.activeOwner())
+                        + ", " + automaticDutyDetails(automaticDuty),
+                automaticDuty != null
+                                && (automaticDuty.status()
+                                                == GuardAutomaticDutyMovementController
+                                                        .MovementStatus.TRAVELLING
+                                        || automaticDuty.status()
+                                                == GuardAutomaticDutyMovementController
+                                                        .MovementStatus.HOLDING_POST)
+                        ? ChatFormatting.GREEN
+                        : ChatFormatting.GRAY));
+        send(source, line(
+                "Squad patrol route",
+                patrolRouteDetails(patrolRoute),
+                patrolRoute != null
+                                && (patrolRoute.status()
+                                                == GuardPatrolRouteMovementController
+                                                        .MovementStatus.TRAVELLING
+                                        || patrolRoute.status()
+                                                == GuardPatrolRouteMovementController
+                                                        .MovementStatus.DWELLING)
+                        ? ChatFormatting.GREEN
+                        : ChatFormatting.GRAY));
         send(source, line(
                 "Natural loadout",
                 naturalLoadoutDetails(naturalLoadout),
@@ -363,6 +430,9 @@ public final class GuardGunnerCommands {
             return "";
         }
         return ", inventoryFed=" + nativeState.inventoryFed()
+                + ", readiness=" + nativeState.readiness()
+                + ", offensiveMovementBlocked=" + !nativeState.readiness().permitsOffensiveMovement()
+                + ", dryConfirmed=" + nativeState.dryConfirmed()
                 + ", dryRetryTicks=" + nativeState.dryRetryTicks()
                 + ", lastShare=" + nativeState.lastAmmoSharingStatus()
                 + "(" + nativeState.lastAmmoSharedItems() + ")";
@@ -426,5 +496,59 @@ public final class GuardGunnerCommands {
                 + ", successCooldown=" + settings.successCooldownTicks()
                 + ", noSupplyRetry=" + settings.noSupplyRetryTicks()
                 + ", unreachableRetry=" + settings.unreachableRetryTicks();
+    }
+
+    private static String automaticDutyDetails(
+            @Nullable GuardAutomaticDutyMovementController.RuntimeSnapshot snapshot) {
+        if (snapshot == null) {
+            return "runtime=unavailable";
+        }
+        String assignment = snapshot.slotId() == null
+                ? "none"
+                : snapshot.slotId().toString();
+        String destination = snapshot.destination() == null
+                ? "none"
+                : snapshot.destination().toShortString();
+        return "status=" + snapshot.status()
+                + ", gate=" + snapshot.gateStatus()
+                + ", slot=" + assignment
+                + ", destination=" + destination
+                + ", loaded=" + snapshot.destinationLoaded()
+                + ", arrived=" + snapshot.atDutyPosition()
+                + ", failures=" + snapshot.consecutivePathFailures()
+                + ", paths=" + snapshot.pathAttempts()
+                + ", nextPath=" + snapshot.nextPathAttemptGameTime();
+    }
+
+    private static String patrolRouteDetails(
+            @Nullable GuardPatrolRouteMovementController.RuntimeSnapshot snapshot) {
+        if (snapshot == null) {
+            return "runtime=unavailable";
+        }
+        String squad = snapshot.squadId() == null
+                ? "none"
+                : snapshot.squadId().toString();
+        String destination = snapshot.destination() == null
+                ? "none"
+                : snapshot.destination().toShortString();
+        return "status=" + snapshot.status()
+                + ", gate=" + snapshot.gateStatus()
+                + ", squad=" + squad
+                + ", revision=" + snapshot.routeRevision()
+                + ", waypoint=" + (snapshot.waypointIndex() < 0
+                        ? "none"
+                        : (snapshot.waypointIndex() + 1) + "/" + snapshot.waypointCount())
+                + ", destination=" + destination
+                + ", loaded=" + snapshot.destinationLoaded()
+                + ", valid=" + snapshot.destinationValid()
+                + ", arrived=" + snapshot.atWaypoint()
+                + ", failures=" + snapshot.consecutivePathFailures()
+                + ", skipped=" + snapshot.skippedWaypoints()
+                + ", paths=" + snapshot.pathAttempts()
+                + ", nextPath=" + snapshot.nextPathAttemptGameTime()
+                + ", policy={enabled=" + snapshot.executionEnabled()
+                + ", speed=" + decimal(snapshot.movementSpeed())
+                + ", dwell=" + snapshot.waypointDwellTicks()
+                + ", failures=" + snapshot.maximumFailuresPerWaypoint() + "}";
     }
 }

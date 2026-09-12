@@ -12,10 +12,12 @@ import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfileDefinition;
 import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticalResolver;
+import com.gamergaming.villagerguardgunners.defense.VillageDefenseTimings;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficultySettings;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
+import com.gamergaming.villagerguardgunners.squad.PatrolRouteExecutionSettings;
 import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingArmoryPolicy;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisonPolicy;
@@ -34,7 +36,13 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(15, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(21, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertFalse(config.medical.downed.get()),
+                () -> assertFalse(config.medical.transport.get()),
+                () -> assertEquals(40, config.medical.cotRevivalTicks.get()),
+                () -> assertEquals(160, config.medical.fieldRevivalTicks.get()),
+                () -> assertEquals(100, config.medical.cotRecoveryTicks.get()),
+                () -> assertEquals(400, config.medical.fieldRecoveryTicks.get()),
                 () -> assertTrue(config.enabled.get()),
                 () -> assertTrue(config.naturalLoadouts.enabled.get()),
                 () -> assertEquals(
@@ -50,6 +58,17 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(400, config.squads.focusCommandDurationTicks.get()),
                 () -> assertEquals(12.0D, config.squads.defendRadius.get()),
                 () -> assertEquals(32.0D, config.squads.airCommandRange.get()),
+                () -> assertEquals(
+                        PatrolRouteExecutionSettings.DEFAULT,
+                        config.squads.patrolRouteSettings(true)),
+                () -> assertEquals(
+                        PatrolRouteExecutionSettings.DISABLED,
+                        config.squads.patrolRouteSettings(false)),
+                () -> assertTrue(config.villageDefense.automaticDuties.get()),
+                () -> assertEquals(
+                        VillageDefenseTimings.DEFAULT,
+                        config.villageDefense.timings()),
+                () -> assertEquals(0.8D, config.villageDefense.dutyMovementSpeed.get()),
                 () -> assertEquals(5, config.combat.requiredVisibleTicks.get()),
                 () -> assertEquals(32.0D, config.combat.maximumEngagementRange.get()),
                 () -> assertEquals(4.0D, config.combat.closeRangeDistance.get()),
@@ -141,6 +160,36 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(20, config.performance.gunDataRefreshIntervalTicks.get()),
                 () -> assertEquals(2, config.performance.unsafeShotCacheTicks.get()),
                 () -> assertEquals(10, config.performance.repositionProgressCheckTicks.get()));
+    }
+
+    @Test
+    void versionFifteenUpdateAddsOnlyDefenseAndPatrolPolicyDefaults() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.squads.commandDispatchRadius.accept(96.0D);
+        config.squads.patrolRouteExecution.accept(false);
+        config.squads.patrolMovementSpeed.accept(1.5D);
+        config.squads.patrolWaypointDwellTicks.accept(200);
+        config.squads.patrolMaximumFailuresPerWaypoint.accept(7);
+        config.villageDefense.automaticDuties.accept(false);
+        config.villageDefense.watchDurationTicks.accept(2_000);
+        config.villageDefense.alertDurationTicks.accept(3_000);
+        config.villageDefense.recoveryDurationTicks.accept(4_000);
+        config.villageDefense.dutyMovementSpeed.accept(1.5D);
+
+        config.update(15);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertEquals(96.0D, config.squads.commandDispatchRadius.get()),
+                () -> assertEquals(
+                        PatrolRouteExecutionSettings.DEFAULT,
+                        config.squads.patrolRouteSettings(true)),
+                () -> assertTrue(config.villageDefense.automaticDuties.get()),
+                () -> assertEquals(
+                        VillageDefenseTimings.DEFAULT,
+                        config.villageDefense.timings()),
+                () -> assertEquals(0.8D, config.villageDefense.dutyMovementSpeed.get()));
     }
 
     @Test

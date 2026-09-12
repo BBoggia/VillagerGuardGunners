@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.command;
 
 import com.gamergaming.villagerguardgunners.squad.SquadMetadata;
+import com.gamergaming.villagerguardgunners.squad.SquadPatrolRoute;
 import com.gamergaming.villagerguardgunners.squad.SquadRegistrySavedData;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -28,6 +29,14 @@ public final class SquadRegistryCommands {
                                 .executes(context -> list(
                                         context.getSource(),
                                         IntegerArgumentType.getInteger(context, "page")))))
+                .then(Commands.literal("routes")
+                        .executes(context -> routes(context.getSource(), 1))
+                        .then(Commands.argument(
+                                        "page",
+                                        IntegerArgumentType.integer(1))
+                                .executes(context -> routes(
+                                        context.getSource(),
+                                        IntegerArgumentType.getInteger(context, "page")))))
                 .then(Commands.literal("unregister")
                         .then(Commands.argument("squad", UuidArgument.uuid())
                                 .executes(context -> unregister(
@@ -36,8 +45,11 @@ public final class SquadRegistryCommands {
     }
 
     private static int list(CommandSourceStack source, int requestedPage) {
-        List<SquadMetadata> squads = SquadRegistrySavedData.get(
-                source.getServer()).snapshot();
+        SquadRegistrySavedData registry = SquadRegistrySavedData.get(source.getServer());
+        if (!registry.enabled()) {
+            return disabled(source, registry);
+        }
+        List<SquadMetadata> squads = registry.snapshot();
         int pages = Math.max(1, (squads.size() + ENTRIES_PER_PAGE - 1)
                 / ENTRIES_PER_PAGE);
         if (requestedPage > pages) {
@@ -66,8 +78,64 @@ public final class SquadRegistryCommands {
         return squads.isEmpty() ? 0 : toIndex - fromIndex;
     }
 
+    private static int routes(CommandSourceStack source, int requestedPage) {
+        SquadRegistrySavedData registry = SquadRegistrySavedData.get(source.getServer());
+        if (!registry.enabled()) {
+            return disabled(source, registry);
+        }
+        List<SquadPatrolRoute> routes = registry.patrolRouteSnapshot();
+        int pages = Math.max(1, (routes.size() + ENTRIES_PER_PAGE - 1)
+                / ENTRIES_PER_PAGE);
+        if (requestedPage > pages) {
+            source.sendFailure(Component.translatable(
+                    "commands.villagerguardgunners.squads.invalid_page",
+                    pages));
+            return 0;
+        }
+        long executableRoutes = routes.stream().filter(SquadPatrolRoute::executable).count();
+        source.sendSuccess(() -> Component.translatable(
+                        "commands.villagerguardgunners.squads.routes_header",
+                        requestedPage,
+                        pages,
+                        routes.size(),
+                        executableRoutes),
+                false);
+        int fromIndex = (requestedPage - 1) * ENTRIES_PER_PAGE;
+        int toIndex = Math.min(routes.size(), fromIndex + ENTRIES_PER_PAGE);
+        for (int index = fromIndex; index < toIndex; index++) {
+            SquadPatrolRoute route = routes.get(index);
+            String name = registry.find(route.squadId())
+                    .map(SquadMetadata::displayName)
+                    .orElse(route.squadId().toString());
+            source.sendSuccess(() -> Component.translatable(
+                            "commands.villagerguardgunners.squads.routes_entry",
+                            name,
+                            route.dimensionId().toString(),
+                            route.waypoints().size(),
+                            route.revision(),
+                            Component.translatable(route.executable()
+                                    ? "commands.villagerguardgunners.squads.route_state.ready"
+                                    : "commands.villagerguardgunners.squads.route_state.draft")),
+                    false);
+        }
+        return routes.isEmpty() ? 0 : toIndex - fromIndex;
+    }
+
+    private static int disabled(
+            CommandSourceStack source,
+            SquadRegistrySavedData registry) {
+        source.sendFailure(Component.translatable(
+                "commands.villagerguardgunners.squads.disabled",
+                registry.disabledReason() == null ? "unknown decoding failure"
+                        : registry.disabledReason()));
+        return 0;
+    }
+
     private static int unregister(CommandSourceStack source, UUID squadId) {
         SquadRegistrySavedData registry = SquadRegistrySavedData.get(source.getServer());
+        if (!registry.enabled()) {
+            return disabled(source, registry);
+        }
         SquadMetadata metadata = registry.find(squadId).orElse(null);
         if (metadata == null) {
             source.sendFailure(Component.translatable(
@@ -75,6 +143,7 @@ public final class SquadRegistryCommands {
                     squadId.toString()));
             return 0;
         }
+        boolean removedRoute = registry.findPatrolRoute(squadId).isPresent();
         if (!registry.remove(squadId)) {
             source.sendFailure(Component.translatable(
                     "commands.villagerguardgunners.squads.not_found",
@@ -82,7 +151,9 @@ public final class SquadRegistryCommands {
             return 0;
         }
         source.sendSuccess(() -> Component.translatable(
-                        "commands.villagerguardgunners.squads.unregistered",
+                        removedRoute
+                                ? "commands.villagerguardgunners.squads.unregistered_with_route"
+                                : "commands.villagerguardgunners.squads.unregistered",
                         metadata.displayName(),
                         squadId.toString()),
                 true);

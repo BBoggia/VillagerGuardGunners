@@ -5,9 +5,9 @@ import net.minecraft.resources.ResourceLocation;
 
 /** Built-in pool identities reserved by the 1.5 village-building contract. */
 public final class VillageBuildingPools {
-    public static final int MAXIMUM_TARGET_POOLS = 5;
-    /** 25 built-in biome variants plus 25 bounded modpack extension slots. */
-    public static final int MAXIMUM_INJECTED_ENTRIES = 50;
+    public static final int MAXIMUM_TARGET_POOLS = 24;
+    /** Fits built-ins, all regional building families, and custom village adapters with bounded headroom. */
+    public static final int MAXIMUM_INJECTED_ENTRIES = 192;
 
     public static final ResourceLocation PLAINS_HOUSES = minecraft("village/plains/houses");
     public static final ResourceLocation DESERT_HOUSES = minecraft("village/desert/houses");

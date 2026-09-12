@@ -12,12 +12,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.UUID;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutyLayouts;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutySlotDefinition;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutySlotKind;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutyWeaponRequirement;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Rotation;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.junit.jupiter.api.Test;
 
@@ -159,6 +167,121 @@ final class VillageBuildingAnchorTest {
     }
 
     @Test
+    void pendingActivationRoundTripsIndexesOnlyRelevantChunksAndClearsOnClaim() {
+        VillageBuildingIdentity borderIdentity = VillageBuildingIdentity.anchored(
+                42L,
+                DIMENSION,
+                id("example", "border_barracks"),
+                VillageBuildingType.BARRACKS,
+                new BlockPos(15, 70, 15));
+        VillageBuildingPendingActivation pending =
+                VillageBuildingPendingActivation.forBuilding(
+                        borderIdentity,
+                        Rotation.CLOCKWISE_180,
+                        NaturalGuardDifficulty.HARD);
+        VillageBuildingSavedData source = new VillageBuildingSavedData();
+        assertEquals(
+                VillageBuildingSavedData.ClaimResult.CLAIMED,
+                source.claimAnchor(borderIdentity, pending));
+        CompoundTag encoded = source.save(new CompoundTag());
+        VillageBuildingSavedData loaded = VillageBuildingSavedData.loadForLevel(
+                encoded, DIMENSION, 42L);
+        VillageBuildingRecord loadedRecord = loaded.get(borderIdentity.buildingId());
+
+        assertAll(
+                () -> assertEquals(2, encoded.getInt("Version")),
+                () -> assertNotNull(loadedRecord),
+                () -> assertEquals(java.util.Optional.of(pending),
+                        loadedRecord.pendingActivation()),
+                () -> assertEquals(1, loaded.pendingActivationCount()),
+                () -> assertTrue(loaded.pendingActivationsIn(new ChunkPos(0, 0))
+                        .contains(loadedRecord)),
+                () -> assertTrue(loaded.pendingActivationsIn(new ChunkPos(1, 0))
+                        .contains(loadedRecord)),
+                () -> assertTrue(loaded.pendingActivationsIn(new ChunkPos(0, 1))
+                        .contains(loadedRecord)),
+                () -> assertTrue(loaded.pendingActivationsIn(new ChunkPos(1, 1))
+                        .isEmpty()));
+
+        assertEquals(
+                VillageBuildingSavedData.ClaimResult.CLAIMED,
+                loaded.claimAction(
+                        borderIdentity.buildingId(), VillageBuildingAction.GARRISON));
+        assertAll(
+                () -> assertEquals(0, loaded.pendingActivationCount()),
+                () -> assertTrue(loaded.pendingActivationsIn(new ChunkPos(0, 0)).isEmpty()),
+                () -> assertTrue(loaded.get(borderIdentity.buildingId())
+                        .pendingActivation().isEmpty()));
+    }
+
+    @Test
+    void pendingActivationPersistsExactPackAuthoredLayoutAndMigratesLegacyContext() {
+        VillageBuildingIdentity identity = VillageBuildingIdentity.anchored(
+                42L,
+                DIMENSION,
+                id("example", "custom_sentry"),
+                VillageBuildingType.SENTRY_POST,
+                ANCHOR);
+        var customLayout = VillageDefenseDutyLayouts.forBuilding(
+                identity,
+                Rotation.CLOCKWISE_90,
+                List.of(new VillageDefenseDutySlotDefinition(
+                        "roof_overwatch",
+                        new BlockPos(3, 5, -2),
+                        Direction.NORTH,
+                        VillageDefenseDutySlotKind.OVERWATCH,
+                        VillageDefenseDutyWeaponRequirement.RANGED)));
+        VillageBuildingPendingActivation pending =
+                VillageBuildingPendingActivation.forBuilding(
+                        identity,
+                        Rotation.CLOCKWISE_90,
+                        NaturalGuardDifficulty.NORMAL,
+                        customLayout);
+        CompoundTag owner = VillageBuildingRecordCodec.encodeWrapped(
+                VillageBuildingRecord.anchored(identity, pending));
+        VillageBuildingRecord decoded = VillageBuildingRecordCodec.decodeWrapped(owner);
+
+        CompoundTag legacyOwner = owner.copy();
+        CompoundTag legacyPending = legacyOwner
+                .getCompound(VillageBuildingRecordCodec.BUILDING_TAG)
+                .getCompound("PendingActivation");
+        legacyPending.putInt("Version", 1);
+        legacyPending.remove("DutyLayout");
+        VillageBuildingRecord migrated = VillageBuildingRecordCodec.decodeWrapped(legacyOwner);
+
+        assertAll(
+                () -> assertNotNull(decoded),
+                () -> assertEquals(customLayout,
+                        decoded.pendingActivation().orElseThrow().dutyLayout()),
+                () -> assertNotNull(migrated),
+                () -> assertEquals(
+                        VillageDefenseDutyLayouts.forBuilding(
+                                identity, Rotation.CLOCKWISE_90),
+                        migrated.pendingActivation().orElseThrow().dutyLayout()));
+    }
+
+    @Test
+    void legacySavedDataLoadsWithoutInventingActivationContext() {
+        VillageBuildingSavedData source = new VillageBuildingSavedData();
+        VillageBuildingIdentity identity = identity();
+        source.claimAnchor(identity);
+        CompoundTag legacy = source.save(new CompoundTag());
+        legacy.putInt("Version", VillageBuildingSavedData.LEGACY_DATA_VERSION);
+
+        VillageBuildingSavedData migrated = VillageBuildingSavedData.loadForLevel(
+                legacy, DIMENSION, 42L);
+
+        assertAll(
+                () -> assertTrue(migrated.enabled()),
+                () -> assertEquals(0, migrated.pendingActivationCount()),
+                () -> assertTrue(migrated.get(identity.buildingId())
+                        .pendingActivation().isEmpty()),
+                () -> assertEquals(
+                        VillageBuildingSavedData.DATA_VERSION,
+                        migrated.save(new CompoundTag()).getInt("Version")));
+    }
+
+    @Test
     void savedDataClaimsAnchorsAndActionsAtMostOnce() {
         VillageBuildingSavedData data = new VillageBuildingSavedData();
         VillageBuildingIdentity identity = identity();
@@ -224,6 +347,20 @@ final class VillageBuildingAnchorTest {
         assertEquals(
                 VillageBuildingSavedData.ClaimResult.CONFLICT,
                 wrongType.claimArmorySetup(barracks.buildingId()));
+    }
+
+    @Test
+    void activationRetriesUseBoundedExponentialBackoff() {
+        assertAll(
+                () -> assertEquals(1, VillageBuildingAnchorLifecycle.retryDelayTicks(0)),
+                () -> assertEquals(2, VillageBuildingAnchorLifecycle.retryDelayTicks(1)),
+                () -> assertEquals(4, VillageBuildingAnchorLifecycle.retryDelayTicks(2)),
+                () -> assertEquals(32, VillageBuildingAnchorLifecycle.retryDelayTicks(5)),
+                () -> assertEquals(40, VillageBuildingAnchorLifecycle.retryDelayTicks(6)),
+                () -> assertEquals(40, VillageBuildingAnchorLifecycle.retryDelayTicks(100)),
+                () -> assertThrows(
+                        IllegalArgumentException.class,
+                        () -> VillageBuildingAnchorLifecycle.retryDelayTicks(-1)));
     }
 
     @Test

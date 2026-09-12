@@ -52,14 +52,14 @@ final class GuardPostGroupsContractTest {
     }
 
     @Test
-    void stepTwelveResourceAndDocumentationArePackaged() throws IOException {
+    void guardPostResourceAndDocumentationArePackaged() throws IOException {
         assertAll(
                 () -> assertTrue(Files.isRegularFile(PROJECT.resolve(
                         "src/main/resources/data/villagerguardgunners/guard_post_groups/watchtower.json"))),
                 () -> assertTrue(Files.isRegularFile(PROJECT.resolve(
-                        "docs/village-watchtowers-step-12.md"))),
+                        "docs/village-watchtowers.md"))),
                 () -> assertTrue(read("README.md").contains(
-                        "docs/village-watchtowers-step-12.md")));
+                        "docs/village-watchtowers.md")));
     }
 
     private static String read(String relativePath) throws IOException {

@@ -3,6 +3,7 @@ package com.gamergaming.villagerguardgunners.worldgen.village;
 import com.gamergaming.villagerguardgunners.init.ModStructures;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import net.minecraft.core.Holder;
@@ -31,32 +32,74 @@ import net.minecraft.world.level.block.Rotation;
  * integration and bounded anchor handling.
  */
 public final class VillageBuildingPoolElement extends SinglePoolElement {
-    public static final Codec<VillageBuildingPoolElement> CODEC =
+    private static final Codec<VillageBuildingPoolElement> RAW_CODEC =
             RecordCodecBuilder.create(instance -> instance.group(
                     ResourceLocation.CODEC.fieldOf("entry_id")
                             .forGetter(VillageBuildingPoolElement::entryId),
                     VillageBuildingType.CODEC.optionalFieldOf("building_type")
-                            .xmap(
-                                    type -> type.orElse(VillageBuildingType.BARRACKS),
-                                    java.util.Optional::of)
-                            .forGetter(VillageBuildingPoolElement::buildingType),
+                            .forGetter(element -> java.util.Optional.of(
+                                    element.buildingType())),
                     templateCodec(),
                     processorsCodec(),
-                    projectionCodec())
+                    projectionCodec(),
+                    Codec.doubleRange(0.0, 1.0).optionalFieldOf("selection_chance", 1.0)
+                            .forGetter(VillageBuildingPoolElement::selectionChance),
+                    Codec.BOOL.optionalFieldOf("terrain_safety", false)
+                            .forGetter(VillageBuildingPoolElement::terrainSafety))
                     .apply(instance, VillageBuildingPoolElement::new));
+    public static final Codec<VillageBuildingPoolElement> CODEC = RAW_CODEC.flatXmap(
+            element -> element.legacyTypeFallback
+                    && !element.entryId.equals(
+                            VillageBuildingPools.PLAINS_INTEGRATION_PROBE_ID)
+                    ? DataResult.error(() -> "Only the legacy plains integration probe may omit building_type")
+                    : element.terrainSafety && element.getProjection() != StructureTemplatePool.Projection.RIGID
+                            ? DataResult.error(() -> "terrain_safety requires rigid projection")
+                            : DataResult.success(element),
+            DataResult::success);
 
     private final ResourceLocation entryId;
     private final VillageBuildingType buildingType;
+    private final boolean legacyTypeFallback;
+    private final double selectionChance;
+    private final boolean terrainSafety;
+
+    private VillageBuildingPoolElement(
+            ResourceLocation entryId,
+            java.util.Optional<VillageBuildingType> buildingType,
+            Either<ResourceLocation, StructureTemplate> template,
+            Holder<StructureProcessorList> processors,
+            StructureTemplatePool.Projection projection,
+            double selectionChance,
+            boolean terrainSafety) {
+        this(
+                entryId,
+                buildingType.orElse(VillageBuildingType.BARRACKS),
+                template,
+                processors,
+                projection,
+                selectionChance,
+                terrainSafety,
+                buildingType.isEmpty());
+    }
 
     private VillageBuildingPoolElement(
             ResourceLocation entryId,
             VillageBuildingType buildingType,
             Either<ResourceLocation, StructureTemplate> template,
             Holder<StructureProcessorList> processors,
-            StructureTemplatePool.Projection projection) {
+            StructureTemplatePool.Projection projection,
+            double selectionChance,
+            boolean terrainSafety,
+            boolean legacyTypeFallback) {
         super(template, processors, projection);
         this.entryId = Objects.requireNonNull(entryId, "entryId");
         this.buildingType = Objects.requireNonNull(buildingType, "buildingType");
+        this.legacyTypeFallback = legacyTypeFallback;
+        if (!Double.isFinite(selectionChance) || selectionChance < 0.0 || selectionChance > 1.0) {
+            throw new IllegalArgumentException("Selection chance must be finite and in [0, 1]");
+        }
+        this.selectionChance = selectionChance;
+        this.terrainSafety = terrainSafety;
     }
 
     public static VillageBuildingPoolElement create(
@@ -65,13 +108,40 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
             ResourceLocation template,
             Holder<StructureProcessorList> processors,
             StructureTemplatePool.Projection projection) {
+        return create(entryId, buildingType, template, processors, projection, 1.0);
+    }
+
+    public static VillageBuildingPoolElement create(
+            ResourceLocation entryId,
+            VillageBuildingType buildingType,
+            ResourceLocation template,
+            Holder<StructureProcessorList> processors,
+            StructureTemplatePool.Projection projection,
+            double selectionChance) {
+        return create(entryId, buildingType, template, processors, projection, selectionChance, false);
+    }
+
+    public static VillageBuildingPoolElement create(
+            ResourceLocation entryId, VillageBuildingType buildingType, ResourceLocation template,
+            Holder<StructureProcessorList> processors, StructureTemplatePool.Projection projection,
+            double selectionChance, boolean terrainSafety) {
+        if (terrainSafety && projection != StructureTemplatePool.Projection.RIGID) {
+            throw new IllegalArgumentException("terrain_safety requires rigid projection");
+        }
         return new VillageBuildingPoolElement(
                 entryId,
                 Objects.requireNonNull(buildingType, "buildingType"),
                 Either.left(Objects.requireNonNull(template, "template")),
                 Objects.requireNonNull(processors, "processors"),
-                Objects.requireNonNull(projection, "projection"));
+                Objects.requireNonNull(projection, "projection"),
+                selectionChance,
+                terrainSafety,
+                false);
     }
+
+    public boolean terrainSafety() { return terrainSafety; }
+
+    public double selectionChance() { return selectionChance; }
 
     public ResourceLocation entryId() {
         return entryId;
@@ -79,6 +149,20 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
 
     public VillageBuildingType buildingType() {
         return buildingType;
+    }
+
+    @Override
+    protected StructurePlaceSettings getSettings(
+            Rotation rotation,
+            BoundingBox bounds,
+            boolean keepJigsaws) {
+        // SinglePoolElement normally treats jigsaw templates as already having
+        // their final shapes. These authored buildings contain fences, iron
+        // bars, stairs, doors, and other blocks whose state depends on their
+        // generated neighbors, so let StructureTemplate run Minecraft's
+        // standard bounded shape reconciliation after placement.
+        return super.getSettings(rotation, bounds, keepJigsaws)
+                .setKnownShape(false);
     }
 
     @Override

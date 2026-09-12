@@ -1,0 +1,6865 @@
+{
+  "format": "architectural-design-drawings-1",
+  "units": "blocks; size is width, depth, height; rectangular endpoints exclusive",
+  "regions": {
+    "plains": {
+      "title": "Plains",
+      "walk": 1,
+      "palette": [
+        "Cobblestone / andesite",
+        "Stripped oak / white terracotta",
+        "Spruce roof / dark oak edging",
+        "Oak floor / green cloth"
+      ],
+      "decision": "Keep unequal gables and an open side arch; refine the existing prototype.",
+      "sizes": [
+        [
+          15,
+          13,
+          12
+        ],
+        [
+          16,
+          16,
+          12
+        ]
+      ],
+      "roof": "gable"
+    },
+    "desert": {
+      "title": "Desert",
+      "walk": 1,
+      "palette": [
+        "Sandstone foundation",
+        "Cut sandstone / smooth sandstone trim",
+        "Sandstone slab parapets",
+        "Acacia furniture / ochre cloth"
+      ],
+      "decision": "Cut sandstone walls with smooth trim; stepped flat roofs; east shade arcade.",
+      "sizes": [
+        [
+          13,
+          13,
+          9
+        ],
+        [
+          16,
+          16,
+          10
+        ]
+      ],
+      "roof": "flat"
+    },
+    "savanna": {
+      "title": "Savanna",
+      "walk": 1,
+      "palette": [
+        "Stone footings",
+        "Acacia frame / terracotta infill",
+        "Acacia shallow hip roof",
+        "Acacia veranda / orange cloth"
+      ],
+      "decision": "Shallow hipped roofs. Compact depth grows to 13 to retain rear alcove access.",
+      "sizes": [
+        [
+          15,
+          13,
+          10
+        ],
+        [
+          16,
+          16,
+          10
+        ]
+      ],
+      "roof": "hip"
+    },
+    "taiga": {
+      "title": "Taiga",
+      "walk": 1,
+      "palette": [
+        "Cobblestone / restrained moss",
+        "Spruce framing / plank panels",
+        "Steep spruce roof",
+        "Spruce floor / green cloth"
+      ],
+      "decision": "Framed spruce panels, steep roof and a long compact hall.",
+      "sizes": [
+        [
+          13,
+          15,
+          12
+        ],
+        [
+          16,
+          16,
+          13
+        ]
+      ],
+      "roof": "gable"
+    },
+    "snowy": {
+      "title": "Snowy",
+      "walk": 1,
+      "palette": [
+        "Stone base",
+        "Spruce / pale terracotta",
+        "Spruce roof / selected roof snow",
+        "Wood floor / red cloth"
+      ],
+      "decision": "Offset inner lobby opening; protected court. Rear courtyard hall moves back two blocks.",
+      "sizes": [
+        [
+          15,
+          14,
+          12
+        ],
+        [
+          16,
+          16,
+          13
+        ]
+      ],
+      "roof": "gable"
+    },
+    "ocean": {
+      "title": "Deep ocean \u00b7 Tidal Towns",
+      "walk": 3,
+      "palette": [
+        "Oak log raft members",
+        "Oak cabin / stripped oak frame",
+        "Low spruce roof / battens",
+        "Full spruce deck / cyan cloth"
+      ],
+      "decision": "Compact raft grows to 16 \u00d7 15 for a two-block side and aft walk; one gangway.",
+      "sizes": [
+        [
+          16,
+          15,
+          10
+        ],
+        [
+          16,
+          16,
+          11
+        ]
+      ],
+      "roof": "low"
+    },
+    "jungle": {
+      "title": "Jungle \u00b7 MMV",
+      "walk": 2,
+      "palette": [
+        "Low cobblestone / mossy plinth",
+        "Jungle frame / limited bamboo panels",
+        "Deep jungle-wood eaves",
+        "Wood veranda / green cloth"
+      ],
+      "decision": "Jungle wood and stone dominate; a shallow stair joins the low raised floor.",
+      "sizes": [
+        [
+          15,
+          14,
+          12
+        ],
+        [
+          16,
+          16,
+          12
+        ]
+      ],
+      "roof": "gable"
+    },
+    "swamp": {
+      "title": "Swamp \u00b7 MMV",
+      "walk": 2,
+      "palette": [
+        "Finite stone supports",
+        "Dark oak / mud brick",
+        "Dark oak roof / mud brick accents",
+        "Spruce boardwalk / muted purple cloth"
+      ],
+      "decision": "Dark oak and mud brick; dry raised deck, with a protected refuge on wet sites.",
+      "sizes": [
+        [
+          15,
+          13,
+          11
+        ],
+        [
+          16,
+          16,
+          12
+        ]
+      ],
+      "roof": "gable"
+    }
+  },
+  "layouts": [
+    {
+      "id": "plains-compact",
+      "region": "plains",
+      "layout": "compact",
+      "title": "Plains / Compact",
+      "size": [
+        15,
+        13,
+        12
+      ],
+      "walkY": 1,
+      "palette": [
+        "Cobblestone / andesite",
+        "Stripped oak / white terracotta",
+        "Spruce roof / dark oak edging",
+        "Oak floor / green cloth"
+      ],
+      "decision": "Keep unequal gables and an open side arch; refine the existing prototype.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          3,
+          6,
+          9
+        ],
+        [
+          6,
+          3,
+          8,
+          9
+        ],
+        [
+          7,
+          0,
+          5,
+          3
+        ],
+        [
+          14,
+          9,
+          1,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          3,
+          6,
+          1
+        ],
+        [
+          1,
+          11,
+          6,
+          1
+        ],
+        [
+          1,
+          3,
+          1,
+          9
+        ],
+        [
+          6,
+          3,
+          1,
+          9
+        ],
+        [
+          6,
+          3,
+          8,
+          1
+        ],
+        [
+          6,
+          11,
+          8,
+          1
+        ],
+        [
+          6,
+          3,
+          1,
+          9
+        ],
+        [
+          13,
+          3,
+          1,
+          9
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            8,
+            3,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            6,
+            6,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            13,
+            9,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Sleeping wing",
+          "rect": [
+            2,
+            4,
+            4,
+            7
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            4,
+            6,
+            7
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            4,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            4,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            11,
+            4,
+            2,
+            2
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            4,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            7,
+            9,
+            1,
+            2
+          ]
+        }
+      ],
+      "routes": [
+        [
+          8,
+          0,
+          2,
+          11
+        ],
+        [
+          4,
+          6,
+          4,
+          2
+        ],
+        [
+          10,
+          9,
+          5,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          7,
+          1
+        ],
+        [
+          11,
+          1
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            2,
+            8,
+            11
+          ],
+          "eave": 4,
+          "ridge": 8,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Hall roof",
+          "rect": [
+            5,
+            2,
+            10,
+            11
+          ],
+          "eave": 5,
+          "ridge": 10,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Entrance shelter",
+          "rect": [
+            7,
+            0,
+            5,
+            3
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          4,
+          7
+        ],
+        [
+          9,
+          5,
+          6
+        ],
+        [
+          7,
+          3,
+          2
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          14,
+          9
+        ]
+      ],
+      "anchor": [
+        11,
+        1,
+        8
+      ],
+      "guards": [
+        [
+          11,
+          1,
+          8
+        ],
+        [
+          10,
+          1,
+          8
+        ],
+        [
+          12,
+          1,
+          8
+        ],
+        [
+          11,
+          1,
+          7
+        ]
+      ],
+      "sentry": [
+        10,
+        1,
+        2
+      ],
+      "connector": [
+        8,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "plains-courtyard",
+      "region": "plains",
+      "layout": "courtyard",
+      "title": "Plains / Courtyard",
+      "size": [
+        16,
+        16,
+        12
+      ],
+      "walkY": 1,
+      "palette": [
+        "Cobblestone / andesite",
+        "Stripped oak / white terracotta",
+        "Spruce roof / dark oak edging",
+        "Oak floor / green cloth"
+      ],
+      "decision": "Keep unequal gables and an open side arch; refine the existing prototype.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          6,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          6
+        ],
+        [
+          7,
+          0,
+          9,
+          9
+        ],
+        [
+          9,
+          0,
+          3,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          6,
+          1
+        ],
+        [
+          1,
+          14,
+          6,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          1
+        ],
+        [
+          6,
+          14,
+          9,
+          1
+        ],
+        [
+          6,
+          9,
+          1,
+          6
+        ],
+        [
+          14,
+          9,
+          1,
+          6
+        ],
+        [
+          2,
+          8,
+          4,
+          1
+        ],
+        [
+          7,
+          1,
+          2,
+          1
+        ],
+        [
+          12,
+          1,
+          4,
+          1
+        ],
+        [
+          15,
+          1,
+          1,
+          8
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            4,
+            8,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            11,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            9,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            15,
+            3,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Rest bay 1",
+          "rect": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Rest bay 2",
+          "rect": [
+            2,
+            9,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            10,
+            7,
+            4
+          ]
+        },
+        {
+          "name": "Open court",
+          "rect": [
+            10,
+            3,
+            4,
+            4
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            12,
+            10,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            10,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            13,
+            13,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          10,
+          0,
+          2,
+          8
+        ],
+        [
+          7,
+          5,
+          2,
+          4
+        ],
+        [
+          7,
+          7,
+          5,
+          2
+        ],
+        [
+          9,
+          8,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          4,
+          2
+        ],
+        [
+          4,
+          7,
+          2,
+          5
+        ],
+        [
+          5,
+          11,
+          3,
+          2
+        ],
+        [
+          12,
+          3,
+          4,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            1,
+            8,
+            15
+          ],
+          "eave": 4,
+          "ridge": 7,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Rear hall roof",
+          "rect": [
+            5,
+            8,
+            11,
+            8
+          ],
+          "eave": 5,
+          "ridge": 10,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "West covered walk",
+          "rect": [
+            6,
+            3,
+            4,
+            6
+          ],
+          "eave": 4,
+          "ridge": 4,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Rear covered walk",
+          "rect": [
+            6,
+            7,
+            9,
+            2
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          4,
+          6
+        ],
+        [
+          3,
+          4,
+          10
+        ],
+        [
+          10,
+          5,
+          11
+        ],
+        [
+          13,
+          4,
+          7
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          15,
+          3
+        ]
+      ],
+      "openCourt": [
+        10,
+        3,
+        4,
+        4
+      ],
+      "anchor": [
+        11,
+        1,
+        12
+      ],
+      "guards": [
+        [
+          11,
+          1,
+          12
+        ],
+        [
+          10,
+          1,
+          12
+        ],
+        [
+          12,
+          1,
+          12
+        ],
+        [
+          11,
+          1,
+          11
+        ]
+      ],
+      "sentry": [
+        13,
+        1,
+        2
+      ],
+      "connector": [
+        10,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "desert-compact",
+      "region": "desert",
+      "layout": "compact",
+      "title": "Desert / Compact",
+      "size": [
+        13,
+        13,
+        9
+      ],
+      "walkY": 1,
+      "palette": [
+        "Sandstone foundation",
+        "Cut sandstone / smooth sandstone trim",
+        "Sandstone slab parapets",
+        "Acacia furniture / ochre cloth"
+      ],
+      "decision": "Cut sandstone walls with smooth trim; stepped flat roofs; east shade arcade.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          3,
+          6,
+          9
+        ],
+        [
+          6,
+          3,
+          6,
+          9
+        ],
+        [
+          6,
+          0,
+          5,
+          3
+        ],
+        [
+          12,
+          6,
+          1,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          3,
+          6,
+          1
+        ],
+        [
+          1,
+          11,
+          6,
+          1
+        ],
+        [
+          1,
+          3,
+          1,
+          9
+        ],
+        [
+          6,
+          3,
+          1,
+          9
+        ],
+        [
+          6,
+          3,
+          6,
+          1
+        ],
+        [
+          6,
+          11,
+          6,
+          1
+        ],
+        [
+          6,
+          3,
+          1,
+          9
+        ],
+        [
+          11,
+          3,
+          1,
+          9
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            7,
+            3,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            6,
+            6,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            11,
+            6,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Sleeping wing",
+          "rect": [
+            2,
+            4,
+            4,
+            7
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            4,
+            4,
+            7
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            4,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            4,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            9,
+            4,
+            2,
+            2
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            10,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            7,
+            9,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          7,
+          0,
+          2,
+          8
+        ],
+        [
+          4,
+          6,
+          4,
+          2
+        ],
+        [
+          8,
+          6,
+          5,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          6,
+          1
+        ],
+        [
+          10,
+          1
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            2,
+            8,
+            11
+          ],
+          "eave": 4,
+          "ridge": 5,
+          "shape": "flat",
+          "axis": "z"
+        },
+        {
+          "name": "Hall roof",
+          "rect": [
+            5,
+            2,
+            8,
+            11
+          ],
+          "eave": 5,
+          "ridge": 6,
+          "shape": "flat",
+          "axis": "z"
+        },
+        {
+          "name": "Entrance shelter",
+          "rect": [
+            6,
+            0,
+            5,
+            3
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          4,
+          7
+        ],
+        [
+          9,
+          5,
+          6
+        ],
+        [
+          6,
+          3,
+          2
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          12,
+          6
+        ]
+      ],
+      "anchor": [
+        9,
+        1,
+        9
+      ],
+      "guards": [
+        [
+          9,
+          1,
+          9
+        ],
+        [
+          8,
+          1,
+          9
+        ],
+        [
+          10,
+          1,
+          9
+        ],
+        [
+          9,
+          1,
+          8
+        ]
+      ],
+      "sentry": [
+        9,
+        1,
+        2
+      ],
+      "connector": [
+        7,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "desert-courtyard",
+      "region": "desert",
+      "layout": "courtyard",
+      "title": "Desert / Courtyard",
+      "size": [
+        16,
+        16,
+        10
+      ],
+      "walkY": 1,
+      "palette": [
+        "Sandstone foundation",
+        "Cut sandstone / smooth sandstone trim",
+        "Sandstone slab parapets",
+        "Acacia furniture / ochre cloth"
+      ],
+      "decision": "Cut sandstone walls with smooth trim; stepped flat roofs; east shade arcade.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          6,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          6
+        ],
+        [
+          7,
+          0,
+          9,
+          9
+        ],
+        [
+          9,
+          0,
+          3,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          6,
+          1
+        ],
+        [
+          1,
+          14,
+          6,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          1
+        ],
+        [
+          6,
+          14,
+          9,
+          1
+        ],
+        [
+          6,
+          9,
+          1,
+          6
+        ],
+        [
+          14,
+          9,
+          1,
+          6
+        ],
+        [
+          2,
+          8,
+          4,
+          1
+        ],
+        [
+          7,
+          1,
+          2,
+          1
+        ],
+        [
+          12,
+          1,
+          4,
+          1
+        ],
+        [
+          15,
+          1,
+          1,
+          8
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            4,
+            8,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            11,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            9,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            15,
+            3,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Rest bay 1",
+          "rect": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Rest bay 2",
+          "rect": [
+            2,
+            9,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            10,
+            7,
+            4
+          ]
+        },
+        {
+          "name": "Open court",
+          "rect": [
+            10,
+            3,
+            4,
+            4
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            12,
+            10,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            10,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            13,
+            13,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          10,
+          0,
+          2,
+          8
+        ],
+        [
+          7,
+          5,
+          2,
+          4
+        ],
+        [
+          7,
+          7,
+          5,
+          2
+        ],
+        [
+          9,
+          8,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          4,
+          2
+        ],
+        [
+          4,
+          7,
+          2,
+          5
+        ],
+        [
+          5,
+          11,
+          3,
+          2
+        ],
+        [
+          12,
+          3,
+          4,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          14,
+          6
+        ],
+        [
+          14,
+          2
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            1,
+            8,
+            15
+          ],
+          "eave": 4,
+          "ridge": 7,
+          "shape": "flat",
+          "axis": "z"
+        },
+        {
+          "name": "Rear hall roof",
+          "rect": [
+            5,
+            8,
+            11,
+            8
+          ],
+          "eave": 5,
+          "ridge": 6,
+          "shape": "flat",
+          "axis": "z"
+        },
+        {
+          "name": "West covered walk",
+          "rect": [
+            6,
+            3,
+            4,
+            6
+          ],
+          "eave": 4,
+          "ridge": 4,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Rear covered walk",
+          "rect": [
+            6,
+            7,
+            9,
+            2
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "East shade arcade",
+          "rect": [
+            14,
+            2,
+            2,
+            5
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          4,
+          6
+        ],
+        [
+          3,
+          4,
+          10
+        ],
+        [
+          10,
+          5,
+          11
+        ],
+        [
+          13,
+          4,
+          7
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          15,
+          3
+        ]
+      ],
+      "openCourt": [
+        10,
+        3,
+        4,
+        4
+      ],
+      "anchor": [
+        11,
+        1,
+        12
+      ],
+      "guards": [
+        [
+          11,
+          1,
+          12
+        ],
+        [
+          10,
+          1,
+          12
+        ],
+        [
+          12,
+          1,
+          12
+        ],
+        [
+          11,
+          1,
+          11
+        ]
+      ],
+      "sentry": [
+        13,
+        1,
+        2
+      ],
+      "connector": [
+        10,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "savanna-compact",
+      "region": "savanna",
+      "layout": "compact",
+      "title": "Savanna / Compact",
+      "size": [
+        15,
+        13,
+        10
+      ],
+      "walkY": 1,
+      "palette": [
+        "Stone footings",
+        "Acacia frame / terracotta infill",
+        "Acacia shallow hip roof",
+        "Acacia veranda / orange cloth"
+      ],
+      "decision": "Shallow hipped roofs. Compact depth grows to 13 to retain rear alcove access.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          3,
+          13,
+          9
+        ],
+        [
+          2,
+          0,
+          11,
+          3
+        ],
+        [
+          14,
+          6,
+          1,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          3,
+          13,
+          1
+        ],
+        [
+          1,
+          11,
+          13,
+          1
+        ],
+        [
+          1,
+          3,
+          1,
+          9
+        ],
+        [
+          13,
+          3,
+          1,
+          9
+        ],
+        [
+          6,
+          8,
+          1,
+          3
+        ],
+        [
+          8,
+          8,
+          1,
+          3
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            7,
+            3,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            6,
+            8,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            8,
+            8,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            13,
+            6,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Common hall",
+          "rect": [
+            2,
+            4,
+            11,
+            4
+          ]
+        },
+        {
+          "name": "Rest bays",
+          "rect": [
+            2,
+            8,
+            11,
+            3
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            9,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            11,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            2,
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            2,
+            6,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            12,
+            4,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          7,
+          0,
+          2,
+          10
+        ],
+        [
+          5,
+          8,
+          4,
+          2
+        ],
+        [
+          9,
+          6,
+          6,
+          2
+        ]
+      ],
+      "posts": [],
+      "roofs": [
+        {
+          "name": "Main roof",
+          "rect": [
+            0,
+            2,
+            15,
+            11
+          ],
+          "eave": 4,
+          "ridge": 6.5,
+          "shape": "hip",
+          "axis": "z"
+        },
+        {
+          "name": "Entry shelter",
+          "rect": [
+            5,
+            0,
+            7,
+            3
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          5,
+          4,
+          5
+        ],
+        [
+          5,
+          4,
+          8
+        ],
+        [
+          10,
+          4,
+          8
+        ],
+        [
+          6,
+          3,
+          1
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "anchor": [
+        4,
+        1,
+        6
+      ],
+      "guards": [
+        [
+          4,
+          1,
+          6
+        ],
+        [
+          3,
+          1,
+          6
+        ],
+        [
+          5,
+          1,
+          6
+        ],
+        [
+          4,
+          1,
+          5
+        ]
+      ],
+      "sentry": [
+        10,
+        1,
+        1
+      ],
+      "connector": [
+        7,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "savanna-courtyard",
+      "region": "savanna",
+      "layout": "courtyard",
+      "title": "Savanna / Courtyard",
+      "size": [
+        16,
+        16,
+        10
+      ],
+      "walkY": 1,
+      "palette": [
+        "Stone footings",
+        "Acacia frame / terracotta infill",
+        "Acacia shallow hip roof",
+        "Acacia veranda / orange cloth"
+      ],
+      "decision": "Shallow hipped roofs. Compact depth grows to 13 to retain rear alcove access.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          6,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          6
+        ],
+        [
+          7,
+          0,
+          9,
+          9
+        ],
+        [
+          9,
+          0,
+          3,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          6,
+          1
+        ],
+        [
+          1,
+          14,
+          6,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          1
+        ],
+        [
+          6,
+          14,
+          9,
+          1
+        ],
+        [
+          6,
+          9,
+          1,
+          6
+        ],
+        [
+          14,
+          9,
+          1,
+          6
+        ],
+        [
+          2,
+          8,
+          4,
+          1
+        ],
+        [
+          7,
+          1,
+          2,
+          1
+        ],
+        [
+          12,
+          1,
+          4,
+          1
+        ],
+        [
+          15,
+          1,
+          1,
+          8
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            4,
+            8,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            11,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            9,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            15,
+            3,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Rest bay 1",
+          "rect": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Rest bay 2",
+          "rect": [
+            2,
+            9,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            10,
+            7,
+            4
+          ]
+        },
+        {
+          "name": "Open court",
+          "rect": [
+            10,
+            3,
+            4,
+            4
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            12,
+            10,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            10,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            13,
+            13,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          10,
+          0,
+          2,
+          8
+        ],
+        [
+          7,
+          5,
+          2,
+          4
+        ],
+        [
+          7,
+          7,
+          5,
+          2
+        ],
+        [
+          9,
+          8,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          4,
+          2
+        ],
+        [
+          4,
+          7,
+          2,
+          5
+        ],
+        [
+          5,
+          11,
+          3,
+          2
+        ],
+        [
+          12,
+          3,
+          4,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            1,
+            8,
+            15
+          ],
+          "eave": 4,
+          "ridge": 6,
+          "shape": "hip",
+          "axis": "z"
+        },
+        {
+          "name": "Rear hall roof",
+          "rect": [
+            5,
+            8,
+            11,
+            8
+          ],
+          "eave": 5,
+          "ridge": 7,
+          "shape": "hip",
+          "axis": "z"
+        },
+        {
+          "name": "West covered walk",
+          "rect": [
+            6,
+            3,
+            4,
+            6
+          ],
+          "eave": 4,
+          "ridge": 4,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Rear covered walk",
+          "rect": [
+            6,
+            7,
+            9,
+            2
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          4,
+          6
+        ],
+        [
+          3,
+          4,
+          10
+        ],
+        [
+          10,
+          5,
+          11
+        ],
+        [
+          13,
+          4,
+          7
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          15,
+          3
+        ]
+      ],
+      "openCourt": [
+        10,
+        3,
+        4,
+        4
+      ],
+      "anchor": [
+        11,
+        1,
+        12
+      ],
+      "guards": [
+        [
+          11,
+          1,
+          12
+        ],
+        [
+          10,
+          1,
+          12
+        ],
+        [
+          12,
+          1,
+          12
+        ],
+        [
+          11,
+          1,
+          11
+        ]
+      ],
+      "sentry": [
+        13,
+        1,
+        2
+      ],
+      "connector": [
+        10,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "taiga-compact",
+      "region": "taiga",
+      "layout": "compact",
+      "title": "Taiga / Compact",
+      "size": [
+        13,
+        15,
+        12
+      ],
+      "walkY": 1,
+      "palette": [
+        "Cobblestone / restrained moss",
+        "Spruce framing / plank panels",
+        "Steep spruce roof",
+        "Spruce floor / green cloth"
+      ],
+      "decision": "Framed spruce panels, steep roof and a long compact hall.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          3,
+          11,
+          11
+        ],
+        [
+          3,
+          0,
+          7,
+          3
+        ],
+        [
+          12,
+          7,
+          1,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          3,
+          11,
+          1
+        ],
+        [
+          1,
+          13,
+          11,
+          1
+        ],
+        [
+          1,
+          3,
+          1,
+          11
+        ],
+        [
+          11,
+          3,
+          1,
+          11
+        ],
+        [
+          2,
+          9,
+          9,
+          1
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            5,
+            3,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            5,
+            9,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            11,
+            7,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Common hall",
+          "rect": [
+            2,
+            4,
+            9,
+            6
+          ]
+        },
+        {
+          "name": "Rest bays",
+          "rect": [
+            2,
+            10,
+            9,
+            3
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            11,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            11,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            7,
+            11,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            9,
+            11,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            2,
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            2,
+            8,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            10,
+            4,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          5,
+          0,
+          2,
+          11
+        ],
+        [
+          2,
+          10,
+          9,
+          1
+        ],
+        [
+          7,
+          7,
+          6,
+          2
+        ]
+      ],
+      "posts": [],
+      "roofs": [
+        {
+          "name": "Main roof",
+          "rect": [
+            0,
+            2,
+            13,
+            13
+          ],
+          "eave": 4,
+          "ridge": 10,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Entry shelter",
+          "rect": [
+            3,
+            0,
+            7,
+            3
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          5,
+          4,
+          5
+        ],
+        [
+          5,
+          4,
+          10
+        ],
+        [
+          8,
+          4,
+          10
+        ],
+        [
+          4,
+          3,
+          1
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          10
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          12,
+          7
+        ]
+      ],
+      "anchor": [
+        9,
+        1,
+        5
+      ],
+      "guards": [
+        [
+          9,
+          1,
+          5
+        ],
+        [
+          8,
+          1,
+          5
+        ],
+        [
+          10,
+          1,
+          5
+        ],
+        [
+          9,
+          1,
+          4
+        ]
+      ],
+      "sentry": [
+        8,
+        1,
+        1
+      ],
+      "connector": [
+        5,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "taiga-courtyard",
+      "region": "taiga",
+      "layout": "courtyard",
+      "title": "Taiga / Courtyard",
+      "size": [
+        16,
+        16,
+        13
+      ],
+      "walkY": 1,
+      "palette": [
+        "Cobblestone / restrained moss",
+        "Spruce framing / plank panels",
+        "Steep spruce roof",
+        "Spruce floor / green cloth"
+      ],
+      "decision": "Framed spruce panels, steep roof and a long compact hall.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          6,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          6
+        ],
+        [
+          7,
+          0,
+          9,
+          9
+        ],
+        [
+          9,
+          0,
+          3,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          6,
+          1
+        ],
+        [
+          1,
+          14,
+          6,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          1
+        ],
+        [
+          6,
+          14,
+          9,
+          1
+        ],
+        [
+          6,
+          9,
+          1,
+          6
+        ],
+        [
+          14,
+          9,
+          1,
+          6
+        ],
+        [
+          2,
+          8,
+          4,
+          1
+        ],
+        [
+          7,
+          1,
+          2,
+          1
+        ],
+        [
+          12,
+          1,
+          4,
+          1
+        ],
+        [
+          15,
+          1,
+          1,
+          8
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            4,
+            8,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            11,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            9,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            15,
+            3,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Rest bay 1",
+          "rect": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Rest bay 2",
+          "rect": [
+            2,
+            9,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            10,
+            7,
+            4
+          ]
+        },
+        {
+          "name": "Open court",
+          "rect": [
+            10,
+            3,
+            4,
+            4
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            12,
+            10,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            10,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            13,
+            13,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          10,
+          0,
+          2,
+          8
+        ],
+        [
+          7,
+          5,
+          2,
+          4
+        ],
+        [
+          7,
+          7,
+          5,
+          2
+        ],
+        [
+          9,
+          8,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          4,
+          2
+        ],
+        [
+          4,
+          7,
+          2,
+          5
+        ],
+        [
+          5,
+          11,
+          3,
+          2
+        ],
+        [
+          12,
+          3,
+          4,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            1,
+            8,
+            15
+          ],
+          "eave": 4,
+          "ridge": 7,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Rear hall roof",
+          "rect": [
+            5,
+            8,
+            11,
+            8
+          ],
+          "eave": 5,
+          "ridge": 10,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "West covered walk",
+          "rect": [
+            6,
+            3,
+            4,
+            6
+          ],
+          "eave": 4,
+          "ridge": 4,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Rear covered walk",
+          "rect": [
+            6,
+            7,
+            9,
+            2
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          4,
+          6
+        ],
+        [
+          3,
+          4,
+          10
+        ],
+        [
+          10,
+          5,
+          11
+        ],
+        [
+          13,
+          4,
+          7
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          15,
+          3
+        ]
+      ],
+      "openCourt": [
+        10,
+        3,
+        4,
+        4
+      ],
+      "anchor": [
+        11,
+        1,
+        12
+      ],
+      "guards": [
+        [
+          11,
+          1,
+          12
+        ],
+        [
+          10,
+          1,
+          12
+        ],
+        [
+          12,
+          1,
+          12
+        ],
+        [
+          11,
+          1,
+          11
+        ]
+      ],
+      "sentry": [
+        13,
+        1,
+        2
+      ],
+      "connector": [
+        10,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "snowy-compact",
+      "region": "snowy",
+      "layout": "compact",
+      "title": "Snowy / Compact",
+      "size": [
+        15,
+        14,
+        12
+      ],
+      "walkY": 1,
+      "palette": [
+        "Stone base",
+        "Spruce / pale terracotta",
+        "Spruce roof / selected roof snow",
+        "Wood floor / red cloth"
+      ],
+      "decision": "Offset inner lobby opening; protected court. Rear courtyard hall moves back two blocks.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          13,
+          11
+        ],
+        [
+          2,
+          0,
+          11,
+          2
+        ],
+        [
+          14,
+          7,
+          1,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          13,
+          1
+        ],
+        [
+          1,
+          12,
+          13,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          11
+        ],
+        [
+          13,
+          2,
+          1,
+          11
+        ],
+        [
+          6,
+          9,
+          1,
+          3
+        ],
+        [
+          8,
+          9,
+          1,
+          3
+        ],
+        [
+          6,
+          2,
+          1,
+          5
+        ],
+        [
+          11,
+          2,
+          1,
+          5
+        ],
+        [
+          6,
+          6,
+          6,
+          1
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            7,
+            2,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            6,
+            9,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            8,
+            9,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            8,
+            6,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            13,
+            7,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Entry lobby",
+          "rect": [
+            7,
+            3,
+            4,
+            3
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            2,
+            3,
+            11,
+            6
+          ]
+        },
+        {
+          "name": "Rest bays",
+          "rect": [
+            2,
+            9,
+            11,
+            3
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            10,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            10,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            9,
+            10,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            11,
+            10,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            2,
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            2,
+            7,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            12,
+            3,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          7,
+          0,
+          2,
+          6
+        ],
+        [
+          8,
+          5,
+          2,
+          3
+        ],
+        [
+          7,
+          7,
+          2,
+          3
+        ],
+        [
+          5,
+          9,
+          4,
+          2
+        ],
+        [
+          9,
+          7,
+          6,
+          2
+        ]
+      ],
+      "posts": [],
+      "roofs": [
+        {
+          "name": "Main roof",
+          "rect": [
+            0,
+            1,
+            15,
+            13
+          ],
+          "eave": 4,
+          "ridge": 10,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Entry shelter",
+          "rect": [
+            5,
+            0,
+            7,
+            2
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          5,
+          4,
+          5
+        ],
+        [
+          5,
+          4,
+          9
+        ],
+        [
+          10,
+          4,
+          9
+        ],
+        [
+          6,
+          3,
+          1
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          9
+        ],
+        [
+          10,
+          9
+        ],
+        [
+          14,
+          7
+        ]
+      ],
+      "anchor": [
+        4,
+        1,
+        6
+      ],
+      "guards": [
+        [
+          4,
+          1,
+          6
+        ],
+        [
+          3,
+          1,
+          6
+        ],
+        [
+          5,
+          1,
+          6
+        ],
+        [
+          4,
+          1,
+          5
+        ]
+      ],
+      "sentry": [
+        10,
+        1,
+        1
+      ],
+      "connector": [
+        7,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "snowy-courtyard",
+      "region": "snowy",
+      "layout": "courtyard",
+      "title": "Snowy / Courtyard",
+      "size": [
+        16,
+        16,
+        13
+      ],
+      "walkY": 1,
+      "palette": [
+        "Stone base",
+        "Spruce / pale terracotta",
+        "Spruce roof / selected roof snow",
+        "Wood floor / red cloth"
+      ],
+      "decision": "Offset inner lobby opening; protected court. Rear courtyard hall moves back two blocks.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          6,
+          13
+        ],
+        [
+          6,
+          11,
+          9,
+          5
+        ],
+        [
+          7,
+          0,
+          9,
+          11
+        ],
+        [
+          9,
+          0,
+          3,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          6,
+          1
+        ],
+        [
+          1,
+          14,
+          6,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          11,
+          9,
+          1
+        ],
+        [
+          6,
+          15,
+          9,
+          1
+        ],
+        [
+          6,
+          11,
+          1,
+          5
+        ],
+        [
+          14,
+          11,
+          1,
+          5
+        ],
+        [
+          2,
+          8,
+          4,
+          1
+        ],
+        [
+          7,
+          1,
+          2,
+          1
+        ],
+        [
+          12,
+          1,
+          4,
+          1
+        ],
+        [
+          15,
+          1,
+          1,
+          10
+        ],
+        [
+          8,
+          0,
+          1,
+          5
+        ],
+        [
+          12,
+          0,
+          1,
+          5
+        ],
+        [
+          8,
+          0,
+          5,
+          1
+        ],
+        [
+          8,
+          4,
+          5,
+          1
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            4,
+            8,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            12,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            11,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            15,
+            3,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            0,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            10,
+            4,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            15,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Rest bay 1",
+          "rect": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Rest bay 2",
+          "rect": [
+            2,
+            9,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            12,
+            7,
+            3
+          ]
+        },
+        {
+          "name": "Open court",
+          "rect": [
+            10,
+            5,
+            4,
+            4
+          ]
+        },
+        {
+          "name": "Gate lobby",
+          "rect": [
+            9,
+            1,
+            3,
+            3
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            12,
+            12,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            14,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            13,
+            14,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          7,
+          5,
+          2,
+          6
+        ],
+        [
+          7,
+          9,
+          5,
+          2
+        ],
+        [
+          9,
+          10,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          4,
+          2
+        ],
+        [
+          4,
+          7,
+          2,
+          5
+        ],
+        [
+          5,
+          12,
+          3,
+          2
+        ],
+        [
+          9,
+          0,
+          2,
+          4
+        ],
+        [
+          10,
+          2,
+          2,
+          8
+        ],
+        [
+          12,
+          5,
+          4,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          9,
+          6
+        ],
+        [
+          14,
+          8
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            1,
+            8,
+            15
+          ],
+          "eave": 4,
+          "ridge": 7,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Rear hall roof",
+          "rect": [
+            5,
+            10,
+            11,
+            6
+          ],
+          "eave": 5,
+          "ridge": 10,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "West covered walk",
+          "rect": [
+            6,
+            3,
+            4,
+            8
+          ],
+          "eave": 4,
+          "ridge": 4,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Rear covered walk",
+          "rect": [
+            6,
+            9,
+            9,
+            2
+          ],
+          "eave": 4,
+          "ridge": 4.5,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Gate lobby roof",
+          "rect": [
+            8,
+            0,
+            5,
+            5
+          ],
+          "eave": 4,
+          "ridge": 5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          4,
+          6
+        ],
+        [
+          3,
+          4,
+          10
+        ],
+        [
+          10,
+          5,
+          12
+        ],
+        [
+          13,
+          4,
+          9
+        ],
+        [
+          11,
+          4,
+          3
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          15,
+          5
+        ]
+      ],
+      "openCourt": [
+        10,
+        5,
+        4,
+        4
+      ],
+      "anchor": [
+        11,
+        1,
+        13
+      ],
+      "guards": [
+        [
+          11,
+          1,
+          13
+        ],
+        [
+          10,
+          1,
+          13
+        ],
+        [
+          12,
+          1,
+          13
+        ],
+        [
+          11,
+          1,
+          12
+        ]
+      ],
+      "sentry": [
+        13,
+        1,
+        2
+      ],
+      "connector": [
+        10,
+        0
+      ],
+      "section": {
+        "mode": "ground",
+        "road": 1,
+        "transition": 1,
+        "floor": 1,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Level comparison datum. Natural site support and door clearance still need a later packaged-game trial."
+      }
+    },
+    {
+      "id": "ocean-compact",
+      "region": "ocean",
+      "layout": "compact",
+      "title": "Deep ocean \u00b7 Tidal Towns / Compact",
+      "size": [
+        16,
+        15,
+        10
+      ],
+      "walkY": 3,
+      "palette": [
+        "Oak log raft members",
+        "Oak cabin / stripped oak frame",
+        "Low spruce roof / battens",
+        "Full spruce deck / cyan cloth"
+      ],
+      "decision": "Compact raft grows to 16 \u00d7 15 for a two-block side and aft walk; one gangway.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          0,
+          0,
+          16,
+          15
+        ],
+        [
+          2,
+          4,
+          11,
+          8
+        ]
+      ],
+      "walls": [
+        [
+          2,
+          4,
+          11,
+          1
+        ],
+        [
+          2,
+          11,
+          11,
+          1
+        ],
+        [
+          2,
+          4,
+          1,
+          8
+        ],
+        [
+          12,
+          4,
+          1,
+          8
+        ],
+        [
+          0,
+          0,
+          16,
+          1
+        ],
+        [
+          0,
+          14,
+          16,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          15
+        ],
+        [
+          15,
+          0,
+          1,
+          15
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            7,
+            4,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            12,
+            6,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            0,
+            3,
+            1
+          ],
+          "kind": "gangway"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Common cabin",
+          "rect": [
+            3,
+            5,
+            9,
+            3
+          ]
+        },
+        {
+          "name": "Aft bunks",
+          "rect": [
+            3,
+            8,
+            9,
+            3
+          ]
+        },
+        {
+          "name": "Arrival deck",
+          "rect": [
+            2,
+            1,
+            11,
+            3
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            3,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            5,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            8,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            10,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            3,
+            5,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            3,
+            7,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            11,
+            5,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          7,
+          0,
+          2,
+          6
+        ],
+        [
+          4,
+          8,
+          8,
+          1
+        ],
+        [
+          11,
+          6,
+          3,
+          2
+        ],
+        [
+          13,
+          1,
+          2,
+          13
+        ],
+        [
+          1,
+          12,
+          14,
+          2
+        ]
+      ],
+      "posts": [],
+      "roofs": [
+        {
+          "name": "Cabin roof",
+          "rect": [
+            1,
+            3,
+            13,
+            10
+          ],
+          "eave": 6,
+          "ridge": 9,
+          "shape": "low",
+          "axis": "z"
+        },
+        {
+          "name": "Gangway shelter",
+          "rect": [
+            6,
+            1,
+            5,
+            3
+          ],
+          "eave": 6,
+          "ridge": 6.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          6,
+          6,
+          6
+        ],
+        [
+          7,
+          6,
+          8
+        ],
+        [
+          9,
+          5,
+          2
+        ]
+      ],
+      "targets": [
+        [
+          4,
+          8
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          13,
+          10
+        ]
+      ],
+      "anchor": [
+        9,
+        3,
+        7
+      ],
+      "guards": [
+        [
+          9,
+          3,
+          7
+        ],
+        [
+          8,
+          3,
+          7
+        ],
+        [
+          10,
+          3,
+          7
+        ],
+        [
+          9,
+          3,
+          6
+        ]
+      ],
+      "sentry": [
+        10,
+        3,
+        2
+      ],
+      "connector": [
+        7,
+        0
+      ],
+      "section": {
+        "mode": "raft",
+        "road": 2.4375,
+        "transition": 2.5,
+        "floor": 3,
+        "water": 1.8,
+        "supportBottom": 0,
+        "note": "Local datum: campfire base Y=2. Proposed half-slab landing 2.5; full deck 3.0. Water line schematic; native join and walking remain untested."
+      }
+    },
+    {
+      "id": "ocean-courtyard",
+      "region": "ocean",
+      "layout": "courtyard",
+      "title": "Deep ocean \u00b7 Tidal Towns / Courtyard",
+      "size": [
+        16,
+        16,
+        11
+      ],
+      "walkY": 3,
+      "palette": [
+        "Oak log raft members",
+        "Oak cabin / stripped oak frame",
+        "Low spruce roof / battens",
+        "Full spruce deck / cyan cloth"
+      ],
+      "decision": "Compact raft grows to 16 \u00d7 15 for a two-block side and aft walk; one gangway.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          6,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          6
+        ],
+        [
+          7,
+          0,
+          9,
+          9
+        ],
+        [
+          9,
+          0,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          16,
+          16
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          6,
+          1
+        ],
+        [
+          1,
+          14,
+          6,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          1
+        ],
+        [
+          6,
+          14,
+          9,
+          1
+        ],
+        [
+          6,
+          9,
+          1,
+          6
+        ],
+        [
+          14,
+          9,
+          1,
+          6
+        ],
+        [
+          2,
+          8,
+          4,
+          1
+        ],
+        [
+          7,
+          1,
+          2,
+          1
+        ],
+        [
+          12,
+          1,
+          4,
+          1
+        ],
+        [
+          15,
+          1,
+          1,
+          8
+        ],
+        [
+          0,
+          0,
+          1,
+          16
+        ],
+        [
+          0,
+          15,
+          16,
+          1
+        ],
+        [
+          15,
+          0,
+          1,
+          16
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            4,
+            8,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            11,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            9,
+            2,
+            1
+          ],
+          "kind": "doors"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Rest bay 1",
+          "rect": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Rest bay 2",
+          "rect": [
+            2,
+            9,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            10,
+            7,
+            4
+          ]
+        },
+        {
+          "name": "Open court",
+          "rect": [
+            10,
+            3,
+            4,
+            4
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            12,
+            10,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            10,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            13,
+            13,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          10,
+          0,
+          2,
+          8
+        ],
+        [
+          7,
+          5,
+          2,
+          4
+        ],
+        [
+          7,
+          7,
+          5,
+          2
+        ],
+        [
+          9,
+          8,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          4,
+          2
+        ],
+        [
+          4,
+          7,
+          2,
+          5
+        ],
+        [
+          5,
+          11,
+          3,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            1,
+            8,
+            15
+          ],
+          "eave": 6,
+          "ridge": 8,
+          "shape": "low",
+          "axis": "z"
+        },
+        {
+          "name": "Rear hall roof",
+          "rect": [
+            5,
+            8,
+            11,
+            8
+          ],
+          "eave": 7,
+          "ridge": 8,
+          "shape": "low",
+          "axis": "z"
+        },
+        {
+          "name": "West covered walk",
+          "rect": [
+            6,
+            3,
+            4,
+            6
+          ],
+          "eave": 6,
+          "ridge": 6,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Rear covered walk",
+          "rect": [
+            6,
+            7,
+            9,
+            2
+          ],
+          "eave": 6,
+          "ridge": 6.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          6,
+          6
+        ],
+        [
+          3,
+          6,
+          10
+        ],
+        [
+          10,
+          7,
+          11
+        ],
+        [
+          13,
+          6,
+          7
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          14,
+          4
+        ]
+      ],
+      "openCourt": [
+        10,
+        3,
+        4,
+        4
+      ],
+      "anchor": [
+        11,
+        3,
+        12
+      ],
+      "guards": [
+        [
+          11,
+          3,
+          12
+        ],
+        [
+          10,
+          3,
+          12
+        ],
+        [
+          12,
+          3,
+          12
+        ],
+        [
+          11,
+          3,
+          11
+        ]
+      ],
+      "sentry": [
+        13,
+        3,
+        2
+      ],
+      "connector": [
+        10,
+        0
+      ],
+      "section": {
+        "mode": "raft",
+        "road": 2.4375,
+        "transition": 2.5,
+        "floor": 3,
+        "water": 1.8,
+        "supportBottom": 0,
+        "note": "Local datum: campfire base Y=2. Proposed half-slab landing 2.5; full deck 3.0. Water line schematic; native join and walking remain untested."
+      }
+    },
+    {
+      "id": "jungle-compact",
+      "region": "jungle",
+      "layout": "compact",
+      "title": "Jungle \u00b7 MMV / Compact",
+      "size": [
+        15,
+        14,
+        12
+      ],
+      "walkY": 2,
+      "palette": [
+        "Low cobblestone / mossy plinth",
+        "Jungle frame / limited bamboo panels",
+        "Deep jungle-wood eaves",
+        "Wood veranda / green cloth"
+      ],
+      "decision": "Jungle wood and stone dominate; a shallow stair joins the low raised floor.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          4,
+          13,
+          9
+        ],
+        [
+          2,
+          0,
+          11,
+          4
+        ],
+        [
+          14,
+          7,
+          1,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          4,
+          13,
+          1
+        ],
+        [
+          1,
+          12,
+          13,
+          1
+        ],
+        [
+          1,
+          4,
+          1,
+          9
+        ],
+        [
+          13,
+          4,
+          1,
+          9
+        ],
+        [
+          6,
+          9,
+          1,
+          3
+        ],
+        [
+          8,
+          9,
+          1,
+          3
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            7,
+            4,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            6,
+            9,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            8,
+            9,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            13,
+            7,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Common hall",
+          "rect": [
+            2,
+            5,
+            11,
+            4
+          ]
+        },
+        {
+          "name": "Rest bays",
+          "rect": [
+            2,
+            9,
+            11,
+            3
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            10,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            10,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            9,
+            10,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            11,
+            10,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            2,
+            5,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            2,
+            7,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            12,
+            5,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          7,
+          0,
+          2,
+          11
+        ],
+        [
+          5,
+          9,
+          4,
+          2
+        ],
+        [
+          9,
+          7,
+          6,
+          2
+        ]
+      ],
+      "posts": [],
+      "roofs": [
+        {
+          "name": "Main roof",
+          "rect": [
+            0,
+            3,
+            15,
+            11
+          ],
+          "eave": 5,
+          "ridge": 10,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Entry shelter",
+          "rect": [
+            5,
+            0,
+            7,
+            4
+          ],
+          "eave": 5,
+          "ridge": 5.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          5,
+          5,
+          6
+        ],
+        [
+          5,
+          5,
+          9
+        ],
+        [
+          10,
+          5,
+          9
+        ],
+        [
+          6,
+          4,
+          1
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          9
+        ],
+        [
+          10,
+          9
+        ],
+        [
+          14,
+          7
+        ]
+      ],
+      "anchor": [
+        4,
+        2,
+        7
+      ],
+      "guards": [
+        [
+          4,
+          2,
+          7
+        ],
+        [
+          3,
+          2,
+          7
+        ],
+        [
+          5,
+          2,
+          7
+        ],
+        [
+          4,
+          2,
+          6
+        ]
+      ],
+      "sentry": [
+        10,
+        2,
+        1
+      ],
+      "connector": [
+        7,
+        0
+      ],
+      "section": {
+        "mode": "raised",
+        "road": 1,
+        "transition": 1.5,
+        "floor": 2,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Proposed short support bay and half-step approach. Exact world placement depends on the measured MMV road and site."
+      }
+    },
+    {
+      "id": "jungle-courtyard",
+      "region": "jungle",
+      "layout": "courtyard",
+      "title": "Jungle \u00b7 MMV / Courtyard",
+      "size": [
+        16,
+        16,
+        12
+      ],
+      "walkY": 2,
+      "palette": [
+        "Low cobblestone / mossy plinth",
+        "Jungle frame / limited bamboo panels",
+        "Deep jungle-wood eaves",
+        "Wood veranda / green cloth"
+      ],
+      "decision": "Jungle wood and stone dominate; a shallow stair joins the low raised floor.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          6,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          6
+        ],
+        [
+          7,
+          0,
+          9,
+          9
+        ],
+        [
+          9,
+          0,
+          3,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          6,
+          1
+        ],
+        [
+          1,
+          14,
+          6,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          1
+        ],
+        [
+          6,
+          14,
+          9,
+          1
+        ],
+        [
+          6,
+          9,
+          1,
+          6
+        ],
+        [
+          14,
+          9,
+          1,
+          6
+        ],
+        [
+          2,
+          8,
+          4,
+          1
+        ],
+        [
+          7,
+          1,
+          2,
+          1
+        ],
+        [
+          12,
+          1,
+          4,
+          1
+        ],
+        [
+          15,
+          1,
+          1,
+          8
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            4,
+            8,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            11,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            9,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            15,
+            3,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Rest bay 1",
+          "rect": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Rest bay 2",
+          "rect": [
+            2,
+            9,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            10,
+            7,
+            4
+          ]
+        },
+        {
+          "name": "Open court",
+          "rect": [
+            10,
+            3,
+            4,
+            4
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            12,
+            10,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            10,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            13,
+            13,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          10,
+          0,
+          2,
+          8
+        ],
+        [
+          7,
+          5,
+          2,
+          4
+        ],
+        [
+          7,
+          7,
+          5,
+          2
+        ],
+        [
+          9,
+          8,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          4,
+          2
+        ],
+        [
+          4,
+          7,
+          2,
+          5
+        ],
+        [
+          5,
+          11,
+          3,
+          2
+        ],
+        [
+          12,
+          3,
+          4,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            1,
+            8,
+            15
+          ],
+          "eave": 5,
+          "ridge": 8,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Rear hall roof",
+          "rect": [
+            5,
+            8,
+            11,
+            8
+          ],
+          "eave": 6,
+          "ridge": 11,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "West covered walk",
+          "rect": [
+            6,
+            3,
+            4,
+            6
+          ],
+          "eave": 5,
+          "ridge": 5,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Rear covered walk",
+          "rect": [
+            6,
+            7,
+            9,
+            2
+          ],
+          "eave": 5,
+          "ridge": 5.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          5,
+          6
+        ],
+        [
+          3,
+          5,
+          10
+        ],
+        [
+          10,
+          6,
+          11
+        ],
+        [
+          13,
+          5,
+          7
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          15,
+          3
+        ]
+      ],
+      "openCourt": [
+        10,
+        3,
+        4,
+        4
+      ],
+      "anchor": [
+        11,
+        2,
+        12
+      ],
+      "guards": [
+        [
+          11,
+          2,
+          12
+        ],
+        [
+          10,
+          2,
+          12
+        ],
+        [
+          12,
+          2,
+          12
+        ],
+        [
+          11,
+          2,
+          11
+        ]
+      ],
+      "sentry": [
+        13,
+        2,
+        2
+      ],
+      "connector": [
+        10,
+        0
+      ],
+      "section": {
+        "mode": "raised",
+        "road": 1,
+        "transition": 1.5,
+        "floor": 2,
+        "water": null,
+        "supportBottom": 0,
+        "note": "Proposed short support bay and half-step approach. Exact world placement depends on the measured MMV road and site."
+      }
+    },
+    {
+      "id": "swamp-compact",
+      "region": "swamp",
+      "layout": "compact",
+      "title": "Swamp \u00b7 MMV / Compact",
+      "size": [
+        15,
+        13,
+        11
+      ],
+      "walkY": 2,
+      "palette": [
+        "Finite stone supports",
+        "Dark oak / mud brick",
+        "Dark oak roof / mud brick accents",
+        "Spruce boardwalk / muted purple cloth"
+      ],
+      "decision": "Dark oak and mud brick; dry raised deck, with a protected refuge on wet sites.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          3,
+          13,
+          9
+        ],
+        [
+          2,
+          0,
+          11,
+          3
+        ],
+        [
+          14,
+          6,
+          1,
+          2
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          3,
+          13,
+          1
+        ],
+        [
+          1,
+          11,
+          13,
+          1
+        ],
+        [
+          1,
+          3,
+          1,
+          9
+        ],
+        [
+          13,
+          3,
+          1,
+          9
+        ],
+        [
+          6,
+          8,
+          1,
+          3
+        ],
+        [
+          8,
+          8,
+          1,
+          3
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            7,
+            3,
+            2,
+            1
+          ],
+          "kind": "doors"
+        },
+        {
+          "rect": [
+            6,
+            8,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            8,
+            8,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            13,
+            6,
+            1,
+            2
+          ],
+          "kind": "arch"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Common hall",
+          "rect": [
+            2,
+            4,
+            11,
+            4
+          ]
+        },
+        {
+          "name": "Rest bays",
+          "rect": [
+            2,
+            8,
+            11,
+            3
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            9,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            11,
+            9,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            2,
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            2,
+            6,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            12,
+            4,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          7,
+          0,
+          2,
+          10
+        ],
+        [
+          5,
+          8,
+          4,
+          2
+        ],
+        [
+          9,
+          6,
+          6,
+          2
+        ]
+      ],
+      "posts": [],
+      "roofs": [
+        {
+          "name": "Main roof",
+          "rect": [
+            0,
+            2,
+            15,
+            11
+          ],
+          "eave": 5,
+          "ridge": 9,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Entry shelter",
+          "rect": [
+            5,
+            0,
+            7,
+            3
+          ],
+          "eave": 5,
+          "ridge": 5.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          5,
+          5,
+          5
+        ],
+        [
+          5,
+          5,
+          8
+        ],
+        [
+          10,
+          5,
+          8
+        ],
+        [
+          6,
+          4,
+          1
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          8
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "anchor": [
+        4,
+        2,
+        6
+      ],
+      "guards": [
+        [
+          4,
+          2,
+          6
+        ],
+        [
+          3,
+          2,
+          6
+        ],
+        [
+          5,
+          2,
+          6
+        ],
+        [
+          4,
+          2,
+          5
+        ]
+      ],
+      "sentry": [
+        10,
+        2,
+        1
+      ],
+      "connector": [
+        7,
+        0
+      ],
+      "section": {
+        "mode": "raised",
+        "road": 1,
+        "transition": 1.5,
+        "floor": 2,
+        "water": 0.7,
+        "supportBottom": 0,
+        "note": "Proposed short support bay and half-step approach. Exact world placement depends on the measured MMV road and site."
+      }
+    },
+    {
+      "id": "swamp-courtyard",
+      "region": "swamp",
+      "layout": "courtyard",
+      "title": "Swamp \u00b7 MMV / Courtyard",
+      "size": [
+        16,
+        16,
+        12
+      ],
+      "walkY": 2,
+      "palette": [
+        "Finite stone supports",
+        "Dark oak / mud brick",
+        "Dark oak roof / mud brick accents",
+        "Spruce boardwalk / muted purple cloth"
+      ],
+      "decision": "Dark oak and mud brick; dry raised deck, with a protected refuge on wet sites.",
+      "status": "Design drawing; not a Minecraft template",
+      "floors": [
+        [
+          1,
+          2,
+          6,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          6
+        ],
+        [
+          7,
+          0,
+          9,
+          9
+        ],
+        [
+          9,
+          0,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          16,
+          16
+        ]
+      ],
+      "walls": [
+        [
+          1,
+          2,
+          6,
+          1
+        ],
+        [
+          1,
+          14,
+          6,
+          1
+        ],
+        [
+          1,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          2,
+          1,
+          13
+        ],
+        [
+          6,
+          9,
+          9,
+          1
+        ],
+        [
+          6,
+          14,
+          9,
+          1
+        ],
+        [
+          6,
+          9,
+          1,
+          6
+        ],
+        [
+          14,
+          9,
+          1,
+          6
+        ],
+        [
+          2,
+          8,
+          4,
+          1
+        ],
+        [
+          7,
+          1,
+          2,
+          1
+        ],
+        [
+          12,
+          1,
+          4,
+          1
+        ],
+        [
+          15,
+          1,
+          1,
+          8
+        ],
+        [
+          0,
+          0,
+          1,
+          16
+        ],
+        [
+          0,
+          15,
+          16,
+          1
+        ],
+        [
+          15,
+          0,
+          1,
+          16
+        ]
+      ],
+      "openings": [
+        {
+          "rect": [
+            4,
+            8,
+            2,
+            1
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            5,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            6,
+            11,
+            1,
+            2
+          ],
+          "kind": "arch"
+        },
+        {
+          "rect": [
+            9,
+            9,
+            2,
+            1
+          ],
+          "kind": "doors"
+        }
+      ],
+      "rooms": [
+        {
+          "name": "Rest bay 1",
+          "rect": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Rest bay 2",
+          "rect": [
+            2,
+            9,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Common hall",
+          "rect": [
+            7,
+            10,
+            7,
+            4
+          ]
+        },
+        {
+          "name": "Open court",
+          "rect": [
+            10,
+            3,
+            4,
+            4
+          ]
+        }
+      ],
+      "furniture": [
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            2,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "bedroll",
+          "rect": [
+            4,
+            12,
+            1,
+            2
+          ]
+        },
+        {
+          "kind": "table",
+          "rect": [
+            12,
+            10,
+            2,
+            1
+          ]
+        },
+        {
+          "kind": "work",
+          "rect": [
+            7,
+            10,
+            1,
+            1
+          ]
+        },
+        {
+          "kind": "bench",
+          "rect": [
+            13,
+            13,
+            1,
+            1
+          ]
+        }
+      ],
+      "routes": [
+        [
+          10,
+          0,
+          2,
+          8
+        ],
+        [
+          7,
+          5,
+          2,
+          4
+        ],
+        [
+          7,
+          7,
+          5,
+          2
+        ],
+        [
+          9,
+          8,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          4,
+          2
+        ],
+        [
+          4,
+          7,
+          2,
+          5
+        ],
+        [
+          5,
+          11,
+          3,
+          2
+        ]
+      ],
+      "posts": [
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          14,
+          6
+        ]
+      ],
+      "roofs": [
+        {
+          "name": "Sleeping roof",
+          "rect": [
+            0,
+            1,
+            8,
+            15
+          ],
+          "eave": 5,
+          "ridge": 8,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "Rear hall roof",
+          "rect": [
+            5,
+            8,
+            11,
+            8
+          ],
+          "eave": 6,
+          "ridge": 11,
+          "shape": "gable",
+          "axis": "z"
+        },
+        {
+          "name": "West covered walk",
+          "rect": [
+            6,
+            3,
+            4,
+            6
+          ],
+          "eave": 5,
+          "ridge": 5,
+          "shape": "shed",
+          "axis": "z"
+        },
+        {
+          "name": "Rear covered walk",
+          "rect": [
+            6,
+            7,
+            9,
+            2
+          ],
+          "eave": 5,
+          "ridge": 5.5,
+          "shape": "shed",
+          "axis": "z"
+        }
+      ],
+      "lights": [
+        [
+          3,
+          5,
+          6
+        ],
+        [
+          3,
+          5,
+          10
+        ],
+        [
+          10,
+          6,
+          11
+        ],
+        [
+          13,
+          5,
+          7
+        ]
+      ],
+      "targets": [
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          14,
+          4
+        ]
+      ],
+      "openCourt": [
+        10,
+        3,
+        4,
+        4
+      ],
+      "anchor": [
+        11,
+        2,
+        12
+      ],
+      "guards": [
+        [
+          11,
+          2,
+          12
+        ],
+        [
+          10,
+          2,
+          12
+        ],
+        [
+          12,
+          2,
+          12
+        ],
+        [
+          11,
+          2,
+          11
+        ]
+      ],
+      "sentry": [
+        13,
+        2,
+        2
+      ],
+      "connector": [
+        10,
+        0
+      ],
+      "section": {
+        "mode": "raised",
+        "road": 1,
+        "transition": 1.5,
+        "floor": 2,
+        "water": 0.7,
+        "supportBottom": 0,
+        "note": "Proposed short support bay and half-step approach. Exact world placement depends on the measured MMV road and site."
+      }
+    }
+  ]
+}

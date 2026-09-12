@@ -37,6 +37,7 @@ final class PhaseEightReleaseGateContractTest {
     @Test
     void buildSeparatesCorrectnessAndPerformanceSuites() throws IOException {
         String build = read("build.gradle");
+        String compactBuild = build.replaceAll("\\s+", " ");
 
         assertAll(
                 () -> assertTrue(build.contains("gameTest {")),
@@ -57,6 +58,11 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(build.contains("report.workload != expectedScenario.workload")),
                 () -> assertTrue(build.contains("report.sidearmLoadoutsObserved")),
                 () -> assertTrue(build.contains("report.sidearmActiveGuardsAtEnd")),
+                () -> assertTrue(build.contains("entry.designatedTargetDistance")),
+                () -> assertTrue(build.contains("report.designatedTargetDistancesValid")),
+                () -> assertTrue(build.contains("report.currentTargetMismatchCount")),
+                () -> assertFalse(build.contains(
+                        "Math.abs(((Number) entry.targetDistance).doubleValue()")),
                 () -> assertTrue(build.contains("'armory-idle-100'")),
                 () -> assertTrue(build.contains("'armory-satisfied-100'")),
                 () -> assertTrue(build.contains("'armory-request-pressure-50'")),
@@ -75,9 +81,14 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(build.contains("jdk.jfr.consumer.RecordingFile")),
                 () -> assertTrue(build.contains("executionSampleCount == 0L")),
                 () -> assertTrue(build.contains("report.productionArtifactSha256")),
+                () -> assertTrue(build.contains("report.performanceHarnessSha256")),
                 () -> assertTrue(build.contains("relativeTimingBudgets")),
                 () -> assertTrue(build.contains("baseline.p95Mspt")),
-                () -> assertTrue(build.contains("baseline.p99Mspt")));
+                () -> assertTrue(build.contains("baseline.p99Mspt")),
+                () -> assertTrue(compactBuild.contains(
+                        "'idle-armed-sidearms-100': [baselineScenario: 'idle-armed-100', "
+                                + "p95Multiplier: 1.25D, p95Allowance: 0.5D, "
+                                + "p99Multiplier: 1.25D, p99Allowance: 2.0D]")));
 
         String performanceHarness = read(
                 "src/perftest/java/com/gamergaming/villagerguardgunners/gametest/"
@@ -116,7 +127,8 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(evidenceTask.contains("performanceEvidenceFiles")),
                 () -> assertTrue(evidenceTask.contains("performanceEvidence:")),
                 () -> assertTrue(evidenceTask.contains("sha256OfFile(file)")),
-                () -> assertTrue(evidenceTask.contains("schemaVersion  : 4")),
+                () -> assertTrue(evidenceTask.contains("schemaVersion  : 5")),
+                () -> assertTrue(evidenceTask.contains("performanceHarnessSha256")),
                 () -> assertTrue(evidenceTask.contains("naturalLoadoutAuthoringPaths")),
                 () -> assertTrue(evidenceTask.contains("naturalLoadoutAuthoring:")),
                 () -> assertTrue(build.contains("'docs/guard-roles.md'")),
@@ -165,6 +177,7 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(gate.contains("guard_roles/demolitions.json")),
                 () -> assertTrue(gate.contains("guard_roles/marksman.json")),
                 () -> assertTrue(gate.contains("guard_roles/rifleman.json")),
+                () -> assertTrue(gate.contains("guard_roles/sentry.json")),
                 () -> assertTrue(gate.contains("guard_roles/support.json")),
                 () -> assertTrue(gate.contains("ammunition/GuardAmmoSharing.class")),
                 () -> assertTrue(gate.contains("ammunition/GuardDroppedAmmoPickup.class")),
@@ -190,6 +203,8 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(gate.contains("spawn/NaturalGuardLoadoutIssuance.class")),
                 () -> assertTrue(gate.contains("spawn/NaturalGuardLoadoutProvenanceCodec.class")),
                 () -> assertTrue(gate.contains("spawn/NaturalGuardLoadoutDiagnostics.class")),
+                () -> assertTrue(gate.contains(
+                        "worldgen/village/VillageWatchtowerGuardPlacement.class")),
                 () -> assertTrue(gate.contains("commonClassesWithClientReferences")),
                 () -> assertTrue(gate.contains("net/minecraft/client/")),
                 () -> assertTrue(gate.contains("mixinMetadata.client")),
@@ -287,6 +302,16 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(harness.contains("perGuardFirstSidearmActivationTick")),
                 () -> assertTrue(harness.contains("expectedSidearmActive")),
                 () -> assertTrue(harness.contains("activeGunId")),
+                () -> assertTrue(harness.contains("designatedTargetEntityId")),
+                () -> assertTrue(harness.contains("currentTargetEntityId")),
+                () -> assertTrue(harness.contains("currentTargetMatchesDesignated")),
+                () -> assertTrue(harness.contains("designatedTargetDistance")),
+                () -> assertTrue(harness.contains("observedDesignatedTargetDistance")),
+                () -> assertTrue(harness.contains("designatedTargetDisplacement")),
+                () -> assertTrue(harness.contains("guardAnchorDisplacement")),
+                () -> assertTrue(harness.contains("currentTargetDistance")),
+                () -> assertTrue(harness.contains("designatedTargetDistancesValid")),
+                () -> assertTrue(harness.contains("currentTargetMismatchCount")),
                 () -> assertTrue(harness.contains("SidearmRoleEvidence")),
                 () -> assertTrue(harness.contains("moveProtectedFriendlies(")),
                 () -> assertTrue(harness.contains("maintainScenarioTargets(")),
@@ -294,6 +319,10 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(harness.contains("target.setNoGravity(true)")),
                 () -> assertTrue(harness.contains("Attributes.KNOCKBACK_RESISTANCE")),
                 () -> assertTrue(harness.contains("discardScenarioBullets(helper, guards)")),
+                () -> assertTrue(harness.contains(
+                        "synchronizeArmoryFixtureIndex(helper, armoryPositions)")),
+                () -> assertTrue(harness.contains(
+                        "services.loadedArmories().register(helper.getLevel(), armory)")),
                 () -> assertTrue(harness.contains("wrapped.isRunning()")),
                 () -> assertTrue(harness.contains("scenarioZOffset(name)")),
                 () -> assertTrue(harness.contains("scenarioIndex * 512.0D")),
@@ -318,13 +347,14 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(harness.contains("minimumAmmoSharingAttempts(")),
                 () -> assertTrue(harness.contains("minimumPersistentDroppedAmmo(")),
                 () -> assertTrue(harness.contains("discardScenarioBullets(")),
-                () -> assertTrue(harness.contains("bullet.discard()")),
+                () -> assertTrue(harness.contains("expired.forEach(Entity::discard)")),
                 () -> assertTrue(harness.contains("workload == Workload.PROTECTED_LANES")),
                 () -> assertTrue(harness.contains("absoluteTimingGateApplied")),
                 () -> assertTrue(harness.contains("relativeTimingGateApplied")),
                 () -> assertTrue(harness.contains("productionArtifactSha256")),
+                () -> assertTrue(harness.contains("performanceHarnessSha256")),
                 () -> assertTrue(harness.contains("configProfile")),
-                () -> assertTrue(harness.contains("default-v11")),
+                () -> assertTrue(harness.contains("\"default-v\" + VillagerGuardGunnersConfig.CONFIG_VERSION")),
                 () -> assertTrue(harness.contains("guardGunnerConfig")),
                 () -> assertTrue(harness.contains("configSnapshot()")),
                 () -> assertTrue(harness.contains("profileSnapshot(")),
@@ -335,6 +365,8 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(harness.contains("config.ammunition.pickupDroppedAmmo.get()")),
                 () -> assertTrue(harness.contains("config.ammunition.shareAmmoBetweenGuards.get()")),
                 () -> assertTrue(harness.contains("config.armoryResupply.enabled.get()")),
+                () -> assertTrue(harness.contains("config.squads.patrolRouteExecution.get()")),
+                () -> assertTrue(harness.contains("config.villageDefense.automaticDuties.get()")),
                 () -> assertTrue(harness.contains("config.armoryResupply.checkIntervalTicks.get()")),
                 () -> assertTrue(harness.contains("config.armoryResupply.searchRadius.get()")),
                 () -> assertTrue(harness.contains("config.armoryResupply.maximumCandidateArmories.get()")),

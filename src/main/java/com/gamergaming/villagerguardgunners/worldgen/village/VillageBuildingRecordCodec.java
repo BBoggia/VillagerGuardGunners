@@ -1,5 +1,12 @@
 package com.gamergaming.villagerguardgunners.worldgen.village;
 
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutyLayout;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutyLayoutCodec;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutyLayouts;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -7,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Rotation;
 
 /** Strict schema-1 codec reusable by SavedData and future generated objects. */
 public final class VillageBuildingRecordCodec {
@@ -19,7 +27,15 @@ public final class VillageBuildingRecordCodec {
     private static final String DIMENSION_TAG = "Dimension";
     private static final String ANCHOR_TAG = "Anchor";
     private static final String CLAIMED_ACTIONS_TAG = "ClaimedActions";
-    private static final Set<String> RECORD_KEYS = Set.of(
+    private static final String PENDING_ACTIVATION_TAG = "PendingActivation";
+    private static final String PENDING_VERSION_TAG = "Version";
+    private static final String PENDING_ROTATION_TAG = "Rotation";
+    private static final String PENDING_DIFFICULTY_TAG = "GenerationDifficulty";
+    private static final String PENDING_ACTION_TAG = "RequiredAction";
+    private static final String PENDING_DUTY_LAYOUT_TAG = "DutyLayout";
+    private static final int LEGACY_PENDING_DATA_VERSION = 1;
+    private static final int PENDING_DATA_VERSION = 2;
+    private static final Set<String> BASE_RECORD_KEYS = Set.of(
             VERSION_TAG,
             BUILDING_ID_TAG,
             ENTRY_ID_TAG,
@@ -27,6 +43,26 @@ public final class VillageBuildingRecordCodec {
             DIMENSION_TAG,
             ANCHOR_TAG,
             CLAIMED_ACTIONS_TAG);
+    private static final Set<String> PENDING_RECORD_KEYS = Set.of(
+            VERSION_TAG,
+            BUILDING_ID_TAG,
+            ENTRY_ID_TAG,
+            BUILDING_TYPE_TAG,
+            DIMENSION_TAG,
+            ANCHOR_TAG,
+            CLAIMED_ACTIONS_TAG,
+            PENDING_ACTIVATION_TAG);
+    private static final Set<String> LEGACY_PENDING_KEYS = Set.of(
+            PENDING_VERSION_TAG,
+            PENDING_ROTATION_TAG,
+            PENDING_DIFFICULTY_TAG,
+            PENDING_ACTION_TAG);
+    private static final Set<String> PENDING_KEYS = Set.of(
+            PENDING_VERSION_TAG,
+            PENDING_ROTATION_TAG,
+            PENDING_DIFFICULTY_TAG,
+            PENDING_ACTION_TAG,
+            PENDING_DUTY_LAYOUT_TAG);
 
     public static void writeRecord(
             CompoundTag owner,
@@ -89,11 +125,14 @@ public final class VillageBuildingRecordCodec {
         encoded.putString(DIMENSION_TAG, identity.dimensionId().toString());
         encoded.putLong(ANCHOR_TAG, identity.anchorPosition().asLong());
         encoded.putInt(CLAIMED_ACTIONS_TAG, record.claimedActions());
+        record.pendingActivation().ifPresent(pending ->
+                encoded.put(PENDING_ACTIVATION_TAG, encodePending(pending)));
         return encoded;
     }
 
     private static @Nullable VillageBuildingRecord decodePayload(CompoundTag encoded) {
-        if (!encoded.getAllKeys().equals(RECORD_KEYS)
+        Set<String> keys = encoded.getAllKeys();
+        if ((!keys.equals(BASE_RECORD_KEYS) && !keys.equals(PENDING_RECORD_KEYS))
                 || !encoded.contains(VERSION_TAG, Tag.TAG_INT)
                 || encoded.getInt(VERSION_TAG) != VillageBuildingIdentity.CURRENT_SCHEMA_VERSION
                 || !encoded.hasUUID(BUILDING_ID_TAG)
@@ -120,12 +159,107 @@ public final class VillageBuildingRecordCodec {
                     buildingType,
                     dimensionId,
                     BlockPos.of(encoded.getLong(ANCHOR_TAG)));
+            Optional<VillageBuildingPendingActivation> pending = Optional.empty();
+            if (keys.equals(PENDING_RECORD_KEYS)) {
+                if (!encoded.contains(PENDING_ACTIVATION_TAG, Tag.TAG_COMPOUND)) {
+                    return null;
+                }
+                VillageBuildingPendingActivation decodedPending = decodePending(
+                        encoded.getCompound(PENDING_ACTIVATION_TAG), identity);
+                if (decodedPending == null) {
+                    return null;
+                }
+                pending = Optional.of(decodedPending);
+            }
             return new VillageBuildingRecord(
                     identity,
-                    encoded.getInt(CLAIMED_ACTIONS_TAG));
+                    encoded.getInt(CLAIMED_ACTIONS_TAG),
+                    pending);
         } catch (RuntimeException exception) {
             return null;
         }
+    }
+
+    private static CompoundTag encodePending(
+            VillageBuildingPendingActivation pending) {
+        CompoundTag encoded = new CompoundTag();
+        encoded.putInt(PENDING_VERSION_TAG, PENDING_DATA_VERSION);
+        encoded.putString(PENDING_ROTATION_TAG, pending.rotation().getSerializedName());
+        encoded.putString(
+                PENDING_DIFFICULTY_TAG,
+                pending.generationDifficulty().name().toLowerCase(Locale.ROOT));
+        encoded.putString(
+                PENDING_ACTION_TAG,
+                pending.requiredAction().name().toLowerCase(Locale.ROOT));
+        encoded.put(
+                PENDING_DUTY_LAYOUT_TAG,
+                VillageDefenseDutyLayoutCodec.encode(pending.dutyLayout()));
+        return encoded;
+    }
+
+    private static @Nullable VillageBuildingPendingActivation decodePending(
+            CompoundTag encoded,
+            VillageBuildingIdentity identity) {
+        if (!encoded.contains(PENDING_VERSION_TAG, Tag.TAG_INT)) {
+            return null;
+        }
+        int version = encoded.getInt(PENDING_VERSION_TAG);
+        Set<String> expectedKeys = version == LEGACY_PENDING_DATA_VERSION
+                ? LEGACY_PENDING_KEYS
+                : version == PENDING_DATA_VERSION ? PENDING_KEYS : Set.of();
+        if (expectedKeys.isEmpty()
+                || !encoded.getAllKeys().equals(expectedKeys)
+                || !encoded.contains(PENDING_ROTATION_TAG, Tag.TAG_STRING)
+                || !encoded.contains(PENDING_DIFFICULTY_TAG, Tag.TAG_STRING)
+                || !encoded.contains(PENDING_ACTION_TAG, Tag.TAG_STRING)) {
+            return null;
+        }
+        Rotation rotation = Arrays.stream(Rotation.values())
+                .filter(value -> value.getSerializedName().equals(
+                        encoded.getString(PENDING_ROTATION_TAG)))
+                .findFirst()
+                .orElse(null);
+        NaturalGuardDifficulty difficulty = enumByLowercaseName(
+                NaturalGuardDifficulty.values(),
+                encoded.getString(PENDING_DIFFICULTY_TAG));
+        VillageBuildingAction action = enumByLowercaseName(
+                VillageBuildingAction.values(),
+                encoded.getString(PENDING_ACTION_TAG));
+        if (rotation == null || difficulty == null || action == null) {
+            return null;
+        }
+        try {
+            VillageDefenseDutyLayout dutyLayout;
+            if (version == LEGACY_PENDING_DATA_VERSION) {
+                dutyLayout = VillageDefenseDutyLayouts.forBuilding(identity, rotation);
+            } else {
+                if (!encoded.contains(PENDING_DUTY_LAYOUT_TAG, Tag.TAG_COMPOUND)) {
+                    return null;
+                }
+                dutyLayout = VillageDefenseDutyLayoutCodec.decode(
+                        encoded.getCompound(PENDING_DUTY_LAYOUT_TAG));
+                if (dutyLayout == null
+                        || !identity.equals(dutyLayout.building())
+                        || rotation != dutyLayout.rotation()) {
+                    return null;
+                }
+            }
+            VillageBuildingPendingActivation pending =
+                    VillageBuildingPendingActivation.forBuilding(
+                    identity, rotation, difficulty, dutyLayout);
+            return pending.requiredAction() == action ? pending : null;
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
+    }
+
+    private static <E extends Enum<E>> @Nullable E enumByLowercaseName(
+            E[] values,
+            String encoded) {
+        return Arrays.stream(values)
+                .filter(value -> value.name().toLowerCase(Locale.ROOT).equals(encoded))
+                .findFirst()
+                .orElse(null);
     }
 
     private static @Nullable ResourceLocation canonicalId(String encoded) {

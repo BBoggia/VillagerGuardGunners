@@ -119,12 +119,17 @@ transaction; the goal releases the trigger and suppresses new sidearm fire
 until the return can settle. Failed or recovery-required returns also suppress
 fire rather than allowing a stale engagement context to continue shooting.
 
-The gun goal temporarily retains ownership when the target dies, changes, is
-denied by rules of engagement, or the add-on is disabled, so it can restore the
+The gun goal temporarily retains ownership when the target dies, is denied by
+rules of engagement, or the add-on is disabled, so it can restore the
 primary without exposing melee fallback. Positional squad movement yields for
 that cleanup window and resumes afterward. Every successful stack change
 immediately invalidates combat-safety state and rebinds TaCZ's native cached
 weapon data through its normal draw path.
+
+A backup activated for a dry primary also survives a brief target gap while
+[bounded tactical context](guard-tactical-intent.md) remains active. The guard
+releases aim and trigger during that gap; remembered enemies do not authorize
+shots. Expiration resumes the same native-safe return and cleanup path.
 
 ## Step 5 ammunition quality-of-life
 
@@ -178,9 +183,12 @@ reasons.
 
 ## Return and hysteresis contract
 
-A dry-primary fallback remains active for the same engagement, even if reserve
-ammunition appears later. It returns after the engagement ends or the target
-changes, allowing the primary to retry normally on the next engagement.
+A dry-primary fallback remains active across live, permitted target replacements,
+even if primary reserve ammo appears later. It returns after the engagement ends,
+allowing the primary to retry normally on the next engagement. If the backup also
+runs dry, the guard retains defensive gun-combat ownership and retries its ammo
+supply. It does not cycle between two empty guns. Invalid backup definitions still
+use the existing safe return and recovery handling.
 
 An explosive fallback may return during the same engagement only after the
 minimum active time and when:
@@ -190,7 +198,7 @@ minimum active time and when:
   margin away.
 
 The initial defaults are 40 active ticks and a two-block return margin.
-Feature disablement, engagement completion, and target replacement bypass the
+Feature disablement, engagement completion, and explosive-fallback target replacement bypass the
 minimum active time, but no return may interrupt an unsafe native TaCZ state.
 Non-finite, negative, or overflowing distance inputs fail closed.
 
@@ -275,7 +283,7 @@ and role-stable summaries. Step 6 adds strict format-3 parsing and diagnostics,
 primary-plus-sidearm issuance, all-or-nothing dual-stack capacity checks, and
 natural-primary authentication while stowed. Step 7 adds authorized menu and
 shift-click behavior, sharing-before-switch ordering, explosive-order fallback,
-shield preservation, target-change return, both-weapons-dry rejection, active
+shield preservation, dry-primary target-change continuity, both-weapons-dry rejection, active
 save/load, active death ownership, and external-replacement recovery coverage.
 Step 8 extends the opt-in performance matrix from 14 to 17 cases: 50 guards
 switching simultaneously from dry primaries, an exact ten-sidearm/ten-launcher

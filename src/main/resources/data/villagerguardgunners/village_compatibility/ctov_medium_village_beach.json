@@ -1,0 +1,1628 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:medium/village_beach"
+  ],
+  "templates": {
+    "ctov:village/beach/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "6fccb0feb22acef31ff18cdd45591702d30f4bd35aa282200d802dfa8c41c73e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "11bbb8d810c94a0865f7d3afe42c8b05596a2a9d2dc789ac3ee0fec3e382315c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/bench": [
+      {
+        "kind": "decoration",
+        "sha256": "77b1acdf7224c860b91230af0d85eb413c00395a5f2825d2ab2e088d897b0210",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/boat": [
+      {
+        "kind": "decoration",
+        "sha256": "bd449d6b061806e2143d8c0a39e65100db07d154909ad77ec350dd3a77316ce6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "6129b9abb526177b3816a6e9f35a90d35f3b738094d86fb3808a40f3d06f25b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "845b7060a6ea1fc1d0a8241a00477dca581335f18ce7b916588de25a6b040e7e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "aaaf683ca0c6c7992584459c62d07e5303c734b58bb0641d1360108fb86e41ef",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/lamp_0": [
+      {
+        "kind": "decoration",
+        "sha256": "77b21f5ca14537315fbb8633b54cd3268e8a17996a05f7f3bb4e17310f516b40",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "a742078c1ecb2ec49a6f4bf37062eb9fa4e2b2c825c9e0b06439b01a10178952",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "e89955eedd9eeeb0fc28587aac3278ec21a6024f2bd9e3541fc0692371a75a0b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "323b788d9cf1a3e176b08b89fd07b64afded0dc230e7d888654a2cf4894b5fd6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "a31f22e3f8f04a8a8bf6ce18651f17310b18cb0c9209bb61d4dc5048d42d3db7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/lamp_5": [
+      {
+        "kind": "decoration",
+        "sha256": "1dc8f0d7ee016beb251b0d3a06d339be240e46fdb10aff4de5c71cd6879f1698",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "d0b34866c66ef50dbcb85d8746b17c1607f3b9a562ce1e2c17895bc5c6f85c9c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "a5a50136873d39a511f087f1e81b7d0c7e416f15e9012497d17e1d7e286ffd55",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/deco/well": [
+      {
+        "kind": "decoration",
+        "sha256": "e96de773e2ba29cd7bb485b09c40473c68a4556698fd088bdb6e9e917b260214",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "3c663e351348868fc499af42ea99b395fa6efd02125fb52cb8074782babd8a4d",
+        "beds": [
+          [
+            2,
+            5,
+            2
+          ],
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            5,
+            5,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/house/big_2": [
+      {
+        "kind": "residence",
+        "sha256": "908ee942c265f44a9189e809838b3b73d5408d21151fc1d7004b04dfa3e154ae",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/house/big_3": [
+      {
+        "kind": "residence",
+        "sha256": "80c5853c58a99ea7bf4d973629104f941015e25f9e4c681a324686f1c03a3a8a",
+        "beds": [
+          [
+            2,
+            5,
+            2
+          ],
+          [
+            4,
+            5,
+            2
+          ],
+          [
+            6,
+            5,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/house/mid_1": [
+      {
+        "kind": "residence",
+        "sha256": "5a9572bd51355918bfe4061dfa51cd240a1c82514d723314c414ad29a1a843b6",
+        "beds": [
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/house/mid_2": [
+      {
+        "kind": "residence",
+        "sha256": "970169706aba8f3e97644dcb7049b95c17b043f15dc4aaf6db69b87bb738ad32",
+        "beds": [
+          [
+            5,
+            5,
+            2
+          ],
+          [
+            7,
+            5,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            6,
+            5,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "530fbe4fc1856fe7806067c47b2967d1f59d2d223ab87deb5e9c7e05ec8aec6b",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "84b5c48b59824f337d2d197dbc45a3f7a1d34fb9dfc9dbe2d2031345275a98f3",
+        "beds": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "877641db5b13a5404e364c94b343db6964ba21e4db2007ac0f31b66deaa04289",
+        "beds": [
+          [
+            3,
+            5,
+            2
+          ],
+          [
+            5,
+            5,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            4,
+            5,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/house/small_4": [
+      {
+        "kind": "residence",
+        "sha256": "0c73a298925f250c805b88f2f5415680030c18dc6671fafcfafa0fa0e9d367e1",
+        "beds": [
+          [
+            5,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            6,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "588f0ea9e08684250c27394afcf099b1c46e66a4528a4ecdfba3bed7331c2acb",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "d679ea66b2c7b9fa90bf4c5a589a53fcfe7cecd145218ab47f7ed76017cecff2",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "667aba33188a3bfbed7ca1e531086dd7668659c88fafbba5fb8a7667a4a8c3ef",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            5,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "dda8a9561040e33b829e6cbd1f12545b36e7f4dbc43bba3cd8278d127d36d850",
+        "beds": [
+          [
+            6,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "259d52050659fb48ab84e1f3582310e28393b520daf2f93f85c429e6d4c018ac",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "7997b95d1b98505017033160397ddfe3bfd4ba2e045cec099722790820906921",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "a55007320490f1f247f87f436cd1f4f49718b4c142d237a247d3790ccddc7ec6",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            7
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "0fd8a92db6a1a241757a2f32464347474f7db519e2b7d79fa1d0e7d90dc9c8fd",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "54402bc38fbf77aacf4ab0c96ee4e1b233d3cf3fc2c52d77cb53b26b21102e93",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/cartographer": [
+      {
+        "kind": "service",
+        "sha256": "b80ada6b8db1036997ccc68c49c165550df69fac5ee1d97674dcdfc6db0a110f",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "48e4c8e15cf8ba50ba0877514bdb98c7ada96ca03177169cd4cd418373f246e0",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "110cbb9e038555cc63b0c884018b8609902e7224670782dc32a92b78db9da3f4",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "f6c0af6b8e67b5005380cce4809dbdaa9228ed0c5cc535ce4ca2aabbf9a389dc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "3ca8e53118979464680a42dc3a80b3ab0b5a1a6f3a96d29cbf48434288c8100e",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "69630f03811770bc84cca2f507e49b6f2bd289d88253bf3c0912f3cf40ca9add",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            14
+          ],
+          [
+            11,
+            2,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "d834b87cd4d769bcad5f5bb138567a23cdede882a2d044cb20f32bbcf7afad70",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "0721bf179628e563508d727ef86c9a9569559a7842328cb67fa2c57a89895061",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            0
+          ],
+          [
+            5,
+            3,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "ed66569e2baeb6f42021a3fca2af48feb30762a48da20615423b2de233523707",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "467383a106c85dafadd2ce263747be2f6c8bf1e99230ed6e179bee26a0d78831",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "f661285bb6ed22ad5b443126dcb2af6d361db0f7de71a6ca092838bf5364ca3e",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "f64857ba044ae5cc041e040a33a010174185dfaef9d4bfa53bdf158d8bd76690",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "4dc3a93d8bac9d47f49822c2760e3c8ebaaa936bdaf43e3d6c8fb5863641887e",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "176a314cbb6cad3066d943512f2c947a894b5c58d285025aa5ee60889a270c79",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/horticulturist": [
+      {
+        "kind": "service",
+        "sha256": "1f0f2624169d4cdafeedd531a5d1f1d2f5aa877ca2f4ed7ce75dde363d7d4483",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "6e9a6e09cba460d81421d9a4c5abde5e329e92b082244a842448722a4d8fac51",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "eed93c8c1d51cef79c72c7df38530c0a0c0e62aed49d2624130949e39d4b9a1b",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "1e6ee7122dbb64c138538bc8c4e1b5aeacf460bc611881889ebb0a1915b489bd",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/iron_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "728c7371c46a0900a2a86009920e739517fe55732aef2184b5ef490f5777f944",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "45d130506d0d69c0e531cf01b47b560f7d339b9fc72c8ceffc6a78acec7cf8e3",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "8987e9ee204ed6cc3997659dba2592b4f57c872633f1849bac5d027f54dde7e0",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "de376cf06fae11cb5b2a803f2e30797889556c93d4ae7e8a530c11a138c95f23",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "90effc802019f521697beec76cb859d9df7de578beaca940a694421ecfc9c6fa",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "acd52c7bc66d81236fbd4c30c1ee705e828e5edca9d4d9a7ef234dc578dfbd3e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "5457f646f7be6272d3d176dcceee2ec4e109d9b4d4f88407b748cb100f6775c0",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "3dd18c11f1f301609d76b6de33a97b243cf93186a8679cf83f8b707004e11409",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "38665f089e1775ee8dfade6a3f860485fdf4c4388e707d07f6f5a4a10cbd5ccb",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/pen": [
+      {
+        "kind": "service",
+        "sha256": "388300e638c0900403c7b08c341bdf275490c530d3d2597824c14ef215b719f4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "0989afd3062edc962bba07004090b48d583572260e9152555aedc3f14b255391",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            6,
+            3,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "9fe86c94a584fa31adb1ae2016f1159f9ec7d0ba4405612c22f5a71eb8a263c7",
+        "beds": [
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            2,
+            4,
+            3
+          ],
+          [
+            2,
+            4,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            14
+          ],
+          [
+            8,
+            2,
+            13
+          ],
+          [
+            9,
+            2,
+            4
+          ],
+          [
+            9,
+            2,
+            5
+          ],
+          [
+            9,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "1a402c4f131c910a31897529bbcbf2d68947d13c2b00513db7ad340870607184",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "154be5a5ddeb53d2cc103c2ccef02612a970c3d7baa065ac77cad10d22fa5235",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "640197a4c2010efd02f625351f94bdd74b6c96737b6963ec146a380cb82c661a",
+        "beds": [
+          [
+            3,
+            2,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "bc663acb95e35c70ac8bccc22935276befffcf3713c9a05f56d46dabf51a885b",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "d167153e7ecfb3fa0ee4fa740a328ef39a1e192f4e64a0c33d2c8f240df46d93",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/shepherd": [
+      {
+        "kind": "service",
+        "sha256": "57a3c1590d1ae0ed249a5a3bf6bd90d28c8019bfd4e9d06c33001bb1f13dbd15",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "51a9f7311e89d70b978774a9ab106c880c9e4dbbeadb4ccf00500b88bc33d3a7",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "2e768462551c1056a3be54a72da76d6d4ffcb15f070394f5d6da457085bd2921",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            5,
+            0
+          ],
+          [
+            5,
+            6,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "6b737c9f618a3e7484c9b865179eda61f92e56f39854908fe0a2c4d1bbfa69cb",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "ef2d53696402649e447f86a2d8b5628b92e50c7a97040f04cd3cad1c9403daef",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/water_mill": [
+      {
+        "kind": "service",
+        "sha256": "1aa620f6bea0950bea854170e85a9d16487bd729d4c11b7c95ec13b9328f1eb8",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "326b4f1bc44bd174d9d919307b66462dd0cfc132645c20721d1796e26a1bf3b7",
+        "beds": [
+          [
+            2,
+            10,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "6d3a8dee986a02fec0ba6019e2cff6f47b50e87f590f7d4458f893872a472b79",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/beach/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "c946c47a784ab2756b5eaa87c86b1758076e90c322e67ea08ce8291a11875b17",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "faa5b858e9bb4de13783abdf33b3889deb4f239e047de88544ff93dc86c77673",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "5c291aa99aa71b679e636e696c96d3ad2d8b20aa8ef0c7ef772944540df03ba9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "5ea9622d47cd1609504c07f888a9beff2536f85147fc26014546bb23184c423b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "ac6355e2e9589162d9bc5fc97fef49edadc69ece81f579f78169b6e4b5d151c7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "240844057168ff6bfa1e39aad7a2870902f0b96eb5b64dbdead56c68176dc30d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "d09fa61dfc2f8b0fbcc05b5931ca2de4dcc05141471602d323f6e9579ca56ffe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "9d7e17a4888834f030ba03cbc3ad7ca45d1491e095989a99f14a833e1e32dd6a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "f6405405e69c80d4accb776136e923e3150f9aafd011193bb71ff2ea04f7d6d5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/beach/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "7f959bb0c7e02eb34cb1945087fac7c450d3e5550ffd4095c6a058ce01a8e695",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "medium"
+}

@@ -4,13 +4,24 @@
     "plains": {
       "targetPool": "minecraft:village/plains/houses",
       "streetPool": "minecraft:village/plains/streets",
-      "connectorState": "minecraft:oak_planks",
+      "connectorState": "minecraft:air",
       "palette": [
         { "symbol": "F", "name": "minecraft:cobblestone" },
         { "symbol": "W", "name": "minecraft:oak_planks" },
+        { "symbol": "f", "name": "minecraft:oak_fence" },
         { "symbol": "L", "name": "minecraft:stripped_oak_log", "properties": { "axis": "y" } },
+        { "symbol": "X", "name": "minecraft:stripped_oak_log", "properties": { "axis": "x" } },
+        { "symbol": "Z", "name": "minecraft:stripped_oak_log", "properties": { "axis": "z" } },
         { "symbol": "P", "name": "minecraft:oak_planks" },
         { "symbol": "S", "name": "minecraft:oak_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "R", "name": "minecraft:oak_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "r", "name": "minecraft:oak_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "B", "name": "minecraft:oak_planks" },
+        { "symbol": "H", "name": "minecraft:oak_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "E", "name": "minecraft:oak_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "e", "name": "minecraft:oak_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "N", "name": "minecraft:oak_stairs", "properties": { "facing": "north", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "n", "name": "minecraft:oak_stairs", "properties": { "facing": "south", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
         { "symbol": "G", "name": "minecraft:glass" },
         { "symbol": "d", "name": "minecraft:oak_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
         { "symbol": "D", "name": "minecraft:oak_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
@@ -19,13 +30,24 @@
     "desert": {
       "targetPool": "minecraft:village/desert/houses",
       "streetPool": "minecraft:village/desert/streets",
-      "connectorState": "minecraft:smooth_sandstone",
+      "connectorState": "minecraft:air",
       "palette": [
         { "symbol": "F", "name": "minecraft:smooth_sandstone" },
         { "symbol": "W", "name": "minecraft:sandstone" },
+        { "symbol": "f", "name": "minecraft:acacia_fence" },
         { "symbol": "L", "name": "minecraft:cut_sandstone" },
+        { "symbol": "X", "name": "minecraft:cut_sandstone" },
+        { "symbol": "Z", "name": "minecraft:cut_sandstone" },
         { "symbol": "P", "name": "minecraft:smooth_sandstone" },
         { "symbol": "S", "name": "minecraft:sandstone_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "R", "name": "minecraft:sandstone_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "r", "name": "minecraft:sandstone_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "B", "name": "minecraft:acacia_planks" },
+        { "symbol": "H", "name": "minecraft:acacia_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "E", "name": "minecraft:acacia_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "e", "name": "minecraft:acacia_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "N", "name": "minecraft:acacia_stairs", "properties": { "facing": "north", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "n", "name": "minecraft:acacia_stairs", "properties": { "facing": "south", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
         { "symbol": "G", "name": "minecraft:orange_stained_glass" },
         { "symbol": "d", "name": "minecraft:acacia_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
         { "symbol": "D", "name": "minecraft:acacia_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
@@ -34,13 +56,24 @@
     "savanna": {
       "targetPool": "minecraft:village/savanna/houses",
       "streetPool": "minecraft:village/savanna/streets",
-      "connectorState": "minecraft:acacia_planks",
+      "connectorState": "minecraft:air",
       "palette": [
         { "symbol": "F", "name": "minecraft:cobblestone" },
         { "symbol": "W", "name": "minecraft:acacia_planks" },
+        { "symbol": "f", "name": "minecraft:acacia_fence" },
         { "symbol": "L", "name": "minecraft:stripped_acacia_log", "properties": { "axis": "y" } },
+        { "symbol": "X", "name": "minecraft:stripped_acacia_log", "properties": { "axis": "x" } },
+        { "symbol": "Z", "name": "minecraft:stripped_acacia_log", "properties": { "axis": "z" } },
         { "symbol": "P", "name": "minecraft:acacia_planks" },
         { "symbol": "S", "name": "minecraft:acacia_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "R", "name": "minecraft:acacia_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "r", "name": "minecraft:acacia_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "B", "name": "minecraft:acacia_planks" },
+        { "symbol": "H", "name": "minecraft:acacia_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "E", "name": "minecraft:acacia_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "e", "name": "minecraft:acacia_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "N", "name": "minecraft:acacia_stairs", "properties": { "facing": "north", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "n", "name": "minecraft:acacia_stairs", "properties": { "facing": "south", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
         { "symbol": "G", "name": "minecraft:glass" },
         { "symbol": "d", "name": "minecraft:acacia_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
         { "symbol": "D", "name": "minecraft:acacia_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
@@ -49,13 +82,24 @@
     "snowy": {
       "targetPool": "minecraft:village/snowy/houses",
       "streetPool": "minecraft:village/snowy/streets",
-      "connectorState": "minecraft:spruce_planks",
+      "connectorState": "minecraft:air",
       "palette": [
         { "symbol": "F", "name": "minecraft:cobblestone" },
         { "symbol": "W", "name": "minecraft:spruce_planks" },
+        { "symbol": "f", "name": "minecraft:spruce_fence" },
         { "symbol": "L", "name": "minecraft:stripped_spruce_log", "properties": { "axis": "y" } },
+        { "symbol": "X", "name": "minecraft:stripped_spruce_log", "properties": { "axis": "x" } },
+        { "symbol": "Z", "name": "minecraft:stripped_spruce_log", "properties": { "axis": "z" } },
         { "symbol": "P", "name": "minecraft:spruce_planks" },
         { "symbol": "S", "name": "minecraft:spruce_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "R", "name": "minecraft:spruce_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "r", "name": "minecraft:spruce_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "B", "name": "minecraft:spruce_planks" },
+        { "symbol": "H", "name": "minecraft:spruce_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "E", "name": "minecraft:spruce_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "e", "name": "minecraft:spruce_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "N", "name": "minecraft:spruce_stairs", "properties": { "facing": "north", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "n", "name": "minecraft:spruce_stairs", "properties": { "facing": "south", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
         { "symbol": "G", "name": "minecraft:light_blue_stained_glass" },
         { "symbol": "d", "name": "minecraft:spruce_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
         { "symbol": "D", "name": "minecraft:spruce_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
@@ -64,13 +108,24 @@
     "taiga": {
       "targetPool": "minecraft:village/taiga/houses",
       "streetPool": "minecraft:village/taiga/streets",
-      "connectorState": "minecraft:spruce_planks",
+      "connectorState": "minecraft:air",
       "palette": [
         { "symbol": "F", "name": "minecraft:mossy_cobblestone" },
         { "symbol": "W", "name": "minecraft:spruce_planks" },
+        { "symbol": "f", "name": "minecraft:spruce_fence" },
         { "symbol": "L", "name": "minecraft:spruce_log", "properties": { "axis": "y" } },
+        { "symbol": "X", "name": "minecraft:spruce_log", "properties": { "axis": "x" } },
+        { "symbol": "Z", "name": "minecraft:spruce_log", "properties": { "axis": "z" } },
         { "symbol": "P", "name": "minecraft:spruce_planks" },
         { "symbol": "S", "name": "minecraft:spruce_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "R", "name": "minecraft:spruce_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "r", "name": "minecraft:spruce_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "B", "name": "minecraft:spruce_planks" },
+        { "symbol": "H", "name": "minecraft:spruce_slab", "properties": { "type": "bottom", "waterlogged": "false" } },
+        { "symbol": "E", "name": "minecraft:spruce_stairs", "properties": { "facing": "east", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "e", "name": "minecraft:spruce_stairs", "properties": { "facing": "west", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "N", "name": "minecraft:spruce_stairs", "properties": { "facing": "north", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
+        { "symbol": "n", "name": "minecraft:spruce_stairs", "properties": { "facing": "south", "half": "bottom", "shape": "straight", "waterlogged": "false" } },
         { "symbol": "G", "name": "minecraft:glass" },
         { "symbol": "d", "name": "minecraft:spruce_door", "properties": { "facing": "north", "half": "lower", "hinge": "left", "open": "false", "powered": "false" } },
         { "symbol": "D", "name": "minecraft:spruce_door", "properties": { "facing": "north", "half": "upper", "hinge": "left", "open": "false", "powered": "false" } }
@@ -83,67 +138,84 @@
     { "symbol": "C", "name": "minecraft:crafting_table" },
     { "symbol": "T", "name": "minecraft:target" },
     { "symbol": "Y", "name": "minecraft:hay_block", "properties": { "axis": "y" } },
-    { "symbol": "Q", "name": "minecraft:lantern", "properties": { "hanging": "false", "waterlogged": "false" } },
-    { "symbol": "H", "name": "minecraft:ladder", "properties": { "facing": "north", "waterlogged": "false" } }
+    { "symbol": "K", "name": "minecraft:gray_carpet" },
+    { "symbol": "I", "name": "minecraft:iron_bars" },
+    { "symbol": "q", "name": "minecraft:lantern", "properties": { "hanging": "true", "waterlogged": "false" } }
   ],
   "buildings": {
     "barracks": {
-      "size": [9, 5, 9],
+      "size": [13, 10, 11],
       "weight": 1,
       "layers": [
-        ["VVVVFVVVV", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF"],
-        ["VVVVJVVVV", "LLLLdLLLL", "L.......L", "L.......L", "L...A...L", "L.......L", "L.......L", "L.......L", "LLLLLLLLL"],
-        ["VVVV.VVVV", "LLLLDLLLL", "W.G...G.W", "W.......W", "W.......W", "W.......W", "W.G...G.W", "W.......W", "LLLLLLLLL"],
-        ["VVVVSVVVV", "LLLLLLLLL", "W.......W", "W.......W", "W...Q...W", "W.......W", "W.......W", "W.......W", "LLLLLLLLL"],
-        ["VVVSSSVVV", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS", "SSSSSSSSS"]
+        ["VVVVVVFVVVVVV", "VVVVFFFFFVVVV", "VVVFFFFFFFVVV", "VVVFPPPPPFVVV", "FFFFPPPPPFFFF", "FPPFPPPPPFPPF", "FPPPPPPPPPPPF", "FPPPPPPPPPPPF", "FPPFPPPPPFPPF", "FFFFFFFFFFFFF", "VVVVVVVVVVVVV"],
+        ["VVVVVVJVVVVVV", "VVVVL...LVVVV", "VVVLLLdLLLVVV", "VVVL.....LVVV", "LLLL.....LLLL", "LKKL.....LKKL", "L.....A.....L", "L.C.........L", "LKKL.....LKKL", "LLLLLLLLLLLLL", "............."],
+        ["VVVVVV.VVVVVV", "VVVVL...LVVVV", "VVVLWGDGWLVVV", "VVVW.....WVVV", "LWGL.....LGWL", "G..W.....W..G", "W...........W", "G...........G", "G..W.....W..G", "LWGLWGGGWLGWL", "............."],
+        ["VVVVVV.VVVVVV", "VVVVL...LVVVV", "VVVLLLLLLLVVV", "VVVL.....LVVV", "LLLL.....LLLL", "G..W.....W..G", "W...........W", "G...........G", "G..W.....W..G", "LWGLWGGGWLGWL", "............."],
+        ["VVVVVV.VVVVVV", "VVVVSSSSSVVVV", "VVVXXXXXXXVVV", "SSSL..q..LSSS", "SSSL.....LSSS", "SSSL.....LSSS", "SSSL.....LSSS", "SSSL.....LSSS", "SSSL.....LSSS", "SSSXXXXXXXSSS", "SSS.......SSS"],
+        ["VVVVVV.VVVVVV", "..R.......r..", "..RWWWWWWWr..", "..RXXXXXXXr..", "..R.......r..", "..R.......r..", "..R.......r..", "..R.......r..", "..R.......r..", "..RWWWWWWWr..", "..R.......r.."],
+        ["VVVVVV.VVVVVV", "...R.....r...", "...RWWWWWr...", "...R.....r...", "...R.....r...", "...R.....r...", "...R.....r...", "...R.....r...", "...R.....r...", "...RWWWWWr...", "...R.....r..."],
+        ["VVVVVV.VVVVVV", "....R...r....", "....RWWWr....", "....R...r....", "....R...r....", "....R...r....", "....R...r....", "....R...r....", "....R...r....", "....RWWWr....", "....R...r...."],
+        ["VVVVVV.VVVVVV", ".....RZr.....", ".....RZr.....", ".....RZr.....", ".....RZr.....", ".....RZr.....", ".....RZr.....", ".....RZr.....", ".....RZr.....", ".....RZr.....", ".....RZr....."],
+        ["VVVVVV.VVVVVV", "......S......", "......S......", "......S......", "......S......", "......S......", "......S......", "......S......", "......S......", "......S......", "......S......"]
       ]
     },
     "armory": {
-      "size": [7, 5, 7],
+      "size": [9, 8, 10],
       "weight": 1,
       "layers": [
-        ["VVVFVVV", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF"],
-        ["VVVJVVV", "LLLdLLL", "L.C.C.L", "L..A..L", "L.T.T.L", "L.....L", "LLLLLLL"],
-        ["VVV.VVV", "LLLDLLL", "W.G.G.W", "W.....W", "W.G.G.W", "W.....W", "LLLLLLL"],
-        ["VVVSVVV", "LLLLLLL", "W.....W", "W..Q..W", "W.....W", "W.....W", "LLLLLLL"],
-        ["VVSSSVV", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS"]
+        ["VVVVFVVVV", "VVFFFFFVV", "FFFFFFFFF", "FPPPPPPPF", "FPPPPPPPF", "FPPPPPPPF", "FPPPPPPPF", "FPPPPPPPF", "FFFFFFFFF", "VVVVVVVVV"],
+        ["VVVVJVVVV", "VVL...LVV", "LLLWdWLLL", "LC......L", "L.......L", "L.......L", "L.......L", "L.T.A.T.L", "LLLLLLLLL", "........."],
+        ["VVVV.VVVV", "VVL...LVV", "LLIWDWILL", "W.......W", "I.......I", "W.......W", "I.......I", "W.......W", "LLIW.WILL", "........."],
+        ["VVVV.VVVV", "VVL...LVV", "LLLXXXLLL", "W.......W", "W.......W", "W...q...W", "W.......W", "W.......W", "LLLXXXLLL", "........."],
+        ["VVVV.VVVV", "R.XXXXX.r", "RWWWWWWWr", "R.......r", "R.......r", "RXXXXXXXr", "R.......r", "R.......r", "RWWWWWWWr", "R.......r"],
+        ["VVVV.VVVV", ".R.....r.", ".RWWWWWr.", ".R.....r.", ".R.....r.", ".R.....r.", ".R.....r.", ".R.....r.", ".RWWWWWr.", ".R.....r."],
+        ["VVVV.VVVV", "..R...r..", "..RWWWr..", "..R...r..", "..R...r..", "..R...r..", "..R...r..", "..R...r..", "..RWWWr..", "..R...r.."],
+        ["VVVV.VVVV", "...RZr...", "...RZr...", "...RZr...", "...RZr...", "...RZr...", "...RZr...", "...RZr...", "...RZr...", "...RZr..."]
       ]
     },
     "sentry_post": {
-      "size": [5, 5, 5],
-      "weight": 1,
+      "size": [7, 7, 8],
+      "weight": 2,
       "layers": [
-        ["VVFVV", "FFFFF", "FFFFF", "FFFFF", "FFFFF"],
-        ["VVJVV", "LL.LL", "L.A.L", "L...L", "LLLLL"],
-        ["VV.VV", "L...L", "L...L", "L.Q.L", "L...L"],
-        ["VVSVV", "L...L", "L...L", "L...L", "L...L"],
-        ["VSSSV", "SSSSS", "SSSSS", "SSSSS", "SSSSS"]
+        ["VVVFVVV", "VFFFFFV", "FFFFFFF", "FPPPPPF", "FPPPPPF", "FPPPPPF", "FFFFFFF", "VVVVVVV"],
+        ["VVVJVVV", "VL...LV", "LH...HL", "W.....W", "H..A..H", "WC...nW", "LWWWWWL", "......."],
+        ["VVV.VVV", "VL...LV", "L.....L", ".......", ".......", ".......", "LWGWGWL", "......."],
+        ["VVV.VVV", ".L...L.", "L.....L", ".......", ".......", "...q...", "XXXXXXX", "......."],
+        [".......", "RXXXXXr", "RBBBBBr", "RBBBBBr", "RBBBBBr", "RBBBBBr", "RBBBBBr", "RXXXXXr"],
+        [".......", ".RBBBr.", ".RBBBr.", ".RBBBr.", ".RBBBr.", ".RBBBr.", ".RBBBr.", ".RBBBr."],
+        [".......", "..RZr..", "..RZr..", "..RZr..", "..RZr..", "..RZr..", "..RZr..", "..RZr.."]
       ]
     },
     "watchtower": {
-      "size": [7, 9, 7],
+      "size": [9, 13, 10],
       "weight": 1,
       "layers": [
-        ["VVVFVVV", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF", "FFFFFFF"],
-        ["VVVJVVV", "LLLdLLL", "L.....L", "L..A..L", "L.....L", "L..H..L", "LLLLLLL"],
-        ["VVV.VVV", "LLLDLLL", "W.G.G.W", "W.....W", "W.....W", "W..H..W", "LLLLLLL"],
-        ["VVV.VVV", "L.....L", "L.....L", "L.....L", "L.....L", "L..H..L", "LLLLLLL"],
-        ["VVV.VVV", "L.....L", "L.....L", "L.....L", "L.....L", "L..H..L", "LLLLLLL"],
-        ["VVVSVVV", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPHPPP", "PPPPPPP"],
-        ["VVV.VVV", "L.....L", ".......", ".......", ".......", "L..H..L", "L..L..L"],
-        ["VVVSVVV", "L..Q..L", ".......", ".......", ".......", "L.....L", "L.....L"],
-        ["VVSSSVV", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS", "SSSSSSS"]
+        ["VVVVFVVVV", "VVVFFFVVV", "VFFFFFFFV", "VFPPPPPFV", "VFPPPPPFV", "VFPPPPPFV", "VFPPPPPFV", "VFPPPPPFV", "VFFFFFFFV", "VVVVVVVVV"],
+        ["VVVVJVVVV", "VVL...LVV", "VLWWdWWLV", "VL.....LV", "VL.....LV", "VL.....LV", "VL..N..LV", "VL..A..LV", "VLWWWWWLV", "........."],
+        ["VVVV.VVVV", "VVL...LVV", "VLWWDWWLV", "VLI...ILV", "VL.....LV", "VL..N..LV", "VL.....LV", "VLI...ILV", "VLWWIWWLV", "........."],
+        ["VVVV.VVVV", "VVL...LVV", "VLXXXXXLV", "VLI...ILV", "VL..N..LV", "VL.....LV", "VL.....LV", "VL.....LV", "VLXXIXXLV", "........."],
+        [".........", ".Z.....Z.", "XXXXXXXXX", ".Z..N..Z.", ".Z.....Z.", ".Z.....Z.", ".Z.....Z.", ".Z.....Z.", "XXXXXXXXX", ".Z.....Z."],
+        ["VVVHHHVVV", "BBBBBBBBB", "BBBBNBBBB", "BBBB.BBBB", "BBBB.BBBB", "BBBB.BBBB", "BBBBBBBBB", "BBBBBBBBB", "BBBBBBBBB", "BBBBBBBBB"],
+        ["VVV...VVV", "LfffffffL", "f.......f", "f..I.I..f", "f..I.I..f", "f..I.I..f", "f..III..f", "f.......f", "f.......f", "LfffffffL"],
+        [".........", "L.......L", ".........", ".........", ".........", ".........", ".........", ".........", ".........", "L.......L"],
+        [".........", "L.......L", ".........", ".........", ".........", ".........", ".........", ".........", ".........", "L.......L"],
+        [".........", "LXXXXXXXL", "Z.......Z", "Z.......Z", "Z...q...Z", "Z.......Z", "Z.......Z", "Z.......Z", "Z.......Z", "LXXXXXXXL"],
+        [".........", "HnnnnnnnH", "EBBBBBBBe", "EBBBBBBBe", "EBBBBBBBe", "EBBBBBBBe", "EBBBBBBBe", "EBBBBBBBe", "EBBBBBBBe", "HNNNNNNNH"],
+        [".........", ".........", ".HnnnnnH.", ".EBBBBBe.", ".EBBBBBe.", ".EBBBBBe.", ".EBBBBBe.", ".EBBBBBe.", ".HNNNNNH.", "........."],
+        [".........", ".........", ".........", "..HHHHH..", "..HBBBH..", "..HBBBH..", "..HBBBH..", "..HHHHH..", ".........", "........."]
       ]
     },
     "training_yard": {
-      "size": [9, 4, 7],
+      "size": [11, 5, 10],
       "weight": 1,
       "layers": [
-        ["VVVVFVVVV", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF", "FFFFFFFFF"],
-        ["VVVVJVVVV", "L.......L", "L.T...T.L", "L...A...L", "L.Y...Y.L", "L.......L", "LLLLLLLLL"],
-        ["VVVV.VVVV", "L.......L", ".........", ".........", ".........", "L...Q...L", "L.......L"],
-        ["VVVVSVVVV", "L.......L", ".........", ".........", ".........", "L.......L", "L.......L"]
+        ["VVVVVFVVVVV", "VVVFFFFFVVV", "FFFFFFFFFFF", "FPPPPPPPPPF", "FFFFFFFFFFF", "FFFFFFFFFFF", "FFFFFFFFFFF", "FFFFFFFFFFF", "FFFFFFFFFFF", "FFFFFFFFFFF"],
+        ["VVVVVJVVVVV", "VVVL...LVVV", "SSSS...SSSS", "L.L..A..L.L", "S.........S", "S.........S", "L.........L", "S..Y...Y..S", "S.........S", "LWWLWWWLWWL"],
+        ["VVVVV.VVVVV", "VVVL...LVVV", "...........", "L.L.....L.L", "...........", "...........", "L.........L", "...T...T...", "...........", "LWWLWWWLWWL"],
+        ["VVVVV.VVVVV", "VVV.....VVV", "..XXXXXXX..", "..Z....qZ..", "..XXXXXXX..", "...........", "...........", "...........", "...........", "XXXXXXXXXXX"],
+        ["VVVVV.VVVVV", "VVV.....VVV", "..SSSSSSS..", "..SSSSSSS..", "..SSSSSSS..", "...........", "...........", "...........", "...........", "SSSSSSSSSSS"]
       ]
     }
-  }
+  },
+  "layoutVariants": []
 }

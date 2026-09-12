@@ -82,10 +82,6 @@ public final class VillageBuildingArmoryLifecycle {
             return new Result(Status.BLOCKED);
         }
 
-        Status claimStatus = claimSetup(data, identity);
-        if (claimStatus != Status.CLAIMED) {
-            return new Result(claimStatus);
-        }
         GuardPostArmoryPlacer.PlacementResult placement = GuardPostArmoryPlacer.place(
                 level,
                 position,
@@ -93,13 +89,21 @@ public final class VillageBuildingArmoryLifecycle {
                 identity.buildingId(),
                 PUBLIC_ARMORY_MARKER,
                 policy.initialStockEnabled());
-        return new Result(switch (placement) {
+        Status placementStatus = switch (placement) {
             case PLACED_PENDING_LOOT -> Status.PLACED_PENDING_STOCK;
             case PLACED_EMPTY -> Status.PLACED_EMPTY;
             case ALREADY_PRESENT -> Status.ALREADY_PRESENT;
             case BLOCKED_BY_EXISTING_ARMORY -> Status.BLOCKED;
             case PLACEMENT_FAILED -> Status.PLACEMENT_FAILED;
-        });
+        };
+        if (placementStatus == Status.BLOCKED
+                || placementStatus == Status.PLACEMENT_FAILED) {
+            return new Result(placementStatus);
+        }
+        Status claimStatus = claimSetup(data, identity);
+        return new Result(claimStatus == Status.CLAIMED
+                ? placementStatus
+                : claimStatus);
     }
 
     private static Status claimSetup(

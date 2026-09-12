@@ -276,6 +276,7 @@ public final class GuardSidearmTransactions {
     private static boolean canMutate(Guard guard, boolean nativeSwapSafe) {
         return nativeSwapSafe
                 && guard.isAlive()
+                && !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard)
                 && !guard.isRemoved()
                 && !guard.level().isClientSide
                 && guard.getServer() != null

@@ -19,7 +19,7 @@ Paste `docs/curseforge-description.md` into the project description field.
 * Game version: `Minecraft 1.20.1`
 * Mod loader: `Forge`
 * Java: `17`
-* Changelog: paste `docs/curseforge-release-notes-1.3-beta1.md`
+* Changelog: paste `docs/releases/1.3-beta1.md`
 
 Upload only `villagerguardgunners-1.3-beta1.jar` as the mod file. The documents
 and checksum are upload guidance, not Minecraft mods.

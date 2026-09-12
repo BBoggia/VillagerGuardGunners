@@ -1,6 +1,10 @@
 package com.gamergaming.villagerguardgunners.worldgen.village;
 
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig.VillageBuildingSettings;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutyLayout;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutySlotDefinition;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutySlotKind;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseDutyWeaponRequirement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -21,8 +25,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -45,7 +52,12 @@ public final class VillageBuildingDefinitions extends
             "template",
             "processors",
             "projection",
-            "weight");
+            "weight",
+            "selection_chance",
+            "terrain_safety",
+            "duty_slots");
+    private static final Set<String> DUTY_SLOT_FIELDS = Set.of(
+            "key", "offset", "facing", "kind", "weapon_requirement");
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final VillageBuildingDefinitions INSTANCE =
             new VillageBuildingDefinitions();
@@ -288,6 +300,31 @@ public final class VillageBuildingDefinitions extends
                 "Village-building definition " + id,
                 VillageBuildingPoolEntry.MINIMUM_WEIGHT,
                 VillageBuildingPoolEntry.MAXIMUM_WEIGHT);
+        Optional<List<VillageDefenseDutySlotDefinition>> dutySlots = root.has("duty_slots")
+                ? Optional.of(parseDutySlots(id, root.get("duty_slots")))
+                : Optional.empty();
+        double selectionChance = 1.0;
+        if (root.has("selection_chance")) {
+            JsonElement chance = root.get("selection_chance");
+            if (!chance.isJsonPrimitive() || !chance.getAsJsonPrimitive().isNumber()) {
+                throw new JsonParseException("selection_chance must be a number in [0, 1]");
+            }
+            selectionChance = chance.getAsDouble();
+            if (!Double.isFinite(selectionChance) || selectionChance < 0.0 || selectionChance > 1.0) {
+                throw new JsonParseException("selection_chance must be finite and in [0, 1]");
+            }
+        }
+        boolean terrainSafety = false;
+        if (root.has("terrain_safety")) {
+            JsonElement value = root.get("terrain_safety");
+            if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isBoolean()) {
+                throw new JsonParseException("terrain_safety must be a boolean");
+            }
+            terrainSafety = value.getAsBoolean();
+        }
+        if (terrainSafety && projection != StructureTemplatePool.Projection.RIGID) {
+            throw new JsonParseException("terrain_safety requires rigid projection");
+        }
         return new VillageBuildingPoolEntry(
                 id,
                 buildingType,
@@ -295,7 +332,92 @@ public final class VillageBuildingDefinitions extends
                 template,
                 processors,
                 projection,
-                weight);
+                weight,
+                selectionChance,
+                terrainSafety,
+                dutySlots);
+    }
+
+    private static List<VillageDefenseDutySlotDefinition> parseDutySlots(
+            ResourceLocation id,
+            JsonElement element) {
+        String location = "Village-building definition " + id + " field 'duty_slots'";
+        if (element == null || !element.isJsonArray()) {
+            throw new JsonParseException(location + " must be an array");
+        }
+        JsonArray array = element.getAsJsonArray();
+        if (array.isEmpty()
+                || array.size() > VillageDefenseDutyLayout.MAXIMUM_SLOTS_PER_BUILDING) {
+            throw new JsonParseException(
+                    location + " must contain 1 through "
+                            + VillageDefenseDutyLayout.MAXIMUM_SLOTS_PER_BUILDING
+                            + " slots");
+        }
+        ArrayList<VillageDefenseDutySlotDefinition> definitions =
+                new ArrayList<>(array.size());
+        Set<String> keys = new HashSet<>();
+        Set<BlockPos> offsets = new HashSet<>();
+        for (int index = 0; index < array.size(); index++) {
+            JsonElement raw = array.get(index);
+            String slotLocation = location + "[" + index + "]";
+            if (!raw.isJsonObject()) {
+                throw new JsonParseException(slotLocation + " must be an object");
+            }
+            JsonObject slot = raw.getAsJsonObject();
+            rejectUnknownFields(slot, DUTY_SLOT_FIELDS, slotLocation);
+            String key = requiredString(slot.get("key"), slotLocation + " field 'key'");
+            BlockPos offset = parseOffset(slot.get("offset"), slotLocation);
+            String facingName = requiredString(
+                    slot.get("facing"), slotLocation + " field 'facing'");
+            Direction facing = Direction.byName(facingName);
+            if (facing == null || facing.getAxis().isVertical()) {
+                throw new JsonParseException(
+                        slotLocation + " field 'facing' must be north, south, east, or west");
+            }
+            String kindName = requiredString(
+                    slot.get("kind"), slotLocation + " field 'kind'");
+            VillageDefenseDutySlotKind kind = VillageDefenseDutySlotKind.byName(kindName)
+                    .orElseThrow(() -> new JsonParseException(
+                            slotLocation + " field 'kind' must be muster, sentry, overwatch, or drill"));
+            String requirementName = requiredString(
+                    slot.get("weapon_requirement"),
+                    slotLocation + " field 'weapon_requirement'");
+            VillageDefenseDutyWeaponRequirement requirement =
+                    VillageDefenseDutyWeaponRequirement.byName(requirementName)
+                            .orElseThrow(() -> new JsonParseException(
+                                    slotLocation
+                                            + " field 'weapon_requirement' must be any or ranged"));
+            try {
+                VillageDefenseDutySlotDefinition definition =
+                        new VillageDefenseDutySlotDefinition(
+                                key, offset, facing, kind, requirement);
+                if (!keys.add(key)) {
+                    throw new JsonParseException(location + " repeats slot key '" + key + "'");
+                }
+                if (!offsets.add(offset)) {
+                    throw new JsonParseException(location + " repeats offset " + offset);
+                }
+                definitions.add(definition);
+            } catch (IllegalArgumentException exception) {
+                throw new JsonParseException(slotLocation + ": " + exception.getMessage());
+            }
+        }
+        return List.copyOf(definitions);
+    }
+
+    private static BlockPos parseOffset(JsonElement element, String location) {
+        if (element == null || !element.isJsonArray()) {
+            throw new JsonParseException(location + " field 'offset' must be [x, y, z]");
+        }
+        JsonArray offset = element.getAsJsonArray();
+        if (offset.size() != 3) {
+            throw new JsonParseException(location + " field 'offset' must contain 3 integers");
+        }
+        int bound = VillageDefenseDutyLayout.MAXIMUM_SLOT_OFFSET;
+        return new BlockPos(
+                requiredInteger(offset.get(0), location + " field 'offset[0]'", -bound, bound),
+                requiredInteger(offset.get(1), location + " field 'offset[1]'", -bound, bound),
+                requiredInteger(offset.get(2), location + " field 'offset[2]'", -bound, bound));
     }
 
     private static StructureTemplatePool.Projection parseProjection(
@@ -406,10 +528,17 @@ public final class VillageBuildingDefinitions extends
             String location,
             int minimum,
             int maximum) {
-        JsonElement element = object.get(field);
+        return requiredInteger(object.get(field), location + " field '" + field + "'", minimum, maximum);
+    }
+
+    private static int requiredInteger(
+            @Nullable JsonElement element,
+            String location,
+            int minimum,
+            int maximum) {
         if (element == null || !element.isJsonPrimitive()
                 || !element.getAsJsonPrimitive().isNumber()) {
-            throw new JsonParseException(location + " field '" + field + "' must be an integer");
+            throw new JsonParseException(location + " must be an integer");
         }
         try {
             BigDecimal value = element.getAsBigDecimal().stripTrailingZeros();
@@ -423,7 +552,7 @@ public final class VillageBuildingDefinitions extends
             return integer;
         } catch (ArithmeticException exception) {
             throw new JsonParseException(
-                    location + " field '" + field + "' must be an integer from "
+                    location + " must be an integer from "
                             + minimum + " through " + maximum);
         }
     }

@@ -1,0 +1,7 @@
+{
+  "mods": {
+    "vgg_absent_optional": "[1]"
+  },
+  "format": 999,
+  "reader": "absent:reader"
+}

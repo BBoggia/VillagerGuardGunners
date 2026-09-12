@@ -1,0 +1,1300 @@
+{
+  "format": 2,
+  "mods": {
+    "mmv": "[2.1.1]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "mmv:village_dark_forest"
+  ],
+  "templates": {
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "2b67ef813c5754c734c12660679a9bd2a0415298cfac2ed0acf1fa9418121aa3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_british_shorthair": [
+      {
+        "kind": "decoration",
+        "sha256": "edc57fe903d772115f13e5b7b1416ba7f939bdd904cc80817f55e51b8cd53ebb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "d3b9061cdfd2f016299bf981e47ea64b99a4ec738bcc24f7ca7bbdf9f13c800e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "dd5f44d91c800fa0ccb56b59460ab5c3300219b1ca53a5e009683710f47eba88",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "9a51003610d5200253840df2c0f1668b7eefe22cd26fe5ed6e815cadf5c0539e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "97b9b2735f1cce3445797dfc0e0b8640946c8be663b1a46370c138b158ce7b13",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "c39066400903855835c120dd372092e0fa77bea0894688fcabf281cbc9c2296c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "278009bc5adbad8fa403fb5f71010bee156fb7daa64e5426995519ce85039a23",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "c5ad1cf9ab4b81fd17cad4e94864bbf66832a9cd21c7913bc4531ed11ee30230",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_tuxedo": [
+      {
+        "kind": "decoration",
+        "sha256": "4f38250b25dccd18aee99c5ba1f1c35c8e68192ab3219d5411393db34f8cd0df",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "a078842dfb8985490e955a8e24fc48f6928d03c42dd29a70a1469552fcce940b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5e87b339faee9f07e654e666e0d4db23e2f08d016ac67ce65fb5fb759bdd21ac",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_1": [
+      {
+        "kind": "decoration",
+        "sha256": "37600b736c5da4957d424c89be32cd133a1926138d585fc59d6bc39a65881904",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_2": [
+      {
+        "kind": "decoration",
+        "sha256": "8600d78e079e55a98ebf26f549b20a98652a23f30a3ff0369a975f315e96cdf2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_3": [
+      {
+        "kind": "decoration",
+        "sha256": "1f65b5f9b0f532d5ae045c503715e430d6104ede4ca71e32b78f6526ac05db42",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_4": [
+      {
+        "kind": "decoration",
+        "sha256": "370f147a6d3d1620d4f9494a4eddcfb3a5c114015260d610109eff3d4fc10efa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_5": [
+      {
+        "kind": "decoration",
+        "sha256": "a2b6842a5912c205e45074bd044451cdfdb3e8b4eacc4ff4dec95a8d544b2f5e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "f22fa7c897a15a27085fd3ae277a2af4ef59d584eab3a5184caec1cda86ec7cf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "02814d2a8aca68cbae5918e86649b8b4b6de4cc22fde95a3b9dc79ce8c618709",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "4920da7a951d80b836a71b5ee46ca24ec6145c3550e2f8bd18b85b8dcc79f22c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/armor_stand/armor_stand_1": [
+      {
+        "kind": "decoration",
+        "sha256": "6800ef40abc89b1419fda98d44a03c1514708e236a52c41e4e403451c192ac80",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/armor_stand/armor_stand_2": [
+      {
+        "kind": "decoration",
+        "sha256": "be533e888aa3ba7f166e20a41391386fc254defc12179e64b07f14d23caecc12",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/armor_stand/armor_stand_3": [
+      {
+        "kind": "decoration",
+        "sha256": "1ff59f326d11aa47a3efc0ca2bbb56d33455bd0aac55422465c65882bcab049f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/armor_stand/armor_stand_4": [
+      {
+        "kind": "decoration",
+        "sha256": "d65845fb4715521e91b50acca187fe0cae12bd85869f69dfe79a9cc1349aa3ed",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/dark_oak_lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "fd6a4d9a9eeeed29c81094b415a2aa34bb6c275c526332eb392c8484ca027080",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/animal_house": [
+      {
+        "kind": "decoration",
+        "sha256": "2fdc43d6a0104c325233c5a6250c1d0940b4ed196a09f21a4b5b6b037c5d382d",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            16
+          ],
+          [
+            4,
+            2,
+            16
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/archers_house": [
+      {
+        "kind": "residence",
+        "sha256": "e1eb78c5d959ae3cb9c9a52e24860946ba2c9bb3a9cefa49e088aeacef1eb774",
+        "beds": [
+          [
+            8,
+            2,
+            12
+          ],
+          [
+            8,
+            3,
+            12
+          ],
+          [
+            8,
+            4,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/big_well": [
+      {
+        "kind": "decoration",
+        "sha256": "0cdaf6bb5a410fb3792a36c65f5e7f6d65a2b34394c655b18201d7cc48e1677a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/blacksmith": [
+      {
+        "kind": "decoration",
+        "sha256": "78aa58a07ea5a60714db60c574095b2a5d18991a17fa254e4da88049f326b33c",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/cartographers_house": [
+      {
+        "kind": "residence",
+        "sha256": "2a27afd380684880c6f49b465538853f407a49488fec335d85d4bbd64d55b904",
+        "beds": [
+          [
+            7,
+            2,
+            2
+          ],
+          [
+            12,
+            12,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            12
+          ],
+          [
+            5,
+            1,
+            13
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/church": [
+      {
+        "kind": "residence",
+        "sha256": "b8984090837033ac738a33bf69fd987491afb0cf106657346d95c86d1f77996b",
+        "beds": [
+          [
+            4,
+            7,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/crop_mound_1": [
+      {
+        "kind": "decoration",
+        "sha256": "28fd915e083d7706d8404015d33ac72f603b9d4e6a3efa0b5c6992ce741ea84f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/crop_pillar_1": [
+      {
+        "kind": "decoration",
+        "sha256": "4c9dedd418421d41e87bd6c69ddcdc8179352fc383c509b57f8cbf5880dc6021",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/crop_pillar_2": [
+      {
+        "kind": "decoration",
+        "sha256": "4458a63f5479b5ef4616d037e18d116d7f58f66b545ca631930805c62be5baeb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/crop_pillar_3": [
+      {
+        "kind": "decoration",
+        "sha256": "1db96c6d98ee1521056c3dd9dca19d367c58737e283e320f675bbcc1a5e6532e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/farm_house": [
+      {
+        "kind": "residence",
+        "sha256": "0f940784f0e14b8225968cf95d0eeeb72023ca1d5e4752e86f10b59c5ed1cef9",
+        "beds": [
+          [
+            16,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            9,
+            2,
+            4
+          ],
+          [
+            9,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/large_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "4005a764d676f3f6d7e754d828e3e369c30eb2861de55515911c14f0472d1d72",
+        "beds": [
+          [
+            9,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/large_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "2794cdad71dfeb92fb5fdbfd5fb837d8c6d4e1f57e02c20c5570ea2f99cedfaf",
+        "beds": [
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            10,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            12
+          ],
+          [
+            4,
+            2,
+            12
+          ],
+          [
+            6,
+            1,
+            13
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/long_house": [
+      {
+        "kind": "residence",
+        "sha256": "0c35a4d3098b0b9221aafa6ae861f445f56a5ed8ff6fa17313afcde638c4523d",
+        "beds": [
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            3,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            20
+          ],
+          [
+            3,
+            2,
+            18
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/market_1": [
+      {
+        "kind": "decoration",
+        "sha256": "143f14b4eeaa92f97f1f7897bc82b42f0052238a83dc34b3830a72832e8fcd22",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/market_2": [
+      {
+        "kind": "decoration",
+        "sha256": "d4f929337e451d5240e94e36b0924795e0e6e8bf092a3dff4fdc24a7f43e2fd7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_1": [
+      {
+        "kind": "decoration",
+        "sha256": "6d2bf2e542545afda716a1f8940ba20523f3c5dec2c98a54eb73fbed4fc4ec59",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_10": [
+      {
+        "kind": "service",
+        "sha256": "df4ecc34fc07d6d15e79cd3be10324e747061f2c8d88ca55ac95ce53e6c551dd",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            8
+          ],
+          [
+            4,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_11": [
+      {
+        "kind": "residence",
+        "sha256": "cea89518e3bf13265cbe0bf74df766d254c7f9f79d0441160b40ce3d54dc9ee4",
+        "beds": [
+          [
+            2,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "637ec53ecdad75be69ce1954ed5b361b9e8ff2cc67edc791780adf6cc4d53d0d",
+        "beds": [
+          [
+            6,
+            2,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            2,
+            3
+          ],
+          [
+            9,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "c18900a7d293f17f30f177b13636933d2520546a13d63b300e81ab1c16861372",
+        "beds": [
+          [
+            2,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            2,
+            3
+          ],
+          [
+            7,
+            2,
+            4
+          ],
+          [
+            9,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "14689b0017df1b84cee64d9a28a8abbf94c2dc4e78e04a92d9c3343abf4598d1",
+        "beds": [
+          [
+            6,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            8
+          ],
+          [
+            6,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "af1ade34de48f528a100f14a8a4abaf53b2ab2c88de22876688317a4ee962c23",
+        "beds": [
+          [
+            2,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            4,
+            2,
+            2
+          ],
+          [
+            6,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_6": [
+      {
+        "kind": "residence",
+        "sha256": "8e658a1c2cd50d7564777c15b922391b6a8ba9068e20f542d4f702f13f1c5a5f",
+        "beds": [
+          [
+            3,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            8
+          ],
+          [
+            4,
+            1,
+            10
+          ],
+          [
+            4,
+            2,
+            8
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "746f82b9c76b79b27790f7a382ab2673ea2e06097f20a13b259324e5c81c4917",
+        "beds": [
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            2,
+            2,
+            9
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            8,
+            2,
+            4
+          ],
+          [
+            8,
+            2,
+            9
+          ],
+          [
+            8,
+            3,
+            4
+          ],
+          [
+            8,
+            4,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "e44bede243a20251a3a13916bb33cb5d37e955e8b61cffa3298868f9049ea32f",
+        "beds": [
+          [
+            2,
+            2,
+            11
+          ],
+          [
+            5,
+            2,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/small_house_9": [
+      {
+        "kind": "residence",
+        "sha256": "d6b2163d00e02b20831186060909035697dadb20b29d11f8be24bf0c60acee23",
+        "beds": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            6,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            6
+          ],
+          [
+            5,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/tall_house": [
+      {
+        "kind": "residence",
+        "sha256": "2134dfd71f797b96132e245189ea8a2ab6af93f1d6a5a3341395a69de7150404",
+        "beds": [
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            6,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            9
+          ],
+          [
+            5,
+            2,
+            9
+          ],
+          [
+            6,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "mmv:dark_oak/houses/well_lower": [
+      {
+        "kind": "decoration",
+        "sha256": "8e43d2791125fae810baa67f6e6436d580811266707e0f3a8bf49e0350ec045f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/houses/well_upper": [
+      {
+        "kind": "decoration",
+        "sha256": "3a03a47a17a014fb7c6d47ac462ebabfba3c84a150a1133a3d52aab3d2d753a2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "1d04cc8cd1ec6f4ce9389345ead5865f26f50716eb9a17f4ee039eba3e9e001d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "6f8c263738c00d400a138c15d1db643e2c5dade07049a322b22deb88becf6dbd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "70d0bf41886d4d7297f9a15543f99a68222dcc768ebb1c1bbec601db7a80e792",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "c954f669b94aa8c1ffb801ad5db4bb8da7d89a81e08ae09d9d4f22858023dd64",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "25c02e9b931427a0e19a1e0af091dbb48ddcfe99fa14bb27730602f460cdd041",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "f95304b6ba0f4c8d0908e2df705cc81ce09f44bc5c2df05c1a5df991c303f8c8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "91522ff0792ff3ac77f83e449ded1d74c7d3bea995efe67391d846d4e5f30750",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "3120d11088e43a93fc1c7c74f94b47f1dcb91284a2fd24930a078b36e1e320f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "56f47ba98b792772f703fbfb547c442386d119c63fd074dff69c71c9626986c6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "db8852366aa5ac29f673cd14dc7f29602d4ee42d9d774257bafe0e3a7e546191",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "79911d4a93a883a0463e5c01d9ec5cb5d6b0c480b066457e558e7ca4979771c9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "cc97539baf58f780d75a441764a5c06fb199c28af404ebf266fbb81b3fbfb7c3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "23e149a5623edbe431528c58ae0fec6cc496c2b1aa7aef676555d1eb566dff14",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "b52ca9fd435cc7113783bfed14abeddfb75c6f4b5f3a96fd74f894fd4f717a54",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "8180631b7d5d536d6fd57076aef2fc68fb28206549dfef4f67d06f5332ab0fdd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "68b4b2ed41e3e2bba329337fc8feb26941244796c05d52adbd4a04f668eae957",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/terminators/terminator_01": [
+      {
+        "kind": "decoration",
+        "sha256": "aa2fb99ef2f06f303c9e9f00f7ae4974dd290b1ab3071226ae9f51d7061ee9cc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/terminators/terminator_03": [
+      {
+        "kind": "decoration",
+        "sha256": "dc0eaed405e858e0ab8447889c207518eca18a4c10f4de12170c99504540f088",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/town_centers/town_center_1": [
+      {
+        "kind": "gathering",
+        "sha256": "ac27a6d2664f3b7b92c6bc8fe1e2d3d2354a6572d447638d61d591283af8f776",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/town_centers/town_center_2": [
+      {
+        "kind": "gathering",
+        "sha256": "7105e69e46a058004f5746650dacf432b8885561d1e5d1c8b3b587fec86ea03b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:dark_oak/town_centers/town_center_3": [
+      {
+        "kind": "gathering",
+        "sha256": "00300cf5f19bc289c9ed3c923561bf21c16d73142d36f502c592deaff007be91",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/archery_range_1": [
+      {
+        "kind": "service",
+        "sha256": "6c5891658d761b66f67d7ea108027bb67450c9ee7e38ebfdf74c7c3c6ca25840",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/barrels_1": [
+      {
+        "kind": "decoration",
+        "sha256": "a18bd11579b83a4305178fb982ca2622ae2367ea26e119178ac656ea79d22381",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/crop_pillar_1": [
+      {
+        "kind": "decoration",
+        "sha256": "d47703d32b079c4882fb1b79de46e450d85956f0ff28dbe3c2122c2bf68c8e85",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/crop_pillar_2": [
+      {
+        "kind": "decoration",
+        "sha256": "a086757f6df3477bd91fb06f5993ab683f1796a8ef819b9c56aa95e01b6c643c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/crop_pillar_3": [
+      {
+        "kind": "decoration",
+        "sha256": "0f53a18b52582199da87d13f8d62fed723c24b8af2386cd0f6b012cb7f1b2847",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/crop_pillar_4": [
+      {
+        "kind": "decoration",
+        "sha256": "397483456864f99afdd057145c021ad75685f4023722a07cb49fe6137e492d4a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/hay_bales_1": [
+      {
+        "kind": "decoration",
+        "sha256": "26dab05603ca04e7425251d47b95624edc64a702d21bddda8906299961dabddc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/melons_1": [
+      {
+        "kind": "decoration",
+        "sha256": "62670114bee6cbb898781b5477c1e124aa388adefec42f33198150474cfb010c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/melons_2": [
+      {
+        "kind": "decoration",
+        "sha256": "f63fb42ba7bb8e784c042d9052f913319b0add1c27e3a5f76c50a5457166c1b7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/melons_3": [
+      {
+        "kind": "decoration",
+        "sha256": "a66242226a20150da197c0f5afc776e9fddf4241cea23d74eafef43471a9e407",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/wheat_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5809976a131f6c300230f9443a8cce68d42edc0e9f535df819cd0663bf236461",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/houses/wheat_2": [
+      {
+        "kind": "decoration",
+        "sha256": "b3fe6ccab7bab58ed075b946fbb788e3c47a660b79032ea876f8042256b87185",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/jungle_lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "08cf97d6cd846abe2366ddb11af753e35556e214785e1f51f5ed34dc5a1b82b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "dd15bf5c2e874d52feda57a628e1a7989db86f9d73fd0681f1d0e513863ea880",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "65883f78b905005f3002262e1033629e42ceb06e3603f1b1d73cdf1d83f11e00",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:jungle/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "7b46e0afbc08ccf57d2a5db9c7d7da01a8a2f29ca018ac1ee3e2b2184b29a3fc",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

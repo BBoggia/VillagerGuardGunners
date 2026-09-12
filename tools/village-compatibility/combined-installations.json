@@ -1,0 +1,540 @@
+{
+  "schema": 1,
+  "runtime": {
+    "minecraftDirectory": "~/Library/Application Support/minecraft",
+    "java": "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java",
+    "version": "1.20.1-forge-47.4.10",
+    "forgeVersion": "47.4.10"
+  },
+  "jarDirectories": [
+    "~/Downloads/mc_mods_to_add_compat",
+    "~/Library/Application Support/minecraft/mods"
+  ],
+  "mods": {
+    "villagerguardgunners": {
+      "path": "../../build/libs/villagerguardgunners-1.6.jar"
+    },
+    "vggcompatprobe": {
+      "path": "../../build/compatibility-qa/vgg-compatibility-probe.jar"
+    }
+  },
+  "cases": [
+    {
+      "name": "vanilla",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "mods": [],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "ctov",
+      "seed": 314159,
+      "structure": "ctov:large/village_plains",
+      "mods": [
+        "ctov"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "villagesandpillages",
+      "seed": 314159,
+      "structure": "villagesandpillages:village_witch",
+      "mods": [
+        "villagesandpillages"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "HOSTILE"
+        },
+        {
+          "path": "result.diagnostics.requestedVillageRecord",
+          "op": "eq",
+          "value": "absent"
+        },
+        {
+          "path": "result.settled.guards",
+          "op": "eq",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "name": "integrated-villages",
+      "seed": 314159,
+      "structure": "integrated_villages:clockwork_village",
+      "mods": [
+        "integrated_villages"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "mr-tidal-towns",
+      "seed": 314159,
+      "structure": "joshie:village_ocean",
+      "mods": [
+        "mr_tidal_towns"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "bettervillage",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "mods": [
+        "bettervillage"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "skyvillages",
+      "seed": 314159,
+      "structure": "skyvillages:skyvillage",
+      "mods": [
+        "skyvillages"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "mmv",
+      "seed": 314159,
+      "structure": "mmv:village_jungle",
+      "mods": [
+        "mmv"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "lios-overhauled-villages",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "mods": [
+        "lios_overhauled_villages"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "libertyvillagers",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "mods": [
+        "libertyvillagers"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        },
+        {
+          "path": "result.quartermasterClaimChecks.releasedRejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "quartermasterClaimChecks": true
+    },
+    {
+      "name": "ctov-with-libertyvillagers",
+      "seed": 314159,
+      "structure": "ctov:large/village_plains",
+      "mods": [
+        "ctov",
+        "libertyvillagers"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        },
+        {
+          "path": "result.quartermasterClaimChecks.releasedRejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "quartermasterClaimChecks": true
+    },
+    {
+      "name": "mmv-with-libertyvillagers",
+      "seed": 314159,
+      "structure": "mmv:village_jungle",
+      "mods": [
+        "mmv",
+        "libertyvillagers"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        },
+        {
+          "path": "result.quartermasterClaimChecks.releasedRejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "quartermasterClaimChecks": true
+    },
+    {
+      "name": "mr-tidal-towns-with-libertyvillagers",
+      "seed": 314159,
+      "structure": "joshie:village_ocean",
+      "mods": [
+        "mr_tidal_towns",
+        "libertyvillagers"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        },
+        {
+          "path": "result.quartermasterClaimChecks.releasedRejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "quartermasterClaimChecks": true
+    },
+    {
+      "name": "skyvillages-with-libertyvillagers",
+      "seed": 314159,
+      "structure": "skyvillages:skyvillage",
+      "mods": [
+        "skyvillages",
+        "libertyvillagers"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        },
+        {
+          "path": "result.quartermasterClaimChecks.releasedRejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "quartermasterClaimChecks": true
+    },
+    {
+      "name": "ctov-with-integrated-villages",
+      "seed": 314159,
+      "structure": "ctov:large/village_plains",
+      "mods": [
+        "ctov",
+        "integrated_villages"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "bettervillage-with-lios-overhauled-villages",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "mods": [
+        "bettervillage",
+        "lios_overhauled_villages"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        }
+      ]
+    },
+    {
+      "name": "all-nine",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "mods": [
+        "ctov",
+        "villagesandpillages",
+        "integrated_villages",
+        "mr_tidal_towns",
+        "bettervillage",
+        "skyvillages",
+        "mmv",
+        "lios_overhauled_villages",
+        "libertyvillagers"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "FRIENDLY"
+        },
+        {
+          "path": "result.quartermasterClaimChecks.releasedRejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "quartermasterClaimChecks": true
+    }
+  ]
+}

@@ -1,0 +1,1558 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:small/village_snowy_igloo"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "5e7a79a02de17589f320808cc916cd6c5cdb1d40ec2deb23d39122d21251cfeb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "1598fb440b0874065eea6fd3e878b1df1fb9835a13f1bd886e3d3f5271ad19d2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/bench": [
+      {
+        "kind": "decoration",
+        "sha256": "7e5709f13b396c4984a6fa05c086ab7f0c30225d63777a74b57dbfe363a8ca50",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/berry": [
+      {
+        "kind": "decoration",
+        "sha256": "a437211b38f0156fed25cc8db61c9b148e8079af88c6f94f1c394bf9e4e933ac",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/bucket": [
+      {
+        "kind": "decoration",
+        "sha256": "be002cde0169f77e7b40ce51631f4d123428dc96cbd9db7ebff0b7552e66954f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "7aec13e8041b1b33e53acc842abaee5d9231e3f1a26c7b3ecd64f76b44da690b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "29fda9a06959f2fb02b5a28b9735529791b1384c1499a46b9eda1b7264a90642",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "da981776550599f762e53569fa0d75ba4ddcdf0432dcd34ed6858d55b263e941",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "7a4ed7cbdc715e9809c9c284727646698066c3e02510ff31dfce83d7b4d3548a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "1b2f172e7fc7d536370f0885f37a0d062f406ec82c225c2c3bc230eded059197",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "0f39fdd02edf1a3e114405042f934a44f5f96d19f787a64546653bc461d764ed",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "a578eb050a74e1e5c5fc33a6dd56a5c093f1ddd66f41a6db4071c3131b429a23",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/lamp_5": [
+      {
+        "kind": "decoration",
+        "sha256": "ebf601a77e47f8693e9292ddfe598d97834bad6a3955bfe89e0a8aafe904c547",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "923bd75bb24a2a3a9292f27e031de6dc48a208bab5b3bf9a6fc47608530bee1b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/snowman": [
+      {
+        "kind": "decoration",
+        "sha256": "cc83ce4e079ef74aef0d5133f6703ed9356b5ab5f1c719031ed97e40bae215b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/statue": [
+      {
+        "kind": "decoration",
+        "sha256": "42029382c39decfd6238a5820221522bf92d09e328b7e3dc19c8070576195ae4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "f3ba4c730195b16ae65d4a7b93be6b580e6197e34ec2f0e5134d40c7c8307dbe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "ebd4627d976523bddd71a850c5dfa95a675bf7e73af4b429cef8cc796979707d",
+        "beds": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            7,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "355ec39ca5a9a866271279fdc213ef39eb8ba14b9d121821bdfa1c7ebb379c40",
+        "beds": [
+          [
+            1,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            4
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "c3b44b6d020655f7dcb5eb6536bc8ec357a99d5be6c9a080258ae9b62e365e54",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "9f728684365f59ff25e29009f24f7095344ae0862467108df7477355bbb42e19",
+        "beds": [
+          [
+            1,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "15370fcf8b4ca43f3f9f3dab60b8000530c1b552904f9e2222fcbc457882133c",
+        "beds": [
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            2
+          ],
+          [
+            7,
+            1,
+            3
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "10d416133998f20486088606fab6965b1ec350257bfb33014e4ffbaf001c7d46",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "75349d18d19649d9f2168993c5b514761cd38b787c4cb4d70ddddd84a8ce0655",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "24d708c6c8d770f8cf68a1911b3e596af0db8f74c3133843b81296f942ca3f6e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "e64a85aeceb96deaa86cf9e8b9cfffffcd7408b2aba32648487c41544376117c",
+        "beds": [
+          [
+            6,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "f3e80888a0262bf3dd56efbb7cc180f6c1ee20e689d0426393916810edb0ee82",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "976e7abffb5f15d3b10c44414e472e71774a91a676c3ebc494fe19a39540d13e",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "5c350448bf61bbd99952158382498b6ae12859451a2f3f5dcd827f2fbee604ba",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            7,
+            8
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            7,
+            7,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "9dd79ffa320ac51be9cecc545004587789f8d899ea2b75e63dd1586b1a8faf6b",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "b53c5e07d92a88d3cbe92b6365e251dad57547066fb10fc9e1db05df3c51c4d0",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/cartographer": [
+      {
+        "kind": "service",
+        "sha256": "3a2b9c6e04cb711bd8ef9a1b6422b38be1073fc1be32171a5cb0216304a41954",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "d2abc83a8097b377f5fb4b151966eec3fa03944de2b210320aa3e121181ba442",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "aaf679885bda5effad7b0c66268b3f0fefce7ba894f71e5b96b496a9effa9535",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "bc0a7b0d365aa68e6b305b689f96fede490459d3ec1e183a9cf76e5b2bb5b5b9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "0eaf32cb24775c1a94fe3eb0b21a239edd73ef4bfc11869e346c8167fb08e37f",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            6
+          ],
+          [
+            3,
+            0,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "47e1bbe870bcbf1511ab401d2e7e4f8c335ac93aecc6bc9d830c9315966269d8",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            14
+          ],
+          [
+            8,
+            2,
+            13
+          ],
+          [
+            9,
+            2,
+            13
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "130c4ff59edb0ffb16d26d85f6ca6ded64065474e05dca1200bcd4e755f6d86e",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "d68455f9c71f15d8e315ef94c3cd3c0384d6724b827b2467f457c739537ce707",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            2
+          ],
+          [
+            6,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "982a1192822b98d8ff96260c87635b5249423a8ce1685401a6839f8f1335e29c",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            7,
+            2,
+            2
+          ],
+          [
+            8,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "da769abf0c34621c4cc5a24e10ec627bcc377b209183d1704f3aefbd327b5e01",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "9174310e3aaea9c6beb5a1ac503c4268a4a31f691fa5a675040fe0c00ac0ad66",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "9147d071a413e5b6bad48bac51a04261fbd8e311757966be48c5a42d03e1c4e4",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "7d9da7169b8852c53e46b0f2cfb9b4587ee1736c0c83f8adc414ec86c2893c14",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "c122d2a6c58a0e42be22fef06894fa8e68664f0ef431f7ac8b5756f64b4909fa",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/horticulturist": [
+      {
+        "kind": "service",
+        "sha256": "f02949eae3936cfda35f68c85dbb98307f66adcdc932ccd34d17db7dfae5fe36",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "e01f7c7771edb0ca383168d903742f11f6659f9467db83bd8054680ce6019b84",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            0,
+            4
+          ],
+          [
+            2,
+            0,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "a512a81d8cbc5a681729be659dd240135deb28278cf25428cefa11bf83a496ae",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            7,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "dc9ed5db558407752e11b9ca958b82552dca03a1f4cd00c5b06a7a5f19113814",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "35b3ef3450dae1c20ac4f23922ecee6db3bb432efbc3d803aee03d140dcddd9a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "a174dd5a812b0a8d09ee1b3a18942e21616485a38f47d34c6a47b47424927507",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "b8c6c3b4aeb0b9e3794766da4a310b461708225f44a2f31146a6c1c1f87f50ec",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "a1212e321fb4602f7d841c8857aeeb0b8d1872e702812d14ef70aac4d9a3b3fb",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            7,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "39d5da9396a7cc48cecea74512f407126026fa491be311b781c2271cfb162d39",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            3
+          ],
+          [
+            5,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "f23232edf997fbc4162112b1911dc4656b4c0b92d89e151e1b6791f959a01382",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "9fedfe06c36dc5c2b21f0489226c87457d0aa399fca5ee4488f8fe9b5c8f64e9",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "c796a1f336d9978cba933b6f597fa5d974a42526218276661f87de8d834626dc",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "1c0bf080ed49decb314084f9379eccf597aaf8a7ff4225a62b555e0549a73515",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "13da54c949b0a7191450354c9a0d4186620c4d1b770c6ab56144093bc26c7419",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            2,
+            6
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            9
+          ],
+          [
+            4,
+            6,
+            4
+          ],
+          [
+            7,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "69f48649e91469f7f89067a3ac01c96f961f4bd69f90258794452e5312c02582",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            2,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            9
+          ],
+          [
+            7,
+            1,
+            10
+          ],
+          [
+            11,
+            1,
+            4
+          ],
+          [
+            11,
+            1,
+            5
+          ],
+          [
+            11,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "fe65b19ad5bafde8d4b869bac696ae197f193bcda9dbb8c449ad8badaa48fe32",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "cc1d3bb1a01a46e948623d221949029627edadee79faa500a24763ca5e98609f",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "13f4faa24c4641aad6942494c3fc8037240ca821e30cb524d78e53f121a8d303",
+        "beds": [
+          [
+            3,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "59d2e7c7c32598de7831cb4834aaba8a1d589d7133509dff9a5b00d3052bfee8",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "ce2338d27dad7dc5c9983cc2c694e044b6bd63e27c827f095d5fd9a886fef194",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/shepherd": [
+      {
+        "kind": "service",
+        "sha256": "6e44f984006eb8637b6e7da7255845bfa6607c9ff69d5113e35cfe36877a5fb1",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "a5d99875eacbee954bc0ad67d510929ab8b6ed45d80eb02df69773846ddb8f01",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "812bf685b442a0073738f4f26cc65e2d2ef4dcc511b9265b0ba12ffecd622d72",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            5,
+            8
+          ],
+          [
+            4,
+            5,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "bf184a394123b3896f338a0671ea50ced0cc8b1486756ed59358fca54697acad",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            9
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "ee849d5525f31f82d104be9ea77de47082da948fb5b28867fb8e2035a4b2534f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "b6a18e2dbf65b66bfc0353f5a8508f5a2660da35843adf9eb64691223cda24a1",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "48f6dc92665c3638f90ae5148762f4d09784a5a83bcaf2761fe85da934343019",
+        "beds": [
+          [
+            2,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "edfb38c5c7fb36011e12563cfdd0380b30b07cc3568a1f52a5fa38ed1318ba0a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            3
+          ],
+          [
+            5,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "71611b617a2e6e54288b411bc3d45e1143ad96d6b85a36d13477a92547c4e8f2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "2d6ada5eeb1abf38def68d9e2752d446be59eb137160fb20580bac7e25ab7bc2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "374983d1bb3c68237a4b25da84379659321a30ed36e6b43ed2ccb73fffb4b003",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "6da84884dfab26827321d5b8f8582c0f5c322a57b8a31e3b2af1c1b0d82f60e9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "19a288fb6918d91bff177d570b6ffae645f6868d19fdfeb4605d33df4391f395",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "fd0aa123cd9e0998d3b95e0d45b07d3b9f0b7a34b13336b66f5c4b059947d901",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "804d2c70b5ab1b8ff0352939cdf8aa471bfde05cb28c8735589afde25a8088c2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "8d8a30d9796c64887d857f6e9e349ca1e8035fc2c8dbc8a377156874d4bb33dd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "8ed11fe1d6b9ab679c6fa18719255d84166d979610b67d0de430e828ff143aef",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "b7c700ccd1fa1ac3930860669ecdca2a54982735b611d92b4b9158ce0d20421b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "8f8c806a53b773a519a61a163de3e4fe8b33d33a1d107a11f679edbf2e275df9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "3b5a3102600a5b25de6c406ab0c207a0f2f18fa69f0088b1db993c389fdcc64f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/snowy/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "fdd25fcf000e94242a1312bd742b6a2c821e77cfd42edcb2292104c77394b7f0",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "small"
+}

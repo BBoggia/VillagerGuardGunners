@@ -1,0 +1,1124 @@
+[
+  {
+    "building": "barracks",
+    "biome": "plains",
+    "layout": "compact",
+    "size": [
+      15,
+      12,
+      13
+    ],
+    "weight": 1,
+    "lanternCount": 3,
+    "dutySlots": [
+      {
+        "key": "center_muster",
+        "offset": [
+          0,
+          0,
+          0
+        ],
+        "facing": "north",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "west_muster",
+        "offset": [
+          -1,
+          0,
+          0
+        ],
+        "facing": "west",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "east_muster",
+        "offset": [
+          1,
+          0,
+          0
+        ],
+        "facing": "east",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "entry_sentry",
+        "offset": [
+          -1,
+          0,
+          -6
+        ],
+        "facing": "north",
+        "kind": "sentry",
+        "weapon_requirement": "any"
+      }
+    ],
+    "palette": [
+      {
+        "symbol": "W",
+        "name": "minecraft:white_terracotta"
+      },
+      {
+        "symbol": "F",
+        "name": "minecraft:cobblestone"
+      },
+      {
+        "symbol": "m",
+        "name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "symbol": "P",
+        "name": "minecraft:oak_planks"
+      },
+      {
+        "symbol": "B",
+        "name": "minecraft:spruce_planks"
+      },
+      {
+        "symbol": "w",
+        "name": "minecraft:white_carpet"
+      },
+      {
+        "symbol": "K",
+        "name": "minecraft:gray_carpet"
+      },
+      {
+        "symbol": "L",
+        "name": "minecraft:stripped_oak_log",
+        "properties": {
+          "axis": "y"
+        }
+      },
+      {
+        "symbol": "X",
+        "name": "minecraft:stripped_oak_log",
+        "properties": {
+          "axis": "x"
+        }
+      },
+      {
+        "symbol": "Z",
+        "name": "minecraft:stripped_oak_log",
+        "properties": {
+          "axis": "z"
+        }
+      },
+      {
+        "symbol": "H",
+        "name": "minecraft:spruce_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "S",
+        "name": "minecraft:oak_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "h",
+        "name": "minecraft:dark_oak_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "R",
+        "name": "minecraft:spruce_stairs",
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "r",
+        "name": "minecraft:spruce_stairs",
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "E",
+        "name": "minecraft:dark_oak_stairs",
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "e",
+        "name": "minecraft:dark_oak_stairs",
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "N",
+        "name": "minecraft:spruce_stairs",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "u",
+        "name": "minecraft:oak_stairs",
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "v",
+        "name": "minecraft:oak_stairs",
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "b",
+        "name": "minecraft:oak_stairs",
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "t",
+        "name": "minecraft:oak_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "true",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "j",
+        "name": "minecraft:oak_trapdoor",
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "open": "true",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "i",
+        "name": "minecraft:oak_trapdoor",
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "open": "true",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "k",
+        "name": "minecraft:oak_trapdoor",
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "open": "true",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "G",
+        "name": "minecraft:glass_pane",
+        "properties": {
+          "north": "false",
+          "south": "false",
+          "east": "true",
+          "west": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "O",
+        "name": "minecraft:glass_pane",
+        "properties": {
+          "north": "true",
+          "south": "true",
+          "east": "false",
+          "west": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "f",
+        "name": "minecraft:spruce_fence",
+        "properties": {
+          "north": "false",
+          "south": "false",
+          "east": "false",
+          "west": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "p",
+        "name": "minecraft:spruce_pressure_plate",
+        "properties": {
+          "powered": "false"
+        }
+      },
+      {
+        "symbol": "q",
+        "name": "minecraft:lantern",
+        "properties": {
+          "hanging": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "!",
+        "name": "minecraft:green_wall_banner",
+        "properties": {
+          "facing": "north"
+        }
+      },
+      {
+        "symbol": "d",
+        "name": "minecraft:oak_door",
+        "properties": {
+          "facing": "north",
+          "half": "lower",
+          "hinge": "left",
+          "open": "false",
+          "powered": "false"
+        }
+      },
+      {
+        "symbol": "D",
+        "name": "minecraft:oak_door",
+        "properties": {
+          "facing": "north",
+          "half": "upper",
+          "hinge": "left",
+          "open": "false",
+          "powered": "false"
+        }
+      },
+      {
+        "symbol": "o",
+        "name": "minecraft:oak_door",
+        "properties": {
+          "facing": "north",
+          "half": "lower",
+          "hinge": "right",
+          "open": "false",
+          "powered": "false"
+        }
+      },
+      {
+        "symbol": "U",
+        "name": "minecraft:oak_door",
+        "properties": {
+          "facing": "north",
+          "half": "upper",
+          "hinge": "right",
+          "open": "false",
+          "powered": "false"
+        }
+      }
+    ],
+    "layers": [
+      [
+        "VVVVVVVVFFVVVVV",
+        "VVVVVVVPPPPPVVV",
+        "VVVVVVVPPPPPVVV",
+        "VFFFFFFFFFFFFFV",
+        "VFPPPPPPPPPPPFV",
+        "VFPPPPPPPPPPPFV",
+        "VFPPPPFPPPPPPFV",
+        "VFPPPPFPPPPPPFV",
+        "VFPPPPPPPPPPPFV",
+        "VFPPPPPPPPPPPFF",
+        "VFPPPPPPPPPPPFF",
+        "VFFFFFFFFFFFFFV",
+        "VVVVVVVVVVVVVVV"
+      ],
+      [
+        "........J......",
+        ".......L...L...",
+        "...............",
+        ".LFFFFLFdoLFFL.",
+        ".mw.w.FC..uffm.",
+        ".FK.K.F...uffF.",
+        ".F..........bF.",
+        ".F...........F.",
+        ".F....F....A.F.",
+        ".Fw.w.Fv.......",
+        ".mK.K.Fv.......",
+        ".LFFFFLFFFLFFL.",
+        "..............."
+      ],
+      [
+        "...............",
+        ".......L...L...",
+        "...tt......t...",
+        ".LWGGWLWDULGWL.",
+        ".W....W....ppW.",
+        "iO...SW....ppOk",
+        ".W...........W.",
+        ".W...........W.",
+        "iO....W......Ok",
+        ".W...SW........",
+        ".W....W........",
+        ".LWGGWLWGGLGWL.",
+        "...jj...jj.j..."
+      ],
+      [
+        "...............",
+        ".......L...L...",
+        ".......q..!....",
+        ".LWGGWLWGGLGWL.",
+        ".W....W......W.",
+        ".O....W......O.",
+        ".W...........W.",
+        ".W...........W.",
+        ".O....W......O.",
+        ".W....W........",
+        ".W....W........",
+        ".LWGGWLWGGLGWL.",
+        "..............."
+      ],
+      [
+        ".......HHHHH...",
+        ".......ZXXXZ...",
+        "E......ZBBBZ...",
+        "RXXXXXXXXXXXXX.",
+        "RZ....Z......Z.",
+        "RZ....Z......Z.",
+        "RZ....Z......Z.",
+        "RZ.q..Z......Z.",
+        "RZ....Z......Z.",
+        "RZ....Z......Z.",
+        "RZ....Z......Z.",
+        "RXXXXXXXXXXXXX.",
+        "E.............."
+      ],
+      [
+        "...............",
+        "...............",
+        ".E.....NNNNN..e",
+        ".RPPPPPPPPPPPPr",
+        ".R............r",
+        ".R............r",
+        ".R.......q....r",
+        ".RXXXX........r",
+        ".R............r",
+        ".R............r",
+        ".R............r",
+        ".RPPPPPPPPPPPPr",
+        ".E............e"
+      ],
+      [
+        "...............",
+        "...............",
+        "..E..BB......e.",
+        "..RPPBBPPGGPPr.",
+        "..R..BB......r.",
+        "..R..BB......r.",
+        "..R..BBXXXXXXr.",
+        "..R..BB......r.",
+        "..R..BB......r.",
+        "..R..BB......r.",
+        "..R..BB......r.",
+        "..RPPBBPPPPPPr.",
+        "..E..BB......e."
+      ],
+      [
+        "...............",
+        "...............",
+        "...BB..E....e..",
+        "...BB..RPPPPr..",
+        "...BB..R....r..",
+        "...BB..R....r..",
+        "...BB..R....r..",
+        "...BB..R....r..",
+        "...BB..R....r..",
+        "...BB..R....r..",
+        "...BB..R....r..",
+        "...BB..RPPPPr..",
+        "...BB..E....e.."
+      ],
+      [
+        "...............",
+        "...............",
+        "...hh...E..e...",
+        "...HH...RPPr...",
+        "...HH...R..r...",
+        "...HH...R..r...",
+        "...HH...R..r...",
+        "...HH...R..r...",
+        "...HH...R..r...",
+        "...HH...R..r...",
+        "...HH...R..r...",
+        "...HH...RPPr...",
+        "...hh...E..e..."
+      ],
+      [
+        "...............",
+        "...............",
+        ".........BB....",
+        ".........BB....",
+        ".........BB....",
+        ".........BB....",
+        ".........BB....",
+        ".........BB....",
+        ".........BB....",
+        ".........BB....",
+        ".........BB....",
+        ".........BB....",
+        ".........BB...."
+      ],
+      [
+        "...............",
+        "...............",
+        ".........hh....",
+        ".........HH....",
+        ".........HH....",
+        ".........HH....",
+        ".........HH....",
+        ".........HH....",
+        ".........HH....",
+        ".........HH....",
+        ".........HH....",
+        ".........HH....",
+        ".........hh...."
+      ],
+      [
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "...............",
+        "..............."
+      ]
+    ]
+  },
+  {
+    "building": "barracks",
+    "biome": "plains",
+    "layout": "courtyard",
+    "size": [
+      16,
+      12,
+      16
+    ],
+    "weight": 1,
+    "lanternCount": 4,
+    "dutySlots": [
+      {
+        "key": "center_muster",
+        "offset": [
+          0,
+          0,
+          0
+        ],
+        "facing": "north",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "west_muster",
+        "offset": [
+          -1,
+          0,
+          0
+        ],
+        "facing": "west",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "east_muster",
+        "offset": [
+          1,
+          0,
+          0
+        ],
+        "facing": "east",
+        "kind": "muster",
+        "weapon_requirement": "any"
+      },
+      {
+        "key": "entry_sentry",
+        "offset": [
+          2,
+          0,
+          -10
+        ],
+        "facing": "north",
+        "kind": "sentry",
+        "weapon_requirement": "any"
+      }
+    ],
+    "palette": [
+      {
+        "symbol": "W",
+        "name": "minecraft:white_terracotta"
+      },
+      {
+        "symbol": "F",
+        "name": "minecraft:cobblestone"
+      },
+      {
+        "symbol": "m",
+        "name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "symbol": "a",
+        "name": "minecraft:andesite"
+      },
+      {
+        "symbol": "P",
+        "name": "minecraft:oak_planks"
+      },
+      {
+        "symbol": "B",
+        "name": "minecraft:spruce_planks"
+      },
+      {
+        "symbol": "w",
+        "name": "minecraft:white_carpet"
+      },
+      {
+        "symbol": "K",
+        "name": "minecraft:gray_carpet"
+      },
+      {
+        "symbol": "g",
+        "name": "minecraft:gravel"
+      },
+      {
+        "symbol": "c",
+        "name": "minecraft:coarse_dirt"
+      },
+      {
+        "symbol": "L",
+        "name": "minecraft:stripped_oak_log",
+        "properties": {
+          "axis": "y"
+        }
+      },
+      {
+        "symbol": "X",
+        "name": "minecraft:stripped_oak_log",
+        "properties": {
+          "axis": "x"
+        }
+      },
+      {
+        "symbol": "Z",
+        "name": "minecraft:stripped_oak_log",
+        "properties": {
+          "axis": "z"
+        }
+      },
+      {
+        "symbol": "H",
+        "name": "minecraft:spruce_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "S",
+        "name": "minecraft:oak_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "h",
+        "name": "minecraft:dark_oak_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "s",
+        "name": "minecraft:cobblestone_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "R",
+        "name": "minecraft:spruce_stairs",
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "r",
+        "name": "minecraft:spruce_stairs",
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "E",
+        "name": "minecraft:dark_oak_stairs",
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "e",
+        "name": "minecraft:dark_oak_stairs",
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "N",
+        "name": "minecraft:spruce_stairs",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "v",
+        "name": "minecraft:oak_stairs",
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "b",
+        "name": "minecraft:oak_stairs",
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "shape": "straight",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "t",
+        "name": "minecraft:oak_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "true",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "j",
+        "name": "minecraft:oak_trapdoor",
+        "properties": {
+          "facing": "south",
+          "half": "bottom",
+          "open": "true",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "i",
+        "name": "minecraft:oak_trapdoor",
+        "properties": {
+          "facing": "west",
+          "half": "bottom",
+          "open": "true",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "k",
+        "name": "minecraft:oak_trapdoor",
+        "properties": {
+          "facing": "east",
+          "half": "bottom",
+          "open": "true",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "G",
+        "name": "minecraft:glass_pane",
+        "properties": {
+          "north": "false",
+          "south": "false",
+          "east": "true",
+          "west": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "O",
+        "name": "minecraft:glass_pane",
+        "properties": {
+          "north": "true",
+          "south": "true",
+          "east": "false",
+          "west": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "f",
+        "name": "minecraft:spruce_fence",
+        "properties": {
+          "north": "false",
+          "south": "false",
+          "east": "false",
+          "west": "false",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "p",
+        "name": "minecraft:spruce_pressure_plate",
+        "properties": {
+          "powered": "false"
+        }
+      },
+      {
+        "symbol": "q",
+        "name": "minecraft:lantern",
+        "properties": {
+          "hanging": "true",
+          "waterlogged": "false"
+        }
+      },
+      {
+        "symbol": "!",
+        "name": "minecraft:green_wall_banner",
+        "properties": {
+          "facing": "north"
+        }
+      },
+      {
+        "symbol": "d",
+        "name": "minecraft:oak_door",
+        "properties": {
+          "facing": "north",
+          "half": "lower",
+          "hinge": "left",
+          "open": "false",
+          "powered": "false"
+        }
+      },
+      {
+        "symbol": "D",
+        "name": "minecraft:oak_door",
+        "properties": {
+          "facing": "north",
+          "half": "upper",
+          "hinge": "left",
+          "open": "false",
+          "powered": "false"
+        }
+      },
+      {
+        "symbol": "o",
+        "name": "minecraft:oak_door",
+        "properties": {
+          "facing": "north",
+          "half": "lower",
+          "hinge": "right",
+          "open": "false",
+          "powered": "false"
+        }
+      },
+      {
+        "symbol": "U",
+        "name": "minecraft:oak_door",
+        "properties": {
+          "facing": "north",
+          "half": "upper",
+          "hinge": "right",
+          "open": "false",
+          "powered": "false"
+        }
+      }
+    ],
+    "layers": [
+      [
+        "VVVVVVVVVFFFVVVV",
+        "VVVVVVVFFFFFFFFF",
+        "VFFFFFFFcccgccaF",
+        "VFPPPPFPPgccccgF",
+        "VFPPPPFPPcccgccF",
+        "VFPPPPFPPagccccF",
+        "VFPPPPFPPccccgcF",
+        "VFPPPPFPPPPPPPPF",
+        "VFPPFFFPPPPPPPPF",
+        "VFPPPPFFFFFFFFFV",
+        "VFPPPPFPPPPPPPFV",
+        "VFPPPPFPPPPPPPFV",
+        "VFPPPPFPPPPPPPFV",
+        "VFPPPPFPPPPPPPFV",
+        "VFFFFFFFFFFFFFFV",
+        "VVVVVVVVVVVVVVVV"
+      ],
+      [
+        "..........J.....",
+        ".......ss...ssss",
+        ".LFFFFm........s",
+        ".mw.w.F..L......",
+        ".FK.K.F.........",
+        ".F.............s",
+        ".F.......L....Ls",
+        ".Fv...F........s",
+        ".FWW..F........s",
+        ".F....LFFdoLFFL.",
+        ".Fv...LC....ffF.",
+        ".F............F.",
+        ".Fw.w......A..F.",
+        ".mK.K.F......bm.",
+        ".LFFFFLFFFLFFFL.",
+        "................"
+      ],
+      [
+        "................",
+        "...tt...........",
+        ".LWGGWL.........",
+        ".W....O..L......",
+        "iO...SW.........",
+        ".W..............",
+        "iO.......L....L.",
+        ".W....O.........",
+        ".WWW..W.........",
+        ".W....LWWDULWWL.",
+        "iO....L.....ppOk",
+        ".W............W.",
+        "iO...S........Ok",
+        ".W....W.......W.",
+        ".LWGGWLWGGLGGWL.",
+        "...jj...jj.jj..."
+      ],
+      [
+        "................",
+        "................",
+        ".LWGGWL.........",
+        ".W....O..L......",
+        ".O....W.........",
+        ".W..............",
+        ".O.......L....L.",
+        ".W....O......q..",
+        ".WWW..W....!....",
+        ".W....LWWGGLWWL.",
+        ".O....L.......O.",
+        ".W............W.",
+        ".O............O.",
+        ".W....W.......W.",
+        ".LWGGWLWGGLGGWL.",
+        "................"
+      ],
+      [
+        "................",
+        "E......e........",
+        "RXXXXXXr........",
+        "RZ....BrBZ......",
+        "RZ....BrBZ......",
+        "RZ....BrBZ......",
+        "RZ.q..BrBXXXXXX.",
+        "RZ....BrBBBBBXB.",
+        "RZXXXXBBBBBBBBB.",
+        "RZ....XXXXXXXXX.",
+        "RZ.q..L.......Z.",
+        "RZ....Z.......Z.",
+        "RZ....Z.......Z.",
+        "RZ....Z.......Z.",
+        "RXXXXXXXXXXXXXX.",
+        "E..............."
+      ],
+      [
+        "................",
+        ".E....e.........",
+        ".RPPPPr.........",
+        ".R....rNNN......",
+        ".R....r.........",
+        ".R....r.........",
+        ".RXXXXr.........",
+        ".R....rNNNNNNNN.",
+        ".R.............e",
+        ".R...PPPPPPPPPPr",
+        ".RXXXX.........r",
+        ".R.............r",
+        ".R........q....r",
+        ".R.............r",
+        ".RPPPPPPPPPPPPPr",
+        ".E.............e"
+      ],
+      [
+        "................",
+        "..E..e..........",
+        "..RPPr..........",
+        "..R..r..........",
+        "..R..r..........",
+        "..R..r..........",
+        "..R..r..........",
+        "..R..r..........",
+        "..R..BB.......e.",
+        "..R..BBPPPGPPPr.",
+        "..R..BB.......r.",
+        "..R..BB.......r.",
+        "..R..BBXXXXXXXr.",
+        "..R..BB.......r.",
+        "..RPPBBPPPPPPPr.",
+        "..E..BB.......e."
+      ],
+      [
+        "................",
+        "...BB...........",
+        "...BB...........",
+        "...BB...........",
+        "...BB...........",
+        "...BB...........",
+        "...BB...........",
+        "...BB...........",
+        "...BB..E.....e..",
+        "...BB..RPPGPPr..",
+        "...BB..R.....r..",
+        "...BB..R.....r..",
+        "...BB..R.....r..",
+        "...BB..R.....r..",
+        "...BB..RPPPPPr..",
+        "...BB..E.....e.."
+      ],
+      [
+        "................",
+        "...hh...........",
+        "...HH...........",
+        "...HH...........",
+        "...HH...........",
+        "...HH...........",
+        "...HH...........",
+        "...HH...........",
+        "...HH...E...e...",
+        "...HH...RPPPr...",
+        "...HH...R...r...",
+        "...HH...R...r...",
+        "...HH...R...r...",
+        "...HH...R...r...",
+        "...HH...RPPPr...",
+        "...hh...E...e..."
+      ],
+      [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        ".........E.e....",
+        ".........RPr....",
+        ".........R.r....",
+        ".........R.r....",
+        ".........R.r....",
+        ".........R.r....",
+        ".........RPr....",
+        ".........E.e...."
+      ],
+      [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "..........B.....",
+        "..........B.....",
+        "..........B.....",
+        "..........B.....",
+        "..........B.....",
+        "..........B.....",
+        "..........B.....",
+        "..........B....."
+      ],
+      [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "..........h.....",
+        "..........H.....",
+        "..........H.....",
+        "..........H.....",
+        "..........H.....",
+        "..........H.....",
+        "..........H.....",
+        "..........h....."
+      ]
+    ]
+  }
+]

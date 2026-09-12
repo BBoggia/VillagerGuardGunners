@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "runtime": {
+    "minecraftDirectory": "~/Library/Application Support/minecraft",
+    "java": "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java",
+    "version": "1.20.1-forge-47.4.10",
+    "forgeVersion": "47.4.10"
+  },
+  "jarDirectories": [
+    "~/Downloads/mc_mods_to_add_compat",
+    "~/Library/Application Support/minecraft/mods"
+  ],
+  "mods": {
+    "villagerguardgunners": {
+      "path": "../../build/libs/villagerguardgunners-1.6.jar"
+    },
+    "vggcompatprobe": {
+      "path": "../../build/compatibility-qa/vgg-compatibility-probe.jar"
+    }
+  },
+  "cases": [
+    {
+      "name": "vanilla-managed",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": false
+      },
+      "observationTicks": 500,
+      "expectations": [
+        {
+          "path": "result.natural.guards",
+          "op": "eq",
+          "value": 6
+        },
+        {
+          "path": "result.settled.guards",
+          "op": "eq",
+          "value": 6
+        },
+        {
+          "path": "result.diagnostics.issuance.allowance",
+          "op": "eq",
+          "value": 6
+        },
+        {
+          "path": "result.diagnostics.issuance.spentCredits",
+          "op": "eq",
+          "value": 6
+        },
+        {
+          "path": "result.workBudgets.maximumDiscoveryUnits",
+          "op": "lte",
+          "value": 32
+        }
+      ]
+    },
+    {
+      "name": "vanilla-restart",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": false,
+        "maximum": 32
+      },
+      "observationTicks": 500,
+      "expectations": [
+        {
+          "path": "result.settled.guards",
+          "op": "eq",
+          "value": 6
+        },
+        {
+          "path": "world.restart.sameGuardUUIDs",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "world.restart.samePlans",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "world.restart.sameCredits",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "world.restart.sameJournals",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "restartFrom": "vanilla-managed"
+    }
+  ]
+}

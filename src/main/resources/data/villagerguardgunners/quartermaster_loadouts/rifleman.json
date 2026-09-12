@@ -1,0 +1,10 @@
+{
+  "format": 1,
+  "primary": ["tacz:ak47", "tacz:m4a1"],
+  "sidearm": ["tacz:glock_17"],
+  "armor": {"head": ["minecraft:iron_helmet"], "chest": ["minecraft:iron_chestplate"], "legs": ["minecraft:iron_leggings"], "feet": ["minecraft:iron_boots"]},
+  "ammo_reserve": 128,
+  "medical": ["villagerguardgunners:bandage"],
+  "medical_reserve": 16,
+  "roles": ["villagerguardgunners:generalist"]
+}

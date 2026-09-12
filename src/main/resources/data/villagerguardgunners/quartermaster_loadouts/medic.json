@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "primary": ["tacz:glock_17", "tacz:uzi"],
+  "ammo_reserve": 64,
+  "medical": ["villagerguardgunners:bandage"],
+  "medical_reserve": 64,
+  "roles": ["villagerguardgunners:medic"]
+}

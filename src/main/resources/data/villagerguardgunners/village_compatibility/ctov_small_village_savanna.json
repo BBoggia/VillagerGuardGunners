@@ -1,0 +1,1656 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:small/village_savanna"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "cc268e401749d08d9302d02627d3b1fb596d2647126122572430cf6816c9b5e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "fa9cd858e79c9da21a79554c631321074279ceb7c64ac6e15002c84de7c68b40",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/bench": [
+      {
+        "kind": "decoration",
+        "sha256": "e64d7d629472bd4abb216ae37c0e5ef82ff7031038c457eb1373ed2982f200bd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/campfire": [
+      {
+        "kind": "decoration",
+        "sha256": "16abef7b0620377f99d10be678592d06d20332fc825a6e90779f38d533e9f0a0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "c22e2d0af45623e2945b945cbb68ab9feff2345bae2f32843b3dab4487903057",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/flower_pot": [
+      {
+        "kind": "decoration",
+        "sha256": "a17eefc73a616afbe769761ac295f6f4ac002f8e19b838233a5b41b46dccacff",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/fountain": [
+      {
+        "kind": "decoration",
+        "sha256": "be6bcbddf34c5e8a4af0cabf1744f613b0ace1a913a964bd36a367fbf7d6a24b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "4fc81cf10310040ae96aa698b1b4c92d4a15f744b41149cba9750cdd994698df",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "d3d69733c3fdafaf9d911a5b2353eb44f9fe1301cd7118718117d6497d6ce040",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "701635fe8112c8775445aa03dd53b722d9585de810420ec456d1538b80172b17",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "63be7b1ff2d4b7c39597a5dc403a53f6f248038129d186031a809698265dc919",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "d9db5100c2d44728f0beb9dd59ee38b81146d8187d25eebb5d4060bd2ec1ed86",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "20ef6cbc1cd3e156c61a059d48868ecd8d6507fd55466e496b0fe8c105ffb69e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/lamp_5": [
+      {
+        "kind": "decoration",
+        "sha256": "872b922a12b4d05f5c0e4bec485d21d4f3097423c223a7ac998145a90ae6fcbc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "9f087072f3a76e636facf175d648688af7f34983c4a87969f5526ba3fd84d125",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "c15d6c6374317c05a2287c33892b21b8c99f03c8c89717e9892b48621ebb164f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/deco/well": [
+      {
+        "kind": "decoration",
+        "sha256": "dc6ff771e8dfce6b0af6e271519563e2ab81ed3a18e19c12ad53d70cd6a0ba6d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "3e963dff03573f3eacb5cce216f4b3e34922a8042a4c4a7d5e9a5b04e8237321",
+        "beds": [
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/house/big_2": [
+      {
+        "kind": "residence",
+        "sha256": "358d3d8eea172bf7d7516997a5f96893dff4249f5d52165ddbfd25b716253bae",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            9,
+            1,
+            3
+          ],
+          [
+            11,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "add6615a27b4caa8fab7420e8165d841f7b2a867d11437b3ca0a5ba325a32f99",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "68e17c2a656e2832cd6288090bc5f849b3608342dac46ec11d55fef14e372e39",
+        "beds": [
+          [
+            8,
+            1,
+            2
+          ],
+          [
+            8,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "1a183a6326cd91bf4b45508949f08ac171990829e543b5dbcbd7fec11ee42a0a",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "fd39360a01da6ca8438b482accccf857d2c8f5444b281d43c2611855965b133c",
+        "beds": [
+          [
+            4,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "3bb9cc441f254289c1e34c4c05309aab6e56bf9642d0d5326e395b99c1a7ace3",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "20d6e0c40a9e43b4f13e50fe1e1c78923bfe87a5bedc1a8f218f7effc6cc185e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "c9fed427468a906f39fa68eda51e600c31a754570f1a77c4fe2a01d6591d21dc",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "fb63d0119b253021a0dcc63dce4b4a830a38be8990fba844a543604cc2cd8111",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "d3684b92e7f1462afc2ad98e78f2779383f7d44b4583b7d670b8f75c70b7009a",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "5cd906689485df408d7fdee359e044c9f75f10efd06d06d6f525424a6b09cdfc",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "59c75459bafd2d764c57b29810d3325f4eed3eea88d853627b873d1f7882b0b4",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "0ccbb36b3d7c9c99e6df4328a233076cf51f86fa78bcceb5bb34a4bba3440ef4",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            5,
+            7
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "dd6fba9eb379db1cc7983407b37d52f8a2a33284c048a73fbea90c4e17e0d15d",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            8,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "6decb123b99a7f2f8e99576fd45ace6457e55c43ebc1bc8537bdd0283fa77991",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/cartographer": [
+      {
+        "kind": "service",
+        "sha256": "058ef430873286bfd445e8a7f44f8dc6fe032d32a619bb81d52c9b4b4330c7a8",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "3c9e967b785d222ad8f096657cd1bdacc31e6920fdfb2da4380ae79e6f7479e1",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            4,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "8389c6d83367b82f65d52c9871fd1eb2524e1455d6f38336073b782e0fb62aef",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "e29731ba6064a8e21ebc1ddb41f3c170affb8f699fd37a4ad1015ec0e21944b7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "3abaaa775141f63921b02d12b0ee49bf6e57431c1fba54eebafbe2432dbd9e97",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            5
+          ],
+          [
+            3,
+            0,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "b7a69e119b2d0d9e427439a6a5a445676280a1df9bf9bc394dd4d3cde7d7530a",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            12
+          ],
+          [
+            7,
+            1,
+            13
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "ed55eb135b8a7257195a8f27665abce64aa1708e620e126606714c660b941b4c",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            8,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "732a529b7d69f248148186ef942e4754c9b502fbc0dd5506a87571b7aa56398c",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            8,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "7072321ef487f4310c58caddb9a9f4c5afec54acb23b5d1c7172ab8593e42d2b",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            3,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "de665e43742e78079aeb8be5ebc682576daccaaa45197079b170e8b29069b203",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "426fd5422724bf574a343624520b7587e6acd05d63a91d01bc85d84481ae17f0",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "4335a877ab81415dc04933e2262296ce2695a9a287cf074595fe74b3538eecdb",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "e9fc4d309fc055a0605dea1248b9c367ece65ad72965b94d17439da850e17969",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "8f042ffd48824982b92cfd1c0f6b3bdd77166bcb2b4f3da8a414f60114b6af0d",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/horticulturist": [
+      {
+        "kind": "service",
+        "sha256": "1f9d121006cdd635eb07582b2e01b95056f44d44ba5c1921f63bc6507387f95f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "1307d45d7bbddd409c885ddf25ae6c6099d773e9767c91d47abdde1c82d33b60",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            5
+          ],
+          [
+            3,
+            0,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "dec3e90096c92a37a7d38deb46220404d36c67db93f2370be02c1e17f200d96a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "420b54dfe14b23034a427d07175bb8d0477e4da6c3078db6c6f906ddbc180945",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "d34077154baf9d5fc52f3777e3403aefc3fe3ec6f06ecb85d9b3e3c676c305a0",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "513b40b1f11a2cf73d76959a7c5d822a29e7c716586ecaf8376ce5cedabc14c5",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "0923d1d6b7b2d10b829bb9c1a00c3a3b50dbab0de281ea8ca6a493d658ec1a30",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "cd3ea889ba625b28c13f48476ce8b60a3274c3963a4a675604cb7d2c79e21aa5",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "1c99a776290102118b76b6b02fb2e9e4b9254c5e8679b6064de068aa0787b021",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "aa20f6e1dd62c3b5c726a80333e53f10244c1f002a0c44867984dbf3de83f9ec",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "0874b8f0924000f8c467b1041df037e35ef87d0dc059937c1c12fcba2675e035",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "5dc684056375cb0cc9b94a3c561b91906ecd6241dc0d102bfe663e0432c744c2",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "ccaa8d3072e8cb031816dd5a6b50dbe9efd22d237935d26ca4b42220f992a98b",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            8,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "e5864a6f17e577393e7ceab2100cae192abf2435f2b1d164b9403e7d185ad039",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            3,
+            6
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "7f1746faad4b8df4a476fd3300ce3a0a80fc92300f875664de3e250ef7b3a29a",
+        "beds": [
+          [
+            2,
+            5,
+            2
+          ],
+          [
+            4,
+            5,
+            2
+          ],
+          [
+            10,
+            5,
+            2
+          ],
+          [
+            12,
+            5,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            5,
+            7
+          ],
+          [
+            3,
+            5,
+            7
+          ],
+          [
+            4,
+            5,
+            7
+          ],
+          [
+            5,
+            5,
+            6
+          ],
+          [
+            7,
+            1,
+            8
+          ],
+          [
+            7,
+            1,
+            10
+          ],
+          [
+            9,
+            5,
+            6
+          ],
+          [
+            10,
+            5,
+            7
+          ],
+          [
+            11,
+            5,
+            7
+          ],
+          [
+            12,
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "2b5fe019f88f58e34513944a7c9e9bcf2bd42832c0e710a3596b207ca1a7eda6",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "4298b7e7e853c8d0d7db29203f17eb35670dc253e0ec0c96dee2b70cad3509c2",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "f0ab6b51096c54a1b6697991a65fa4887faf4275c4e37ac7f5d9401ae830cd8a",
+        "beds": [
+          [
+            3,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "8e51c74844f46c82b5e22352a08b349bc51f1bfe738331616f0efceb3492a9d5",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "68c3d948c6aab04744e3bdf3a586aa9a5a39b1f72e7bcb12933333e1cff6fd47",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/shepherd": [
+      {
+        "kind": "service",
+        "sha256": "5f7ff22ebd47469263885e2ab121b27c7404dfa10ec2cc4dc5e429e1595b11c5",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            5,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "5acf74cfa60764a217adea1625850da20f95bec57ecb9e73b7fcf6b360073864",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/tannery": [
+      {
+        "kind": "service",
+        "sha256": "9710c9e03ce0e1144f26159fd815d722c9368c23a784b977a977b27af604449e",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "4ab47c91be0b1fb5109b97a7398b3f2493be9bc9da54b2b2039d143d644b7d7c",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            6,
+            7
+          ],
+          [
+            4,
+            5,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "97a30a7901f6577d3c266792d83c3905f97588274120e40b15cf56098ab57f77",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "d2c54bfe8fac1c5025c7a358290227102ea64c2be1115bba89b06b630864feb5",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "ab4394615fe3e3e8b279a6e97f699f8a960762c207c85f7329713af6a428070a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "ad7dd481b087c1a1a5b06fd825055b96c9c1874bac7a1ae30e6ca339aa5f02c6",
+        "beds": [
+          [
+            3,
+            5,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "d8bfbfc81e18dd3ad5425bb95fc3d64ba529d16d8fc924e7489ca82b51786c40",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/savanna/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "64461a1f8045176890721046b0ec3780387416219540525c22f2b1f331caa6a1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "b4d623a4032b8cd5391f5ccd3a29ad36d103bff90aabb2e8b65045c38fbcd5f3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "7a4187d163ebd7c8b7c77a4cfd6b1550ca393bd13a8148c1f5e9b2bc26660c1d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "cc1487b2d712ad369cc80bb6936690f0ddb5d59e379031ee17bbf40101f2a51f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "f165f49391bf734d47b40119d949eb1e1d7b04aef923a789e167737ad9f52254",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "a5a8cb480d1eb564797f5cc6695cec57fba4e1a698ce8054d4b9c6fc62e15dea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "1bb476ff2d62af39ef919a88626aa80ae455c364b6a052d79ed76317b9623956",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "3f2ab0d1b365d4995a23cb5ca1707e89fac952abae06407263e69df9a48ccbcb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "b7106dffcc366bc8c325706d3e736ed830f28b77ef8e43d052b8a3fd847b2b49",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/savanna/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "d3d5ece7f4acda0afd6566fa8fea8a39fefe2457f411bd28f064b158db85f142",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/savanna_lamp_post_01": [
+      {
+        "kind": "decoration",
+        "sha256": "192e89547b090fa920248643beabbf687233a0d1f2cf414abb139d681307a56e",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "8633fc02071974285257be9143d0ccc5bc72287bd6b3ea95fd9d73bbc57fda3b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "e6b4e5812c97932882341d3dc14ea238683bda3d7d5abde6af4a09342f875aa7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "edf9116c61f7cbea96c1d4961b03b192514a9f1952526dce3a1dc28bcd0ae9ca",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "0e3fe85cafe8a083a764991c95e30d7f6210586a6fdf09049eda89f3b00ec651",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "small"
+}

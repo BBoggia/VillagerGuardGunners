@@ -1,0 +1,1656 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:large/village_jungle"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/villager/jungle": [
+      {
+        "kind": "decoration",
+        "sha256": "516b5da6a3c6c3e335ea6bedd33586fea7a039a1fa17fa584870d452b09a2aed",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "3e3f4f4ff55dc55402f5a8c4106f52f6114971db325edd71dccabfb6c47eed8a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "1cfca24430a96ab74035449c7939a5a02b3c69d74e9792aa5b79419b68ac9376",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "6bb906f4ef0be983c951a85e4cbd58e89aecbc186c3738a707e9e33f5c8117ad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "c3f259e6e4ccfc81f4d8cc00d1c842561a684ac717866b4fb8afb0e3de7ba555",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "a4734f1c0b3801c8b1227f836d22bfcc0386b72bdf3015e90e2c10d2be4cc051",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "062c13fe7d15d43071a76cf4dfb3839f1a89371c9bc6cebcf056295a90ea6917",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "353fd6d35866b1d39652efa1b7649a20b385f7a77de767c09ed030d5d5ca28db",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/melon_1": [
+      {
+        "kind": "decoration",
+        "sha256": "edc524344d8e5fa7612a71c508d5d20f5735addc3e99c23216301d60493cdde6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/melon_2": [
+      {
+        "kind": "decoration",
+        "sha256": "1ea1d52ee5e5d19ff3fe49027e3b1d656344fed83c71a717d25ed7c9358b9c9d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "b54dcea741e1d285817ec5300a02ab4e47caa72c80261d97f06d7f0b3b6ae259",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/shed": [
+      {
+        "kind": "decoration",
+        "sha256": "7ba6e93a777735d95c6edd8db70361960027d45c1a62d65c315b2fa76f85b7bd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/stall_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bfb15aa9be9ffe33c4ab99a1a42fd4e8343f1e46ffbaf3710ac760b3f76bab6c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/stall_2": [
+      {
+        "kind": "decoration",
+        "sha256": "5d8453afc4cc8e9f7076044f23a231352d5402175aaf1369130d4e6cd1432341",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/statue_1": [
+      {
+        "kind": "decoration",
+        "sha256": "92e24a06b37dbbd6863f8e4202b54f2a472e642fcd96c17b2e04f95060733891",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/statue_2": [
+      {
+        "kind": "decoration",
+        "sha256": "3562b28acc0572cf841c5bcf27a3ccdbab445285e38a1b878561758e3296482b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "e208da1987ccf751a95aefc4c7b2a27403fea6a9bd583f9f863723003a962035",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/deco/well": [
+      {
+        "kind": "decoration",
+        "sha256": "27225df0b0b888eba3c351afcb2bef69382128a2bd407db9fed71b6f1c2b9e35",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "bc6fb2772f261e0990e60e1c041ee97b388d78e8cab59435e42813a8b03b6aef",
+        "beds": [
+          [
+            8,
+            5,
+            2
+          ],
+          [
+            8,
+            5,
+            4
+          ],
+          [
+            8,
+            5,
+            10
+          ],
+          [
+            8,
+            5,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            5,
+            7
+          ],
+          [
+            6,
+            1,
+            7
+          ],
+          [
+            10,
+            0,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "e8fb019f2f4dfe634bc11c5ab803b3437317fd8e5dbe171c1f7a09ba84e70e6a",
+        "beds": [
+          [
+            7,
+            1,
+            2
+          ],
+          [
+            8,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            5,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "1a57efe0dfc367f0459351a60018bb6209e2adf0b512daa6fe4d38aa790ae5a9",
+        "beds": [
+          [
+            8,
+            5,
+            3
+          ],
+          [
+            8,
+            5,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            5,
+            5,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/house/med_3": [
+      {
+        "kind": "residence",
+        "sha256": "f5f9b00dabbd084298b1a574f24e19e305c836a089a99fc39a7bf0940e43f989",
+        "beds": [
+          [
+            8,
+            5,
+            5
+          ],
+          [
+            8,
+            5,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            5,
+            4
+          ],
+          [
+            9,
+            1,
+            6
+          ],
+          [
+            10,
+            0,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "2f18d58a3eb08b9e900039ce970b3bf577bfd7119ca720ff3b16ff915c7bae65",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            6
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "de251961b43edba6b857297c8cbce26c44f0118a0ca52c9118676ebeb4354da7",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            7
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "8151633872d131525d5a207cad787c07419e9976e31524bfac7404f263a6700f",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/house/small_4": [
+      {
+        "kind": "residence",
+        "sha256": "b45e654952cbb57c0508b7cfbab996064306ec7c04618758b7658175588dcdaf",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/house/small_5": [
+      {
+        "kind": "residence",
+        "sha256": "e576ffc7f1896b108b8af5d5616e2e59564b6b8ed7bc94afee0dc17d0f03389e",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "ec879c30cced7e698a430990230576506f9b244563b75d816f27be7a4ba4027f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "aa22310c43227522d566f71d7a92bcb3b84ce6d3af92394015e55c02aadbbb0b",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "3e2e56ba30e026c31e8eae291ea0235f40a6edae63bc8aeb93ceba11414b7b18",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "a92f97be8c37d00c7ec9b3bba31f525b2d714c16c6aa446a598e785d9d8ec52c",
+        "beds": [
+          [
+            8,
+            2,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "f4f6f10b5b355f118685603aeb16fea63d3c8927e23866453bfe96f60cd874fe",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "0c1b0c1495ab5f687b877370eb0019fa42c64a12ca99622dba3b28bf6389d7a5",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "6f0b7e2b7aeaa54ad629f0358056efbd92c5f0c4acd606ae294d2d1b169ba9aa",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "fb981171f7258b5e465bb88f052d7a4db54b81d962c6a4400f96dbf03de4d1f4",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            8
+          ],
+          [
+            8,
+            1,
+            11
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "e4533560e086dd87cedd1db485c163fea82822110d477ee9bc1e24b162aa7ea4",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            8
+          ],
+          [
+            6,
+            1,
+            11
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/cartography": [
+      {
+        "kind": "service",
+        "sha256": "67c31d2552fde2367f52f025856d04b373abed04a359acc324bb1e3690e3f174",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            1,
+            14
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "f2e44e2cc2194e2d1bc1f6c3f7ac7ac605add6a306edc2163d4bdef814f11052",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            0,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "29e2a9fadffaad8bec9e20e6430bf20a0ffceb18e52a4a2398c061fa919391ca",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "23e4793350a2c095c1348218a136a33587c03d193afe2723bc54eb53cb0e59db",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "0c1ddd31160eee1b518fff0a77b42cf7490c3be61442e6448710c9c5f1db36c2",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "21ba62ebff725b7b00e5307d01dbd85efea10f976a5ccc17d274ef7b087667d7",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            9
+          ],
+          [
+            6,
+            2,
+            9
+          ],
+          [
+            7,
+            1,
+            12
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "1a45b6b77d0249ea2ac297f941cd3e305a12458e2c2115fd7bf4b5c5f4fd9ef3",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            12
+          ],
+          [
+            9,
+            1,
+            15
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "a3661d0c6c4d53f13f4228216fce5fc3da9e5dcada42a21cd3ce4e4d826a59ee",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            3,
+            12
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "8e68705b0114ce7f38f01af41142727ed72b047b6b072f83910f8c5712984fb7",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            3,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "0f2997486b4d82b1cfec4bc35bb5ae8421578f1b9fefb6d209dce76ccd3907a7",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "3207d15213a1877b82b86c1fe3d4b2eaf8ae984b99b50d8ac52f1a191541afa2",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "0b6baf84762fad22edc07a961e9afd28a5a78cb1ddd7bcd0c5446bf90cb8f70d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "4d8a917585b0743b2de6a2d2b338188496e7b7cec327d015db2f866065c5aafa",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "d70b884de6334ca93143711f78a7c145e12ef2b7e3d06c881885fc99e1ae7275",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/horticulturalist": [
+      {
+        "kind": "service",
+        "sha256": "b19a025955a5be8d66b90740dbd079776c0b2351d568e08103d10dac3b95471b",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "273838dd7c8abb6178626e4f99088311f8b3600627b008a6ce554c9f9acb4627",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "6aca049117eeb1b62cdc684dfed1cef87ff2aea1af36bd96243dca837ad1184d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "72c91ab50ddd4a15ab59d148d8d9af9d0822263c8a97d2a52dcaac3fcf9b402a",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "454693761f11328e617885e3d1cb71b2084018ccd70da463b4bf420679a18f0f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "7e5186407c8a777be24b1f6ad3d542b9130013cfe96f00132fd3cd428d131336",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "32c0530413ec1c1b2fd692d17bcbbd45b88f0c70610b117a6cf37bf2f3aeb7fb",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/leather": [
+      {
+        "kind": "service",
+        "sha256": "23789fc2fef1edc759a6424ebac0839c967b11a2186a4731166f80ba171d6d6e",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            8
+          ],
+          [
+            6,
+            1,
+            11
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "20e04e1f715e6babfb61396a5ea38ecf29628309364849b6dedf126b5988293d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "f2944783a5ae7242084a56a186ffcea0f2eb11dc538a640b6a8953581a22545c",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            8,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "2995223ba16ec6797b73f35ff22dc82fe14d1ae02487197b6b433b2467a0f3e4",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "7b28e95cbe8c7ee6de71de470cfab20014cc148460163fd1e438e7cab521b49b",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "e330d1167607ef107b91fce22dcfa8244798a63d480310520b40ec6e0a89945b",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "1a09b053bdd860a469ddb9aec8f2cf90d079efc6f64fad664b9f36bfa65687ca",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            12
+          ],
+          [
+            9,
+            1,
+            15
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "07f3af409945e9b9d62eb92c04633478472c58fa1fcaff99d8b8f83a583d57f6",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            6,
+            3,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "ae06060652222e31a6c98caa5281b8204dd290bbd8a3143902715b76be472851",
+        "beds": [
+          [
+            12,
+            6,
+            2
+          ],
+          [
+            12,
+            6,
+            4
+          ],
+          [
+            12,
+            6,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            2
+          ],
+          [
+            5,
+            6,
+            2
+          ],
+          [
+            5,
+            6,
+            3
+          ],
+          [
+            7,
+            1,
+            8
+          ],
+          [
+            9,
+            2,
+            4
+          ],
+          [
+            9,
+            6,
+            2
+          ],
+          [
+            9,
+            6,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "5454f8d68846b69efc690c37ab74c3d02e1bef88413933b4973b5342e8a51401",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "0c74d424012ee22730202ced44a258f870d985df7f7820fb58c0d12d7574eabe",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "64761c51b2117d5c6712afabf0454efffd98601f57dfa0171f44010eae2f632d",
+        "beds": [
+          [
+            9,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "f58a655bc99d45fe00f096761f9b177180d18a55f1b65c10bd441627bebba52e",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "2a61aa4aabb84f8055cc93de80ddf5a4481bea9bf02dc157995aefb92c2ae2ea",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/shepherd": [
+      {
+        "kind": "service",
+        "sha256": "1abfac02890507454fd3f1a0c964f259bd4e4165ab5e6644dee1c777215aff32",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            8
+          ],
+          [
+            6,
+            1,
+            11
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "87022e41d48822c2d4501254453a5a4062e5afc506e80973599b7f2b24d92565",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            10
+          ],
+          [
+            5,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "0b3cc3c4a454b17f58f6214967bb3cef25147338a4386a18a73e0e4dcd2baf20",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            6,
+            7
+          ],
+          [
+            4,
+            6,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "8c8245c71d1e60e2cf4dac36a13a106bf7036a30747aae1d68e106410e749997",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "e4974ca6a07d917f2e977f6e458ca25d485dec2ca9f828d39af162e2cee56a6a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "087dd37403e10d4d668cbad3c90ea9327f723767df4a32f7e7376cb6a05d1c2a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "578d9e6980cbb63c27c4a1242bcd2671a8e9dbc1863ef1910919775c8981e974",
+        "beds": [
+          [
+            2,
+            6,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "d9c51b34bc10919071bc7469c32206853820339b752fc8fcad97fcbdf05704cd",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            5,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/jungle/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "10064891dcb4f1677c41d615515dd8714e757b556e5df8317c26c35214cc8e20",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "72270c5466cf494f37f92a5c6826718ccb1754c8c2f5ad357e73a8f41d9cc865",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "7b4d1999b523b057f32324dbabe8348c91150e48c8ad498e3275bdc7028a784c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "fc7556b53be1352b146549f19007a84088541d85a35015460dea9fc55a5052f8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "3f70ca9b7a6f38b014a01f5fe5fae6457a81e4f69a621832a077f38ad73446f1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "2eae464e0dedadb31c459318650123eb3c4f416ccac75ebc5fc623e212d67de8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "196b6309ff415f49f23250b7ee6da516b759fc97232475cba8fd93686b44d90e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "4303ba184372a3a5dce4608c774fe8c324a01dd45e0b0944ebcd92bd0f59724a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "b50f16955e7f6513957f2b2aee6af12dbab40c361f94a7071da124ffe58e5648",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/jungle/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "8b470a03f3fb7427c29ba3ce2b5bfa2db7c168408d1023429a1788bf6f6933fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "large"
+}

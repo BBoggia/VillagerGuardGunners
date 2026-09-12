@@ -1,0 +1,968 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:oasis_village"
+  ],
+  "templates": {
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm1": [
+      {
+        "kind": "service",
+        "sha256": "770549e5b2e8fd8ff46022135cd5a48659db36bb0f1d1d03199bab577f0a91f0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "92e3f5b4bfae8430b5e82a34d3b06361498780385d9c0729ed8a8ba4a34b7da3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm2": [
+      {
+        "kind": "service",
+        "sha256": "eda5f93a7a767cfa2fe3799e3fd83243e989e8b2a1966d0f1cc096d048f9b2e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b8a4741f06f385a4a8e28ca641bab4f99206cc8471b2ce3fd7cf9077521d2477",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm3": [
+      {
+        "kind": "decoration",
+        "sha256": "27a6016a115ec9c884ec090a58f78ee29b76ed0476ccf31218edda3a86373453",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "d34b62eb681a50aa09862c565f8253d484da7bfdd80c8d7b3e57b54fc3be5108",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm4": [
+      {
+        "kind": "decoration",
+        "sha256": "5771e4ea972ea0c704dc744552a6b106ba953f3515f883332b0296e4095d0435",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm4_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "96ac9f513ed4504f7dc871da231c39658f71ef39f1e287d53c2393b4eaa8f7db",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm5": [
+      {
+        "kind": "service",
+        "sha256": "2d71ada06ee3c64e1a5f7321e6429c497f4943f25bb47ec2bb9b20591997af14",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm5_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b8a4741f06f385a4a8e28ca641bab4f99206cc8471b2ce3fd7cf9077521d2477",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm6": [
+      {
+        "kind": "decoration",
+        "sha256": "cb5ce4a67538cb1222ab9f4b1c0bbd62769a3f113e5a47a5815d2a6984c4e07e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/farm/oasis_village_farm6_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "5d1dedb7b36a8fc239ce031e3e173c77a380e8fc7bbeea224d7cd637a6c9368e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/fountain/oasis_village_fountain": [
+      {
+        "kind": "decoration",
+        "sha256": "73525a8003035c2049b61d25d318f7bf1f69fd02e7549f6705f7ef8f603d134f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/fountain/oasis_village_fountain_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "617b4a324179c849a523fd63e87129958f06c107b61cb1409bad50dd4e113757",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_basichouse1": [
+      {
+        "kind": "residence",
+        "sha256": "e513846aee456bccd5bc6d0621880d3b43ef36864072123f05ba2c332b9379ce",
+        "beds": [
+          [
+            3,
+            6,
+            5
+          ],
+          [
+            3,
+            6,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_basichouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b9e089bd50fac1ae987fa810920be3f6a4cf96b991ad03148ba32d12030cd229",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_basichouse2": [
+      {
+        "kind": "residence",
+        "sha256": "ba4893ff7dbd57308279c11e1fb1a578d115ba0893f2434b9d9b0099303dfcc9",
+        "beds": [
+          [
+            4,
+            5,
+            4
+          ],
+          [
+            5,
+            5,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            2
+          ],
+          [
+            4,
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_basichouse2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "e4085360aa3d83e9c33e8720b360d9a1ae169393a702d371ddff6800c723ba6c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_basichouse3": [
+      {
+        "kind": "residence",
+        "sha256": "5ce391eaea804dfe1086df6b5df5a5d85c4bb50c97e4ee7293f41d7f821b95bf",
+        "beds": [
+          [
+            3,
+            0,
+            8
+          ],
+          [
+            3,
+            0,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            0,
+            2
+          ],
+          [
+            12,
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_basichouse3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "2a5400b2408ceacb33d80e73326848fadeb77d7d39c27b8b46a4315440ad838b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_basichouse4": [
+      {
+        "kind": "residence",
+        "sha256": "3372a89eb5d6a8e6a337966992c7fb85a4b6245aacc2b91c259f2446e1362471",
+        "beds": [
+          [
+            10,
+            10,
+            3
+          ],
+          [
+            10,
+            10,
+            5
+          ],
+          [
+            15,
+            10,
+            3
+          ],
+          [
+            15,
+            10,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            0,
+            5
+          ],
+          [
+            3,
+            0,
+            5
+          ],
+          [
+            9,
+            7,
+            5
+          ],
+          [
+            9,
+            7,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_blacksmith": [
+      {
+        "kind": "residence",
+        "sha256": "711e2c2195f4fc1f1610bb5a9aeebe47754869766382a8b8efcb7d0146dc8e95",
+        "beds": [
+          [
+            4,
+            7,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            13,
+            1,
+            11
+          ],
+          [
+            13,
+            1,
+            12
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_blacksmith_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "039b2f0b7fb2c0eab352fd41d9d390f5975366f8a1330aa499839edf46b23cb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_library": [
+      {
+        "kind": "residence",
+        "sha256": "132d0a98e0b0d5a9a6b5450e125d4eef4350eecadca4f1d1b8ff2f0986b8417b",
+        "beds": [
+          [
+            14,
+            6,
+            16
+          ],
+          [
+            14,
+            6,
+            17
+          ],
+          [
+            17,
+            6,
+            8
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_library_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "aa49d226e3f7d07b0ed917fc8147c08c4b329d3568737c8dfd277d615d960927",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_main": [
+      {
+        "kind": "residence",
+        "sha256": "125833eedeb537209785d186abe42a2b86fc6895824751082b70756e28041b2a",
+        "beds": [
+          [
+            6,
+            6,
+            13
+          ],
+          [
+            6,
+            6,
+            24
+          ],
+          [
+            7,
+            6,
+            13
+          ],
+          [
+            32,
+            6,
+            13
+          ],
+          [
+            32,
+            6,
+            14
+          ],
+          [
+            42,
+            12,
+            12
+          ],
+          [
+            42,
+            12,
+            13
+          ],
+          [
+            44,
+            12,
+            11
+          ],
+          [
+            44,
+            14,
+            11
+          ],
+          [
+            49,
+            6,
+            11
+          ],
+          [
+            49,
+            6,
+            12
+          ],
+          [
+            53,
+            6,
+            11
+          ],
+          [
+            54,
+            6,
+            11
+          ],
+          [
+            61,
+            6,
+            11
+          ],
+          [
+            62,
+            6,
+            11
+          ],
+          [
+            63,
+            12,
+            11
+          ],
+          [
+            63,
+            12,
+            12
+          ],
+          [
+            66,
+            6,
+            12
+          ],
+          [
+            67,
+            6,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            6,
+            12
+          ],
+          [
+            10,
+            6,
+            13
+          ],
+          [
+            10,
+            6,
+            29
+          ],
+          [
+            10,
+            6,
+            30
+          ],
+          [
+            32,
+            6,
+            21
+          ],
+          [
+            33,
+            6,
+            21
+          ],
+          [
+            37,
+            12,
+            16
+          ],
+          [
+            38,
+            12,
+            16
+          ],
+          [
+            42,
+            6,
+            21
+          ],
+          [
+            43,
+            6,
+            21
+          ],
+          [
+            44,
+            12,
+            10
+          ],
+          [
+            44,
+            12,
+            13
+          ],
+          [
+            45,
+            12,
+            16
+          ],
+          [
+            46,
+            12,
+            16
+          ],
+          [
+            55,
+            6,
+            21
+          ],
+          [
+            56,
+            6,
+            21
+          ],
+          [
+            56,
+            12,
+            16
+          ],
+          [
+            57,
+            12,
+            16
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_main_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "2a48bf36a55475c4334b94c1e95ab28195a9e1ff7665c2da4735ca528d472dce",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_stables": [
+      {
+        "kind": "service",
+        "sha256": "0d63c03ac87b4e9674ea629e52e717b81cc857bad0ab696fcdf2f0bd0023d5e1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_stables_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "205d2b7506384b91ec96934f2be3b75cef51e139b5252e337ce2c82999729382",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_tower": [
+      {
+        "kind": "residence",
+        "sha256": "bb12223454cedd4b344543f95a50eb7426a0df14e28b25912320bb6caba1072a",
+        "beds": [
+          [
+            6,
+            8,
+            4
+          ],
+          [
+            6,
+            8,
+            12
+          ],
+          [
+            6,
+            10,
+            4
+          ],
+          [
+            6,
+            10,
+            12
+          ],
+          [
+            6,
+            12,
+            4
+          ],
+          [
+            6,
+            12,
+            12
+          ],
+          [
+            6,
+            22,
+            10
+          ],
+          [
+            6,
+            24,
+            10
+          ],
+          [
+            8,
+            28,
+            5
+          ],
+          [
+            11,
+            22,
+            9
+          ],
+          [
+            11,
+            24,
+            9
+          ],
+          [
+            12,
+            8,
+            6
+          ],
+          [
+            12,
+            8,
+            10
+          ],
+          [
+            12,
+            10,
+            6
+          ],
+          [
+            12,
+            10,
+            10
+          ],
+          [
+            12,
+            12,
+            6
+          ],
+          [
+            12,
+            12,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            13,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_tower_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "3d796fe84ce7cb5e934e6e4f7b794b14ed8deaea433b78b91f8d6761d602e171",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_tower_small": [
+      {
+        "kind": "residence",
+        "sha256": "976998a34d96267cc1806e1416cf62e381a649cab31bab3da0aac61600f8b2f5",
+        "beds": [
+          [
+            6,
+            8,
+            4
+          ],
+          [
+            6,
+            8,
+            12
+          ],
+          [
+            6,
+            10,
+            4
+          ],
+          [
+            6,
+            10,
+            12
+          ],
+          [
+            6,
+            12,
+            4
+          ],
+          [
+            6,
+            12,
+            12
+          ],
+          [
+            6,
+            22,
+            10
+          ],
+          [
+            6,
+            24,
+            10
+          ],
+          [
+            8,
+            28,
+            5
+          ],
+          [
+            11,
+            22,
+            9
+          ],
+          [
+            11,
+            24,
+            9
+          ],
+          [
+            12,
+            8,
+            6
+          ],
+          [
+            12,
+            8,
+            10
+          ],
+          [
+            12,
+            10,
+            6
+          ],
+          [
+            12,
+            10,
+            10
+          ],
+          [
+            12,
+            12,
+            6
+          ],
+          [
+            12,
+            12,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            13,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:oasis_village/house/oasis_village_tower_small_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "27fcd9d58770ece893b10942c2999b2eef94e76445d7d48fbf39efc847f973b4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/mobs/oasis_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "823c5ee4097f68f70e239e9ca0ebbc58467000700261100e1e00e47e5bc2a6c0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/mobs/oasis_village_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "65f1f11ccbc7d9c29f9b1f7ce25c2f20a1d68e5120181d66c81a62367df3caa0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_fountain": [
+      {
+        "kind": "road",
+        "sha256": "340dd2ca2a3466e6fdb8d6b52ab3ba57c5f09377232128285d096a77b5922613",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_house1": [
+      {
+        "kind": "road",
+        "sha256": "ea8a59eeaefa486e2fa2cc3494e6f3a40c6d8d9fec5672bc5c6bf6c3b8753e78",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_house2": [
+      {
+        "kind": "road",
+        "sha256": "2d1f3806c705f0ce68ac8856051fc7a90e4ee874227fb1872de5f61f9691ef4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_house3": [
+      {
+        "kind": "road",
+        "sha256": "4a18455db3209a617a4a23f4b7886ed4a3830ddd5c3457eb2e8ebbd67d576b48",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_house4": [
+      {
+        "kind": "road",
+        "sha256": "f9bf6cb10500deee4137d700158d3510d0dfd5c9756137f4643546fbdcf76a82",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_house5": [
+      {
+        "kind": "road",
+        "sha256": "d799feac39e222fe8bef832a34f4d17f649848d10dabc04baa3c79ef0f522c3a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_house_large1": [
+      {
+        "kind": "road",
+        "sha256": "7b6bd82a48f09f0d1dd7776a0f99a88918dd3bee54b0a6aaaccddf0bf29a8881",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_house_large2": [
+      {
+        "kind": "road",
+        "sha256": "a8fdab226a7cf8c17a517e29f66a9affbfab01da6e5a6aafb623a8786ab3c1a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "a8416a989af8f3e9e3bc6813c883a4e1da359eafac2aa9a1a9e9a36370463d49",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "da260e9edfbffa271f7229f921bd21cde63a8f99b0b9302ea572214e750477d4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "a7c403fb9dbf9246e304b907c291c7502b8fb1f9a9ca0465630fde3d4f52cec3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "e55ebf350d4f82305269e18eb0f5f7df9adbec427a2586f3efe5b9e3864c0ff7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large5": [
+      {
+        "kind": "road",
+        "sha256": "4f1a9056c5d4400420efd22e5c829af6ea1f7cf58c6b285d0de78ca8afd9252a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large6": [
+      {
+        "kind": "road",
+        "sha256": "7552b0ebffde9f63c584e092c6eb17b5542a6d4854ecf4444df6d7c9f54bc5ad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large7": [
+      {
+        "kind": "road",
+        "sha256": "3827f17d5611a5f32971535f9650cda0e83ce6c0edaa8567acd457b08ac053ef",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large8": [
+      {
+        "kind": "road",
+        "sha256": "76ee52bd9312a4b496dab79a1c5bccacc67b8381e16eb4c2964c064e52923de7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large9": [
+      {
+        "kind": "road",
+        "sha256": "14c0977971f157814524425cd40e00a4725598d45de5727f407549db3e91d918",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:oasis_village/path/oasis_village_path_large9_bottom": [
+      {
+        "kind": "road",
+        "sha256": "46988c1bd07630882c6a94ef1269a68b3c990bb544ee6c51a1170af0904ed18c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/camel_spawn": [
+      {
+        "kind": "decoration",
+        "sha256": "b86c6a72779416021fd563f428cf292fc482a6846249a9954b867f3e9576729b",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

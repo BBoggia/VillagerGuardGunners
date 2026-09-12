@@ -1,0 +1,1706 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:large/village_dark_forest"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "e035dcaf7ad7f04859e7cf05b472307d8c622f0be903c9284f484128cf054bd6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "3b6b86168d9e521f9e3bdf53e66dd815617bdf825ef9171c95c5a9046600f2be",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "10335d7243316a96594d3c121c7e7a44e17428b088b0c8b875a3f93d0144e1d3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "e5fcd56a958b5175b727a87636d08747b02d9beaa337f6dc17257db3d90f5c3e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "f99c831cc83112c51864ed95c03b91faa038363454534e0653650359676934ae",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "c87f34fa4dceafc49c1133693d4cd4909bed459bb9088140b2e41feb03b12266",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "229314a1694a263677f24f6b373a0c36c7c1f7cac77787fa498e0906dfb1ee29",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/cage": [
+      {
+        "kind": "decoration",
+        "sha256": "c9acb34cea9e8688baf7fce14423f68f1d4a10de21a81cc375b496a5d2cb41b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/cemetary": [
+      {
+        "kind": "decoration",
+        "sha256": "9b8d2a2574de1fe2126d850382ce70c0c72babe7ebfdc0b3f0347e2847ffa3fc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/grave_0": [
+      {
+        "kind": "decoration",
+        "sha256": "a1a86dae3a76f3dd878da191aa8f1a1360e1ac0524e20d1ce33cde2ed0ab5a38",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/grave_1": [
+      {
+        "kind": "decoration",
+        "sha256": "9118c75b604a024ff1994033d70b8b7fef52d10cef19215b88380a3aed9dadda",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/grave_2": [
+      {
+        "kind": "decoration",
+        "sha256": "985e1fcdf9f454b72cc858dcf71f0e8b3e97bbe82d9add2b2e318c5be28ce33c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/grave_3": [
+      {
+        "kind": "decoration",
+        "sha256": "641809baf04dcf5e4554b0e962641762227858e39797ed8e97bc8522f4b6e085",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/grave_4": [
+      {
+        "kind": "decoration",
+        "sha256": "fb7bd60b81f86b815225f8351311e753a65a10d6e3132837699ae374cd90ee05",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/grave_5": [
+      {
+        "kind": "decoration",
+        "sha256": "d48e00667a333178b4d0d1680677910c4cb3517d83780ff45b1c69a583072b02",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/jacko_1": [
+      {
+        "kind": "decoration",
+        "sha256": "04355d9a8126a2cb7d65237d2dc10c578e4461dc3776720f8367379587d711eb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/jacko_2": [
+      {
+        "kind": "decoration",
+        "sha256": "819df05dea79cd5b5172802a94576a5315042b91b132f451c5afbcd777cb72c3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/jacko_3": [
+      {
+        "kind": "decoration",
+        "sha256": "71e5af64047ee1d4f447d166f34eac73940e9e8006a09110b0ebf932f4829164",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/jacko_4": [
+      {
+        "kind": "decoration",
+        "sha256": "8b3489b4bf2ad0a285b54f2e96e20886d272d4c77d8d5c24a56f692e3fd913e2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/jacko_5": [
+      {
+        "kind": "decoration",
+        "sha256": "3cfaa2b45a72489d2ea09b1ed05fd047c4853c15d2b8421588d4a2fb4e7903fc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "69873f3110dffaed3c2db0db1ac138453dd7deacf4ac7121b685d614189ec6f3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9da4d567ed22c685e616918ec3ef36a30bf89ef83084b4fb775d97e478892a7e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "322af41862a3a41e4e5919a2b8ca1d2f0111fd8907be0949de1d690ca981b332",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "668e32c8c6e26f8fb8c7e66d60b0fb80ecf6d900692d7e1b4995afc3cd4ff265",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/tree": [
+      {
+        "kind": "decoration",
+        "sha256": "9803da429dc4227ad2322706e93b01e932cf082463585b6e6cb79b5a6bfa0eab",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/decos/well": [
+      {
+        "kind": "decoration",
+        "sha256": "3f948be27740c85e81bada1eb8d0b19517681db3b0f790d9d9cf5bb3b4359b7d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "b5891bb437e1128d9453a5dbe1bf4354762002ef632879e182c8aa3f5b95da2d",
+        "beds": [
+          [
+            2,
+            6,
+            2
+          ],
+          [
+            2,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            0,
+            6
+          ],
+          [
+            7,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/house/big_2": [
+      {
+        "kind": "residence",
+        "sha256": "3a454b134b1cb2acb8c68b4d42a99d77d16527c756ecdddb974f5c4a8ea51870",
+        "beds": [
+          [
+            4,
+            6,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            8
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "554ccbddf1aee4012015cae4030546a9983c5e4db8fdc60ad95359c18bde8f5c",
+        "beds": [
+          [
+            2,
+            6,
+            4
+          ],
+          [
+            2,
+            6,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "c725cc988c1315c0ff55fb99fe8a36a7020c27aac8bf8647e8929fa856d4f470",
+        "beds": [
+          [
+            2,
+            6,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            6,
+            5
+          ],
+          [
+            7,
+            1,
+            3
+          ],
+          [
+            8,
+            0,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "931b09ebad4038fb4b03505cefe4fb5719c1c10df29a1e50c5fbe1abf909c4e1",
+        "beds": [
+          [
+            6,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            7
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "54c90dfb6f560653662802662f64dc330a519115df8a0a6378927dfea18f5b01",
+        "beds": [
+          [
+            6,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "b928adafb1a95b12fd0f641d0fb3cddfbcd855b05f9edd113716d8f289cd68a5",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/house/small_4": [
+      {
+        "kind": "residence",
+        "sha256": "aed1fd95e27739997497058e28e95ef005e2de944161f053bed79de128438608",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/house/small_5": [
+      {
+        "kind": "residence",
+        "sha256": "870e22d50d6bf6b01ebcd75ca5dcd5a298474bed2b6c17f6b07cb600e121e359",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            2
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "8d88fb80894d99f5225745d0eb45babc83e94b8480fae28efb858549ae58b03a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "08c06700e303a18a38ee3a85ab078a2005be0136d89e568857edbe664715bd93",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "b90464363bf881ea39161460f6bb9adb6dfc437c8b6e2fc3f0d3ba680fc72c8f",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "5d57b7651efe0eb5987737349c8949356ef7733c147d2a49e0208871cae5302f",
+        "beds": [
+          [
+            3,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "cc59471f01d3f890492f73503fd0f05c66aaf9c501c7e55b887ca914d9e4b69e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "6b1371a006ff55eeb4a69417719586d47227e69cade0c5f7658ba2a66930ae07",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "a7a02dedfa7d592289b01de592e85bc24993dbfa3e5d9776e52b891ce15cb6db",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "97d1acfa520b5eb3825af23f1834e8420d813d96627e4102adfd863c7d4533a5",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "ef95c88bd5f68c0c4d89c9c5b99539997197c03c19e8a822f18b42a1985a2c82",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            6
+          ],
+          [
+            4,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/cartography": [
+      {
+        "kind": "service",
+        "sha256": "df0292013089cdb70a6ebf57d6300f3f41b7ec5e1a98940572824bef59df736e",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            7
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "29f4e92c430cac992f1e1cbec0574dbc7c1edcd919f2b6125e4c21c314a95311",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            8
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "b56ddbc3397e8e47eb900157f4760ddd8cd67d60b5203fc134d6bc853e65691f",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "2a79d57cbd81f1ca8c9df20ba40bace7b0cddb95cd465fc9d50c450ada43837b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "91915673de84b2a73b79c69dfafd18d03ff6c4b81d182b7ddd9e49a5948ba20b",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "d741de2385e75f85f3b54e0e5c413f9c7021ec77adcc7375ed52f687cf00e704",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            2,
+            12
+          ],
+          [
+            7,
+            1,
+            14
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "82b030c67df6b807d65c9811023dd4ddf4c97bfd301211c886552acfd3f8c0bd",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "bbdbe5482578627cd5d112b7854088b4d35f025d2c783f83cbb6977a9c75cd3d",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "ead33f1a200772d9037f6e4854d79f92055a546a77dc8b93d3c9acd1a8c8a20b",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            4,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "420e05504290fdd3b3c8abd10d33418c4f6d3ec9974a7c6b22283ef56bc802fb",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "e5437c2c652f8894b8bd7b0d52a055e78a5a995f01ac78316f25ac0027518f30",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "c3d72110598d8affb145781bd0cc8562eb4d33ab7d1219a1ce306a446418f3c5",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "4bf8b853aa478a1a4f6efb5d0759415f6a8637f35ba9bf6b1c2c2bed38a396d7",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "80f6b329e12688940ac1f5a80961a425bf8f70fd8d8f9a7aa1ec06e8c5a071a3",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/horticulturist": [
+      {
+        "kind": "service",
+        "sha256": "49de7912dce1497acb5297c1dceea0f88d21e18a5e45cdcc6411fbf0946cdbcc",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "7a64d46eed01c5a8bd1f5d078efcd0de61d9436d07fac835466a29f5340914ec",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "9def01db373919e55d99207b5fa93d01367cfbcc463285b75ec783d9c0227966",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            0,
+            8
+          ],
+          [
+            6,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "626457e389646e721cccfe5a2e0e74c14ce1381365da6a36d696812c1a4dbbcf",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "41597fd3bb206a03529110e511697ff651b80d4f46d13a65abefa71fd148cfd4",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            4
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "41be907966318fcbbcc9985dc365b6d3220c3428895cf65f687ae29b98a703aa",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            4
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "30c6c663e83500002d4b0fc94b20621088349ef1821fa806c3f5e852f637a9e8",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "216b59a92b8db88a1d519ebb2d1ecc982ea3de4b49a05f4c08d7e8b1c71488c2",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            0,
+            8
+          ],
+          [
+            6,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/loomhouse": [
+      {
+        "kind": "service",
+        "sha256": "7a67f507f18051a759ed21c75180cc52c8b168ad0affdeafe6788ed6b7366566",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "dd170ffd71c1dd0c51113002d4734cca74ca9e30efcae2568bde7e8a9f5d8fbb",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            7
+          ],
+          [
+            5,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "98de2b2b5e02952e48e6a84b5c1b26f9e2195410c3b257f3e3731e4a522e959b",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "0b7b5681270ed99791c3104d3401c0a35b210948a241ff32fa02a535d8c0ccba",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "db6244ade6e265ef6a7f9afa4bf3c7ea67b54658f279836398d2b5ac2f1a4b0d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "7f5ce53c78b34b708c023d7a65da28e9ee0ab95e78e2345978e132f21d289835",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/pen": [
+      {
+        "kind": "service",
+        "sha256": "1374cee0c0669b4e4bf42568c41f3e86fb664773431f2b51540efdbdc817cd1b",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "fc283a5b8aadfa1c250ebfb188b9d9441e202ff28636a315cc8668b603601ad4",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            3,
+            2
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "7599904306ee14101cddc0ac130098c9a5fe9651f6e9c7ef4e6ddd66e22911a7",
+        "beds": [
+          [
+            6,
+            6,
+            3
+          ],
+          [
+            6,
+            6,
+            5
+          ],
+          [
+            6,
+            8,
+            3
+          ],
+          [
+            6,
+            8,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            4,
+            2,
+            3
+          ],
+          [
+            5,
+            2,
+            3
+          ],
+          [
+            7,
+            1,
+            8
+          ],
+          [
+            11,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/priest_tower": [
+      {
+        "kind": "unsupported",
+        "sha256": "08f130ee2e89f885ae68838acdf13de55e4ff7987e97da75ecd26b3ce709fc6c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "6d0b4862f694a8d2c694e14aa72ab78bac974f3d48c668b9840e16fba1be5cb5",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "22ca149c2d9ddf3e5248d59fea72ebb57a5496166b64b2896cdf381d5d4fa05a",
+        "beds": [
+          [
+            3,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "8baf96879086862f3623bc2f05c3c791262ba7355fa313d9d44d05fa470b0031",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "534cc45174e55662ba298f3c6f68ffe2ad2592149ad3584989cd3b259e9b157a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "fc897e8941f4d9edebe3fc48f79a2e2b2081a952c9575c23b4ec9675896cce6a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            1,
+            1,
+            7
+          ],
+          [
+            1,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/tannery": [
+      {
+        "kind": "service",
+        "sha256": "fa244b32a1c55b9f934c38feac5a618b144758fd5130e06bccc2c4e525de0e63",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            7
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "ea0207d07ee5a6e2a8438b0f82b3f311070f03963c0c3f377ac73731d7464b90",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            7,
+            7
+          ],
+          [
+            4,
+            6,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "108293e975efb0e52550abdee43fde3b4df0f8fc1d2af923e383074584c5d039",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "9036f54f435b4debfd9b55c511fe63d0c6ef38f8ea1a196f1293cc96266ef319",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            5,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "c6f91edfabbffcea27e4bd1fb274821b3252a8e1078c6a7788befba8a0f6c9ae",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "3b9501a394f1ed50fb302c98963702b3adbb6ff139a747174bda4b720fcfae2d",
+        "beds": [
+          [
+            3,
+            6,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "324edf7220746d73ad0caa620a1131d2c098deaab78e81670732b2f0276ac57d",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            7
+          ],
+          [
+            5,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/halloween/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "64bd91ccd7f3ffdef2a9fc622bf2e9025a406f6e6ff474d3509a8540f9d0fcff",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "f0535ed36df720f2eb2c325e48e08f639df19ab55117be9305a20b7668ee9242",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/roads/intersection": [
+      {
+        "kind": "road",
+        "sha256": "e5a48a11b4687f4c3d6da304c6d35a70d6bf1ea3c486187c0de3ad4ecd56766c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "7d0a324ca90e7ebabea70583ea2cb08c3582c8d542cf84deaae1126a4b54ad3b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "78bb53bf98bad317b5085e21721f80bca77b0629397bf3760ca1d01b6e8d7c0e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "dd97ee76de75ffa5307e8761b1235c62368dfdfb01d05c0735bbad8ccae39848",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "32cf5aea67e59264fcb3cb374f253a03de52a62402c3d57e36dad157f4fca84d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "6cdcdcb13649dcaa7ef492951bc44ff2bd186f4b8ad07f6078171984f68b6263",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "f6d6f71333b2377686113a154b4824c771e49c17de6b8e232d10c7185f29f072",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/halloween/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "85d1047b113a055e381f2cb2354d3a363df442378f8c571cfacd0848b200a9af",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "large"
+}

@@ -33,11 +33,21 @@ run
 run-gametest
 run-phase8-performance
 run-village-building-performance
+run-step13-performance
 run-data
 libs
 /logs/
 tempCodeRunnerFile.*
 
+# Python-generated caches (keep source scripts and mod assets tracked)
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Files from Forge MDK
 forge*changelog.txt
 /temp/
+
+# Local agent working notes and phased development records
+/.local/
+/docs/development/

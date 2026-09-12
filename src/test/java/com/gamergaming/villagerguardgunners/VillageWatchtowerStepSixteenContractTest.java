@@ -86,7 +86,7 @@ final class VillageWatchtowerStepSixteenContractTest {
                 + "worldgen/post/GuardPostGroups.java");
         String commands = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "command/WatchtowerCommands.java");
-        String documentation = read("docs/village-watchtowers-step-16.md");
+        String documentation = read("docs/village-watchtowers.md");
 
         assertAll(
                 () -> assertTrue(groups.contains("safe.length() <= 512")),

@@ -3,9 +3,12 @@ package com.gamergaming.villagerguardgunners.worldgen.village;
 import com.mojang.logging.LogUtils;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
@@ -14,13 +17,15 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.slf4j.Logger;
 
 /** Passive per-dimension registry of placed village-building action claims. */
 public final class VillageBuildingSavedData extends SavedData {
     public static final String DATA_NAME = "villagerguardgunners_village_buildings";
-    public static final int DATA_VERSION = 1;
+    public static final int LEGACY_DATA_VERSION = 1;
+    public static final int DATA_VERSION = 2;
     public static final int MAXIMUM_RECORDS = 65_536;
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -33,6 +38,8 @@ public final class VillageBuildingSavedData extends SavedData {
     private final boolean enabled;
     private final LinkedHashMap<UUID, VillageBuildingRecord> records;
     private final Map<AnchorKey, UUID> anchors;
+    private final Map<Long, LinkedHashSet<UUID>> buildingsByChunk = new HashMap<>();
+    private final Map<Long, LinkedHashSet<UUID>> pendingByChunk;
     @Nullable
     private final CompoundTag unreadableRoot;
     @Nullable
@@ -49,6 +56,7 @@ public final class VillageBuildingSavedData extends SavedData {
         this.enabled = enabled;
         this.records = new LinkedHashMap<>(records);
         this.anchors = new HashMap<>();
+        this.pendingByChunk = new HashMap<>();
         this.unreadableRoot = unreadableRoot == null ? null : unreadableRoot.copy();
         this.disabledReason = disabledReason;
         for (VillageBuildingRecord record : records.values()) {
@@ -56,6 +64,8 @@ public final class VillageBuildingSavedData extends SavedData {
             anchors.put(
                     new AnchorKey(identity.dimensionId(), identity.anchorPosition()),
                     identity.buildingId());
+            indexPending(record);
+            indexBuilding(record.identity());
         }
     }
 
@@ -97,8 +107,11 @@ public final class VillageBuildingSavedData extends SavedData {
         Objects.requireNonNull(encoded, "encoded");
         if (!encoded.getAllKeys().equals(ROOT_KEYS)
                 || !encoded.contains(VERSION_TAG, Tag.TAG_INT)
-                || encoded.getInt(VERSION_TAG) != DATA_VERSION
                 || !encoded.contains(RECORDS_TAG, Tag.TAG_LIST)) {
+            return disabled(encoded, "unsupported or malformed root schema");
+        }
+        int dataVersion = encoded.getInt(VERSION_TAG);
+        if (dataVersion != LEGACY_DATA_VERSION && dataVersion != DATA_VERSION) {
             return disabled(encoded, "unsupported or malformed root schema");
         }
         Tag recordsTag = encoded.get(RECORDS_TAG);
@@ -119,6 +132,10 @@ public final class VillageBuildingSavedData extends SavedData {
             VillageBuildingRecord record = VillageBuildingRecordCodec.decodeWrapped(wrapper);
             if (record == null) {
                 return disabled(encoded, "a building record failed strict decoding");
+            }
+            if (dataVersion == LEGACY_DATA_VERSION
+                    && record.pendingActivation().isPresent()) {
+                return disabled(encoded, "legacy data contains future pending state");
             }
             VillageBuildingIdentity identity = record.identity();
             if (expectedDimension != null
@@ -151,6 +168,12 @@ public final class VillageBuildingSavedData extends SavedData {
     }
 
     public synchronized ClaimResult claimAnchor(VillageBuildingIdentity identity) {
+        return claimAnchor(identity, null);
+    }
+
+    public synchronized ClaimResult claimAnchor(
+            VillageBuildingIdentity identity,
+            @Nullable VillageBuildingPendingActivation pendingActivation) {
         Objects.requireNonNull(identity, "identity");
         if (!enabled) {
             reportClaimFailureOnce(ClaimResult.DISABLED, identity);
@@ -158,9 +181,18 @@ public final class VillageBuildingSavedData extends SavedData {
         }
         VillageBuildingRecord existing = records.get(identity.buildingId());
         if (existing != null) {
-            ClaimResult result = existing.identity().equals(identity)
-                    ? ClaimResult.ALREADY_CLAIMED
-                    : ClaimResult.CONFLICT;
+            ClaimResult result;
+            if (!existing.identity().equals(identity)) {
+                result = ClaimResult.CONFLICT;
+            } else {
+                if (pendingActivation != null
+                        && existing.pendingActivation().isEmpty()
+                        && !existing.hasClaimed(pendingActivation.requiredAction())) {
+                    replaceRecord(existing, existing.withPendingActivation(pendingActivation));
+                    setDirty();
+                }
+                result = ClaimResult.ALREADY_CLAIMED;
+            }
             reportClaimFailureOnce(result, identity);
             return result;
         }
@@ -173,8 +205,13 @@ public final class VillageBuildingSavedData extends SavedData {
             reportClaimFailureOnce(ClaimResult.LIMIT_REACHED, identity);
             return ClaimResult.LIMIT_REACHED;
         }
-        records.put(identity.buildingId(), VillageBuildingRecord.anchored(identity));
+        VillageBuildingRecord record = pendingActivation == null
+                ? VillageBuildingRecord.anchored(identity)
+                : VillageBuildingRecord.anchored(identity, pendingActivation);
+        records.put(identity.buildingId(), record);
         anchors.put(anchor, identity.buildingId());
+        indexBuilding(identity);
+        indexPending(record);
         setDirty();
         return ClaimResult.CLAIMED;
     }
@@ -202,7 +239,7 @@ public final class VillageBuildingSavedData extends SavedData {
         if (!current.canClaim(action)) {
             return ClaimResult.PREREQUISITE_MISSING;
         }
-        records.put(buildingId, current.claim(action));
+        replaceRecord(current, current.claim(action));
         setDirty();
         return ClaimResult.CLAIMED;
     }
@@ -228,9 +265,24 @@ public final class VillageBuildingSavedData extends SavedData {
             claimed = claimed.claim(VillageBuildingAction.ARMORY);
         }
         claimed = claimed.claim(VillageBuildingAction.INITIAL_STOCK);
-        records.put(buildingId, claimed);
+        replaceRecord(current, claimed);
         setDirty();
         return ClaimResult.CLAIMED;
+    }
+
+    /** Clears durable retry context without claiming a disabled or inapplicable action. */
+    public synchronized boolean completePendingActivation(UUID buildingId) {
+        Objects.requireNonNull(buildingId, "buildingId");
+        if (!enabled) {
+            return false;
+        }
+        VillageBuildingRecord current = records.get(buildingId);
+        if (current == null || current.pendingActivation().isEmpty()) {
+            return false;
+        }
+        replaceRecord(current, current.withoutPendingActivation());
+        setDirty();
+        return true;
     }
 
     public synchronized @Nullable VillageBuildingRecord get(UUID buildingId) {
@@ -244,12 +296,52 @@ public final class VillageBuildingSavedData extends SavedData {
         return buildingId == null ? null : records.get(buildingId);
     }
 
+    private void indexBuilding(VillageBuildingIdentity identity) {
+        long chunk = new ChunkPos(identity.anchorPosition()).toLong();
+        buildingsByChunk.computeIfAbsent(chunk, ignored -> new LinkedHashSet<>()).add(identity.buildingId());
+    }
+
+    /** Bounded cached anchor lookup; includes completed buildings in existing saves. */
+    public synchronized List<VillageBuildingIdentity> identitiesInChunk(ChunkPos chunk, int limit) {
+        if (limit < 1 || limit > 256) throw new IllegalArgumentException("Invalid anchor query limit");
+        return buildingsByChunk.getOrDefault(chunk.toLong(), new LinkedHashSet<>()).stream()
+                .limit(limit).map(records::get).map(VillageBuildingRecord::identity).toList();
+    }
+
     public boolean enabled() {
         return enabled;
     }
 
     public synchronized int size() {
         return records.size();
+    }
+
+    public synchronized int pendingActivationCount() {
+        return (int) records.values().stream()
+                .filter(record -> record.pendingActivation().isPresent())
+                .count();
+    }
+
+    /** Immutable identity snapshot for one-time defense-network reconciliation. */
+    public synchronized List<VillageBuildingIdentity> recordsSnapshot() {
+        return records.values().stream()
+                .map(VillageBuildingRecord::identity)
+                .toList();
+    }
+
+    /** O(1) chunk-key lookup with a small immutable result for event-driven recovery. */
+    public synchronized List<VillageBuildingRecord> pendingActivationsIn(
+            ChunkPos chunkPosition) {
+        Objects.requireNonNull(chunkPosition, "chunkPosition");
+        Set<UUID> buildingIds = pendingByChunk.get(chunkPosition.toLong());
+        if (buildingIds == null || buildingIds.isEmpty()) {
+            return List.of();
+        }
+        return buildingIds.stream()
+                .map(records::get)
+                .filter(Objects::nonNull)
+                .filter(record -> record.pendingActivation().isPresent())
+                .toList();
     }
 
     @Override
@@ -301,6 +393,37 @@ public final class VillageBuildingSavedData extends SavedData {
                 result,
                 identity.entryId(),
                 identity.anchorPosition());
+    }
+
+    private void replaceRecord(
+            VillageBuildingRecord previous,
+            VillageBuildingRecord replacement) {
+        unindexPending(previous);
+        records.put(replacement.identity().buildingId(), replacement);
+        indexPending(replacement);
+    }
+
+    private void indexPending(VillageBuildingRecord record) {
+        record.pendingActivation().ifPresent(pending -> {
+            for (long chunk : pending.relevantChunks(record.identity())) {
+                pendingByChunk.computeIfAbsent(chunk, ignored -> new LinkedHashSet<>())
+                        .add(record.identity().buildingId());
+            }
+        });
+    }
+
+    private void unindexPending(VillageBuildingRecord record) {
+        record.pendingActivation().ifPresent(pending -> {
+            for (long chunk : pending.relevantChunks(record.identity())) {
+                LinkedHashSet<UUID> buildingIds = pendingByChunk.get(chunk);
+                if (buildingIds != null) {
+                    buildingIds.remove(record.identity().buildingId());
+                    if (buildingIds.isEmpty()) {
+                        pendingByChunk.remove(chunk);
+                    }
+                }
+            }
+        });
     }
 
     private record AnchorKey(ResourceLocation dimensionId, BlockPos position) {

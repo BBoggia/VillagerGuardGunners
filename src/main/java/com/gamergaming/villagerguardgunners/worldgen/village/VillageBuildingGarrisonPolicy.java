@@ -31,8 +31,8 @@ public record VillageBuildingGarrisonPolicy(
         int buildingLimit = switch (buildingType) {
             case BARRACKS -> 4;
             case SENTRY_POST -> 1;
-            case WATCHTOWER -> 2;
-            case ARMORY, TRAINING_YARD -> 0;
+            case WATCHTOWER, TRAINING_YARD -> 2;
+            case ARMORY -> 0;
         };
         return Math.min(selectedCount, Math.min(maximumGuardsPerBuilding, buildingLimit));
     }

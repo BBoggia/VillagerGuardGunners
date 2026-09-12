@@ -18,6 +18,7 @@ import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIds;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSquads;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisons;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageWatchtowerGuardPlacement;
 
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -152,6 +153,19 @@ public final class NaturalGuardSpawnIntegration {
         if (!isLiveIn(level, guard)) {
             return;
         }
+
+        try {
+            completePostAfterJoin(level, guard, identity, assignment);
+        } finally {
+            VillageWatchtowerGuardPlacement.finalizePosition(level, guard, identity);
+        }
+    }
+
+    private static void completePostAfterJoin(
+            ServerLevel level,
+            Guard guard,
+            GuardPostIdentity identity,
+            GuardPostAssignment assignment) {
 
         UUID squadId = GuardPostSquads.squadId(identity.postId());
         GuardPostSquads.ensureRegistered(

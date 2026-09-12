@@ -75,6 +75,10 @@ public final class SquadLedgerService {
         }
 
         SquadRegistrySavedData registry = SquadRegistrySavedData.get(server);
+        if (!registry.enabled()) {
+            clearPending(server, player.getUUID());
+            return OperationResult.of(OperationStatus.REGISTRY_DISABLED);
+        }
         SquadMembership currentMembership = GuardSquadAccess.getMembership(guard);
         if (decoded.status() == DecodeStatus.BLANK) {
             clearPending(server, player.getUUID());
@@ -397,6 +401,7 @@ public final class SquadLedgerService {
         REASSIGNED,
         CORRUPT_LEDGER,
         UNSUPPORTED_VERSION,
+        REGISTRY_DISABLED,
         REGISTRY_FULL,
         IDENTITY_GENERATION_FAILED,
         UNAUTHORIZED,

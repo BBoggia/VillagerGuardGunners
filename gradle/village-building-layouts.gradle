@@ -1,0 +1,161 @@
+// Source authoring format. Generated definitions still use the existing runtime format 1.
+def layoutBiomes = ['plains', 'desert', 'savanna', 'snowy', 'taiga'] as Set
+def layoutBuildings = ['barracks', 'armory', 'sentry_post', 'watchtower', 'training_yard'] as Set
+def layoutFields = ['building', 'biome', 'layout', 'size', 'layers', 'palette',
+                    'weight', 'lanternCount', 'dutySlots'] as Set
+def idPattern = '[a-z0-9_.-]+:[a-z0-9/._-]+'
+def integerIn = { value, int low, int high ->
+    value instanceof Integer && value >= low && value <= high
+}
+def reject = { String message -> throw new GradleException("Village layout: ${message}") }
+
+ext.mergeVillageLayoutPalette = { List base, List overrides ->
+    Map<String, Map> result = new LinkedHashMap<>()
+    base.each { entry ->
+        if (result.put(entry.symbol, new LinkedHashMap(entry)) != null)
+            reject("duplicate base palette symbol ${entry.symbol}")
+    }
+    Set seen = [] as Set
+    overrides.each { entry ->
+        if (!(entry instanceof Map) || !(entry.symbol instanceof String)
+                || entry.symbol.size() != 1 || entry.symbol in ['.', 'V', 'J', 'A']
+                || !seen.add(entry.symbol)
+                || !(entry.name instanceof String) || !(entry.name ==~ idPattern)
+                || !(entry.keySet() - ['symbol', 'name', 'properties', 'nbt']).isEmpty())
+            reject('invalid, duplicate, or reserved palette override')
+        if (entry.name in ['minecraft:jigsaw', 'minecraft:structure_block', 'minecraft:structure_void'])
+            reject('marker blocks are reserved for generator symbols')
+        ['properties', 'nbt'].each { field ->
+            if (entry.containsKey(field) && (!(entry[field] instanceof Map)
+                    || entry[field].any { key, value -> !(key instanceof String) || !(value instanceof String) }))
+                reject("palette ${field} must be a map of strings")
+        }
+        result[entry.symbol] = new LinkedHashMap(entry)
+    }
+    result.values().collect { new LinkedHashMap(it) }
+}
+
+ext.resolveVillageBuildingLayouts = { Map root ->
+    if (!(root.biomes instanceof Map) || root.biomes.keySet() != layoutBiomes
+            || !(root.buildings instanceof Map) || root.buildings.keySet() != layoutBuildings)
+        reject('expected five supported biomes and building types')
+    if (!(root.keySet() - ['dataVersion', 'biomes', 'commonPalette', 'buildings', 'layoutVariants']).isEmpty())
+        reject('unknown blueprint field')
+    List<Map> jobs = []
+    root.biomes.keySet().sort().each { biome ->
+        Map palette = root.biomes[biome]
+        if (![palette.targetPool, palette.streetPool, palette.connectorState].every {
+                it instanceof String && it ==~ idPattern })
+            reject("invalid pool or connector resource in ${biome}")
+        root.buildings.keySet().sort().each { building ->
+            jobs.add([biome: biome, building: building, legacy: true,
+                      definition: root.buildings[building],
+                      entryPath: "${building}/${biome}".toString(),
+                      templatePath: "village/${biome}/${building}".toString()])
+        }
+    }
+    def variants = root.containsKey('layoutVariants') ? root.layoutVariants : []
+    if (!(variants instanceof List) || variants.size() > 25)
+        reject('layoutVariants must be an array with at most 25 entries (50 total)')
+    Set identities = [] as Set
+    List<Map> extra = []
+    variants.eachWithIndex { variant, index ->
+        String location = "layoutVariants[${index}]"
+        if (!(variant instanceof Map) || !(variant.keySet() - layoutFields).isEmpty())
+            reject("${location} has unknown fields or is not an object")
+        if (!(variant.building in layoutBuildings) || !(variant.biome in layoutBiomes)
+                || !(variant.layout instanceof String)
+                || !(variant.layout ==~ '[a-z][a-z0-9_]{0,47}') || variant.layout == 'default')
+            reject("${location} has an invalid building, biome, or layout name")
+        String entryPath = "${variant.building}/${variant.biome}/${variant.layout}"
+        if (!identities.add(entryPath)) reject("duplicate variant ${entryPath}")
+        if (!(variant.size instanceof List) || variant.size.size() != 3
+                || !variant.size.every { integerIn(it, 1, 16) } || variant.size[1] < 3
+                || variant.size.inject(1) { a, b -> a * b } > 4096)
+            reject("${entryPath} size must have bounded integer dimensions and at least three layers")
+        def (width, height, depth) = variant.size
+        if (!(variant.layers instanceof List) || variant.layers.size() != height
+                || !variant.layers.every { layer -> layer instanceof List && layer.size() == depth
+                    && layer.every { row -> row instanceof String && row.size() == width } })
+            reject("${entryPath} layers do not match its size")
+        if (!integerIn(variant.weight, 1, 5) || !integerIn(variant.lanternCount, 1, 16))
+            reject("${entryPath} requires integer weight 1..5 and lanternCount 1..16")
+        if (variant.containsKey('palette') && !(variant.palette instanceof List))
+            reject("${entryPath} palette must be an array")
+        // Validate overrides even before any resources are written.
+        mergeVillageLayoutPalette(root.commonPalette + root.biomes[variant.biome].palette,
+                variant.palette ?: [])
+        if (!(variant.dutySlots instanceof List) || variant.dutySlots.isEmpty() || variant.dutySlots.size() > 4)
+            reject("${entryPath} requires one to four explicit dutySlots")
+        Set keys = [] as Set
+        Set offsets = [] as Set
+        variant.dutySlots.each { slot ->
+            if (!(slot instanceof Map)
+                    || slot.keySet() != (['key', 'offset', 'facing', 'kind', 'weapon_requirement'] as Set)
+                    || !(slot.key instanceof String) || !(slot.key ==~ '[a-z0-9_]{1,32}')
+                    || !keys.add(slot.key)
+                    || !(slot.offset instanceof List) || slot.offset.size() != 3
+                    || !slot.offset.every { integerIn(it, -16, 16) } || !offsets.add(slot.offset)
+                    || !(slot.facing in ['north', 'south', 'east', 'west'])
+                    || !(slot.kind in ['muster', 'sentry', 'overwatch', 'drill'])
+                    || !(slot.weapon_requirement in ['any', 'ranged']))
+                reject("${entryPath} has invalid or duplicate duty slots")
+        }
+        extra.add([biome: variant.biome, building: variant.building, legacy: false,
+                   definition: variant, entryPath: entryPath,
+                   templatePath: "village/${variant.biome}/${variant.building}/${variant.layout}".toString()])
+    }
+    jobs + extra.sort { it.entryPath }
+}
+
+ext.validateVillageLayoutGeometry = { Map job, Map palette ->
+    Map definition = job.definition
+    def (width, height, depth) = definition.size
+    List layers = definition.layers
+    String location = job.entryPath
+    def symbolAt = { int x, int y, int z ->
+        if (x < 0 || y < 0 || z < 0 || x >= width || y >= height || z >= depth)
+            reject("${location} standing position extends outside the template")
+        layers[y][z].substring(x, x + 1)
+    }
+    List anchor
+    for (int y = 0; y < height; y++) for (int z = 0; z < depth; z++) {
+        int x = layers[y][z].indexOf('A')
+        if (x >= 0) anchor = [x, y, z]
+    }
+    if (anchor == null) reject("${location} is missing its anchor")
+    def hasSupport = { int x, int y, int z ->
+        String symbol = symbolAt(x, y - 1, z)
+        if (symbol in ['.', 'V', 'A', 'J'] || palette[symbol].name in
+                ['minecraft:air', 'minecraft:cave_air', 'minecraft:void_air', 'minecraft:light'])
+            reject("${location} has unsupported standing space at ${[x, y, z]}")
+    }
+    def standing = { List position ->
+        int x = position[0], y = position[1], z = position[2]
+        hasSupport(x, y, z)
+        if (!(symbolAt(x, y, z) in ['.', 'A', 'J']) || symbolAt(x, y + 1, z) != '.')
+            reject("${location} has obstructed standing space at ${position}")
+    }
+    hasSupport(*anchor)
+    int count = [barracks: 4, armory: 0, sentry_post: 1, watchtower: 2, training_yard: 2][job.building]
+    List offsets = [[0, 0, 0], [-1, 0, 0], [1, 0, 0], [0, 0, -1]]
+    offsets.take(count).each { offset ->
+        List position = (0..2).collect { anchor[it] + offset[it] }
+        standing(position)
+        // Ranged Watchtower occupants still use the runtime's fixed upper-deck offset.
+        if (job.building == 'watchtower') standing([position[0], position[1] + 5, position[2]])
+    }
+    definition.dutySlots.each { slot ->
+        List position = (0..2).collect { anchor[it] + slot.offset[it] }
+        if (job.building == 'armory' && position == anchor)
+            reject("${location} duty position overlaps the generated Armory block")
+        standing(position)
+    }
+    // q/Q are deliberately reserved lantern symbols so count/support checks remain meaningful.
+    palette.each { symbol, state ->
+        boolean lantern = state.name in ['minecraft:lantern', 'minecraft:soul_lantern']
+        if ((symbol in ['q', 'Q']) != lantern
+                || (lantern && state.properties?.hanging != (symbol == 'q' ? 'true' : 'false')))
+            reject("${location} lantern states must use q (hanging) or Q (standing)")
+    }
+}

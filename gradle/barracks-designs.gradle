@@ -1,0 +1,391 @@
+// Finished block prototypes remain separate from default village generation.
+tasks.register('generateBarracksDesignPack') {
+    group = 'village structures'
+    description = 'Builds the compact and courtyard Plains Barracks preview datapack.'
+    inputs.files('src/structureDesign/resources/barracks-layouts.json',
+            'src/main/templates/villagerguardgunners/village_buildings.json',
+            'gradle/village-building-layouts.gradle', 'gradle/village-building-templates.gradle',
+            'gradle/barracks-designs.gradle')
+    outputs.dir layout.buildDirectory.dir('generated/barracks-design-pack')
+    doLast {
+        def json = new groovy.json.JsonSlurper()
+        Map source = json.parse(file('src/main/templates/villagerguardgunners/village_buildings.json')) as Map
+        source.layoutVariants = json.parse(file('src/structureDesign/resources/barracks-layouts.json'))
+        File generated = new File(temporaryDir, 'compiled')
+        def jobs = generateVillageBuildingResources(source, generated)
+        File staged = new File(temporaryDir, 'pack')
+        project.delete(staged)
+        staged.mkdirs()
+        jobs.findAll { !it.legacy }.each { job ->
+            ["data/villagerguardgunners/village_buildings/${job.entryPath}.json",
+             "data/villagerguardgunners/structures/${job.templatePath}.nbt"].each { path ->
+                File target = new File(staged, path)
+                target.parentFile.mkdirs()
+                target.bytes = new File(generated, path).bytes
+            }
+        }
+        new File(staged, 'pack.mcmeta').text = groovy.json.JsonOutput.toJson(
+                [pack:[pack_format:15, description:'Villager Guard Gunners: Plains Barracks design previews']]) + '\n'
+        project.sync {
+            from staged
+            into layout.buildDirectory.dir('generated/barracks-design-pack')
+        }
+    }
+}
+
+tasks.register('barracksDesignPack', Zip) {
+    group = 'village structures'
+    description = 'Packages the Barracks preview datapack for an isolated Minecraft world.'
+    dependsOn tasks.named('generateBarracksDesignPack')
+    from layout.buildDirectory.dir('generated/barracks-design-pack')
+    destinationDirectory = layout.buildDirectory.dir('distributions')
+    archiveFileName = 'villager-guard-gunners-barracks-designs.zip'
+}
+
+// All regional architecture stays opt-in and outside release village pools.
+tasks.register('armoryPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds the furnished compact and supply-yard Plains Armory previews.'
+    inputs.files('tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/armory-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-armory-preview.zip')
+    commandLine 'python3', 'tools/build_armory_preview.py'
+}
+
+tasks.register('regionalBarracksPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds all sixteen regional Barracks architecture previews.'
+    inputs.files('src/structureDesign/resources/regional-barracks-details.json',
+            'tools/build_regional_barracks.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-barracks-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-regional-barracks-preview.zip')
+    commandLine 'python3', 'tools/build_regional_barracks.py'
+}
+
+tasks.register('regionalArmoryPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds fourteen furnished regional Armory architecture previews.'
+    inputs.files('tools/build_regional_armory_preview.py', 'tools/draw_regional_armories.py',
+            'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-armory-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-regional-armory-preview.zip')
+    commandLine 'python3', 'tools/build_regional_armory_preview.py'
+}
+
+tasks.register('regionalArmoryIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds opt-in regional Armory village integration datapacks.'
+    inputs.files('tools/build_regional_armory_integration.py', 'tools/build_regional_armory_preview.py',
+            'tools/draw_regional_armories.py', 'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-armory-integration')
+    ['vanilla', 'tidal-towns', 'mmv'].each { name ->
+        outputs.file layout.buildDirectory.file("distributions/villager-guard-gunners-regional-armories-${name}.zip")
+    }
+    commandLine 'python3', 'tools/build_regional_armory_integration.py'
+}
+
+tasks.register('regionalBarracksIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds opt-in regional Barracks village integration datapacks.'
+    inputs.files('src/structureDesign/resources/regional-barracks-details.json',
+            'tools/build_regional_barracks.py', 'tools/build_regional_barracks_integration.py',
+            'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-barracks-integration')
+    ['vanilla', 'tidal-towns', 'mmv'].each { name ->
+        outputs.file layout.buildDirectory.file("distributions/villager-guard-gunners-regional-barracks-${name}.zip")
+    }
+    commandLine 'python3', 'tools/build_regional_barracks_integration.py'
+}
+
+tasks.register('customBarracksIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds optional Barracks for reviewed CTOV village road connections.'
+    inputs.files('src/structureDesign/resources/regional-barracks-details.json',
+            'tools/build_custom_barracks_integration.py', 'tools/build_custom_armory_integration.py',
+            'tools/build_regional_barracks.py', 'tools/build_regional_barracks_integration.py',
+            'tools/build_regional_armory_integration.py', 'tools/build_regional_armory_preview.py',
+            'tools/draw_regional_armories.py', 'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/custom-barracks-integration')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-barracks-ctov.zip')
+    commandLine 'python3', 'tools/build_custom_barracks_integration.py'
+}
+
+tasks.register('customArmoryIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds opt-in Armory packs for reviewed custom village road connections.'
+    inputs.files('tools/build_custom_armory_integration.py', 'tools/build_regional_armory_integration.py',
+            'tools/build_regional_armory_preview.py', 'tools/draw_regional_armories.py',
+            'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/custom-armory-integration')
+    ['ctov', 'sky-villages'].each { name ->
+        outputs.file layout.buildDirectory.file("distributions/villager-guard-gunners-armories-${name}.zip")
+    }
+    commandLine 'python3', 'tools/build_custom_armory_integration.py'
+}
+
+// Manual architecture pack: no village pools or automatic garrisons.
+tasks.register('sentryPostPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds the furnished roadside shelter and gateway lodge Plains Sentry Post previews.'
+    inputs.files('tools/build_sentry_post_preview.py', 'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/sentry-post-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-sentry-post-preview.zip')
+    commandLine 'python3', 'tools/build_sentry_post_preview.py'
+}
+
+// All fourteen regional Sentry Post prototypes remain manual-placement previews.
+tasks.register('regionalSentryPostPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds the seven regional pairs of furnished Sentry Post previews.'
+    inputs.files('tools/build_regional_sentry_post_preview.py', 'tools/build_sentry_post_preview.py',
+            'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-sentry-post-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-regional-sentry-post-preview.zip')
+    commandLine 'python3', 'tools/build_regional_sentry_post_preview.py'
+}
+
+// Player packs are separate from the architecture-only previews and main JAR.
+tasks.register('regionalSentryPostIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds opt-in regional Sentry Post village integration datapacks.'
+    inputs.files('tools/build_regional_sentry_post_integration.py', 'tools/build_regional_sentry_post_preview.py',
+            'tools/build_sentry_post_preview.py', 'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-sentry-post-integration')
+    ['vanilla', 'tidal-towns', 'mmv'].each { name ->
+        outputs.file layout.buildDirectory.file("distributions/villager-guard-gunners-regional-sentry-posts-${name}.zip")
+    }
+    commandLine 'python3', 'tools/build_regional_sentry_post_integration.py'
+}
+
+// Manual Plains Training Yard architecture, separate from natural village entries.
+tasks.register('trainingYardPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds the furnished Plains practice yard and drill courtyard previews.'
+    inputs.files('tools/build_training_yard_preview.py', 'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/training-yard-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-training-yard-preview.zip')
+    commandLine 'python3', 'tools/build_training_yard_preview.py'
+}
+
+// Manual Plains Watchtower architecture, separate from natural village entries.
+tasks.register('watchtowerPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds the furnished compact tower and gatehouse lookout Plains previews.'
+    inputs.files('tools/build_watchtower_preview.py', 'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/watchtower-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-watchtower-preview.zip')
+    commandLine 'python3', 'tools/build_watchtower_preview.py'
+}
+
+// Manual regional Watchtower architecture, separate from natural village entries.
+tasks.register('regionalWatchtowerPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds the seven regional pairs of furnished Watchtower previews.'
+    inputs.files('tools/build_regional_watchtower_preview.py', 'tools/build_watchtower_preview.py',
+            'tools/build_regional_sentry_post_preview.py', 'tools/build_sentry_post_preview.py',
+            'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-watchtower-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-regional-watchtower-preview.zip')
+    commandLine 'python3', 'tools/build_regional_watchtower_preview.py'
+}
+
+// Optional Watchtower village entries; previews remain separate manual packs.
+tasks.register('regionalWatchtowerIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds optional regional Watchtower village integration datapacks.'
+    inputs.files('tools/build_regional_watchtower_integration.py', 'tools/build_regional_watchtower_preview.py',
+            'tools/build_watchtower_preview.py', 'tools/build_regional_sentry_post_preview.py',
+            'tools/build_sentry_post_preview.py', 'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-watchtower-integration')
+    ['vanilla', 'tidal-towns', 'mmv'].each { name ->
+        outputs.file layout.buildDirectory.file("distributions/villager-guard-gunners-regional-watchtowers-${name}.zip")
+    }
+    commandLine 'python3', 'tools/build_regional_watchtower_integration.py'
+}
+
+// Regional Training Yards remain isolated manual-placement prototypes.
+tasks.register('regionalTrainingYardPreview', Exec) {
+    group = 'village structures'
+    description = 'Builds seven regional pairs of furnished Training Yard previews.'
+    inputs.files('tools/build_regional_training_yard_preview.py', 'tools/build_training_yard_preview.py',
+            'tools/build_regional_sentry_post_preview.py', 'tools/build_sentry_post_preview.py',
+            'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-training-yard-preview')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-regional-training-yard-preview.zip')
+    commandLine 'python3', 'tools/build_regional_training_yard_preview.py'
+}
+
+// Optional player packs, separate from manual previews and the main JAR.
+tasks.register('regionalTrainingYardIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds optional regional Training Yard village integration datapacks.'
+    inputs.files('tools/build_regional_training_yard_integration.py', 'tools/build_regional_training_yard_preview.py',
+            'tools/build_training_yard_preview.py', 'tools/build_regional_sentry_post_preview.py',
+            'tools/build_sentry_post_preview.py', 'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/regional-training-yard-integration')
+    ['vanilla', 'tidal-towns', 'mmv'].each { name ->
+        outputs.file layout.buildDirectory.file("distributions/villager-guard-gunners-regional-training-yards-${name}.zip")
+    }
+    commandLine 'python3', 'tools/build_regional_training_yard_integration.py'
+}
+
+// CTOV adapters retain the regional Sentry Post interiors and single duty.
+tasks.register('customSentryPostIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds optional Sentry Posts for reviewed CTOV village road connections.'
+    inputs.files('tools/build_custom_sentry_post_integration.py', 'tools/build_custom_armory_integration.py',
+            'tools/build_regional_sentry_post_integration.py', 'tools/build_regional_sentry_post_preview.py',
+            'tools/build_sentry_post_preview.py', 'tools/build_regional_armory_integration.py',
+            'tools/build_regional_armory_preview.py', 'tools/draw_regional_armories.py',
+            'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/custom-sentry-post-integration')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-sentry-posts-ctov.zip')
+    commandLine 'python3', 'tools/build_custom_sentry_post_integration.py'
+}
+
+// CTOV Watchtowers retain their internal stairs and paired lookout duties.
+tasks.register('customWatchtowerIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds optional Watchtowers for reviewed CTOV village road connections.'
+    inputs.files('tools/build_custom_watchtower_integration.py', 'tools/build_custom_armory_integration.py',
+            'tools/build_regional_watchtower_integration.py', 'tools/build_regional_watchtower_preview.py',
+            'tools/build_watchtower_preview.py', 'tools/build_regional_sentry_post_preview.py',
+            'tools/build_sentry_post_preview.py', 'tools/build_regional_armory_integration.py',
+            'tools/build_regional_armory_preview.py', 'tools/draw_regional_armories.py',
+            'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/custom-watchtower-integration')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-watchtowers-ctov.zip')
+    commandLine 'python3', 'tools/build_custom_watchtower_integration.py'
+}
+
+tasks.register('customTrainingYardIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds optional Training Yards for reviewed CTOV village road connections.'
+    inputs.files('tools/build_custom_training_yard_integration.py', 'tools/build_custom_armory_integration.py',
+            'tools/build_regional_training_yard_integration.py', 'tools/build_regional_training_yard_preview.py',
+            'tools/build_training_yard_preview.py', 'tools/build_regional_sentry_post_preview.py',
+            'tools/build_sentry_post_preview.py', 'tools/build_regional_armory_integration.py',
+            'tools/build_regional_armory_preview.py', 'tools/draw_regional_armories.py',
+            'tools/build_armory_preview.py', 'tools/create_flat_sandbox.py')
+    outputs.dir layout.buildDirectory.dir('generated/custom-training-yard-integration')
+    outputs.file layout.buildDirectory.file('distributions/villager-guard-gunners-training-yards-ctov.zip')
+    commandLine 'python3', 'tools/build_custom_training_yard_integration.py'
+}
+
+// Sky bridges attach at floor level; each layout carries its own finite island.
+tasks.register('skyVillageIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds optional Sky Villages Barracks, Sentry Posts, Watchtowers, and Training Yards.'
+    inputs.files(fileTree('tools') { include 'build_*.py', 'draw_regional_armories.py', 'create_flat_sandbox.py' })
+    inputs.files('src/structureDesign/resources/regional-barracks-details.json')
+    outputs.dir layout.buildDirectory.dir('generated/sky-village-integration')
+    ['barracks', 'sentry-posts', 'watchtowers', 'training-yards'].each { family ->
+        outputs.file layout.buildDirectory.file("distributions/villager-guard-gunners-${family}-sky-villages.zip")
+    }
+    commandLine 'python3', 'tools/build_sky_village_integration.py'
+}
+
+// Family balance overrides copy the generated built-in definitions, so they
+// follow changes to the base mod instead of maintaining a second copy.
+['regionalBarracksIntegration', 'regionalArmoryIntegration', 'regionalSentryPostIntegration',
+ 'regionalWatchtowerIntegration', 'regionalTrainingYardIntegration'].each { taskName ->
+    tasks.named(taskName).configure {
+        dependsOn tasks.named('generateVillageBuildingTemplates')
+        inputs.file('tools/village_building_pack_balance.py')
+        inputs.dir(layout.buildDirectory.dir('generated/village-building-templates/data/villagerguardgunners/village_buildings'))
+    }
+}
+
+tasks.register('combinedBuildingIntegration', Exec) {
+    group = 'village structures'
+    description = 'Builds one all-buildings player datapack for each village provider.'
+    dependsOn 'regionalBarracksIntegration', 'regionalArmoryIntegration',
+            'regionalSentryPostIntegration', 'regionalWatchtowerIntegration',
+            'regionalTrainingYardIntegration', 'customBarracksIntegration',
+            'customArmoryIntegration', 'customSentryPostIntegration',
+            'customWatchtowerIntegration', 'customTrainingYardIntegration', 'skyVillageIntegration'
+    inputs.file('tools/build_combined_building_packs.py')
+    ['vanilla', 'ctov', 'tidal-towns', 'mmv', 'sky-villages'].each { provider ->
+        def prefix = provider in ['vanilla', 'tidal-towns', 'mmv'] ? 'regional-' : ''
+        ['barracks', 'armories', 'sentry-posts', 'watchtowers', 'training-yards'].each { family ->
+            inputs.file(layout.buildDirectory.file(
+                    "distributions/villager-guard-gunners-${prefix}${family}-${provider}.zip"))
+        }
+        outputs.file(layout.buildDirectory.file(
+                "distributions/villager-guard-gunners-all-buildings-${provider}.zip"))
+    }
+    commandLine 'python3', 'tools/build_combined_building_packs.py'
+}
+
+// A review bundle is available before manual publication approval. The public
+// upload task still requires the complete release matrices.
+tasks.register('prepareReleaseCandidate', Sync) {
+    group = 'distribution'
+    description = 'Stages the tested mod, optional player packs, instructions, and checksums for release review.'
+    dependsOn 'check', 'verifyPublicReleaseIdentity', 'combinedBuildingIntegration',
+            'regionalBarracksIntegration', 'regionalArmoryIntegration',
+            'regionalSentryPostIntegration', 'regionalWatchtowerIntegration',
+            'regionalTrainingYardIntegration', 'customBarracksIntegration',
+            'customArmoryIntegration', 'customSentryPostIntegration',
+            'customWatchtowerIntegration', 'customTrainingYardIntegration', 'skyVillageIntegration'
+    into layout.buildDirectory.dir("distributions/release-candidate/${mod_version}")
+    from(tasks.named('jar', Jar).flatMap { it.archiveFile })
+    from("docs/releases/${mod_version}.md") {
+        rename { 'RELEASE-NOTES.md' }
+        filter { line -> line.replace('](../', '](docs/') }
+    }
+    from('docs/curseforge-description.md') { rename { 'DESCRIPTION.md' } }
+    from('LICENSE.txt', 'CREDITS.md', 'README.md', 'CHANGELOG.md')
+    from('docs') {
+        exclude '**/.DS_Store'
+        into 'docs'
+    }
+    def playerPacks = []
+    ['vanilla', 'ctov', 'tidal-towns', 'mmv', 'sky-villages'].each { provider ->
+        playerPacks.add("villager-guard-gunners-all-buildings-${provider}.zip")
+    }
+    ['barracks', 'armories', 'sentry-posts', 'watchtowers', 'training-yards'].each { family ->
+        ['vanilla', 'tidal-towns', 'mmv'].each { provider ->
+            playerPacks.add("villager-guard-gunners-regional-${family}-${provider}.zip")
+        }
+        ['ctov', 'sky-villages'].each { provider ->
+            playerPacks.add("villager-guard-gunners-${family}-${provider}.zip")
+        }
+    }
+    from(layout.buildDirectory.dir('distributions')) {
+        include playerPacks
+        into 'optional-datapacks'
+    }
+    doLast {
+        playerPacks.each { name ->
+            File pack = new File(destinationDir, "optional-datapacks/${name}")
+            if (!pack.isFile()) throw new GradleException("Missing player datapack: ${name}")
+            new java.util.zip.ZipFile(pack).withCloseable { zip ->
+                def metadata = zip.getEntry('pack.mcmeta')
+                if (metadata == null) throw new GradleException("Missing pack.mcmeta: ${name}")
+                def content = new groovy.json.JsonSlurper().parse(zip.getInputStream(metadata))
+                if (content.pack?.pack_format != 15) {
+                    throw new GradleException("Wrong Minecraft datapack format: ${name}")
+                }
+            }
+        }
+        new File(destinationDir, 'CANDIDATE-STATUS.txt').text =
+                'Prepared for review; public release approval remains pending.\n' +
+                'The Gradle check and release identity gates passed when this bundle was staged.\n' +
+                'Manual playthrough, multiplayer, upgrade, performance, and clean-checkout CI\n' +
+                'require current evidence. See docs/release-checklist.md.\n' +
+                'Install only the optional datapacks matching your village providers.\n'
+        new File(destinationDir, 'INSTALL.txt').text =
+                'Install the mod JAR and required dependencies on both client and server.\n' +
+                'Optional ZIPs go in the world datapacks folder, not the mods folder.\n' +
+                'Read docs/building-pack-installation.md before selecting packs.\n' +
+                'Read RELEASE-NOTES.md for dependencies, feature setup, and updating.\n'
+        def files = fileTree(destinationDir).files.findAll { it.name != 'SHA256SUMS.txt' }
+                .sort { destinationDir.toPath().relativize(it.toPath()).toString() }
+        new File(destinationDir, 'SHA256SUMS.txt').text = files.collect { artifact ->
+            def hash = java.security.MessageDigest.getInstance('SHA-256')
+                    .digest(artifact.bytes).encodeHex().toString()
+            "${hash}  ${destinationDir.toPath().relativize(artifact.toPath())}"
+        }.join('\n') + '\n'
+    }
+}

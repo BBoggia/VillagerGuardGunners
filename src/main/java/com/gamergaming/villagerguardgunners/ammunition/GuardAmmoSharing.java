@@ -27,7 +27,7 @@ public final class GuardAmmoSharing {
     public static SharingResult tryShare(Guard recipient) {
         if (recipient == null
                 || recipient.level().isClientSide
-                || !recipient.isAlive()
+                || com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(recipient) || !recipient.isAlive()
                 || !recipient.isEffectiveAi()) {
             return SharingResult.failed(SharingStatus.INVALID_RECIPIENT);
         }
@@ -75,7 +75,7 @@ public final class GuardAmmoSharing {
         List<Guard> nearbyGuards = recipient.level().getEntitiesOfClass(
                 Guard.class,
                 searchBounds,
-                guard -> guard != recipient && guard.isAlive() && guard.isEffectiveAi());
+                guard -> guard != recipient && !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) && guard.isAlive() && guard.isEffectiveAi());
 
         DonorCandidate selected = null;
         double selectedDistanceSquared = Double.POSITIVE_INFINITY;

@@ -26,7 +26,7 @@ public final class GuardAmmoDeposits {
                 || guard == null
                 || hand == null
                 || player.level().isClientSide
-                || !guard.isAlive()
+                || com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) || !guard.isAlive()
                 || !player.isSecondaryUseActive()) {
             return DepositResult.failed(DepositStatus.INVALID_REQUEST);
         }

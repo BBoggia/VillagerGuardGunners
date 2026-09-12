@@ -8,17 +8,22 @@ import org.junit.jupiter.api.Test;
 
 final class NativeWeaponStateTest {
     @Test
-    void dryWeaponYieldsUntilTheExactRetryTick() {
+    void dryEvidenceSurvivesTheExactRetryTick() {
         NativeWeaponState state = new NativeWeaponState();
         assertEquals(0L, state.remainingDryTicks(100L));
         state.markDry(100L, 20);
 
-        assertFalse(state.mayEngage(100L));
+        assertFalse(state.mayAttemptAction(100L));
         assertEquals(20L, state.remainingDryTicks(100L));
-        assertFalse(state.mayEngage(119L));
+        assertFalse(state.mayAttemptAction(119L));
         assertEquals(1L, state.remainingDryTicks(119L));
-        assertTrue(state.mayEngage(120L));
+        assertTrue(state.mayAttemptAction(120L));
         assertEquals(0L, state.remainingDryTicks(120L));
+        assertTrue(state.isDryConfirmed());
+        assertTrue(state.mayAttemptAction(1_000L));
+        assertTrue(state.isDryConfirmed());
+        state.clearDry();
+        assertFalse(state.isDryConfirmed());
     }
 
     @Test
@@ -28,7 +33,7 @@ final class NativeWeaponStateTest {
         state.suspend();
         state.clearDry();
 
-        assertFalse(state.mayEngage(1_000L));
+        assertFalse(state.mayAttemptAction(1_000L));
         assertTrue(state.isSuspended());
     }
 
@@ -40,8 +45,24 @@ final class NativeWeaponStateTest {
 
         state.resetForWeaponChange();
 
-        assertTrue(state.mayEngage(100L));
+        assertTrue(state.mayAttemptAction(100L));
         assertFalse(state.isSuspended());
+        assertFalse(state.isDryConfirmed());
+    }
+
+    @Test
+    void recoveringMetadataDoesNotEraseConfirmedExhaustion() {
+        NativeWeaponState state = new NativeWeaponState();
+        state.markDry(10L, 20);
+        state.suspend();
+        state.resume();
+        assertFalse(state.mayAttemptAction(29L));
+        assertTrue(state.mayAttemptAction(30L));
+        assertTrue(state.isDryConfirmed());
+        state.markDry(30L, 0);
+        assertFalse(state.mayAttemptAction(30L));
+        assertTrue(state.mayAttemptAction(31L));
+        assertTrue(state.isDryConfirmed());
     }
 
     @Test
@@ -51,7 +72,7 @@ final class NativeWeaponStateTest {
 
         state.resume();
 
-        assertTrue(state.mayEngage(100L));
+        assertTrue(state.mayAttemptAction(100L));
         assertFalse(state.isSuspended());
     }
 }

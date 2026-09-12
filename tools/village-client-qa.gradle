@@ -1,0 +1,33 @@
+// Isolated, destructive test scene only in a generated build directory.
+// Run the performance matrix first to provide the disposable template world.
+allprojects { p ->
+    afterEvaluate {
+        def qaRoot = layout.buildDirectory.dir('village-client-qa').get().asFile
+        def templateWorld = new File(p.projectDir, 'run-step13-performance/world')
+        def qa = sourceSets.create('villageClientQa') {
+            java.srcDir new File(p.projectDir, 'tools/client-qa-src')
+            compileClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.main.output
+        }
+        configurations.villageClientQaImplementation.extendsFrom configurations.implementation
+        configurations.villageClientQaRuntimeOnly.extendsFrom configurations.runtimeOnly
+        def prepare = tasks.register('prepareVillageClientQaWorld', Sync) {
+            from templateWorld
+            into new File(qaRoot, 'saves/VillageValidation')
+            exclude 'session.lock', 'playerdata/**', 'advancements/**', 'stats/**'
+            doFirst {
+                if (!new File(templateWorld, 'level.dat').isFile()) {
+                    throw new GradleException('Run the performance matrix before the isolated client validation.')
+                }
+                new File(qaRoot, 'client-qa-result.txt').delete()
+                qaRoot.listFiles()?.findAll { it.name.startsWith('client-transport-') && it.name.endsWith('.png') }?.each { it.delete() }
+            }
+        }
+        minecraft.runs.client.workingDirectory = qaRoot
+        minecraft.runs.client.property 'fml.earlyprogresswindow', 'false'
+        minecraft.runs.client.property 'village.qa.dir', qaRoot.absolutePath
+        minecraft.runs.client.args '--quickPlaySingleplayer', 'VillageValidation'
+        minecraft.runs.client.mods.villagerguardgunners.source qa
+        tasks.configureEach { if (name == 'runClient') dependsOn prepare }
+    }
+}

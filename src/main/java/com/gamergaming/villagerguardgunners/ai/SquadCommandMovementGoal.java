@@ -58,7 +58,7 @@ public final class SquadCommandMovementGoal extends Goal {
         movement.apply(
                 command,
                 true,
-                movement.takePathSlot(gameTime),
+                movement.pathSlotAvailable(gameTime),
                 config.movement.approachSpeed.get());
     }
 
@@ -78,12 +78,18 @@ public final class SquadCommandMovementGoal extends Goal {
         if (GuardSidearmAccess.getState(guard) != SidearmState.PRIMARY_ACTIVE) {
             return false;
         }
+        for (var wrapped : guard.goalSelector.getAvailableGoals()) {
+            if (wrapped.getGoal() instanceof GuardGunCombatGoal gun && gun.retainsCombatOwnership()) return false;
+        }
         LivingEntity target = guard.getTarget();
         return target == null || !target.isAlive();
     }
 
     private boolean serverCommandsEnabled() {
-        return !guard.level().isClientSide && config.enabled.get();
+        return !guard.level().isClientSide && config.enabled.get()
+                && !com.gamergaming.villagerguardgunners.medical.TransportRuntime.busy(guard)
+                && !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard)
+                && !com.gamergaming.villagerguardgunners.medical.MedicRuntime.retreating(guard);
     }
 
 }

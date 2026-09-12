@@ -91,6 +91,14 @@ public final class VillageBuildingGarrisonLifecycle {
                 .map(selection -> policy.limitGuardCount(
                         identity.buildingType(), selection.members().size()))
                 .orElse(0);
+        com.gamergaming.villagerguardgunners.village.population.VillagePopulationPlacement.Binding population;
+        try {
+            population = com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime.binding(level, identity.buildingId());
+        } catch (java.io.IOException | RuntimeException exception) { return new Result(Status.CLAIM_REJECTED, 0); }
+        if (population != null) {
+            if (!com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime.generationEnabled()) return new Result(Status.DISABLED, 0);
+            guardCount = Math.min(guardCount, population.plan().quotas().getOrDefault(population.source(), 0));
+        }
         BlockPos spawnAnchor = identity.anchorPosition().above(plan.verticalSpawnOffset());
         BoundingBox spawnBounds = new BoundingBox(
                 spawnAnchor.getX() - 1,
@@ -116,28 +124,29 @@ public final class VillageBuildingGarrisonLifecycle {
             }
         }
 
-        VillageBuildingSavedData.ClaimResult claim =
-                data.claimAction(
-                        identity.buildingId(), VillageBuildingAction.GARRISON);
-        if (claim == VillageBuildingSavedData.ClaimResult.ALREADY_CLAIMED) {
-            return new Result(Status.ALREADY_CLAIMED, 0);
-        }
-        if (claim != VillageBuildingSavedData.ClaimResult.CLAIMED) {
-            return new Result(Status.CLAIM_REJECTED, 0);
-        }
         if (selected.isEmpty()) {
-            return new Result(
+            Status claimStatus = claimGarrison(data, identity);
+            return claimStatus == Status.CLAIMED
+                    ? new Result(
                     generationDifficulty == NaturalGuardDifficulty.PEACEFUL
                             ? Status.PEACEFUL
                             : Status.NO_ELIGIBLE_GROUP,
-                    0);
+                    0)
+                    : new Result(claimStatus, 0);
         }
         if (guardCount == 0) {
-            return new Result(Status.CONFIGURED_ZERO, 0);
+            Status claimStatus = claimGarrison(data, identity);
+            return new Result(
+                    claimStatus == Status.CLAIMED ? Status.CONFIGURED_ZERO : claimStatus,
+                    0);
         }
 
         GuardPostGroupSelection selection = selected.get();
-        int spawned = GuardPostSpawner.spawnMembersAtomically(
+        int spawned;
+        try {
+            spawned = population != null ? GuardPostSpawner.spawnManagedMembers(level, spawnBounds, spawnAnchor, rotation,
+                    identity.buildingId(), selection.groupId(), selection.variantName(), selection.members(), guardCount,
+                    generationDifficulty, population) : GuardPostSpawner.spawnMembersAtomically(
                 level,
                 spawnBounds,
                 spawnAnchor,
@@ -148,9 +157,26 @@ public final class VillageBuildingGarrisonLifecycle {
                 selection.members(),
                 guardCount,
                 generationDifficulty);
+        } catch (java.io.IOException | RuntimeException exception) { return new Result(Status.SPAWN_FAILED, 0); }
+        if (spawned != guardCount) {
+            return new Result(Status.SPAWN_FAILED, spawned);
+        }
+        Status claimStatus = claimGarrison(data, identity);
         return new Result(
-                spawned == guardCount ? Status.SPAWNED : Status.SPAWN_FAILED,
+                claimStatus == Status.CLAIMED ? Status.SPAWNED : claimStatus,
                 spawned);
+    }
+
+    private static Status claimGarrison(
+            VillageBuildingSavedData data,
+            VillageBuildingIdentity identity) {
+        VillageBuildingSavedData.ClaimResult claim = data.claimAction(
+                identity.buildingId(), VillageBuildingAction.GARRISON);
+        return switch (claim) {
+            case CLAIMED -> Status.CLAIMED;
+            case ALREADY_CLAIMED -> Status.ALREADY_CLAIMED;
+            default -> Status.CLAIM_REJECTED;
+        };
     }
 
     static long selectionSeed(VillageBuildingIdentity identity) {
@@ -174,6 +200,7 @@ public final class VillageBuildingGarrisonLifecycle {
     }
 
     public enum Status {
+        CLAIMED,
         SPAWNED,
         PEACEFUL,
         CONFIGURED_ZERO,

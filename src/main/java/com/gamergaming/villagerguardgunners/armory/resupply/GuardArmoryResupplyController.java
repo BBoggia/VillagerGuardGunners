@@ -69,6 +69,7 @@ public final class GuardArmoryResupplyController {
 
     /** Called from Goal#canUse; expensive work occurs only on a due tick. */
     public boolean canStart() {
+        if (com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) || com.gamergaming.villagerguardgunners.medical.MedicRuntime.busy(guard)) return false;
         if (!(guard.level() instanceof ServerLevel level)
                 || !guard.isAlive()
                 || guard.isRemoved()) {
@@ -181,6 +182,11 @@ public final class GuardArmoryResupplyController {
                 pathAttempts,
                 diagnosticNextAction(),
                 lastTransferredUnits);
+    }
+
+    /** Allocation-free precedence probe for lower-priority movement goals. */
+    public boolean hasActiveRequest() {
+        return state.hasActiveRequest();
     }
 
     /**

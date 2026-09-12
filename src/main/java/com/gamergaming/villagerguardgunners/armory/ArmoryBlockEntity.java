@@ -52,17 +52,17 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
 
         @Override
         public ItemStack getStackInSlot(int slot) {
-            return inventory.getStackInSlot(slot);
+            return serviceInventoryAccessible() ? inventory.getStackInSlot(slot).copy() : ItemStack.EMPTY;
         }
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return inventory.insertItem(slot, stack, simulate);
+            return serviceInventoryAccessible() ? inventory.insertItem(slot, stack.copy(), simulate) : stack;
         }
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return inventory.extractItem(slot, amount, simulate);
+            return serviceInventoryAccessible() ? inventory.extractItem(slot, amount, simulate) : ItemStack.EMPTY;
         }
 
         @Override
@@ -91,6 +91,27 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     private Tag unreadableGeneratedIdentity;
     private boolean generatedInitializationQueued;
     private boolean generatedSquadResolutionPending;
+
+    private com.gamergaming.villagerguardgunners.quartermaster.service.ServiceReceipt equipmentServiceReceipt;
+    private CompoundTag pendingServiceReceipt = new CompoundTag();
+    private boolean loadedServiceOwner;
+    private final UUID freshServiceOwner = UUID.randomUUID();
+    public com.gamergaming.villagerguardgunners.quartermaster.service.ServiceReceipt serviceReceipt() {
+        if (equipmentServiceReceipt == null) {
+            String identity = "armory/" + (level == null ? "minecraft:overworld" : level.dimension().location()) + "/" + worldPosition.asLong();
+            var id = loadedServiceOwner ? UUID.nameUUIDFromBytes(identity.getBytes(java.nio.charset.StandardCharsets.UTF_8)) : freshServiceOwner;
+            var saved = pendingServiceReceipt.getCompound(com.gamergaming.villagerguardgunners.quartermaster.service.ServiceReceipt.KEY);
+            if (loadedServiceOwner && saved.hasUUID("Id")) id = saved.getUUID("Id");
+            equipmentServiceReceipt = new com.gamergaming.villagerguardgunners.quartermaster.service.ServiceReceipt(id);
+            equipmentServiceReceipt.load(pendingServiceReceipt, id);
+        }
+        return equipmentServiceReceipt;
+    }
+
+    public boolean serviceInventoryAccessible() {
+        return !isRemoved() && (equipmentServiceReceipt == null || !equipmentServiceReceipt.locked())
+                && !com.gamergaming.villagerguardgunners.quartermaster.service.ServiceTransactions.mutating(this);
+    }
 
     public ArmoryBlockEntity(BlockPos position, BlockState state) {
         super(ModBlockEntities.ARMORY.get(), position, state);
@@ -226,7 +247,7 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
 
     /** Step 6 uses this constant-time check; malformed lock data fails closed. */
     public boolean maySupply(@Nullable UUID squadId) {
-        if (!hasReadableLock()) {
+        if (!hasReadableLock() || (equipmentServiceReceipt != null && equipmentServiceReceipt.locked())) {
             return false;
         }
         return squadLock == null
@@ -291,6 +312,8 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
+        if (equipmentServiceReceipt != null) equipmentServiceReceipt.save(tag);
+        else tag.merge(pendingServiceReceipt);
         tag.put(INVENTORY_TAG, inventory.serializeNBT());
         writePersistentLock(tag);
         GuardPostArmoryIdentityCodec.writePreservingUnreadable(
@@ -309,6 +332,9 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
+        equipmentServiceReceipt = null; pendingServiceReceipt = new CompoundTag(); loadedServiceOwner = true;
+        String receiptKey = com.gamergaming.villagerguardgunners.quartermaster.service.ServiceReceipt.KEY;
+        if (tag.contains(receiptKey)) pendingServiceReceipt.put(receiptKey, tag.get(receiptKey).copy());
         pendingRejectedStacks.clear();
         if (tag.contains(INVENTORY_TAG, CompoundTag.TAG_COMPOUND)) {
             pendingRejectedStacks.addAll(inventory.loadSafely(
@@ -334,6 +360,7 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     @Override
     public void onLoad() {
         super.onLoad();
+        com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime.loaded(this);
         if (!inventoryCapability.isPresent()) {
             inventoryCapability = LazyOptional.of(() -> automationView);
         }
@@ -359,6 +386,7 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
 
     @Override
     public void setRemoved() {
+        com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime.removed(this);
         generatedInitializationQueued = false;
         if (level instanceof ServerLevel serverLevel) {
             ArmoryResupplyServerServices.Services services =

@@ -89,10 +89,13 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
     private boolean buttonPressed;
     private final Button[] orderButtons = new Button[OrderField.COUNT];
     private Button recoveryButton;
+    private Button medicButton, retreatButton;
+    private Button servicePolicyButton, serviceProfileButton, serviceReplaceButton;
     private GuardOrders displayedOrders;
 
     public GuardGunnerInventoryScreen(GuardGunnerContainer container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
+        this.imageHeight = 232;
         this.guard = container.getGuard(); // Access guard via the container
         this.titleLabelX = 80;
         this.inventoryLabelX = 100;
@@ -152,14 +155,64 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
                         "container.villagerguardgunners.sidearm.recover.tooltip")))
                 .build();
         addRenderableWidget(recoveryButton);
+        addRenderableWidget(Button.builder(Component.translatable("container.villagerguardgunners.medical.treat"), button -> {
+            if (minecraft != null && minecraft.gameMode != null) minecraft.gameMode.handleInventoryButtonClick(menu.containerId, GuardGunnerContainer.TREAT_BUTTON_ID);
+        }).bounds(leftPos + 64, topPos + 184, 44, 18).tooltip(Tooltip.create(Component.translatable("container.villagerguardgunners.medical.treat.tooltip"))).build());
+        addRenderableWidget(Button.builder(Component.translatable("container.villagerguardgunners.medical.pack"), button -> {
+            if (minecraft != null && minecraft.gameMode != null) minecraft.gameMode.handleInventoryButtonClick(menu.containerId, GuardGunnerContainer.PACK_MEDICAL_BUTTON_ID);
+        }).bounds(leftPos + 112, topPos + 184, 56, 18).tooltip(Tooltip.create(Component.translatable("container.villagerguardgunners.medical.pack.tooltip"))).build());
+        medicButton = addRenderableWidget(Button.builder(Component.empty(), button -> {
+            if (minecraft != null && minecraft.gameMode != null) minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 310);
+        }).bounds(leftPos+8, topPos+203, 78, 12).tooltip(Tooltip.create(Component.translatable("gui.villagerguardgunners.medic.help"))).build());
+        retreatButton = addRenderableWidget(Button.builder(Component.empty(), button -> {
+            if (minecraft != null && minecraft.gameMode != null) minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 311);
+        }).bounds(leftPos+90, topPos+203, 78, 12).tooltip(Tooltip.create(Component.translatable("gui.villagerguardgunners.medic.retreat_help"))).build());
+        servicePolicyButton = serviceButton(300, 171);
+        serviceProfileButton = serviceButton(301, 189);
+        serviceReplaceButton = serviceButton(302, 207);
+        updateServiceButtons();
         displayedOrders = null;
         refreshOrderButtons();
         refreshRecoveryButton();
     }
 
+    private Button serviceButton(int id, int y) {
+        return addRenderableWidget(Button.builder(Component.empty(), button -> {
+            if (minecraft != null && minecraft.gameMode != null) minecraft.gameMode.handleInventoryButtonClick(menu.containerId, id);
+        }).bounds(orderPanelX() + 4, topPos + y, ORDER_BUTTON_WIDTH, 16).build());
+    }
+    private void updateServiceButtons() {
+        medicButton.setMessage(Component.translatable("gui.villagerguardgunners.medic.enabled." + ((menu.medicFlags() & 1) != 0)));
+        retreatButton.setMessage(Component.translatable("gui.villagerguardgunners.medic.retreat." + ((menu.medicFlags() & 2) != 0)));
+        var medical = com.gamergaming.villagerguardgunners.init.ModConfigs.GUARD_GUNNERS.medical;
+        String inactive = !medical.enabled.get() ? "treatment" : !medical.medicAi.get() ? "medics" : "";
+        medicButton.setTooltip(medicalPreferenceTooltip("help", inactive));
+        retreatButton.setTooltip(medicalPreferenceTooltip("retreat_help",
+                !inactive.isEmpty() ? inactive : !medical.retreat.get() ? "retreat" : ""));
+        var policies = com.gamergaming.villagerguardgunners.quartermaster.service.GuardServiceState.Policy.values();
+        String policy = policies[Math.floorMod(menu.servicePolicy(), policies.length)].name().toLowerCase(java.util.Locale.ROOT);
+        servicePolicyButton.setMessage(Component.translatable("gui.villagerguardgunners.service.policy." + policy));
+        String profile = menu.serviceProfile();
+        serviceProfileButton.setMessage(Component.translatable("gui.villagerguardgunners.service.profile", profile.isEmpty() ? "-" : profile.substring(profile.indexOf(':') + 1)));
+        serviceProfileButton.setTooltip(Tooltip.create(Component.translatable(
+                "gui.villagerguardgunners.service.profile_help", profile.isEmpty()
+                        ? Component.translatable("gui.villagerguardgunners.service.none") : Component.literal(profile))));
+        serviceReplaceButton.setMessage(Component.translatable("gui.villagerguardgunners.service.replace." + menu.serviceReplace()));
+        servicePolicyButton.setTooltip(Tooltip.create(Component.translatable("gui.villagerguardgunners.service.policy_help")));
+        serviceReplaceButton.setTooltip(Tooltip.create(Component.translatable("gui.villagerguardgunners.service.replace_help")));
+    }
+
+    private static Tooltip medicalPreferenceTooltip(String help, String inactive) {
+        var text = Component.translatable("gui.villagerguardgunners.medic." + help);
+        if (!inactive.isEmpty()) text.append("\n\n").append(Component.translatable(
+                "gui.villagerguardgunners.medic.inactive." + inactive));
+        return Tooltip.create(text);
+    }
+
     @Override
     protected void containerTick() {
         super.containerTick();
+        updateServiceButtons();
         GuardOrders orders = menu.getOrders();
         if (!orders.equals(displayedOrders)) {
             refreshOrderButtons();
@@ -174,7 +227,13 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         RenderSystem.setShaderTexture(0, GUARD_GUI_TEXTURES);
         int i = this.leftPos;
         int j = this.topPos;
-        graphics.blit(GUARD_GUI_TEXTURES, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        graphics.blit(GUARD_GUI_TEXTURES, i, j, 0, 0, this.imageWidth, 166);
+        graphics.fill(i, j + 166, i + imageWidth, j + imageHeight, 0xff373737);
+        graphics.fill(i + 1, j + 166, i + imageWidth - 1, j + imageHeight - 1, 0xffffffff);
+        graphics.fill(i + 3, j + 166, i + imageWidth - 2, j + imageHeight - 2, 0xffc6c6c6);
+        for (int slot = 0; slot < 3; slot++) {
+            graphics.blit(GUARD_GUI_TEXTURES, i + 7 + slot * 18, j + 183, 7, 83, 18, 18);
+        }
         graphics.blit(
                 GUARD_GUI_TEXTURES,
                 i + SIDEARM_SLOT_X - 1,
@@ -196,7 +255,12 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int x, int y) {
-        super.renderLabels(graphics, x, y);
+        // The combat status occupies the usual player-inventory label area.
+        graphics.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
+        graphics.drawString(font, Component.translatable("container.villagerguardgunners.medical.pouch"), 8, 171, 0x404040, false);
+        var statuses = com.gamergaming.villagerguardgunners.quartermaster.service.ServiceStatus.values();
+        String serviceText = medicalOrServiceStatus().getString();
+        graphics.drawString(font, font.plainSubstrByWidth(serviceText, 160), 8, 216, 0x404040, false);
         int health = Mth.ceil(guard.getHealth());
         int armor = guard.getArmorValue();
         boolean renderStatusIcons = GuardConfig.CLIENT.guardInventoryNumbers.get();
@@ -358,8 +422,20 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         renderEmptySidearmTooltip(graphics, mouseX, mouseY);
         renderAmmunitionTooltip(graphics, mouseX, mouseY);
         renderCombatStatusTooltip(graphics, mouseX, mouseY);
+        if (isHovering(8, 216, 160, 10, mouseX, mouseY)) {
+            var statuses = com.gamergaming.villagerguardgunners.quartermaster.service.ServiceStatus.values();
+            graphics.renderTooltip(font, medicalOrServiceStatus(), mouseX, mouseY);
+        }
     }
 
+    private Component medicalOrServiceStatus() {
+        if (menu.medicFlags() != 0) {
+            var values = com.gamergaming.villagerguardgunners.medical.MedicState.Status.values();
+            return Component.translatable("message.villagerguardgunners.medic." + values[Math.floorMod(menu.medicStatus(), values.length)].name().toLowerCase(java.util.Locale.ROOT));
+        }
+        var values = com.gamergaming.villagerguardgunners.quartermaster.service.ServiceStatus.values();
+        return Component.translatable(values[Math.floorMod(menu.serviceStatus(), values.length)].translationKey());
+    }
     private void renderEmptySidearmTooltip(
             GuiGraphics graphics,
             int mouseX,

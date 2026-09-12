@@ -55,17 +55,25 @@ final class VillageDefenseBuildingsStepSixContractTest {
                 + "worldgen/village/VillageBuildingPoolElement.java");
         String integration = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "spawn/NaturalGuardSpawnIntegration.java");
+        int spawnCall = lifecycle.indexOf("GuardPostSpawner.spawnMembersAtomically(");
+        int successfulClaim = lifecycle.indexOf(
+                "Status claimStatus = claimGarrison(data, identity);", spawnCall);
 
         assertAll(
                 () -> assertTrue(lifecycle.contains(
-                        "claimAction(\n                        identity.buildingId(), VillageBuildingAction.GARRISON)")),
+                        "identity.buildingId(), VillageBuildingAction.GARRISON")),
                 () -> assertTrue(lifecycle.contains("GuardPostGroups.get(plan.groupId())")),
-                () -> assertTrue(lifecycle.contains("spawnMembersAtomically(")),
+                () -> assertTrue(spawnCall >= 0),
+                () -> assertTrue(successfulClaim > spawnCall,
+                        "Successful garrison actions must be claimed only after spawning"),
                 () -> assertTrue(lifecycle.contains("level.hasChunkAt(position)")),
                 () -> assertFalse(lifecycle.contains("getChunk(")),
                 () -> assertFalse(lifecycle.contains("getEntitiesOfClass(")),
                 () -> assertFalse(lifecycle.contains("TickEvent")),
                 () -> assertTrue(spawner.contains("prepared.forEach(Guard::discard)")),
+                () -> assertTrue(spawner.contains("level.getLevel().getEntity(guardId)")),
+                () -> assertTrue(spawner.contains(
+                        "expected.equals(GuardPostAccess.getIdentity(guard))")),
                 () -> assertTrue(spawner.contains("GuardPostAssignment.pending(")),
                 () -> assertTrue(poolElement.contains("recordAndPopulate(")),
                 () -> assertTrue(integration.contains(
@@ -77,23 +85,23 @@ final class VillageDefenseBuildingsStepSixContractTest {
     }
 
     @Test
-    void configArtifactAndDocumentationExposeTheBoundedFeature() throws IOException {
+    void configArtifactAndDocumentationExposeVillageGarrisons() throws IOException {
         String config = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "config/VillagerGuardGunnersConfig.java");
         String build = read("build.gradle");
-        String docs = read("docs/village-defense-buildings-step-6.md");
+        String docs = read("docs/village-defense-buildings.md");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 15")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 21")),
                 () -> assertTrue(config.contains("spawnGarrisons")),
                 () -> assertTrue(config.contains("maximumGuardsPerBuilding")),
                 () -> assertTrue(config.contains("guardGunChanceMultiplier")),
                 () -> assertTrue(config.contains("restoreVersionFourteenDefaults")),
                 () -> GROUPS.forEach(group -> assertTrue(build.contains(
                         "guard_post_groups/" + group + ".json"))),
-                () -> assertTrue(docs.contains("zero recurring")),
+                () -> assertTrue(docs.contains("no recurring")),
                 () -> assertTrue(docs.contains("Peaceful")),
-                () -> assertTrue(docs.contains("Armories and Training Yards")));
+                () -> assertTrue(docs.contains("Village Armories")));
     }
 
     private static String read(String relativePath) throws IOException {

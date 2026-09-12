@@ -7,6 +7,7 @@ public enum SquadCommandType {
     HOLD,
     FOCUS_TARGET,
     FALL_BACK,
+    PATROL_ROUTE_EDITOR,
     RESUME_ORDERS;
 
     public SquadCommandType next() {
@@ -23,7 +24,15 @@ public enum SquadCommandType {
     }
 
     public boolean isStoredCommand() {
-        return this != RESUME_ORDERS;
+        return this != RESUME_ORDERS && this != PATROL_ROUTE_EDITOR;
+    }
+
+    public boolean isPatrolRouteEditor() {
+        return this == PATROL_ROUTE_EDITOR;
+    }
+
+    public boolean isDispatchMode() {
+        return !isPatrolRouteEditor();
     }
 
     public String translationKey() {

@@ -34,6 +34,7 @@ final class VillageDefenseBuildingsStepEightContractTest {
                 () -> assertTrue(harness.contains("Set.copyOf(level.getForcedChunks())")),
                 () -> assertTrue(harness.contains("recordsAfterPlacement - recordsBefore")),
                 () -> assertTrue(harness.contains("productionArtifactSha256")),
+                () -> assertTrue(harness.contains("performanceHarnessSha256")),
                 () -> assertTrue(harness.contains("absoluteTimingGateApplied")),
                 () -> assertFalse(harness.contains("setChunkForced")),
                 () -> assertFalse(harness.contains("ChunkTicket")),
@@ -51,6 +52,8 @@ final class VillageDefenseBuildingsStepEightContractTest {
                         "a zero-test server run is not accepted")),
                 () -> assertTrue(build.contains("executionSampleCount == 0L")),
                 () -> assertTrue(build.contains("report.recordDelta != 100")),
+                () -> assertTrue(build.contains("sha256OfFiles(performanceHarnessFiles)")),
+                () -> assertTrue(build.contains("report.performanceHarnessSha256")),
                 () -> assertTrue(build.contains(
                         "tasks.register('assembleVillageDefenseBuildingEvidence')")),
                 () -> assertTrue(build.contains(
@@ -60,22 +63,17 @@ final class VillageDefenseBuildingsStepEightContractTest {
 
     @Test
     void documentationRetainsTheManualBoundary() throws IOException {
-        String docs = read("docs/village-defense-buildings-step-8.md");
+        String docs = read("docs/village-defense-buildings.md");
         String matrix = read("docs/village-defense-buildings-release-matrix.md");
-        String plan = read("docs/village-defense-buildings-1.5-plan.md");
         String readme = read("README.md");
 
         assertAll(
-                () -> assertTrue(docs.contains("100 simulated village candidates")),
-                () -> assertTrue(docs.contains("not 100 naturally generated villages")),
-                () -> assertTrue(docs.contains("absolute timing gate")),
+                () -> assertTrue(docs.contains("isolated\nperformance workload")),
                 () -> assertTrue(docs.contains(
-                        "verifyVillageDefenseBuildingsReleaseCandidate")),
+                        "Natural-terrain appearance and mixed-mod village")),
                 () -> assertTrue(matrix.contains("VBUILD-PERF-01")),
                 () -> assertTrue(matrix.contains("Natural terrain and mixed-mod review")),
-                () -> assertTrue(plan.contains("## Step 8 validation and release evidence")),
-                () -> assertTrue(plan.contains("Steps 1 through 8 exit criteria")),
-                () -> assertTrue(readme.contains("village-defense-buildings-step-8.md")),
+                () -> assertTrue(readme.contains("docs/village-defense-buildings.md")),
                 () -> assertFalse(readme.contains(
                         "Armories and Training Yards remain functionally dormant")));
     }

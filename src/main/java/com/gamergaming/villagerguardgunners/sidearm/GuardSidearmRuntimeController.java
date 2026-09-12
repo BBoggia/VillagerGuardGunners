@@ -39,6 +39,15 @@ public final class GuardSidearmRuntimeController {
             NativeGunController nativeController,
             boolean featureEnabled,
             boolean targetMayEngage) {
+        return evaluate(target, nativeController, featureEnabled, targetMayEngage, false);
+    }
+
+    public RuntimeOutcome evaluate(
+            @Nullable LivingEntity target,
+            NativeGunController nativeController,
+            boolean featureEnabled,
+            boolean targetMayEngage,
+            boolean continuingTargetGap) {
         Objects.requireNonNull(nativeController, "nativeController");
         long gameTick = guard.level().getGameTime();
         if (guard.level().isClientSide
@@ -55,6 +64,13 @@ public final class GuardSidearmRuntimeController {
         SidearmState state = storage.stateAgainst(guard.getMainHandItem());
         if (state == SidearmState.RECOVERY_REQUIRED) {
             lastEvaluationOutcome = RuntimeOutcome.RECOVERY_REQUIRED;
+            return lastEvaluationOutcome;
+        }
+        if (state == SidearmState.SIDEARM_ACTIVE && featureEnabled && continuingTargetGap
+                && (target == null || !target.isAlive())
+                && storage.getActivationReason() == SidearmActivationReason.PRIMARY_DRY
+                && nativeController.isCurrentWeaponSidearmCompatible()) {
+            lastEvaluationOutcome = RuntimeOutcome.NO_TRANSITION;
             return lastEvaluationOutcome;
         }
         lastEvaluationOutcome = state == SidearmState.SIDEARM_ACTIVE
@@ -87,7 +103,8 @@ public final class GuardSidearmRuntimeController {
                 || !targetMayEngage
                 || target == null
                 || !target.isAlive()
-                || !target.getUUID().equals(storage.getActivationTargetId());
+                || (storage.getActivationReason() != SidearmActivationReason.PRIMARY_DRY
+                        && !target.getUUID().equals(storage.getActivationTargetId()));
     }
 
     public boolean isSidearmActive() {

@@ -41,6 +41,9 @@ public final class SquadCommandDispatcher {
         if (validation != null) {
             return validation;
         }
+        if (!type.isDispatchMode()) {
+            return DispatchResult.failed(DispatchStatus.INVALID_REQUEST, type);
+        }
 
         ServerLevel level = (ServerLevel) player.level();
         MinecraftServer server = level.getServer();
@@ -61,9 +64,11 @@ public final class SquadCommandDispatcher {
             return DispatchResult.failed(DispatchStatus.CORRUPT_LEDGER, type);
         }
 
-        SquadMetadata metadata = SquadRegistrySavedData.get(server)
-                .find(binding.squadId())
-                .orElse(null);
+        SquadRegistrySavedData registry = SquadRegistrySavedData.get(server);
+        if (!registry.enabled()) {
+            return DispatchResult.failed(DispatchStatus.REGISTRY_DISABLED, type);
+        }
+        SquadMetadata metadata = registry.find(binding.squadId()).orElse(null);
         if (metadata == null) {
             return DispatchResult.failed(DispatchStatus.SQUAD_NOT_REGISTERED, type);
         }
@@ -265,6 +270,7 @@ public final class SquadCommandDispatcher {
         BLANK_LEDGER,
         CORRUPT_LEDGER,
         UNSUPPORTED_VERSION,
+        REGISTRY_DISABLED,
         SQUAD_NOT_REGISTERED,
         POSITION_REQUIRED,
         TARGET_REQUIRED,

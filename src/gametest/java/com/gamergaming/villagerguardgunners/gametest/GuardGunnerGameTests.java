@@ -50,6 +50,8 @@ import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngage
 import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngagement.EngagementReason;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
 import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticalResolver;
+import com.gamergaming.villagerguardgunners.defense.duty.AutomaticDutyMovementGameTestAccess;
+import com.gamergaming.villagerguardgunners.defense.duty.PatrolRouteMovementGameTestAccess;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncAssembly;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncPacket;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncProtocol;
@@ -104,6 +106,7 @@ import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarr
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingIdentity;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingSavedData;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageWatchtowerGuardPlacement;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupDefaults;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupPool;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostGroupReloadSnapshot;
@@ -118,6 +121,7 @@ import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryIdentit
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIds;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryPlacer;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostMarker;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSpawner;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBindingCodec;
 import com.gamergaming.villagerguardgunners.squad.SquadRegistrySavedData;
@@ -126,6 +130,7 @@ import com.gamergaming.villagerguardgunners.squad.SquadCommandDispatcher;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandRuntime;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandType;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerModeCodec;
+import com.gamergaming.villagerguardgunners.squad.SquadPatrolRoute;
 import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.entity.ReloadState;
@@ -257,15 +262,208 @@ public final class GuardGunnerGameTests {
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
-    public static void villageIntegratedWatchtowersRetainSafeGroundAccess(
+    public static void integratedWatchtowerPlacesOnlyRangedGuardsOnItsDeck(
+            GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos anchor = helper.absolutePos(new BlockPos(8, 2, 8));
+        for (BlockPos lowerPosition : List.of(anchor, anchor.west())) {
+            level.setBlock(lowerPosition.below(), Blocks.STONE.defaultBlockState(), 3);
+            level.setBlock(lowerPosition, Blocks.AIR.defaultBlockState(), 3);
+            level.setBlock(lowerPosition.above(), Blocks.AIR.defaultBlockState(), 3);
+            level.setBlock(lowerPosition.above(4), Blocks.STONE.defaultBlockState(), 3);
+            level.setBlock(lowerPosition.above(5), Blocks.AIR.defaultBlockState(), 3);
+            level.setBlock(lowerPosition.above(6), Blocks.AIR.defaultBlockState(), 3);
+        }
+
+        VillageBuildingIdentity identity = VillageBuildingIdentity.anchored(
+                level.getSeed(),
+                level.dimension().location(),
+                ResourceLocation.fromNamespaceAndPath(
+                        VillagerGuardGunners.MODID, "gametest/ranged_watchtower_placement"),
+                VillageBuildingType.WATCHTOWER,
+                anchor);
+        helper.assertTrue(
+                VillageBuildingSavedData.get(level).claimAnchor(identity)
+                        == VillageBuildingSavedData.ClaimResult.CLAIMED,
+                "The ranged-Watchtower placement fixture could not claim its anchor");
+
+        Guard ranged = GuardEntityType.GUARD.get().create(level);
+        Guard melee = GuardEntityType.GUARD.get().create(level);
+        helper.assertTrue(ranged != null && melee != null,
+                "Could not create Watchtower placement probes");
+        ranged.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+        melee.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+        ranged.moveTo(anchor.getX() + 0.5D, anchor.getY(), anchor.getZ() + 0.5D);
+        melee.moveTo(anchor.getX() - 0.5D, anchor.getY(), anchor.getZ() + 0.5D);
+        level.addFreshEntity(ranged);
+        level.addFreshEntity(melee);
+
+        GuardPostIdentity rangedPost = GuardPostIdentity.assigned(
+                identity.buildingId(),
+                VillageBuildingGarrisons.WATCHTOWER_GROUP,
+                "normal",
+                0);
+        GuardPostIdentity meleePost = GuardPostIdentity.assigned(
+                identity.buildingId(),
+                VillageBuildingGarrisons.WATCHTOWER_GROUP,
+                "normal",
+                1);
+        VillageWatchtowerGuardPlacement.Result rangedResult =
+                VillageWatchtowerGuardPlacement.finalizePosition(level, ranged, rangedPost);
+        VillageWatchtowerGuardPlacement.Result meleeResult =
+                VillageWatchtowerGuardPlacement.finalizePosition(level, melee, meleePost);
+
+        helper.assertTrue(
+                rangedResult == VillageWatchtowerGuardPlacement.Result.UPPER_DECK
+                        && ranged.blockPosition().equals(anchor.above(5))
+                        && meleeResult == VillageWatchtowerGuardPlacement.Result.READY_ROOM
+                        && melee.blockPosition().equals(anchor.west()),
+                "Integrated Watchtower did not separate ranged deck duty from ready-room duty: "
+                        + "ranged=" + rangedResult + "/" + ranged.blockPosition()
+                        + ", melee=" + meleeResult + "/" + melee.blockPosition());
+        ranged.discard();
+        melee.discard();
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageBarracksRetainSafeMusterAndRoadAccess(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyBarracksVariants(helper);
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageArmoriesRetainReachableSupplyCounters(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyArmoryVariants(helper);
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageSentryPostsRetainOpenRoadsideCheckpoints(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifySentryPostVariants(helper);
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageIntegratedWatchtowersRetainSafeDeckAccess(
             GameTestHelper helper) {
         VillageBuildingPoolGameTestAccess.verifyIntegratedWatchtowerVariants(helper);
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageTrainingYardsRetainSafeDecorativeLayouts(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyTrainingYardVariants(helper);
+    }
+
+    @GameTest(batch = "village_building_diagnostics", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE)
+    public static void villageBuildingDiagnosticsAreBoundedReadOnlyAndPermissionGated(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyDiagnostics(helper);
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE, timeoutTicks = 40)
     public static void villageBuildingAnchorCrossesWorkerThreadExactlyOnce(
             GameTestHelper helper) {
         VillageBuildingPoolGameTestAccess.verifyWorkerThreadAnchorHandoff(helper);
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void villageGarrisonSpawnerReconcilesOnlyExactInterruptedMembers(
+            GameTestHelper helper) {
+        var level = helper.getLevel();
+        GuardPostGroupPool pool = GuardPostGroups.get(VillageBuildingGarrisons.BARRACKS_GROUP);
+        GuardPostGroupSelection selection = pool == null
+                ? null
+                : pool.select(NaturalGuardDifficulty.NORMAL, 0x61b8a771L).orElse(null);
+        helper.assertTrue(selection != null,
+                "The bundled Barracks group was unavailable for reconciliation");
+
+        BlockPos anchor = helper.absolutePos(new BlockPos(8, 2, 8));
+        BoundingBox bounds = new BoundingBox(
+                anchor.getX() - 3,
+                anchor.getY() - 1,
+                anchor.getZ() - 3,
+                anchor.getX() + 3,
+                anchor.getY() + 2,
+                anchor.getZ() + 3);
+        for (int x = -3; x <= 3; x++) {
+            for (int z = -3; z <= 3; z++) {
+                level.setBlock(anchor.offset(x, -1, z),
+                        Blocks.STONE.defaultBlockState(), 3);
+                level.setBlock(anchor.offset(x, 0, z),
+                        Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(anchor.offset(x, 1, z),
+                        Blocks.AIR.defaultBlockState(), 3);
+            }
+        }
+
+        UUID postId = UUID.fromString("64add217-67b6-4c41-af24-d678ac7c7cd1");
+        int memberCount = selection.members().size();
+        int first = GuardPostSpawner.spawnMembersAtomically(
+                level,
+                bounds,
+                anchor,
+                Rotation.NONE,
+                postId,
+                selection.groupId(),
+                selection.variantName(),
+                selection.members(),
+                memberCount,
+                NaturalGuardDifficulty.NORMAL);
+        int reconciled = GuardPostSpawner.spawnMembersAtomically(
+                level,
+                bounds,
+                anchor,
+                Rotation.NONE,
+                postId,
+                selection.groupId(),
+                selection.variantName(),
+                selection.members(),
+                memberCount,
+                NaturalGuardDifficulty.NORMAL);
+        List<Guard> exactMembers = level.getEntitiesOfClass(Guard.class, AABB.of(bounds))
+                .stream()
+                .filter(guard -> {
+                    GuardPostIdentity identity = GuardPostAccess.getIdentity(guard);
+                    return identity != null && postId.equals(identity.postId());
+                })
+                .toList();
+        helper.assertTrue(
+                first == memberCount
+                        && reconciled == memberCount
+                        && exactMembers.size() == memberCount,
+                "An exact interrupted garrison batch was duplicated or rejected");
+
+        UUID conflictingPost = UUID.fromString("84023df0-768f-41b2-ae1d-877353770d47");
+        Guard conflicting = GuardEntityType.GUARD.get().create(level);
+        helper.assertTrue(conflicting != null,
+                "Could not create the conflicting deterministic-UUID fixture");
+        conflicting.setUUID(GuardPostIds.guardId(conflictingPost, 0));
+        conflicting.moveTo(
+                anchor.getX() + 0.5D,
+                anchor.getY(),
+                anchor.getZ() + 2.5D,
+                0.0F,
+                0.0F);
+        helper.assertTrue(level.addFreshEntity(conflicting),
+                "Could not add the conflicting deterministic-UUID fixture");
+        int rejected = GuardPostSpawner.spawnMembersAtomically(
+                level,
+                bounds,
+                anchor,
+                Rotation.NONE,
+                conflictingPost,
+                selection.groupId(),
+                selection.variantName(),
+                selection.members(),
+                memberCount,
+                NaturalGuardDifficulty.NORMAL);
+        helper.assertTrue(
+                rejected == 0 && level.getEntity(conflicting.getUUID()) == conflicting,
+                "The reconciliation path adopted or removed a conflicting entity");
+        helper.succeed();
     }
 
     @GameTest(
@@ -353,47 +551,266 @@ public final class GuardGunnerGameTests {
             VillageBuildingGarrisonLifecycle.Result first =
                     VillageBuildingGarrisonLifecycle.populate(
                             level, identity, Rotation.CLOCKWISE_90);
-            List<Guard> guards = level.getEntitiesOfClass(Guard.class, AABB.of(bounds));
             helper.assertTrue(
                     first.status() == VillageBuildingGarrisonLifecycle.Status.SPAWNED
                             && first.spawnedGuards() >= 2
                             && first.spawnedGuards() <= 3
-                            && guards.size() == first.spawnedGuards()
                             && data.get(identity.buildingId())
                                     .hasClaimed(VillageBuildingAction.GARRISON),
-                    "The Barracks did not create its bounded Normal garrison atomically");
-            for (Guard guard : guards) {
-                GuardPostIdentity post = GuardPostAccess.getIdentity(guard);
-                helper.assertTrue(
-                        post != null
-                                && identity.buildingId().equals(post.postId())
-                                && VillageBuildingGarrisons.BARRACKS_GROUP.equals(post.groupId())
-                                && GuardPostAssignmentAccess.get(guard) != null,
-                        "A village guard bypassed the existing post/loadout handoff");
-            }
+                    "The Barracks did not create its bounded Normal garrison atomically: "
+                            + "status=" + first.status()
+                            + ", reported=" + first.spawnedGuards()
+                            + ", claimed=" + data.get(identity.buildingId())
+                                    .hasClaimed(VillageBuildingAction.GARRISON));
 
             VillageBuildingGarrisonLifecycle.Result repeated =
                     VillageBuildingGarrisonLifecycle.populate(
                             level, identity, Rotation.CLOCKWISE_90);
             helper.assertTrue(
+                            repeated.status()
+                                    == VillageBuildingGarrisonLifecycle.Status.ALREADY_CLAIMED
+                            && repeated.spawnedGuards() == 0,
+                    "Repeated garrison processing duplicated or changed its guard group");
+
+            UUID expectedSquad = GuardPostIds.squadId(identity.buildingId());
+            // Chunk visibility and native equipment readiness settle independently.
+            // Require the complete observable state within the existing deadline,
+            // rather than assuming both always finish within three ticks.
+            helper.runAtTickTime(39, restore);
+            helper.startSequence().thenWaitUntil(() -> {
+                List<Guard> guards = level.getEntitiesOfClass(
+                        Guard.class, AABB.of(bounds));
+                List<Guard> deterministicGuards = new java.util.ArrayList<>();
+                for (int memberIndex = 0;
+                        memberIndex < first.spawnedGuards();
+                        memberIndex++) {
+                    var entity = level.getEntity(GuardPostIds.guardId(
+                            identity.buildingId(), memberIndex));
+                    if (entity instanceof Guard guard) {
+                        deterministicGuards.add(guard);
+                    }
+                }
+                helper.assertTrue(
+                        deterministicGuards.size() == first.spawnedGuards()
+                                && guards.containsAll(deterministicGuards)
+                                && deterministicGuards.stream().allMatch(Guard::isAlive),
+                        "The accepted Barracks garrison did not become fully visible: "
+                                + "reported=" + first.spawnedGuards()
+                                + ", live=" + guards.size()
+                                + ", deterministic=" + deterministicGuards.size());
+                for (Guard guard : deterministicGuards) {
+                    GuardPostIdentity post = GuardPostAccess.getIdentity(guard);
+                    helper.assertTrue(
+                            post != null
+                                    && identity.buildingId().equals(post.postId())
+                                    && VillageBuildingGarrisons.BARRACKS_GROUP.equals(
+                                            post.groupId())
+                                    && guard.blockPosition().distManhattan(anchor) <= 1
+                                    && GuardPostAssignmentAccess.get(guard) == null
+                                    && NaturalGuardLoadoutDiagnostics.capture(guard).active()
+                                    && GuardRoleAccess.getRoleId(guard) != null
+                                    && expectedSquad.equals(
+                                            GuardSquadAccess.getSquadId(guard)),
+                            "A village guard did not complete the post identity, role, "
+                                    + "squad, and TaCZ loadout transaction");
+                }
+            }).thenExecute(restore).thenSucceed();
+            deferredRestore = true;
+        } finally {
+            if (!deferredRestore) {
+                restore.run();
+            }
+        }
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 80,
+            batch = "village_building_activation_recovery")
+    public static void villageBuildingPendingActivationResumesFromLoadedChunk(
+            GameTestHelper helper) {
+        VillageBuildingPoolGameTestAccess.verifyPersistedActivationRecovery(helper);
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 80,
+            batch = "automatic_duty_movement")
+    public static void assignedGuardReturnsToLoadedDefensePost(GameTestHelper helper) {
+        AutomaticDutyMovementGameTestAccess.verifyLoadedPostReturn(helper);
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 160,
+            batch = "squad_patrol_route_movement")
+    public static void squadGuardExecutesLoadedPatrolRoute(GameTestHelper helper) {
+        PatrolRouteMovementGameTestAccess.verifyLoadedRouteExecution(helper);
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 40,
+            batch = "squad_patrol_route_unloaded_recovery")
+    public static void unloadedSquadRouteYieldsWithoutLoadingChunks(
+            GameTestHelper helper) {
+        PatrolRouteMovementGameTestAccess
+                .verifyUnloadedRouteYieldsWithoutLoadingChunks(helper);
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 40,
+            batch = "automatic_duty_invalid_destination")
+    public static void blockedDefensePostIsReleasedUntilRepaired(
+            GameTestHelper helper) {
+        AutomaticDutyMovementGameTestAccess
+                .verifyBlockedPostIsReleasedUntilRepaired(helper);
+    }
+
+    @GameTest(
+            templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE,
+            timeoutTicks = 80,
+            batch = "village_training_yard_garrison")
+    public static void villageTrainingYardCreatesOnlyItsBoundedNormalDrill(
+            GameTestHelper helper) {
+        var level = helper.getLevel();
+        var config = ModConfigs.GUARD_GUNNERS;
+        var settings = config.villageBuildings;
+        Difficulty originalDifficulty = level.getDifficulty();
+        boolean originalAddonEnabled = config.enabled.get();
+        boolean originalNaturalEnabled = config.naturalLoadouts.enabled.get();
+        Set<NaturalGuardSpawnSource> originalSources =
+                Set.copyOf(config.naturalLoadouts.enabledSpawnSources.get());
+        boolean originalCrossbowsOnly = config.naturalLoadouts.replaceCrossbowsOnly.get();
+        double originalNormalChance = config.naturalLoadouts.normal.upgradeChance.get();
+        int originalNormalNearby = config.naturalLoadouts.normal.maximumNearby.get();
+        boolean originalVillageEnabled = settings.enabled.get();
+        boolean originalSpawnGarrisons = settings.spawnGarrisons.get();
+        int originalMaximum = settings.maximumGuardsPerBuilding.get();
+        double originalChanceMultiplier = settings.guardGunChanceMultiplier.get();
+        Runnable restore = () -> {
+            level.getServer().setDifficulty(originalDifficulty, true);
+            config.enabled.accept(originalAddonEnabled);
+            config.naturalLoadouts.enabled.accept(originalNaturalEnabled);
+            config.naturalLoadouts.enabledSpawnSources.accept(originalSources);
+            config.naturalLoadouts.replaceCrossbowsOnly.accept(originalCrossbowsOnly);
+            config.naturalLoadouts.normal.upgradeChance.accept(originalNormalChance);
+            config.naturalLoadouts.normal.maximumNearby.accept(originalNormalNearby);
+            settings.enabled.accept(originalVillageEnabled);
+            settings.spawnGarrisons.accept(originalSpawnGarrisons);
+            settings.maximumGuardsPerBuilding.accept(originalMaximum);
+            settings.guardGunChanceMultiplier.accept(originalChanceMultiplier);
+        };
+        boolean deferredRestore = false;
+        try {
+            level.getServer().setDifficulty(Difficulty.NORMAL, true);
+            config.enabled.accept(true);
+            settings.enabled.accept(true);
+            config.naturalLoadouts.enabled.accept(true);
+            config.naturalLoadouts.enabledSpawnSources.accept(
+                    Set.of(NaturalGuardSpawnSource.STRUCTURE));
+            config.naturalLoadouts.replaceCrossbowsOnly.accept(true);
+            config.naturalLoadouts.normal.upgradeChance.accept(0.5D);
+            config.naturalLoadouts.normal.maximumNearby.accept(32);
+            settings.spawnGarrisons.accept(true);
+            settings.maximumGuardsPerBuilding.accept(4);
+            settings.guardGunChanceMultiplier.accept(3.0D);
+
+            BlockPos anchor = helper.absolutePos(new BlockPos(8, 2, 8));
+            BoundingBox bounds = new BoundingBox(
+                    anchor.getX() - 1,
+                    anchor.getY() - 1,
+                    anchor.getZ() - 1,
+                    anchor.getX() + 1,
+                    anchor.getY() + 1,
+                    anchor.getZ() + 1);
+            for (int x = -1; x <= 1; x++) {
+                for (int z = -1; z <= 1; z++) {
+                    level.setBlock(anchor.offset(x, -1, z),
+                            Blocks.STONE.defaultBlockState(), 3);
+                    level.setBlock(anchor.offset(x, 0, z),
+                            Blocks.AIR.defaultBlockState(), 3);
+                    level.setBlock(anchor.offset(x, 1, z),
+                            Blocks.AIR.defaultBlockState(), 3);
+                }
+            }
+
+            VillageBuildingIdentity identity = VillageBuildingIdentity.anchored(
+                    level.getSeed(),
+                    level.dimension().location(),
+                    ResourceLocation.fromNamespaceAndPath(
+                            VillagerGuardGunners.MODID,
+                            "gametest/garrison_training_yard"),
+                    VillageBuildingType.TRAINING_YARD,
+                    anchor);
+            VillageBuildingSavedData data = VillageBuildingSavedData.get(level);
+            helper.assertTrue(
+                    data.claimAnchor(identity)
+                            == VillageBuildingSavedData.ClaimResult.CLAIMED,
+                    "The Training Yard fixture could not claim its building anchor");
+
+            Rotation rotation = Rotation.COUNTERCLOCKWISE_90;
+            VillageBuildingGarrisonLifecycle.Result first =
+                    VillageBuildingGarrisonLifecycle.populate(
+                            level, identity, rotation);
+            helper.assertTrue(
+                    first.status() == VillageBuildingGarrisonLifecycle.Status.SPAWNED
+                            && first.spawnedGuards() == 2
+                            && data.get(identity.buildingId())
+                                    .hasClaimed(VillageBuildingAction.GARRISON),
+                    "The Training Yard did not create its two-member Normal drill: "
+                            + first);
+
+            List<Guard> guards = new java.util.ArrayList<>();
+            for (int memberIndex = 0; memberIndex < 2; memberIndex++) {
+                Entity entity = level.getEntity(
+                        GuardPostIds.guardId(identity.buildingId(), memberIndex));
+                helper.assertTrue(entity instanceof Guard,
+                        "A deterministic Training Yard guard was missing");
+                Guard guard = (Guard) entity;
+                GuardPostIdentity post = GuardPostAccess.getIdentity(guard);
+                helper.assertTrue(
+                        post != null
+                                && identity.buildingId().equals(post.postId())
+                                && VillageBuildingGarrisons.TRAINING_YARD_GROUP.equals(
+                                        post.groupId())
+                                && GuardPostSpawner.spawnPosition(
+                                        anchor, rotation, memberIndex)
+                                        .equals(guard.blockPosition())
+                                && bounds.isInside(guard.blockPosition())
+                                && GuardPostAssignmentAccess.get(guard) != null,
+                        "A Training Yard guard bypassed its deterministic post handoff");
+                guards.add(guard);
+            }
+
+            VillageBuildingGarrisonLifecycle.Result repeated =
+                    VillageBuildingGarrisonLifecycle.populate(level, identity, rotation);
+            helper.assertTrue(
                     repeated.status()
                                     == VillageBuildingGarrisonLifecycle.Status.ALREADY_CLAIMED
-                            && repeated.spawnedGuards() == 0
-                            && level.getEntitiesOfClass(Guard.class, AABB.of(bounds)).size()
-                                    == guards.size(),
-                    "Repeated garrison processing duplicated or changed its guard group");
+                            && repeated.spawnedGuards() == 0,
+                    "Repeated Training Yard activation duplicated its drill");
 
             UUID expectedSquad = GuardPostIds.squadId(identity.buildingId());
             helper.runAfterDelay(3, () -> {
                 try {
                     for (Guard guard : guards) {
                         helper.assertTrue(
-                                GuardPostAssignmentAccess.get(guard) == null
+                                guard.isAlive()
+                                        && GuardPostAssignmentAccess.get(guard) == null
                                         && NaturalGuardLoadoutDiagnostics.capture(guard).active()
                                         && GuardRoleAccess.getRoleId(guard) != null
                                         && expectedSquad.equals(
                                                 GuardSquadAccess.getSquadId(guard)),
-                                "A village guard did not complete the existing role, squad, and TaCZ loadout transaction");
+                                "A Training Yard guard did not complete the existing role, "
+                                        + "squad, and TaCZ loadout transaction");
                     }
                 } finally {
                     restore.run();
@@ -1237,10 +1654,8 @@ public final class GuardGunnerGameTests {
                     new ChunkPos(limitedOrigin),
                     limitedOrigin);
             helper.assertTrue(
-                    limited.spawnedGuardCount() == 1
-                            && level.getEntitiesOfClass(Guard.class, AABB.of(limitedBounds)).size()
-                                    == 1,
-                    "The configured one-guard ceiling was not applied");
+                    limited.spawnedGuardCount() == 1,
+                    "The configured one-guard ceiling was not applied: spawned=" + limited.spawnedGuardCount() + " present=" + level.getEntitiesOfClass(Guard.class, AABB.of(limitedBounds)).size());
             helper.assertTrue(
                     level.getBlockEntity(limitedArmory) instanceof ArmoryBlockEntity armory
                             && armory.getGeneratedIdentity() != null
@@ -4402,6 +4817,7 @@ public final class GuardGunnerGameTests {
         int originalReputationRequirement = GuardConfig.reputationRequirement;
         Guard guard = spawnGuard(helper);
         Player player = helper.makeMockPlayer();
+        player.setPos(guard.position());
         guard.setItemSlot(
                 EquipmentSlot.MAINHAND,
                 gun(AK_47, FireMode.SEMI, 7, true));
@@ -4520,7 +4936,7 @@ public final class GuardGunnerGameTests {
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE,
             timeoutTicks = 40)
-    public static void sidearmSwitchPreservesShieldAndTargetChangeReturnsPrimary(
+    public static void sidearmSwitchPreservesShieldAndTargetChangeKeepsUsableBackup(
             GameTestHelper helper) {
         boolean originalHotvRequirement = GuardConfig.giveGuardStuffHOTV;
         Guard guard = spawnGuard(helper);
@@ -4584,18 +5000,18 @@ public final class GuardGunnerGameTests {
         // tick. Also clear the fixture before TaCZ's next entity-data sync so
         // both native and synchronized draw cooldowns settle before the return.
         forceNativeSwapFixtureIdle(operator);
-        helper.succeedWhen(() -> {
+        helper.runAtTickTime(10, () -> {
             forceNativeSwapFixtureIdle(operator);
             goal.tick();
             GuardGunCombatGoal.Diagnostics diagnostics = goal.captureDiagnostics();
             helper.assertTrue(
                     storage.stateAgainst(guard.getMainHandItem())
-                                    == SidearmState.PRIMARY_ACTIVE
-                            && gunId(guard.getMainHandItem()).equals(AK_47)
+                                    == SidearmState.SIDEARM_ACTIVE
+                            && gunId(guard.getMainHandItem()).equals(GLOCK_17)
                             && gunId(storage.getStackInSlot(
-                                    GuardSidearmStorage.SIDEARM_SLOT)).equals(GLOCK_17)
+                                    GuardSidearmStorage.STOWED_PRIMARY_SLOT)).equals(AK_47)
                             && stacksMatch(shield, guard.getOffhandItem()),
-                    "Changing targets did not restore the primary and preserve the shield; "
+                    "Changing targets discarded the usable backup or changed the shield; "
                             + "state=" + storage.stateAgainst(guard.getMainHandItem())
                             + ", reload=" + diagnostics.nativeState().reloadState()
                             + ", bolting=" + diagnostics.nativeState().bolting()
@@ -4604,6 +5020,7 @@ public final class GuardGunnerGameTests {
                             + ", shootCooldownMs="
                             + diagnostics.nativeState().shootCooldownMillis());
             goal.stop();
+            helper.succeed();
         });
     }
 
@@ -4913,6 +5330,110 @@ public final class GuardGunnerGameTests {
         } finally {
             GuardConfig.reputationRequirement = originalReputationRequirement;
             player.setShiftKeyDown(false);
+        }
+    }
+
+    @GameTest(batch = "squad_patrol_route_editor", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE)
+    public static void squadCommandLedgerAuthorsPatrolRoutesSafely(
+            GameTestHelper helper) {
+        BlockPos firstFloor = new BlockPos(1, 1, 1);
+        BlockPos secondFloor = new BlockPos(4, 1, 1);
+        helper.setBlock(firstFloor, Blocks.STONE);
+        helper.setBlock(secondFloor, Blocks.STONE);
+        BlockPos firstWaypoint = helper.absolutePos(firstFloor.above());
+        BlockPos secondWaypoint = helper.absolutePos(secondFloor.above());
+
+        Player player = helper.makeMockPlayer();
+        player.setPos(
+                firstWaypoint.getX() + 0.5D,
+                firstWaypoint.getY(),
+                firstWaypoint.getZ() + 0.5D);
+        UUID squadId = UUID.randomUUID();
+        SquadRegistrySavedData registry = SquadRegistrySavedData.get(
+                Objects.requireNonNull(helper.getLevel().getServer()));
+        registry.register(
+                squadId,
+                "Editor Test",
+                player.getUUID(),
+                helper.getLevel().getGameTime()).orElseThrow();
+        ItemStack ledger = new ItemStack(
+                com.gamergaming.villagerguardgunners.init.ModItems
+                        .SQUAD_COMMAND_LEDGER.get());
+        SquadLedgerBindingCodec.writeTo(
+                ledger.getOrCreateTag(),
+                SquadLedgerBinding.bound(squadId, "Editor Test"));
+        SquadLedgerModeCodec.writeTo(
+                ledger.getOrCreateTag(),
+                SquadCommandType.PATROL_ROUTE_EDITOR);
+        player.setItemInHand(InteractionHand.MAIN_HAND, ledger);
+
+        try {
+            InteractionResult firstUse = ledger.getItem().useOn(new UseOnContext(
+                    player,
+                    InteractionHand.MAIN_HAND,
+                    new BlockHitResult(
+                            Vec3.atCenterOf(helper.absolutePos(firstFloor)),
+                            Direction.UP,
+                            helper.absolutePos(firstFloor),
+                            false)));
+            SquadPatrolRoute draft = registry.findPatrolRoute(squadId).orElseThrow();
+            helper.assertTrue(firstUse.consumesAction()
+                            && draft.waypoints().equals(List.of(firstWaypoint))
+                            && !draft.executable(),
+                    "The first loaded walkable block use did not create an exact route draft");
+
+            InteractionResult secondUse = ledger.getItem().useOn(new UseOnContext(
+                    player,
+                    InteractionHand.MAIN_HAND,
+                    new BlockHitResult(
+                            Vec3.atCenterOf(helper.absolutePos(secondFloor)),
+                            Direction.UP,
+                            helper.absolutePos(secondFloor),
+                            false)));
+            SquadPatrolRoute ready = registry.findPatrolRoute(squadId).orElseThrow();
+            helper.assertTrue(secondUse.consumesAction()
+                            && ready.waypoints().equals(
+                                    List.of(firstWaypoint, secondWaypoint))
+                            && ready.executable()
+                            && ready.revision() > draft.revision(),
+                    "The second block use did not atomically produce an executable route");
+
+            long revisionBeforeInspect = ready.revision();
+            InteractionResultHolder<ItemStack> inspected = ledger.getItem().use(
+                    helper.getLevel(), player, InteractionHand.MAIN_HAND);
+            helper.assertTrue(inspected.getResult().consumesAction()
+                            && registry.findPatrolRoute(squadId).orElseThrow().revision()
+                                    == revisionBeforeInspect,
+                    "Inspecting a patrol route changed its persisted revision");
+
+            player.setShiftKeyDown(true);
+            ledger.getItem().useOn(new UseOnContext(
+                    player,
+                    InteractionHand.MAIN_HAND,
+                    new BlockHitResult(
+                            Vec3.atCenterOf(helper.absolutePos(secondFloor)),
+                            Direction.UP,
+                            helper.absolutePos(secondFloor),
+                            false)));
+            SquadPatrolRoute reduced = registry.findPatrolRoute(squadId).orElseThrow();
+            helper.assertTrue(reduced.waypoints().equals(List.of(firstWaypoint))
+                            && !reduced.executable(),
+                    "Sneak-use did not remove exactly the last patrol waypoint");
+            ledger.getItem().useOn(new UseOnContext(
+                    player,
+                    InteractionHand.MAIN_HAND,
+                    new BlockHitResult(
+                            Vec3.atCenterOf(helper.absolutePos(firstFloor)),
+                            Direction.UP,
+                            helper.absolutePos(firstFloor),
+                            false)));
+            helper.assertTrue(registry.findPatrolRoute(squadId).isEmpty(),
+                    "Removing the final patrol waypoint did not clear the route");
+            helper.succeed();
+        } finally {
+            player.setShiftKeyDown(false);
+            registry.remove(squadId);
         }
     }
 
@@ -6244,6 +6765,12 @@ public final class GuardGunnerGameTests {
         helper.assertTrue(marksmanGoal.canUse(),
                 "The Marksman movement fixture could not start its gun goal");
         marksmanGoal.start();
+        // This fixture isolates loaded-weapon profile movement from native draw
+        // and bolt timing. Long shot cooldowns keep both loaded weapons ready.
+        forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(skirmisher));
+        forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(marksman));
+        IGunOperator.fromLivingEntity(skirmisher).getDataHolder().shootTimestamp = 60_000L;
+        IGunOperator.fromLivingEntity(marksman).getDataHolder().shootTimestamp = 60_000L;
 
         double skirmisherX = skirmisher.getX();
         double skirmisherY = skirmisher.getY();
@@ -6979,9 +7506,292 @@ public final class GuardGunnerGameTests {
         });
     }
 
-    @GameTest(batch = "dry_melee_fallback", templateNamespace = "minecraft",
+    @GameTest(batch = "dry_readiness", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 240)
+    public static void unreadableHeldGunRetainsOwnershipAndRecoversOnRefresh(GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        Ravager target = helper.spawnWithNoFreeWill(EntityType.RAVAGER, new BlockPos(8, 1, 0));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(target);
+        // TaCZ's builder rejects unknown definitions by returning an empty stack.
+        // Corrupt the ID only after building a real gun to exercise metadata recovery.
+        ItemStack stack = gun(GLOCK_17, FireMode.SEMI, 4, true);
+        ((IGun) stack.getItem()).setGunId(stack,
+                new ResourceLocation("villagerguardgunners_gametest", "missing_gun"));
+        guard.setItemSlot(EquipmentSlot.MAINHAND, stack);
+        guard.setTarget(target);
+        GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
+        helper.assertTrue(goal.canUse(), "Unreadable gun did not acquire defensive ownership");
+        goal.start();
+        goal.tick();
+        helper.assertTrue(goal.canContinueToUse()
+                        && goal.captureDiagnostics().nativeState().suspended()
+                        && guard.getNavigation().isDone(),
+                "Unreadable metadata released combat or permitted pursuit");
+        ((IGun) stack.getItem()).setGunId(stack, GLOCK_17);
+        helper.onEachTick(() -> {
+            goal.tick();
+            helper.assertTrue(goal.canContinueToUse(), "Metadata retry released gun ownership");
+            if (goal.captureDiagnostics().nativeState().weaponDataReady()) {
+                helper.assertTrue(guard.getMainHandItem() == stack
+                                && !goal.captureDiagnostics().nativeState().suspended()
+                                && !goal.captureDiagnostics().nativeState().dryConfirmed(),
+                        "Recovered in-place gun definition retained stale error or exhaustion");
+                goal.stop();
+                helper.succeed();
+            }
+        });
+    }
+
+    @GameTest(batch = "dry_readiness", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 80)
+    public static void inventoryFedGunRecoversSupplyWithoutAReload(GameTestHelper helper) throws Exception {
+        Guard guard = spawnGuard(helper);
+        Ravager target = helper.spawnWithNoFreeWill(EntityType.RAVAGER, new BlockPos(8, 1, 0));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(target);
+        ItemStack stack = gun(GLOCK_17, FireMode.SEMI, 0, false);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, stack);
+        NativeGunController controller = new NativeGunController(guard);
+        IGunOperator operator = IGunOperator.fromLivingEntity(guard);
+        GunReloadData reload = TimelessAPI.getCommonGunIndex(GLOCK_17).orElseThrow().getGunData().getReloadData();
+        Field feed = GunReloadData.class.getDeclaredField("type");
+        feed.setAccessible(true);
+        Object originalFeed = feed.get(reload);
+        try {
+            feed.set(reload, com.tacz.guns.resource.pojo.data.gun.FeedType.INVENTORY);
+            controller.startAiming();
+            forceNativeSwapFixtureIdle(operator);
+            operator.getDataHolder().baseTimestamp = System.currentTimeMillis() - 10_000L;
+            controller.tick(target, true, () -> true);
+            helper.assertTrue(controller.isCurrentWeaponDryConfirmed(),
+                    "An inventory-fed native NO_AMMO result did not confirm exhaustion");
+        } finally {
+            // The shared gun definition is restored before any other entity/test ticks.
+            feed.set(reload, originalFeed);
+        }
+        long retryAt = helper.getLevel().getGameTime() + controller.captureDiagnostics().dryRetryTicks();
+        GuardAmmoAccess.getAmmoHandler(guard).setStackInSlot(0,
+                AmmoItemBuilder.create().setId(NINE_MILLIMETER).setCount(32).build());
+        helper.onEachTick(() -> {
+            try {
+                feed.set(reload, com.tacz.guns.resource.pojo.data.gun.FeedType.INVENTORY);
+                controller.tick(target, false, () -> true);
+                if (helper.getLevel().getGameTime() < retryAt) {
+                    helper.assertTrue(controller.isCurrentWeaponDryConfirmed(),
+                            "Inventory feed bypassed its bounded retry");
+                } else {
+                    helper.assertFalse(controller.isCurrentWeaponDryConfirmed(),
+                            "Inventory-fed ammo arrival got stuck waiting for an impossible reload");
+                    helper.assertFalse(operator.getDataHolder().reloadStateType.isReloading(),
+                            "An inventory-fed gun started a magazine reload");
+                    helper.assertTrue(GuardAmmoAccess.getAmmoHandler(guard).getStackInSlot(0).getCount() == 32,
+                            "Feed readiness consumed ammo without firing");
+                    controller.stopAiming();
+                    helper.succeed();
+                }
+            } catch (IllegalAccessException exception) {
+                throw new AssertionError(exception);
+            } finally {
+                try {
+                    feed.set(reload, originalFeed);
+                } catch (IllegalAccessException exception) {
+                    throw new AssertionError(exception);
+                }
+            }
+        });
+    }
+
+    @GameTest(batch = "dry_readiness", templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void readinessRespectsChamberManualBoltAndImmediateDraw(GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        ItemStack pistol = gun(GLOCK_17, FireMode.SEMI, 0, true);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, pistol);
+        NativeGunController controller = new NativeGunController(guard);
+        controller.startAiming();
+        helper.assertFalse(controller.captureReadiness().permitsOffensiveMovement(),
+                "A newly started draw authorized movement before synchronized data caught up");
+        forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(guard));
+        helper.assertTrue(controller.captureReadiness().permitsOffensiveMovement(),
+                "A valid chambered round was mistaken for an empty weapon");
+        ((IGun) pistol.getItem()).setBulletInBarrel(pistol, false);
+        helper.assertFalse(controller.captureReadiness().permitsOffensiveMovement(),
+                "An empty magazine and chamber authorized movement");
+        guard.setItemSlot(EquipmentSlot.MAINHAND, gun(M95, FireMode.SEMI, 5, false));
+        helper.assertFalse(controller.captureReadiness().permitsOffensiveMovement(),
+                "An unbound replacement inherited the old weapon's readiness");
+        controller.startAiming();
+        forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(guard));
+        helper.assertTrue(controller.captureReadiness()
+                        == com.gamergaming.villagerguardgunners.combat.WeaponReadiness.CYCLING_ACTION,
+                "A loaded manual-action gun without a chambered round was ready to pursue");
+        controller.stopAiming();
+        helper.succeed();
+    }
+
+    // Replacement ends at tick 20; allow the 40-tick tactical continuation window plus native cleanup.
+    @GameTest(batch = "dry_readiness", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 100)
+    public static void activeDryBackupSurvivesReplacementAndSettlesAtCombatEnd(GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        Ravager first = helper.spawnWithNoFreeWill(EntityType.RAVAGER, new BlockPos(8, 1, 0));
+        Ravager replacement = helper.spawnWithNoFreeWill(EntityType.RAVAGER, new BlockPos(8, 1, 3));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(first);
+        configureFixedCombatant(replacement);
+        guard.setTarget(first);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, gun(AK_47, FireMode.AUTO, 0, false));
+        GuardSidearmStorage storage = GuardSidearmGameTestAccess.getStorage(guard);
+        storage.setStackInSlot(GuardSidearmStorage.SIDEARM_SLOT, gun(GLOCK_17, FireMode.SEMI, 7, true));
+        GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
+        goal.start();
+        IGunOperator operator = IGunOperator.fromLivingEntity(guard);
+        forceNativeSwapFixtureIdle(operator);
+        goal.tick();
+        helper.assertTrue(storage.stateAgainst(guard.getMainHandItem()) == SidearmState.SIDEARM_ACTIVE,
+                "Fixture did not activate a ready backup");
+        // Exhaust the active stack in place to isolate continuity and ownership.
+        IGun backup = (IGun) guard.getMainHandItem().getItem();
+        backup.setCurrentAmmoCount(guard.getMainHandItem(), 0);
+        backup.setBulletInBarrel(guard.getMainHandItem(), false);
+        guard.setTarget(replacement);
+        first.discard();
+        helper.onEachTick(() -> {
+            forceNativeSwapFixtureIdle(operator);
+            goal.tick();
+            if (helper.getTick() < 20L) {
+                helper.assertTrue(goal.canContinueToUse()
+                                && storage.stateAgainst(guard.getMainHandItem()) == SidearmState.SIDEARM_ACTIVE
+                                && gunId(guard.getMainHandItem()).equals(GLOCK_17)
+                                && gunId(storage.getStackInSlot(GuardSidearmStorage.STOWED_PRIMARY_SLOT)).equals(AK_47),
+                        "Two dry guns caused role cycling or released combat ownership");
+                helper.assertFalse(goal.captureDiagnostics().nativeState().readiness().permitsOffensiveMovement(),
+                        "The empty backup authorized pursuit");
+            } else {
+                replacement.discard();
+                guard.setTarget(null);
+                if (storage.stateAgainst(guard.getMainHandItem()) == SidearmState.PRIMARY_ACTIVE) {
+                    helper.assertTrue(gunId(guard.getMainHandItem()).equals(AK_47)
+                                    && gunId(storage.getStackInSlot(GuardSidearmStorage.SIDEARM_SLOT)).equals(GLOCK_17)
+                                    && storage.getStackInSlot(GuardSidearmStorage.STOWED_PRIMARY_SLOT).isEmpty()
+                                    && backup.getCurrentAmmoCount(storage.getStackInSlot(GuardSidearmStorage.SIDEARM_SLOT)) == 0,
+                            "Combat end changed weapon ownership or created backup ammo");
+                    goal.stop();
+                    helper.succeed();
+                }
+            }
+        });
+    }
+
+    @GameTest(batch = "dry_readiness", templateNamespace = "minecraft",
+            template = EMPTY_TEMPLATE, timeoutTicks = 100)
+    public static void arrivingAmmoRecoversConfirmedDryOnBoundedRetry(GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        Ravager target = helper.spawnWithNoFreeWill(EntityType.RAVAGER, new BlockPos(8, 1, 0));
+        configureFixedCombatant(guard);
+        configureFixedCombatant(target);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, gun(GLOCK_17, FireMode.SEMI, 0, false));
+        NativeGunController controller = new NativeGunController(guard);
+        IGunOperator operator = IGunOperator.fromLivingEntity(guard);
+        controller.startAiming();
+        forceNativeSwapFixtureIdle(operator);
+        controller.tick(target, false, () -> true);
+        helper.assertTrue(controller.isCurrentWeaponDryConfirmed(), "Fixture never confirmed exhaustion");
+        long retryAt = helper.getLevel().getGameTime() + controller.captureDiagnostics().dryRetryTicks();
+        GuardAmmoAccess.getAmmoHandler(guard).setStackInSlot(0,
+                AmmoItemBuilder.create().setId(NINE_MILLIMETER).setCount(32).build());
+        helper.onEachTick(() -> {
+            controller.tick(target, false, () -> true);
+            if (helper.getLevel().getGameTime() < retryAt) {
+                helper.assertTrue(controller.isCurrentWeaponDryConfirmed(),
+                        "Reserve arrival bypassed the bounded native retry");
+                helper.assertFalse(controller.captureReadiness().permitsOffensiveMovement(),
+                        "A still-empty gun authorized offensive movement");
+            } else if (operator.getDataHolder().reloadStateType.isReloading()) {
+                helper.assertFalse(controller.isCurrentWeaponDryConfirmed(),
+                        "A successful native reload start retained stale exhaustion");
+                helper.assertFalse(controller.captureReadiness().permitsOffensiveMovement(),
+                        "Starting a reload authorized pursuit before the gun was ready");
+                controller.stopAiming();
+                helper.succeed();
+            }
+        });
+    }
+
+    @GameTest(batch = "dry_readiness", templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void canceledReloadWithReserveDoesNotConfirmDry(GameTestHelper helper) {
+        Guard guard = spawnGuard(helper);
+        Ravager target = helper.spawnWithNoFreeWill(EntityType.RAVAGER, new BlockPos(8, 1, 0));
+        guard.setItemSlot(EquipmentSlot.MAINHAND, gun(GLOCK_17, FireMode.SEMI, 0, false));
+        GuardAmmoAccess.getAmmoHandler(guard).setStackInSlot(0,
+                AmmoItemBuilder.create().setId(NINE_MILLIMETER).setCount(32).build());
+        NativeGunController controller = new NativeGunController(guard);
+        controller.startAiming();
+        forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(guard));
+        // TaCZ's own cooldown calculation includes the initial relative timestamp,
+        // even before a first shot. Put this isolated event fixture past that window.
+        IGunOperator.fromLivingEntity(guard).getDataHolder().baseTimestamp =
+                System.currentTimeMillis() - 10_000L;
+        class ReloadCancellation {
+            int requests;
+            @net.minecraftforge.eventbus.api.SubscribeEvent
+            public void cancel(com.tacz.guns.api.event.common.GunReloadEvent event) {
+                if (event.getEntity() == guard) {
+                    requests++;
+                    event.setCanceled(true);
+                }
+            }
+        }
+        ReloadCancellation cancellation = new ReloadCancellation();
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(cancellation);
+        try {
+            controller.tick(target, false, () -> true);
+            helper.assertTrue(cancellation.requests == 1, "Native reload cancellation was not exercised: requests=" + cancellation.requests
+                    + ", state=" + controller.captureDiagnostics());
+            helper.assertFalse(controller.isCurrentWeaponDryConfirmed(),
+                    "A canceled reload with valid reserves became confirmed exhaustion");
+            helper.assertFalse(controller.captureReadiness().permitsOffensiveMovement(),
+                    "An empty gun with a canceled reload authorized pursuit");
+            helper.assertTrue(GuardAmmoAccess.getAmmoHandler(guard).getStackInSlot(0).getCount() == 32,
+                    "The canceled reload consumed reserves");
+            controller.tick(target, false, () -> true);
+            helper.assertTrue(cancellation.requests == 1, "Temporary refusal bypassed its short retry");
+            helper.succeed();
+        } finally {
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(cancellation);
+            controller.stopAiming();
+        }
+    }
+
+    @GameTest(batch = "dry_readiness", templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void dryGuardStillHonorsFallBackDestination(GameTestHelper helper) {
+        Guard guard = spawnGuard(helper, new BlockPos(4, 1, 4));
+        Ravager target = helper.spawnWithNoFreeWill(EntityType.RAVAGER, new BlockPos(12, 1, 4));
+        guard.setTarget(target);
+        guard.setItemSlot(EquipmentSlot.MAINHAND, gun(GLOCK_17, FireMode.SEMI, 0, false));
+        GuardSquadAccess.setMembership(guard, SquadMembership.assigned(UUID.randomUUID()));
+        GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
+        goal.start();
+        forceNativeSwapFixtureIdle(IGunOperator.fromLivingEntity(guard));
+        goal.tick();
+        helper.assertTrue(goal.captureDiagnostics().nativeState().dryConfirmed(), "Fixture is not dry");
+        long now = helper.getLevel().getGameTime();
+        SquadCommand command = SquadCommand.positional(SquadCommandType.FALL_BACK, UUID.randomUUID(),
+                now, now + 100L, helper.getLevel().dimension().location(),
+                guard.blockPosition().offset(-3, 0, 0), 0.0D);
+        GuardSquadCommandAccess.setCommand(guard, command);
+        goal.tick();
+        helper.assertTrue(goal.canContinueToUse()
+                        && goal.captureDiagnostics().movementState().equals("APPROACH")
+                        && GuardSquadCommandAccess.getCommand(guard) == command,
+                "Defensive readiness suppressed the explicit Fall Back destination");
+        goal.stop();
+        helper.succeed();
+    }
+
+    @GameTest(batch = "dry_combat_ownership", templateNamespace = "minecraft",
             template = EMPTY_TEMPLATE, timeoutTicks = 160)
-    public static void permanentlyDryGunYieldsToTheUpstreamMeleeGoal(GameTestHelper helper) {
+    public static void permanentlyDryGunRetainsOwnershipAndStopsOffensiveMovement(GameTestHelper helper) {
         // The padded isolation template is intentionally all air. Give the
         // upstream pathfinding goal a small, explicit surface so this test
         // measures goal ownership instead of whether both entities fell into
@@ -7013,20 +7823,19 @@ public final class GuardGunnerGameTests {
         gunGoal.tick();
         helper.assertTrue(gunGoal.captureDiagnostics().nativeState().dryRetryTicks() > 0L,
                 "The dry gun did not enter its bounded retry state");
-        helper.assertFalse(gunGoal.canContinueToUse(),
-                "A permanently dry gun did not yield MOVE/LOOK ownership");
+        helper.assertTrue(gunGoal.canContinueToUse(),
+                "A permanently dry gun released MOVE/LOOK ownership");
+        helper.assertTrue(guard.getNavigation().isDone()
+                        && gunGoal.captureDiagnostics().nativeState().dryConfirmed()
+                        && !gunGoal.captureDiagnostics().nativeState().readiness()
+                                .permitsOffensiveMovement(),
+                "A dry gun retained an offensive path or lost its exhaustion evidence");
         gunGoal.stop();
-        // Our integration contract ends when MOVE/LOOK ownership is released.
-        // Waiting for vanilla MeleeAttackGoal to start makes this fixture depend
-        // on its independent 20-tick canUse throttle and lets later GameTest
-        // batches that alter the global ROE settings race the assertion.
-        helper.assertFalse(IGunOperator.fromLivingEntity(guard).getDataHolder().isAiming,
-                "A permanently dry gun remained aimed after yielding to melee");
         helper.succeed();
     }
 
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
-    public static void impossibleTacticalWindowYieldsWithoutGoalThrashing(GameTestHelper helper) {
+    public static void impossibleTacticalWindowRetainsDefensiveOwnership(GameTestHelper helper) {
         double originalMaximumRange = ModConfigs.GUARD_GUNNERS.combat
                 .maximumEngagementRange.get();
         double originalAdditionalStandoff = ModConfigs.GUARD_GUNNERS.safety
@@ -7053,12 +7862,17 @@ public final class GuardGunnerGameTests {
             GuardGunCombatGoal.Diagnostics diagnostics = goal.captureDiagnostics();
             helper.assertFalse(diagnostics.validFiringWindow(),
                     "The contradictory RPG standoff unexpectedly produced a valid window");
-            helper.assertFalse(goal.canContinueToUse(),
-                    "An impossible tactical window retained ownership of the guard");
+            helper.assertTrue(goal.canContinueToUse(),
+                    "An impossible tactical window released ownership to melee");
+            goal.tick();
+            helper.assertTrue(guard.getNavigation().isDone()
+                            && !goal.captureDiagnostics().nativeState().readiness()
+                                    .permitsOffensiveMovement(),
+                    "An invalid firing window permitted offensive movement");
 
             goal.stop();
-            helper.assertFalse(goal.canUse(),
-                    "The invalid gun goal immediately restarted instead of waiting for its refresh slot");
+            helper.assertTrue(goal.canUse(),
+                    "An invalid gun could not retain defensive ownership");
             helper.assertFalse(IGunOperator.fromLivingEntity(guard).getDataHolder().isAiming,
                     "The invalid tactical window left the guard aiming after yielding");
             helper.succeed();
@@ -8608,6 +9422,12 @@ public final class GuardGunnerGameTests {
 
     /** Clears wall-clock TaCZ actions that are irrelevant to swap-lifecycle fixtures. */
     private static void forceNativeSwapFixtureIdle(IGunOperator operator) {
+        // A forced idle fixture must reset both TaCZ's holder and its synchronized cooldown view.
+        if (operator instanceof LivingEntity entity) {
+            com.tacz.guns.entity.sync.ModSyncedEntityData.SHOOT_COOL_DOWN_KEY.setValue(entity, 0L);
+            com.tacz.guns.entity.sync.ModSyncedEntityData.DRAW_COOL_DOWN_KEY.setValue(entity, 0L);
+            com.tacz.guns.entity.sync.ModSyncedEntityData.MELEE_COOL_DOWN_KEY.setValue(entity, 0L);
+        }
         var data = operator.getDataHolder();
         data.reloadStateType = ReloadState.StateType.NOT_RELOADING;
         data.reloadTimestamp = -1L;

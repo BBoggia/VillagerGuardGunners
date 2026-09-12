@@ -29,7 +29,7 @@ final class VillageBuildingGarrisonPolicyTest {
                         full.limitGuardCount(VillageBuildingType.WATCHTOWER, 4)),
                 () -> assertEquals(0,
                         full.limitGuardCount(VillageBuildingType.ARMORY, 4)),
-                () -> assertEquals(0,
+                () -> assertEquals(2,
                         full.limitGuardCount(VillageBuildingType.TRAINING_YARD, 4)),
                 () -> assertEquals(1,
                         reduced.limitGuardCount(VillageBuildingType.BARRACKS, 4)),
@@ -55,7 +55,7 @@ final class VillageBuildingGarrisonPolicyTest {
     }
 
     @Test
-    void onlyThreeBuildingTypesOwnGarrisonPlansAndSeedsAreIdentityStable() {
+    void onlyFourBuildingTypesOwnGarrisonPlansAndSeedsAreIdentityStable() {
         VillageBuildingIdentity barracks = identity(
                 VillageBuildingType.BARRACKS, new BlockPos(2, 70, -4));
         VillageBuildingIdentity moved = identity(
@@ -69,15 +69,24 @@ final class VillageBuildingGarrisonPolicyTest {
                 () -> assertEquals(0,
                         VillageBuildingGarrisons.planFor(VillageBuildingType.SENTRY_POST)
                                 .orElseThrow().verticalSpawnOffset()),
-                () -> assertEquals(5,
+                () -> assertEquals(0,
                         VillageBuildingGarrisons.planFor(VillageBuildingType.WATCHTOWER)
                                 .orElseThrow().verticalSpawnOffset()),
                 () -> assertTrue(VillageBuildingGarrisons.planFor(
                         VillageBuildingType.ARMORY).isEmpty()),
-                () -> assertTrue(VillageBuildingGarrisons.planFor(
-                        VillageBuildingType.TRAINING_YARD).isEmpty()),
+                () -> assertEquals(
+                        VillageBuildingGarrisons.TRAINING_YARD_GROUP,
+                        VillageBuildingGarrisons.planFor(
+                                VillageBuildingType.TRAINING_YARD)
+                                .orElseThrow().groupId()),
+                () -> assertEquals(0,
+                        VillageBuildingGarrisons.planFor(
+                                VillageBuildingType.TRAINING_YARD)
+                                .orElseThrow().verticalSpawnOffset()),
                 () -> assertTrue(VillageBuildingGarrisons.isVillageGroup(
                         VillageBuildingGarrisons.WATCHTOWER_GROUP)),
+                () -> assertTrue(VillageBuildingGarrisons.isVillageGroup(
+                        VillageBuildingGarrisons.TRAINING_YARD_GROUP)),
                 () -> assertFalse(VillageBuildingGarrisons.isVillageGroup(
                         ResourceLocation.fromNamespaceAndPath(
                                 "villagerguardgunners", "watchtower"))),

@@ -1,20 +1,27 @@
 package com.gamergaming.villagerguardgunners.combat;
 
-/** Tracks goal-level availability separately from TaCZ's native gun state. */
+/** Tracks confirmed exhaustion independently of the next native retry. */
 public final class NativeWeaponState {
-    private long dryUntilGameTick = Long.MIN_VALUE;
+    private long nextDryRetryGameTick = Long.MIN_VALUE;
     private boolean suspended;
+    private boolean dryConfirmed;
 
-    public boolean mayEngage(long gameTick) {
-        return !suspended && gameTick >= dryUntilGameTick;
+    public boolean mayAttemptAction(long gameTick) {
+        return !suspended && gameTick >= nextDryRetryGameTick;
     }
 
     public void markDry(long gameTick, int retryTicks) {
-        dryUntilGameTick = gameTick + Math.max(1, retryTicks);
+        dryConfirmed = true;
+        nextDryRetryGameTick = gameTick + Math.max(1, retryTicks);
+    }
+
+    public boolean isDryConfirmed() {
+        return dryConfirmed;
     }
 
     public void clearDry() {
-        dryUntilGameTick = Long.MIN_VALUE;
+        dryConfirmed = false;
+        nextDryRetryGameTick = Long.MIN_VALUE;
     }
 
     public void suspend() {
@@ -30,11 +37,11 @@ public final class NativeWeaponState {
     }
 
     public long remainingDryTicks(long gameTick) {
-        return dryUntilGameTick <= gameTick ? 0L : dryUntilGameTick - gameTick;
+        return nextDryRetryGameTick <= gameTick ? 0L : nextDryRetryGameTick - gameTick;
     }
 
     public void resetForWeaponChange() {
-        dryUntilGameTick = Long.MIN_VALUE;
+        clearDry();
         suspended = false;
     }
 }

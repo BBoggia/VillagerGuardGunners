@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.Blocks;
 
 /** One-shot Armory placement that defers loot work until the live server thread. */
 public final class GuardPostArmoryPlacer {
@@ -53,8 +54,11 @@ public final class GuardPostArmoryPlacer {
                 position,
                 ModBlocks.ARMORY.get().defaultBlockState()
                         .setValue(ArmoryBlock.FACING, facing),
-                2)
-                || !(level.getBlockEntity(position) instanceof ArmoryBlockEntity armory)) {
+                2)) {
+            return PlacementResult.PLACEMENT_FAILED;
+        }
+        if (!(level.getBlockEntity(position) instanceof ArmoryBlockEntity armory)) {
+            rollbackNewArmory(level, position);
             return PlacementResult.PLACEMENT_FAILED;
         }
 
@@ -64,17 +68,36 @@ public final class GuardPostArmoryPlacer {
                 : null;
         ResourceLocation lootTableId = marker.lootTableId();
         if (lootTableId == null || !stockGeneratedArmory) {
-            return armory.initializeGenerated(postId, lootTableId, lock, java.util.List.of())
-                    ? PlacementResult.PLACED_EMPTY
-                    : PlacementResult.PLACEMENT_FAILED;
+            if (armory.initializeGenerated(postId, lootTableId, lock, java.util.List.of())) {
+                return PlacementResult.PLACED_EMPTY;
+            }
+            rollbackNewArmory(level, position, armory);
+            return PlacementResult.PLACEMENT_FAILED;
         }
-        return armory.prepareGenerated(
-                        postId,
-                        lootTableId,
-                        GuardPostIds.armoryLootSeed(postId),
-                        lock)
-                ? PlacementResult.PLACED_PENDING_LOOT
-                : PlacementResult.PLACEMENT_FAILED;
+        if (armory.prepareGenerated(
+                postId,
+                lootTableId,
+                GuardPostIds.armoryLootSeed(postId),
+                lock)) {
+            return PlacementResult.PLACED_PENDING_LOOT;
+        }
+        rollbackNewArmory(level, position, armory);
+        return PlacementResult.PLACEMENT_FAILED;
+    }
+
+    private static void rollbackNewArmory(
+            ServerLevelAccessor level,
+            BlockPos position,
+            ArmoryBlockEntity armory) {
+        if (level.getBlockEntity(position) == armory) {
+            level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
+        }
+    }
+
+    private static void rollbackNewArmory(ServerLevelAccessor level, BlockPos position) {
+        if (level.getBlockState(position).is(ModBlocks.ARMORY.get())) {
+            level.setBlock(position, Blocks.AIR.defaultBlockState(), 2);
+        }
     }
 
     public enum PlacementResult {

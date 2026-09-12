@@ -12,21 +12,26 @@ public final class VillageBuildingGarrisons {
     public static final ResourceLocation BARRACKS_GROUP = id("village_barracks");
     public static final ResourceLocation SENTRY_POST_GROUP = id("village_sentry_post");
     public static final ResourceLocation WATCHTOWER_GROUP = id("village_watchtower");
+    public static final ResourceLocation TRAINING_YARD_GROUP = id("village_training_yard");
 
     private static final Plan BARRACKS_PLAN =
             new Plan(BARRACKS_GROUP, 0, "Barracks");
     private static final Plan SENTRY_POST_PLAN =
             new Plan(SENTRY_POST_GROUP, 0, "Sentry Post");
     private static final Plan WATCHTOWER_PLAN =
-            new Plan(WATCHTOWER_GROUP, 5, "Village Watchtower");
+            new Plan(WATCHTOWER_GROUP, 0, "Village Watchtower");
+    private static final Plan TRAINING_YARD_PLAN =
+            new Plan(TRAINING_YARD_GROUP, 0, "Training Yard");
     private static final Map<VillageBuildingType, Plan> PLANS = Map.of(
             VillageBuildingType.BARRACKS, BARRACKS_PLAN,
             VillageBuildingType.SENTRY_POST, SENTRY_POST_PLAN,
-            VillageBuildingType.WATCHTOWER, WATCHTOWER_PLAN);
+            VillageBuildingType.WATCHTOWER, WATCHTOWER_PLAN,
+            VillageBuildingType.TRAINING_YARD, TRAINING_YARD_PLAN);
     private static final Map<ResourceLocation, Plan> GROUP_PLANS = Map.of(
             BARRACKS_GROUP, BARRACKS_PLAN,
             SENTRY_POST_GROUP, SENTRY_POST_PLAN,
-            WATCHTOWER_GROUP, WATCHTOWER_PLAN);
+            WATCHTOWER_GROUP, WATCHTOWER_PLAN,
+            TRAINING_YARD_GROUP, TRAINING_YARD_PLAN);
 
     private VillageBuildingGarrisons() {
     }

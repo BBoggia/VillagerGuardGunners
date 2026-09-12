@@ -83,7 +83,7 @@ final class SquadCommandAiIntegrationContractTest {
                 () -> assertTrue(mixin.contains(
                         "addGoal(1, new SquadCommandMovementGoal")),
                 () -> assertTrue(mixin.contains(
-                        "addGoal(2, new GuardGunCombatGoal")),
+                        "addGoal(2, villagerGuardGunners$coverageGunGoal")),
                 () -> assertFalse(combatGoal.contains("setPatrolling(")),
                 () -> assertFalse(combatGoal.contains("setFollowing(")));
     }

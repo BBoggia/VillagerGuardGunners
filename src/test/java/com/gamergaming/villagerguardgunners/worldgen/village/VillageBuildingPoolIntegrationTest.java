@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.worldgen.village;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -71,9 +72,31 @@ final class VillageBuildingPoolIntegrationTest {
         for (int index = 0; index <= VillageBuildingPools.MAXIMUM_INJECTED_ENTRIES; index++) {
             tooManyEntries.add(entry(index, "shared_pool"));
         }
+        // Regional families, provider adapters, and built-ins must fit, but the new
+        // bound still rejects overflow before mutating any live pool.
+        assertDoesNotThrow(() -> VillageBuildingPoolIntegration.validateBatch(
+                tooManyEntries.subList(0, 71)));
+        assertDoesNotThrow(() -> VillageBuildingPoolIntegration.validateBatch(
+                tooManyEntries.subList(0, 103)));
+        assertDoesNotThrow(() -> VillageBuildingPoolIntegration.validateBatch(
+                tooManyEntries.subList(0, 131)));
+        assertDoesNotThrow(() -> VillageBuildingPoolIntegration.validateBatch(
+                tooManyEntries.subList(0, 192)));
         assertThrows(
                 IllegalArgumentException.class,
                 () -> VillageBuildingPoolIntegration.validateBatch(tooManyEntries));
+    }
+
+    @Test
+    void batchSupportsHousePoolsAndRegionalStreetEndsTogether() {
+        List<VillageBuildingPoolEntry> entries = new ArrayList<>();
+        for (int index = 0; index < 24; index++) {
+            entries.add(entry(index, "regional_pool_" + index));
+        }
+        VillageBuildingPoolIntegration.validateBatch(entries);
+        entries.add(entry(24, "twenty_fifth_pool"));
+        assertThrows(IllegalArgumentException.class,
+                () -> VillageBuildingPoolIntegration.validateBatch(entries));
     }
 
     @Test

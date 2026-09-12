@@ -26,7 +26,7 @@ final class VillageWatchtowerStepFifteenContractTest {
                 + "worldgen/structure/VillageWatchtowerPiece.java");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 15")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 21")),
                 () -> assertTrue(config.contains("previousVersion < 10")),
                 () -> assertTrue(config.contains("restoreVersionTenDefaults()")),
                 () -> assertTrue(config.contains("previousVersion < 11")),
@@ -69,15 +69,16 @@ final class VillageWatchtowerStepFifteenContractTest {
 
     @Test
     void modpackPrecedenceAndNoRetrofitBoundaryAreDocumented() throws IOException {
-        String documentation = read("docs/village-watchtowers-step-15.md");
+        String documentation = read("docs/village-watchtowers.md");
         String readme = read("README.md");
         String build = read("build.gradle");
 
         assertAll(
-                () -> assertTrue(documentation.contains("Datapack > configuration")),
-                () -> assertTrue(documentation.contains("does not retrofit")),
+                () -> assertTrue(documentation.contains(
+                        "Removing a datapack definition cannot be reversed")),
+                () -> assertTrue(documentation.contains("newly\nexplored chunks")),
                 () -> assertTrue(documentation.contains("/vgg watchtowers status")),
-                () -> assertTrue(readme.contains("village-watchtowers-step-15.md")),
+                () -> assertTrue(readme.contains("docs/village-watchtowers.md")),
                 () -> assertTrue(build.contains("WatchtowerGenerationPolicy.class")),
                 () -> assertTrue(build.contains("WatchtowerCommands.class")));
     }

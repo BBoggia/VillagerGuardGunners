@@ -1,0 +1,17 @@
+// Explicit QA source set: its output never joins the release JAR or userdev runs.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    def probe = p.sourceSets.create('compatProbe') {
+        java.srcDir p.file('tools/compatibility-qa-src')
+        resources.srcDir p.file('tools/compatibility-qa-resources')
+        compileClasspath += p.sourceSets.main.output + p.sourceSets.main.compileClasspath
+        runtimeClasspath += compileClasspath
+    }
+    p.tasks.register('compatProbeJar', Jar) {
+        dependsOn p.tasks.named('compatProbeClasses')
+        from probe.output
+        archiveFileName = 'vgg-compatibility-probe.jar'
+        destinationDirectory = p.layout.buildDirectory.dir('compatibility-qa')
+    }
+    p.reobf.create('compatProbeJar')
+}

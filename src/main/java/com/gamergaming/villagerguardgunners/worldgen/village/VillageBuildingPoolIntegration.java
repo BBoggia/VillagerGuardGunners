@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import org.slf4j.Logger;
 
 /**
@@ -35,15 +36,26 @@ import org.slf4j.Logger;
 public final class VillageBuildingPoolIntegration {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final int SIZE_UNSET = Integer.MIN_VALUE;
+    private static volatile VillageBuildingInstallationSnapshot installationSnapshot =
+            VillageBuildingInstallationSnapshot.empty();
+    private static volatile Map<ResourceLocation, VillageBuildingPoolEntry>
+            startupDefinitions = Map.of();
 
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+        startupDefinitions = Map.copyOf(VillageBuildingDefinitions.snapshot());
         boolean enabled = ModConfigs.GUARD_GUNNERS.villageBuildings.enabled.get();
+        List<VillageBuildingPoolEntry> requestedEntries =
+                VillageBuildingDefinitions.enabledEntries(
+                        ModConfigs.GUARD_GUNNERS.villageBuildings).stream()
+                        .filter(entry -> com.gamergaming.villagerguardgunners.village.compat.SettlementDefinitions.snapshot().allowsPool(entry.targetPool().toString()))
+                        .toList();
         VillagePoolInjectionReport report = install(
                 event.getServer().registryAccess(),
                 event.getServer().getStructureManager(),
                 enabled,
-                VillageBuildingDefinitions.enabledEntries(
-                        ModConfigs.GUARD_GUNNERS.villageBuildings));
+                requestedEntries);
+        installationSnapshot = new VillageBuildingInstallationSnapshot(
+                true, requestedEntries, report);
 
         if (!report.enabled()) {
             LOGGER.info(
@@ -66,6 +78,23 @@ public final class VillageBuildingPoolIntegration {
                     report.injected(),
                     report.alreadyPresent());
         }
+    }
+
+    public static VillageBuildingInstallationSnapshot installationSnapshot() {
+        return installationSnapshot;
+    }
+
+    /** Exact accepted definition set paired with this session's live template pools. */
+    public static @Nullable VillageBuildingPoolEntry startupDefinition(
+            ResourceLocation entryId) {
+        return startupDefinitions.get(Objects.requireNonNull(entryId, "entryId"));
+    }
+
+    /** Prevents one integrated-server session's diagnostics from leaking into another. */
+    public static void onServerStopped(ServerStoppedEvent event) {
+        Objects.requireNonNull(event, "event");
+        installationSnapshot = VillageBuildingInstallationSnapshot.empty();
+        startupDefinitions = Map.of();
     }
 
     static VillagePoolInjectionReport install(
@@ -124,7 +153,9 @@ public final class VillageBuildingPoolIntegration {
                     entry.buildingType(),
                     entry.template(),
                     processorList,
-                    entry.projection());
+                    entry.projection(),
+                    entry.selectionChance(),
+                    entry.terrainSafety());
             if (!hasValidAnchorContract(templateManager, element, entry.buildingType())) {
                 invalidTemplates++;
                 rejectedEntries.add(entry.entryId());

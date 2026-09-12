@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Test;
 
 final class SquadRegistrySavedDataTest {
@@ -86,7 +88,7 @@ final class SquadRegistrySavedDataTest {
     }
 
     @Test
-    void corruptEntriesAreSkippedAndUnsupportedRegistryRecoversEmpty() {
+    void corruptEntriesAreSkippedAndUnsupportedRegistryIsPreservedOpaque() {
         SquadRegistrySavedData original = new SquadRegistrySavedData();
         original.register(FIRST_SQUAD, "Alpha", CREATOR, 10L).orElseThrow();
         CompoundTag saved = original.save(new CompoundTag());
@@ -110,7 +112,7 @@ final class SquadRegistrySavedDataTest {
 
         SquadRegistrySavedData recovered = SquadRegistrySavedData.load(saved);
         CompoundTag futureRegistry = saved.copy();
-        futureRegistry.putInt("Version", 2);
+        futureRegistry.putInt("Version", SquadRegistrySavedData.DATA_VERSION + 1);
         SquadRegistrySavedData unsupported = SquadRegistrySavedData.load(futureRegistry);
 
         assertAll(
@@ -121,7 +123,65 @@ final class SquadRegistrySavedDataTest {
                 () -> assertTrue(recovered.find(SECOND_SQUAD).isEmpty()),
                 () -> assertFalse(recovered.isDirty()),
                 () -> assertEquals(0, unsupported.size()),
-                () -> assertFalse(unsupported.isDirty()));
+                () -> assertFalse(unsupported.enabled()),
+                () -> assertFalse(unsupported.isDirty()),
+                () -> assertEquals(
+                        futureRegistry,
+                        unsupported.save(new CompoundTag())));
+    }
+
+    @Test
+    void legacyRegistryMigratesWithoutInventingRoutes() {
+        SquadRegistrySavedData current = new SquadRegistrySavedData();
+        current.register(FIRST_SQUAD, "Alpha", CREATOR, 10L).orElseThrow();
+        CompoundTag legacy = current.save(new CompoundTag());
+        legacy.putInt("Version", SquadRegistrySavedData.LEGACY_DATA_VERSION);
+        legacy.remove("Routes");
+        legacy.remove("RouteRevision");
+
+        SquadRegistrySavedData migrated = SquadRegistrySavedData.load(legacy);
+        CompoundTag rewritten = migrated.save(new CompoundTag());
+
+        assertAll(
+                () -> assertTrue(migrated.enabled()),
+                () -> assertTrue(migrated.isDirty()),
+                () -> assertEquals(1, migrated.size()),
+                () -> assertEquals(0, migrated.patrolRouteCount()),
+                () -> assertEquals(
+                        SquadRegistrySavedData.DATA_VERSION,
+                        rewritten.getInt("Version")),
+                () -> assertTrue(rewritten.contains(
+                        "Routes", net.minecraft.nbt.Tag.TAG_LIST)),
+                () -> assertTrue(rewritten.contains(
+                        "RouteRevision", net.minecraft.nbt.Tag.TAG_LONG)));
+    }
+
+    @Test
+    void versionTwoRoutesMigrateWithTheirRevisionHighWaterMarks() {
+        SquadRegistrySavedData current = new SquadRegistrySavedData();
+        current.register(FIRST_SQUAD, "Alpha", CREATOR, 10L).orElseThrow();
+        current.replacePatrolRoute(
+                FIRST_SQUAD,
+                ResourceLocation.fromNamespaceAndPath("minecraft", "overworld"),
+                java.util.List.of(new BlockPos(10, 64, 10)),
+                20L);
+        CompoundTag versionTwo = current.save(new CompoundTag());
+        versionTwo.putInt("Version", SquadRegistrySavedData.ROUTES_DATA_VERSION);
+        versionTwo.remove("RouteRevision");
+
+        SquadRegistrySavedData migrated = SquadRegistrySavedData.load(versionTwo);
+        CompoundTag rewritten = migrated.save(new CompoundTag());
+
+        assertAll(
+                () -> assertTrue(migrated.enabled()),
+                () -> assertTrue(migrated.isDirty()),
+                () -> assertEquals(
+                        1L,
+                        migrated.findPatrolRoute(FIRST_SQUAD).orElseThrow().revision()),
+                () -> assertEquals(
+                        SquadRegistrySavedData.DATA_VERSION,
+                        rewritten.getInt("Version")),
+                () -> assertEquals(1L, rewritten.getLong("RouteRevision")));
     }
 
     @Test

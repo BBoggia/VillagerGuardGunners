@@ -30,7 +30,7 @@ public final class ArmoryItemHandler extends ItemStackHandler {
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    public void onContentsChanged(int slot) {
         if (!suppressChangeNotifications) {
             changeListener.run();
         }
@@ -63,9 +63,11 @@ public final class ArmoryItemHandler extends ItemStackHandler {
                     rejected.add(stack.copy());
                     continue;
                 }
-                int requestedSlot = encoded.contains("Slot", Tag.TAG_BYTE)
-                        ? encoded.getByte("Slot") & 255
-                        : -1;
+                int requestedSlot = encoded.contains("Slot", Tag.TAG_INT)
+                        ? encoded.getInt("Slot")
+                        : encoded.contains("Slot", Tag.TAG_BYTE)
+                                ? encoded.getByte("Slot") & 255
+                                : -1;
                 ItemStack remainder = stack;
                 if (requestedSlot >= 0 && requestedSlot < SLOT_COUNT) {
                     remainder = insertItem(requestedSlot, remainder, false);

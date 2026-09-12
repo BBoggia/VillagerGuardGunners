@@ -5,5 +5,21 @@
   "template": "vgg_example:village/plains/sentry_post",
   "processors": "minecraft:empty",
   "projection": "rigid",
-  "weight": 1
+  "weight": 1,
+  "duty_slots": [
+    {
+      "key": "road_sentry",
+      "offset": [0, 0, 0],
+      "facing": "north",
+      "kind": "sentry",
+      "weapon_requirement": "any"
+    },
+    {
+      "key": "roof_overwatch",
+      "offset": [0, 4, -2],
+      "facing": "north",
+      "kind": "overwatch",
+      "weapon_requirement": "ranged"
+    }
+  ]
 }

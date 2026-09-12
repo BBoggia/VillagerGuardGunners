@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Rotation;
@@ -113,8 +114,9 @@ public final class GuardPostSpawner {
     }
 
     /**
-     * Adds every requested member or removes the complete batch. This keeps a
-     * building garrison from being left half-created when one entity is rejected.
+     * Adds every requested member or removes the newly created part of the
+     * batch. Deterministic members already present after an interrupted save
+     * are accepted only when their complete post identity matches.
      */
     public static int spawnMembersAtomically(
             ServerLevelAccessor level,
@@ -135,6 +137,18 @@ public final class GuardPostSpawner {
         }
         List<Guard> prepared = new ArrayList<>(memberCount);
         for (int memberIndex = 0; memberIndex < memberCount; memberIndex++) {
+            UUID guardId = GuardPostIds.guardId(postId, memberIndex);
+            Entity existing = level.getLevel().getEntity(guardId);
+            if (existing != null) {
+                GuardPostIdentity expected = GuardPostIdentity.assigned(
+                        postId, groupId, variantName, memberIndex);
+                if (existing instanceof Guard guard
+                        && expected.equals(GuardPostAccess.getIdentity(guard))) {
+                    continue;
+                }
+                prepared.forEach(Guard::discard);
+                return 0;
+            }
             Guard guard = prepareMember(
                     level,
                     placementBounds,
@@ -159,7 +173,41 @@ public final class GuardPostSpawner {
                 return 0;
             }
         }
-        return prepared.size();
+        return memberCount;
+    }
+
+    /** Managed villages consume individual shared slots; spent/dead members are never replaced. */
+    public static int spawnManagedMembers(
+            net.minecraft.server.level.ServerLevel level, BoundingBox bounds, BlockPos marker, Rotation rotation,
+            UUID postId, ResourceLocation groupId, String variant, List<GuardPostGroupMember> members, int count,
+            NaturalGuardDifficulty difficulty,
+            com.gamergaming.villagerguardgunners.village.population.VillagePopulationPlacement.Binding binding) throws java.io.IOException {
+        var plan = binding.plan();
+        var data = com.gamergaming.villagerguardgunners.village.population.VillagePopulationSavedData.get(level);
+        var journal = com.gamergaming.villagerguardgunners.village.population.VillagePopulationJournal.get(level);
+        int completed = 0;
+        for (int i = 0; i < count; i++) {
+            UUID slot = plan.slot(binding.source(), i), guardId = GuardPostIds.guardId(postId, i);
+            if (data.credit(slot) != null) { completed++; continue; }
+            Entity existing = level.getEntity(guardId);
+            if (existing instanceof Guard guard && GuardPostIdentity.assigned(postId, groupId, variant, i).equals(GuardPostAccess.getIdentity(guard))) {
+                com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime.mark(guard, plan, binding.source(), i);
+                com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime.synchronizeGuard(guard);
+                if (data.credit(slot) != null) completed++;
+                continue;
+            }
+            if (existing != null || journal.attempted(slot)) continue;
+            if (!com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime.takeSpawnTurn(level)) break;
+            Guard guard = prepareMember(level, bounds, marker, rotation, postId, groupId, variant, i, members.get(i), difficulty);
+            if (guard == null) continue;
+            com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime.mark(guard, plan, binding.source(), i);
+            if (guard.isSpawnCancelled() || !journal.reserve(slot, guardId)) { guard.discard(); continue; }
+            if (!addPrepared(level, guard)) { guard.discard(); journal.canceled(slot, guardId); continue; }
+            data.consume(plan.identity().id(), binding.source(), i, guardId);
+            com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime.synchronizeGuard(guard);
+            completed++;
+        }
+        return completed;
     }
 
     private static Guard prepareMember(

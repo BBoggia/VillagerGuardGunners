@@ -6,7 +6,67 @@ Villager Guard Gunners has one server-authoritative Fzzy Config file:
 
 The same settings are available through Fzzy Config's UI. The server owns the active values, synchronizes them to clients, and requires permission level 4 to edit them. Most changes take effect on the next relevant AI decision. Cached TaCZ range and tactical metadata may take up to the configured gun-data refresh interval to update.
 
-The live guard controller caches each gun's TaCZ ID, type, attachment/script-aware projectile count and explosion traits, resolved profile, and normalized tactical envelope during its existing low-frequency gun-data refresh. Guard movement consumes the cached `preferredRangeMultiplier` and `retreatDistanceMultiplier` results, while trigger eligibility consumes the cached visibility, aim, minimum-range, and maximum-range results. Generalist exactly retains the previous movement, visibility, aim, and global-cap behavior. Initial shots and every scheduled native burst round must be inside the same cached firing window. `/vgg inspect` exposes the active requirements and complete cached envelope.
+## Choosing settings
+
+Use the in-game Fzzy Config screen to edit server values. The top-level
+**Enable Combat and Village AI** switch controls gun combat, automatic gun
+loadouts, command movement, squad patrols, village discovery, initial guard
+staffing, fixed defense duties, and Village Armory resupply. Medical treatment,
+Quartermaster service, and building generation have separate controls.
+
+| What you want | Where to configure it |
+| --- | --- |
+| Equip new guards with guns | Automatic Gun Loadouts; difficulty chance and nearby gunner cap are separate from total guard counts |
+| Scale initial guards to village size | Initial Village Guards; enable size-based generation for new villages |
+| Patrol ordinary villages automatically | Village Patrols and Defense → Automatic Village Patrols; available residents need weapons and at least half health, with no manual squad or movement orders |
+| Follow a route you choose | Squads and Commands → Follow Saved Squad Patrol Routes; create the route with a Squad Command Ledger |
+| Staff generated defense posts | Village Patrols and Defense → Automatic Building Defense Posts |
+| Heal injured guards | Medical Treatment and Recovery; allow treatment and medic duty, then enable Medic Duty on a supplied guard |
+| Rescue and transport casualties | Also enable Downed Guards and Cot Care and Transport, stock the medic’s pouch, and place accessible Recovery Cots |
+| Supply equipment through a Quartermaster | Use the guard inventory’s Service control and the station’s independent Equipment Service permission |
+
+**Ticks and units.** At normal game speed, 20 ticks = 1 second; 100 ticks =
+5 seconds; 1200 ticks = 1 minute. Durations take longer in real time if the
+server runs slowly. Speed values are movement factors, not blocks per second:
+1 uses normal guard movement speed and 0.5 uses half. Chances use 0–1:
+0.5 means 50%. Multiplier 1 leaves a value unchanged; 1.5 multiplies it by one
+and a half. Tactical profiles can adjust base combat values.
+
+**When changes apply.** Most AI changes apply at the next relevant decision.
+Medical actions and readiness deadlines already in progress keep their starting
+duration. Natural loadout changes affect new guards; initial population targets
+are fixed when a new village is enrolled. Reopen the world or restart the server
+after changing Village Defense Building layout switches, then explore newly
+generated villages. The six layout switches carry a restart notice in Fzzy.
+Garrison and Armory activation controls are read separately during activation.
+Existing buildings are preserved.
+
+**Related values.** In the editor, the minimum initial guard target cannot
+exceed the maximum, and the Armory low-ammo trigger cannot exceed its target
+spare ammo. Raise the upper value first when increasing both; lower the lower
+value first when decreasing both. To choose a zero managed population target,
+set both population limits to 0. This is not a universal spawning switch.
+For hand-edited files, an inverted population pair prevents new managed
+village enrollment; an inverted Armory pair stops automatic resupply.
+
+**Medical timings.** Cot and field timing controls apply only with Medical
+Treatment, Downed Guards, and Cot Care and Transport enabled. Revival time is
+the second-dose treatment channel; recovery time is rest before returning to
+duty, not time to full health. Initial stabilization and ordinary healing use
+separate fixed behavior. Field timings use the larger of their saved value and
+the matching cot value. The screen shows effective cot/field seconds and the
+current cot-care permission state without changing stored values. Travel,
+assessment, dose cooldowns, and interrupted care can add time. Manual revival
+remains possible with medic AI disabled; carrying requires a medic.
+
+**Quartermaster controls.** Service: Manual disables only Quartermaster trips.
+Restock tops up current ammo and medical item types already in the pouch; seed
+an empty pouch or choose Service: Loadout to supply it. Loadout is the equipment
+profile, separate from tactical behavior. On the station, Pipes controls hopper
+and pipe access; Equipment Service controls which guards it supplies. Owner’s
+guards means the station owner’s guards. Linked Village Armories supply ammo;
+guns, armor, and medicine come from station Stock. See
+[Quartermaster service](quartermaster-service.md) for details.
 
 ## Supported settings
 
@@ -14,7 +74,16 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 
 | Setting | Default | Allowed range | Purpose and cost tradeoff |
 | --- | ---: | ---: | --- |
-| `enabled` | `true` | boolean | Enables the guard gun goal. Disabling it leaves Guard Villagers' normal behavior available. |
+| `medical.cotRevivalTicks` | 40 (2 seconds) | 20–600 ticks | Second-dose channel on a cot; requires medical treatment, downing, and transport/cot care. |
+| `medical.fieldRevivalTicks` | 160 (8 seconds) | 20–600 ticks | Second-dose field channel; effective duration is at least the cot channel. Same prerequisites. |
+| `medical.cotRecoveryTicks` | 100 (5 seconds) | 20–2400 ticks | Rest after cot revival before returning to duty. Same prerequisites; blocked exits can extend the stay. |
+| `medical.fieldRecoveryTicks` | 400 (20 seconds) | 20–2400 ticks | Rest after field revival; effective duration is at least the cot rest. Same prerequisites. |
+| `medical.downed` | `false` | boolean | Enables optional lethal-injury stabilization and revival. Requires treatment and valid profiles; see [casualty recovery](casualty-recovery.md). |
+| `medical.transport` | `false` | boolean | Lets supplied medics carry stabilized guards to nearby Recovery Cots. Requires downed guards and medic AI; see [casualty transport](casualty-transport.md). |
+| `medical.medicAi` | `true` | boolean | Enables care by guards with Medic duty enabled. Individual guards start with duty off. |
+| `medical.retreat` | `true` | boolean | Allows medical retreat for opted-in guards; individual guards start with retreat off. |
+| `medical.enabled` | `true` | boolean | Enables manual and medic treatment; disabling it leaves pouch stocking, withdrawal, and recovery available. See [medical supplies](medical-supplies.md). |
+| `enabled` | `true` | boolean | Enables combat and village AI, including loadouts, command movement, patrols, village discovery/staffing, and Armory resupply. Medical, Quartermaster, and building controls are separate. |
 | `naturalLoadouts.enabled` | `true` | boolean | Master switch for one-time automatic loadouts on otherwise eligible newly spawned guards. |
 | `naturalLoadouts.enabledSpawnSources` | `STRUCTURE` | enum set | Limits automatic loadouts by initial spawn origin. Conversion, spawn-egg, command, and unknown origins are opt-in. |
 | `naturalLoadouts.replaceCrossbowsOnly` | `true` | boolean | Prevents automatic loadouts from overwriting starting equipment supplied by another mod. |
@@ -35,6 +104,24 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `squads.focusCommandDurationTicks` | 400 | 20–12000 ticks | Active lifetime of a safety-validated Focus Target command. |
 | `squads.defendRadius` | 12 | 2–64 blocks | Area a Defend guard returns to and keeps combat navigation within. |
 | `squads.airCommandRange` | 32 | 4–64 blocks | Maximum projection distance for positional commands issued while looking into the air. |
+| `squads.patrolRouteExecution` | `true` | boolean | Allows guards to follow saved squad patrol routes. Disabling execution restores ordinary Guard Villagers checkpoint behavior without deleting routes or disabling the editor. |
+| `squads.patrolMovementSpeed` | 0.8 | 0.1–2.0 | Navigation speed while following a saved squad patrol route. |
+| `squads.patrolWaypointDwellTicks` | 20 | 0–1200 ticks | Pause after reaching each waypoint. Zero advances on the next AI tick. |
+| `squads.patrolMaximumFailuresPerWaypoint` | 3 | 1–8 attempts | Failed or stalled path attempts before the guard skips one unreachable waypoint and keeps the route moving. |
+| `villagePopulation.managedGeneration` | `false` | boolean | Sizes one-time initial generation in new villages. Existing villages remain observation-only. See [village population](village-population.md) for persistence and retry behavior. |
+| `villagePopulation.minimumGuards` | 2 | 0–32 | Minimum target; must not exceed the maximum. Actual allowance is limited by available sources. |
+| `villagePopulation.maximumGuards` | 16 | 0–32 | Maximum target shared by managed village guards and Village Defense Building garrisons. |
+| `villagePopulation.homesPerGuard` | 3 | 1–64 | Classified residences per guard added to the target, rounded up. |
+| `villagePopulation.areasPerGuard` | 2 | 1–64 | Occupied 32-block generation cells per guard added to the target, rounded up. |
+| `villagePopulation.defenseBonusCap` | 2 | 0–32 | Maximum target bonus from buildings with garrison capacity. |
+| `villagePopulation.hardDifficultyBonus` | 0 | 0–32 | Extra target on Hard, within the configured maximum. |
+| `villagePopulation.residentialTemplates` | empty | resource-ID set, at most 128 | Additional exact residential template IDs. Ordinary requests still require the upstream Guard Villagers template configuration. |
+| `villageDefense.automaticCoverage` | `false` | boolean | Enables outdoor coverage for eligible uncommanded village residents, including ordinary villages. Manual squads/routes and higher-priority work retain control. See [patrol coverage](village-patrol-coverage.md) for limits and diagnostics. |
+| `villageDefense.automaticDuties` | `true` | boolean | Enables transient assignment and travel to generated defense-duty positions. Disabling it preserves buildings, saved readiness state, Guard Orders, and patrol routes. |
+| `villageDefense.watchDurationTicks` | 600 | 20–72000 ticks | Quiet time after a bell before Watch returns to Peace. |
+| `villageDefense.alertDurationTicks` | 1200 | 20–72000 ticks | Quiet time after a confirmed threat before Alert enters Recovery. |
+| `villageDefense.recoveryDurationTicks` | 600 | 20–72000 ticks | Quiet time in Recovery before returning to Peace. |
+| `villageDefense.dutyMovementSpeed` | 0.8 | 0.1–2.0 | Navigation speed while travelling to an automatic defense post. |
 | `combat.requiredVisibleTicks` | 5 | 0–40 ticks | Base continuous visibility required before firing; the selected tactical profile may adjust the final cached requirement. |
 | `combat.maximumEngagementRange` | 32 | 8–64 blocks | Hard firing-distance cap. TaCZ's effective range remains the preferred distance used for movement and damage falloff. |
 | `combat.closeRangeDistance` | 4 | 1–8 blocks | Distance at which a guard tries to retreat. |
@@ -44,7 +131,7 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `movement.repositionSpeed` | 0.75 | 0.1–1.0 | Navigation speed while finding a clear firing lane. |
 | `movement.friendlyRepositionTicks` | 20 | 5–100 ticks | Delay before retrying a lane blocked by a protected entity. |
 | `tactics.typeProfiles` | seven mappings | validated map | Maps TaCZ type labels to profiles. Keys are trimmed and matched without regard to capitalization; conflicting normalized aliases are ignored. |
-| `tactics.gunOverrides` | empty | resource-ID map | Selects a profile for an exact TaCZ gun ID. This has the highest classification precedence. |
+| `tactics.gunOverrides` | empty | resource-ID map | Selects a profile for an exact TaCZ gun ID. Individual Guard Orders take precedence; this overrides gun-type mappings. |
 | `engagement.mode` | `GUARD_TARGETS` | enum | Filters the target already selected by Guard Villagers using compatibility, hostile-only, defensive, or hold-fire policy. |
 | `engagement.defensiveMemoryTicks` | 200 | 20–1200 ticks | Time that an attack against the guard or a protected ally remains engageable in `DEFENSIVE` mode. |
 | `engagement.additionalTargets` | empty | resource-ID set | Permits entity types in restricted modes. Cannot bypass ally protection, exclusions, or `HOLD_FIRE`. |
@@ -81,47 +168,61 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `watchtowers.placeArmory` | `true` | boolean | Allows Armory markers in newly placed towers to create an Armory. |
 | `watchtowers.stockArmory` | `true` | boolean | Allows a newly generated tower Armory to receive its datapack-defined initial stock. |
 | `watchtowers.guardGunChanceMultiplier` | 1.5 | 0–3 | Multiplies only a new tower guard's difficulty chance, clamped to 1.0. The default changes Easy/Normal/Hard chances from 35%/50%/65% to 52.5%/75%/97.5%; it does not bypass any other natural-loadout or safety gate. |
-| `villageBuildings.enabled` | `false` | boolean | Allows startup-only additive entries in supported village jigsaw pools, affecting only future generation. Step 5 keeps this off by default pending manual visual and mixed-mod village review. |
+| `villageBuildings.enabled` | `false` | boolean | Adds Villager Guard Gunners entries to supported village pools during startup, affecting only future generation. It remains off by default so server operators choose whether to extend village generation. |
 | `villageBuildings.barracks` | `true` | boolean | Allows datapack-defined Barracks entries when the master switch is enabled. |
 | `villageBuildings.armories` | `true` | boolean | Allows datapack-defined village Armory entries when the master switch is enabled. |
 | `villageBuildings.sentryPosts` | `true` | boolean | Allows datapack-defined roadside Sentry Post entries when the master switch is enabled. |
 | `villageBuildings.integratedWatchtowers` | `true` | boolean | Allows datapack-defined village Watchtower entries without affecting standalone Watchtowers. |
 | `villageBuildings.trainingYards` | `true` | boolean | Allows datapack-defined Training Yard entries when the master switch is enabled. |
-| `villageBuildings.spawnGarrisons` | `true` | boolean | Allows newly generated Barracks, Sentry Posts, and integrated Watchtowers to create one bounded guard group. Existing buildings are not staffed later. |
-| `villageBuildings.maximumGuardsPerBuilding` | 4 | 0–4 guards | Global staffing ceiling. Barracks may use 4, Sentry Posts at most 1, and integrated Watchtowers at most 2. |
+| `villageBuildings.spawnGarrisons` | `true` | boolean | Allows newly generated Barracks, Sentry Posts, integrated Watchtowers, and Training Yards to create one bounded guard group. Existing buildings are not staffed later. |
+| `villageBuildings.maximumGuardsPerBuilding` | 4 | 0–4 guards | Global staffing ceiling. Barracks may use 4, Sentry Posts at most 1, and integrated Watchtowers or Training Yards at most 2. |
 | `villageBuildings.guardGunChanceMultiplier` | 3.0 | 0–3 | Multiplies only village-garrison guards' one-time difficulty gun chance, clamped to 1.0. Other natural-loadout and safety gates remain active. |
+| `villageBuildings.placeArmoryBlocks` | `true` | boolean | Allows a newly generated Village Armory building to place one public Armory block. |
+| `villageBuildings.stockArmories` | `true` | boolean | Allows a newly placed village Armory to receive its bounded ammunition-only starting stock. Disabling this still places an empty public Armory. |
 | `performance.visibilitySampleIntervalTicks` | 2 | 1–10 ticks | Lower values update visibility sooner but perform more line-of-sight checks. |
 | `performance.movementDecisionIntervalTicks` | 5 | 1–20 ticks | Lower values reconsider movement more often. |
 | `performance.pathRecalculationIntervalTicks` | 20 | 5–100 ticks | Lower values request navigation paths more often. |
 | `performance.gunDataRefreshIntervalTicks` | 20 | 5–200 ticks | Lower values refresh cached TaCZ weapon data more often. |
 | `performance.unsafeShotCacheTicks` | 2 | 0–5 ticks | Reuses fail-closed unsafe-shot results. Zero preserves same-tick deduplication but disables cross-tick reuse. |
-| `performance.repositionProgressCheckTicks` | 10 | 5–40 ticks | Lower values check blocked repositioning progress more often. |
+| `performance.repositionProgressCheckTicks` | 10 | 5–40 ticks | Replan after twice this duration without route progress, with a minimum of 20 ticks. |
 
 The performance defaults are the recommended starting point. Increasing an interval generally reduces server work at the cost of a small response delay. Decreasing an interval does the reverse. Safety checks, per-tick shot limits, native burst cancellation, and other hard fail-closed limits are deliberately not configurable.
 
+Config version 16 adds the village-defense and patrol-route controls above.
+Migration initializes only these new fields. It does not rewrite saved squad
+routes, defense networks, readiness state, building records, guard orders, or
+any earlier administrator setting. Timing changes apply to the next relevant
+state transition; an already scheduled deadline is not silently rebased.
+
+Patrol settings never relax the route format's hard limits of 64 waypoints,
+256 blocks per segment, loaded-destination-only navigation, bounded path retry,
+or one route per squad. Automatic defense duties retain the existing loaded-
+guard, slot, candidate, review, and travel-distance ceilings. These safeguards
+remain fixed so increasing a movement speed or duration cannot create an
+unbounded scan, chunk load, or pathfinding loop. `/vgg inspect <guard>` reports
+the effective patrol policy, and `/vgg defense status` reports the effective
+readiness timings and duty policy.
+
+The built-in relative frequencies, per-building guard limits, combined
+difficulty population bounds, nearby armed-guard caps, and Armory reward are
+documented in [Village Defense Building balance](village-defense-balance.md).
+
 ## Village Defense Building integration
 
-Config version 12 added only `villageBuildings.enabled`. Config version 13 adds
-the five default-on building-type suppressors. Config version 14 adds only the
-one-shot garrison switch, global guard ceiling, and village-garrison gun-chance
-multiplier. Migrating a version-13 file preserves its master and building
-choices while initializing those three bounded defaults. Migrating a version-
-12 file preserves its master choice and initializes the type switches as well.
-Migrating a version-11 file still initializes the master to `false` while preserving the
-complete 1.4 Watchtower, loadout, combat, safety, ammunition, squad, and Armory
-policy. During Steps 1 through 3 the switch controlled an inert plains
-compatibility probe. Step 5 replaces it with the biome-aware visual shells and
-Step 6 activates bounded Barracks, Sentry Post, and integrated Watchtower
-staffing. The master stays default-off until manual village and mixed-mod
-review passes.
+Config version 12 introduced `villageBuildings.enabled`. Version 13 added the
+five default-on building-type controls. Version 14 adds one-shot garrisons, a
+global guard ceiling, and the village-garrison gun-chance multiplier. Migration
+preserves existing master and building choices, initializes newly introduced
+settings to their safe defaults, and keeps the complete 1.4 Watchtower,
+loadout, combat, safety, ammunition, squad, and Armory policy. The master switch
+stays off by default so server operators can choose whether to extend village generation.
 
 When enabled, the mod performs one bounded, additive pool update during server
 startup. It does not scan villages or chunks and cannot change existing village
-pieces. The exact compatibility and performance boundaries are documented in
-[the 1.5 integration contract](village-defense-buildings-1.5-plan.md).
-The strict datapack format, atomic reload behavior, config precedence, and
-restart requirement are documented in
-[the Step 3 authoring guide](village-defense-buildings-step-3.md).
+pieces. The supported buildings, strict datapack format, atomic reload behavior,
+configuration precedence, restart requirement, compatibility limits, and
+performance boundaries are documented in
+[Village Defense Buildings](village-defense-buildings.md).
 
 ## Watchtower loadout chance
 
@@ -197,7 +298,7 @@ gun makes that identity inactive; ordinary manually equipped guns never count.
 ## Per-guard orders
 
 The right side of an authorized guard's inventory contains persistent orders
-for that guard. These are intentionally separate from Fzzy Config: the config
+for that guard. Inherit uses the guard’s role defaults, then server policy; Auto selects tactical behavior from the role or gun settings. These are intentionally separate from Fzzy Config: the config
 defines server-wide policy and hard bounds, while an order specializes one
 guard within those bounds. All new and existing guards default to Inherit/Auto.
 
@@ -372,6 +473,10 @@ and compatibility providers; another guard and the shooter's owner remain
 non-bypassable. The complete datapack and Java-provider contract is documented
 in [modpack-ally-protection.md](modpack-ally-protection.md).
 
+## Gun metadata and update timing
+
+The live guard controller caches each gun's TaCZ ID, type, attachment/script-aware projectile count and explosion traits, resolved profile, and normalized tactical envelope during its existing low-frequency gun-data refresh. Guard movement consumes the cached `preferredRangeMultiplier` and `retreatDistanceMultiplier` results, while trigger eligibility consumes the cached visibility, aim, minimum-range, and maximum-range results. Generalist exactly retains the previous movement, visibility, aim, and global-cap behavior. Initial shots and every scheduled native burst round must be inside the same cached firing window. `/vgg inspect` exposes the active requirements and complete cached envelope.
+
 ## On-demand diagnostics
 
 An operator with permission level 2 can inspect a guard without enabling a
@@ -394,6 +499,12 @@ It also reports natural-loadout authentication, the last in-memory
 selection/issuance result, and persisted provenance fields. This is an
 on-demand NBT/item check and does not enable recurring diagnostics.
 
+Village Defense Building configuration, accepted definitions, live pool
+weights, and reload or startup errors are available through the permission-
+level-2 `/vgg villagebuildings status`, `entries`, `pools`, and `errors`
+commands. These commands inspect bounded registry and immutable publication
+state only. They do not search for generated villages or load chunks.
+
 ## Legacy configuration policy
 
 Older development builds produced `general.toml`, `guard_gunner.toml`, `tacz.toml`, `villager.toml`, and `blueprint.toml`. Those files controlled the removed debug, custom shooting, reload, infinite-ammo, accuracy, hand-authored rebalance, gunsmith, and blueprint systems. The new implementation uses the distinct `guard_gunners.toml` identifier and does not read or migrate the legacy values.
@@ -408,10 +519,12 @@ For a release candidate, validate the config in this order:
 
 1. Run `./gradlew test` for schema, bounds, legacy-file, and runtime-consumer contracts.
 2. Run `./gradlew runGameTestServer` for server loading, synchronization-facing registration, enable/disable behavior, native TaCZ firing, and safety integration.
-3. Run `./gradlew runGameTestServer -Pphase8Performance=true` for the isolated 14-workload scalability matrix, including dropped-ammo and dry-sharing pressure cases.
-4. Run `./gradlew verifyPhase8PerformanceReports` and `./gradlew verifyReleaseArtifact`.
-5. Run `./gradlew assembleReleaseCandidateEvidence` to bind the verified JAR and exact performance evidence set into a deterministic manifest containing each file's byte size and SHA-256 digest, plus the conventional JAR checksum.
+3. Run `./gradlew runGameTestServer -Pstep13Performance=true` for the combined village-building and 20-scenario guard, ammunition, sidearm, and Armory scalability matrix.
+4. Run `./gradlew verifyPhase8PerformanceReports verifyVillageBuildingPerformanceReport` and `./gradlew verifyReleaseArtifact`.
+5. Run `./gradlew assembleVillageDefenseBuildingEvidence` to bind the verified JAR, exact village-building evidence, and the complete companion performance manifest with byte sizes and SHA-256 digests.
 6. Run `./gradlew verifyAmmunitionReleaseCandidate` without the performance property to execute the aggregate automated ammunition gate, including the normal correctness GameTest server.
+7. Run `./gradlew prepareVillageDefenseBuildingManualValidation` to create the exact-candidate JAR, checksum, manifests, guide, and results handoff.
+8. Complete the retained Village Defense Building matrix and run `./gradlew verifyVillageDefenseBuildingManualChecklist`. Public packaging remains blocked until this and the broader manual checklist pass.
 
 Performance JSON reports include the complete active config snapshot and the
 SHA-256 of the production JAR built before the matrix. The performance working

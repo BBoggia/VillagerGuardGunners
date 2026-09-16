@@ -5,9 +5,30 @@ furnished Barracks, Village Armories, Sentry Posts, Watchtowers, and Training
 Yards with regional materials and two layouts per region. Install any families
 you want; the redesigned buildings are separate downloads from the mod JAR.
 
-## Choose your packs
+## Universal pack
 
-For all five building families, install one combined pack per village provider:
+For all supported villages, install **`villager-guard-gunners-village-buildings.zip`**.
+This single download contains all five building families for vanilla villages,
+ChoiceTheorem's Overhauled Village, Tidal Towns, Moog's Missing Villages, and
+Sky Villages. You do not need to install every village mod. Buildings use the
+village pools available in your world; content for absent providers stays inactive.
+
+The pack preserves the resources and building IDs from all five provider packs.
+It works with Villager Guard Gunners 1.7. That original JAR can report missing-pool
+warnings for absent village mods; those entries are skipped and the other
+buildings still load. Updated builds skip known absent providers before the
+installation checks, while retaining warnings for missing pools in installed
+providers. Pools supplied by datapacks also remain supported without a mod wrapper.
+
+To switch from separate packs, close the world or stop the server, remove the
+old provider or individual-family ZIPs, and install the universal ZIP. Do not
+leave the universal pack and its individual alternatives enabled together.
+Reopen the world or restart the server before exploring new villages. Existing
+buildings remain in place.
+
+## Provider-specific alternatives
+
+For more selective installation, use one combined pack per village provider:
 
 | Combined ZIP filename | Install with |
 | --- | --- |
@@ -82,8 +103,8 @@ old villages. Larger buildings can be rare where roads, terrain, or nearby
 structures leave little room. Garrison and stock initialization happen once;
 buildings do not replace killed guards or refill removed supplies.
 
-Install provider packs only when their required village mod is present. All
-five combined packs (or their 25 individual equivalents) together use 175
+Install provider-specific packs only when their required village mod is present.
+The universal pack, all five provider packs, or their 25 individual equivalents use 175
 building definitions and 20 target pools, within the
 current limits of 192 definitions and 24 pools. Other custom building packs
 share these limits.
@@ -95,8 +116,8 @@ and configuration details.
 
 ## Build from source
 
-Run `./gradlew combinedBuildingIntegration` to build the five combined ZIPs
-and their individual source packs under `build/distributions/`.
-`./gradlew prepareReleaseCandidate` includes both download choices. Combined
+Run `./gradlew combinedBuildingIntegration` to build the universal ZIP, the five
+provider ZIPs, and their individual source packs under `build/distributions/`.
+`./gradlew prepareReleaseCandidate` includes these download choices. Combined
 packs preserve every source resource byte and reject conflicting definitions
 instead of silently choosing one family's version.

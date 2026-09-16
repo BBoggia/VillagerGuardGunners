@@ -1,0 +1,17 @@
+// Optional observer JAR for packaged-runtime accuracy measurements.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    def probe = p.sourceSets.create('accuracyProbe') {
+        java.srcDir p.file('tools/accuracy-qa-src')
+        resources.srcDir p.file('tools/accuracy-qa-resources')
+        compileClasspath += p.sourceSets.main.output + p.sourceSets.main.compileClasspath
+    }
+    p.tasks.register('accuracyProbeJar', Jar) {
+        dependsOn p.tasks.named('accuracyProbeClasses')
+        from probe.output
+        archiveFileName = 'vgg-accuracy-probe.jar'
+        manifest.attributes('MixinConfigs': 'accuracyprobe.mixins.json')
+        destinationDirectory = p.layout.buildDirectory.dir('accuracy-qa')
+    }
+    p.reobf.create('accuracyProbeJar')
+}

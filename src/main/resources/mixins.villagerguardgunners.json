@@ -20,6 +20,8 @@
     "RaidMixin",
     "RaiseShieldGoalMixin",
     "TaCZCommonAssetsManagerMixin",
+    "TaCZGuardShotMixin",
+    "TaCZGuardProjectileMixin",
     "VillagerToGuardMixin",
     "WalkBackToCheckPointGoalMixin",
     "accessor.LootPoolAccessor",

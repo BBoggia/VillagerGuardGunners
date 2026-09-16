@@ -43,6 +43,11 @@ final class PhaseSevenCleanupContractTest {
         String medicalRecovery = read("src/main/java/com/gamergaming/villagerguardgunners/medical/MedicalRecovery.java");
         productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
                 medicalRecovery, medicalRecovery.replace("addFreshEntity(", "recoveredMedicalItemInsertion("));
+        String shotBridge = read("src/main/java/com/gamergaming/villagerguardgunners/mixin/TaCZGuardShotMixin.java");
+        assertTrue(shotBridge.contains("boolean added = level.addFreshEntity(projectile);"));
+        assertFalse(shotBridge.contains("new EntityKineticBullet"));
+        productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
+                shotBridge, shotBridge.replace("addFreshEntity(", "nativeProjectileInsertion("));
         for (String file : List.of("VillagePopulationRuntime.java", "VillagePopulationPlacement.java")) {
             String population = read("src/main/java/com/gamergaming/villagerguardgunners/village/population/" + file);
             productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
@@ -149,7 +154,7 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\"]")),
+                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardProjectileMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\"]")),
                 () -> assertTrue(mixins.contains(
                         "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\",\"client.CasualtyRendererMixin\",\"client.CotNameTagMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));

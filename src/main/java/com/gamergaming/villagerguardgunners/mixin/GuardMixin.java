@@ -93,10 +93,23 @@ import tallestegg.guardvillagers.entities.Guard;
 
 @Mixin(Guard.class)
 public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gamergaming.villagerguardgunners.api.GuardMedicAccess, com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess, com.gamergaming.villagerguardgunners.api.GuardMedicalAccess, com.gamergaming.villagerguardgunners.api.GuardCoverageAccess, GuardArmoryResupplyAccess,
-        GuardBurstSafetyAccess,
+        GuardBurstSafetyAccess, com.gamergaming.villagerguardgunners.api.GuardNativeShotAccess,
         GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardPostAccess, GuardPostAssignmentAccess,
         GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
         GuardSquadCommandAccess {
+    @Unique
+    private com.gamergaming.villagerguardgunners.combat.NativeGunController villagerGuardGunners$shotController;
+
+    @Override
+    public com.gamergaming.villagerguardgunners.combat.NativeGunController villagerGuardGunners$getShotController() {
+        return villagerGuardGunners$shotController;
+    }
+
+    @Override
+    public void villagerGuardGunners$setShotController(com.gamergaming.villagerguardgunners.combat.NativeGunController controller) {
+        villagerGuardGunners$shotController = controller;
+    }
+
     @org.spongepowered.asm.mixin.Shadow(remap = false)
     @org.spongepowered.asm.mixin.Final
     private static net.minecraft.network.syncher.EntityDataAccessor<Boolean> FOLLOWING;

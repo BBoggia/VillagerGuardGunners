@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge each provider's five player packs without changing resource identities."""
+"""Build provider packs and a universal pack without changing resource identities."""
 import json
 import tempfile
 import zipfile
@@ -14,6 +14,7 @@ PROVIDERS = {
     'mmv': "Moog's Missing Villages",
     'sky-villages': 'Sky Villages',
 }
+UNIVERSAL_NAME = 'villager-guard-gunners-village-buildings.zip'
 
 
 def source_names(provider):
@@ -58,11 +59,17 @@ def combine(sources, target, description):
 
 def main():
     distributions = ROOT / 'build/distributions'
+    combined = []
     for provider, label in PROVIDERS.items():
         target = distributions / f'villager-guard-gunners-all-buildings-{provider}.zip'
         combine([distributions / name for name in source_names(provider)], target,
                 f'Villager Guard Gunners: all five building families for {label}')
         print(target)
+        combined.append(target)
+    target = distributions / UNIVERSAL_NAME
+    combine(combined, target,
+            'Villager Guard Gunners: all village buildings for vanilla and supported village mods')
+    print(target)
 
 
 if __name__ == '__main__':

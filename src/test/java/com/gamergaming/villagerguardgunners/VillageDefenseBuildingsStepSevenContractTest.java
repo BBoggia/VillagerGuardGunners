@@ -77,7 +77,7 @@ final class VillageDefenseBuildingsStepSevenContractTest {
         String docs = read("docs/village-defense-buildings.md");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 21")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 22")),
                 () -> assertTrue(config.contains("placeArmoryBlocks")),
                 () -> assertTrue(config.contains("stockArmories")),
                 () -> assertTrue(config.contains("restoreVersionFifteenDefaults")),

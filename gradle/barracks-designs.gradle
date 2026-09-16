@@ -298,13 +298,14 @@ tasks.register('skyVillageIntegration', Exec) {
 
 tasks.register('combinedBuildingIntegration', Exec) {
     group = 'village structures'
-    description = 'Builds one all-buildings player datapack for each village provider.'
+    description = 'Builds the universal village building datapack and provider-specific alternatives.'
     dependsOn 'regionalBarracksIntegration', 'regionalArmoryIntegration',
             'regionalSentryPostIntegration', 'regionalWatchtowerIntegration',
             'regionalTrainingYardIntegration', 'customBarracksIntegration',
             'customArmoryIntegration', 'customSentryPostIntegration',
             'customWatchtowerIntegration', 'customTrainingYardIntegration', 'skyVillageIntegration'
     inputs.file('tools/build_combined_building_packs.py')
+    outputs.file(layout.buildDirectory.file('distributions/villager-guard-gunners-village-buildings.zip'))
     ['vanilla', 'ctov', 'tidal-towns', 'mmv', 'sky-villages'].each { provider ->
         def prefix = provider in ['vanilla', 'tidal-towns', 'mmv'] ? 'regional-' : ''
         ['barracks', 'armories', 'sentry-posts', 'watchtowers', 'training-yards'].each { family ->
@@ -340,7 +341,7 @@ tasks.register('prepareReleaseCandidate', Sync) {
         exclude '**/.DS_Store'
         into 'docs'
     }
-    def playerPacks = []
+    def playerPacks = ['villager-guard-gunners-village-buildings.zip']
     ['vanilla', 'ctov', 'tidal-towns', 'mmv', 'sky-villages'].each { provider ->
         playerPacks.add("villager-guard-gunners-all-buildings-${provider}.zip")
     }
@@ -374,7 +375,7 @@ tasks.register('prepareReleaseCandidate', Sync) {
                 'The Gradle check and release identity gates passed when this bundle was staged.\n' +
                 'Manual playthrough, multiplayer, upgrade, performance, and clean-checkout CI\n' +
                 'require current evidence. See docs/release-checklist.md.\n' +
-                'Install only the optional datapacks matching your village providers.\n'
+                'Use the universal building ZIP, or select provider-specific alternatives.\n'
         new File(destinationDir, 'INSTALL.txt').text =
                 'Install the mod JAR and required dependencies on both client and server.\n' +
                 'Optional ZIPs go in the world datapacks folder, not the mods folder.\n' +

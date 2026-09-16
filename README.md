@@ -12,6 +12,8 @@ orders, join squads, restock from Village Armories, and protect their allies.
   and effects.
 - Weapon-aware movement and aiming for pistols, SMGs, rifles, shotguns, sniper
   rifles, machine guns, and launchers.
+- Configurable [guard aim error and target point](docs/configuration.md#guard-accuracy-and-player-combat),
+  with optional separate settings against players.
 - Three persistent ammo slots for loose ammo and ammo boxes.
 - Optional sidearms for empty, restricted, or unsafe primary weapons.
 - Quick ammo deposits, nearby drop pickup, reusable ammo-box preservation, and
@@ -62,8 +64,9 @@ combination listed above.
 See [Quartermaster service](docs/quartermaster-service.md) for automatic
 equipment stocking and station setup.
 See [building pack installation](docs/building-pack-installation.md) to choose
-and install the optional redesigned structures. Choose one all-buildings pack
-per village provider or download individual building families.
+and install the optional redesigned structures. The universal building pack
+covers vanilla and supported modded villages; village mods you don't have stay
+inactive. Provider-specific and individual building packs remain alternatives.
 
 ## Getting Started
 

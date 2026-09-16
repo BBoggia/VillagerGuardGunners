@@ -703,9 +703,9 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
             case DISABLED, HOLDING_FIRE, NO_LINE_OF_SIGHT, TOO_CLOSE,
                     OUT_OF_RANGE, REPOSITIONING -> ChatFormatting.GOLD.getColor();
             case UNARMED, WEAPON_DATA_NOT_READY, INVALID_FIRING_WINDOW,
-                    UNSAFE_SHOT -> ChatFormatting.YELLOW.getColor();
+                    UNSAFE_SHOT, SAFETY_CHECK_LIMIT, SAFETY_CHECK_UNAVAILABLE -> ChatFormatting.YELLOW.getColor();
             case WEAPON_ERROR, OUT_OF_AMMO, WEAPON_RESTRICTED,
-                    RECOVERY_REQUIRED -> ChatFormatting.RED.getColor();
+                    RECOVERY_REQUIRED, UNSUPPORTED_GUN -> ChatFormatting.RED.getColor();
         };
     }
 

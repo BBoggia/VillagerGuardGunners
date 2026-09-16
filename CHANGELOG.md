@@ -6,6 +6,35 @@ in local development notes.
 
 ## Unreleased
 
+### Added
+
+- Server operators can configure guards’ aim error and choose eye-level or
+  center-mass targeting, with separate optional settings against players.
+  Defaults retain zero added error and eye-level targeting. Player overrides
+  start disabled; 2° with center-mass player aim is the recommended starting
+  adjustment.
+- A universal Village Buildings datapack includes all five building families
+  for vanilla villages and all four supported village providers in one ZIP.
+  Optional village mods are not required; existing building IDs are preserved
+  when replacing the separate packs.
+
+### Changed
+
+- Building integration skips known absent village providers without missing-pool
+  warnings. Missing pools in installed providers and unknown custom pools still
+  appear in startup diagnostics.
+
+### Fixed
+
+- Guards preserve SPAS-12 ammo when a shot is blocked or canceled.
+- Guard shot checks account for ally and block changes made during firing
+  events. Scripted bullet properties remain consistent with the checked shot
+  even when ammo or heat changes during firing.
+- Guard status messages explain unsupported guns and safety-check limits,
+  and clear outdated refusals after target, weapon, or aim-setting changes.
+- Guards stop firing at creative and spectator players, including when a
+  player changes game mode during a burst or another mod assigns the target.
+
 ## 1.7 - 2026-09-11
 
 ### Added

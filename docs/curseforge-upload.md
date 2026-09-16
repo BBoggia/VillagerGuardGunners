@@ -33,8 +33,10 @@ Do not substitute a development, sources, or GameTest JAR.
 
 The local `prepareReleaseCandidate` task also stages optional player building
 packs and [installation instructions](building-pack-installation.md). Offer
-those ZIPs as clearly labeled optional datapack downloads, separate from the
-mod JAR. Keep their required village providers visible. Preview and QA packs
+the universal `villager-guard-gunners-village-buildings.zip` as the main download
+on a single companion datapack project, separate from the mod JAR. The four
+village providers are optional for this universal pack. Provider-specific ZIPs
+remain selective alternatives and require their matching village mods. Preview and QA packs
 are excluded from this collection. Candidate preparation does not complete
 the manual publication checks below.
 

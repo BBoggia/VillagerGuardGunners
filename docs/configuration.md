@@ -16,6 +16,7 @@ Quartermaster service, and building generation have separate controls.
 
 | What you want | Where to configure it |
 | --- | --- |
+| Reduce guard accuracy, including only against players | Combat → Guard Accuracy; see [guard accuracy and player combat](#guard-accuracy-and-player-combat) |
 | Equip new guards with guns | Automatic Gun Loadouts; difficulty chance and nearby gunner cap are separate from total guard counts |
 | Scale initial guards to village size | Initial Village Guards; enable size-based generation for new villages |
 | Patrol ordinary villages automatically | Village Patrols and Defense → Automatic Village Patrols; available residents need weapons and at least half health, with no manual squad or movement orders |
@@ -125,7 +126,12 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `combat.requiredVisibleTicks` | 5 | 0–40 ticks | Base continuous visibility required before firing; the selected tactical profile may adjust the final cached requirement. |
 | `combat.maximumEngagementRange` | 32 | 8–64 blocks | Hard firing-distance cap. TaCZ's effective range remains the preferred distance used for movement and damage falloff. |
 | `combat.closeRangeDistance` | 4 | 1–8 blocks | Distance at which a guard tries to retreat. |
-| `combat.aimToleranceDegrees` | 10 | 1–45 degrees | Base maximum aiming error accepted before firing; the selected tactical profile may multiply the final cached tolerance. |
+| `combat.aimToleranceDegrees` | 10 | 1–45 degrees | Maximum difference between facing direction and the intended target direction before firing; tactical profiles can adjust it. This does not add shot error. |
+| `combat.aiming.errorDegrees` | 0.0 | 0–10 degrees | Maximum added guard aim error before native TaCZ spread. Zero preserves exact intended aim. |
+| `combat.aiming.aimPoint` | `EYE_LEVEL` | `EYE_LEVEL`, `CENTER_MASS` | Target point used before adding guard aim error. |
+| `combat.aiming.overridePlayers` | `false` | boolean | Applies both player-specific settings when a guard targets a player. |
+| `combat.aiming.playerErrorDegrees` | 2.0 | 0–10 degrees | Added error against players when the override is enabled. Recommended starting value with center-mass player aim; adjust for your server. |
+| `combat.aiming.playerAimPoint` | `CENTER_MASS` | `EYE_LEVEL`, `CENTER_MASS` | Target point against players when the override is enabled. |
 | `movement.approachSpeed` | 1.0 | 0.1–2.0 | Navigation speed while approaching. |
 | `movement.retreatSpeed` | 0.75 | 0.1–1.0 | Navigation speed while retreating. |
 | `movement.repositionSpeed` | 0.75 | 0.1–1.0 | Navigation speed while finding a clear firing lane. |
@@ -183,7 +189,7 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `performance.movementDecisionIntervalTicks` | 5 | 1–20 ticks | Lower values reconsider movement more often. |
 | `performance.pathRecalculationIntervalTicks` | 20 | 5–100 ticks | Lower values request navigation paths more often. |
 | `performance.gunDataRefreshIntervalTicks` | 20 | 5–200 ticks | Lower values refresh cached TaCZ weapon data more often. |
-| `performance.unsafeShotCacheTicks` | 2 | 0–5 ticks | Reuses fail-closed unsafe-shot results. Zero preserves same-tick deduplication but disables cross-tick reuse. |
+| `performance.unsafeShotCacheTicks` | 2 | 0–5 ticks | Retained for older configurations; native shot safety is now checked per round. |
 | `performance.repositionProgressCheckTicks` | 10 | 5–40 ticks | Replan after twice this duration without route progress, with a minimum of 20 ticks. |
 
 The performance defaults are the recommended starting point. Increasing an interval generally reduces server work at the cost of a small response delay. Decreasing an interval does the reverse. Safety checks, per-tick shot limits, native burst cancellation, and other hard fail-closed limits are deliberately not configurable.
@@ -206,6 +212,70 @@ readiness timings and duty policy.
 The built-in relative frequencies, per-building guard limits, combined
 difficulty population bounds, nearby armed-guard caps, and Armory reward are
 documented in [Village Defense Building balance](village-defense-balance.md).
+
+## Guard accuracy and player combat
+
+Open **Combat → Guard Accuracy** in the server's Fzzy Config screen. To reduce
+accuracy only against players, enable **Override Against Players**, start with
+**Aim Error Against Players = 2.0**, and select **Aim Point Against Players =
+Center Mass**. Leave the general Aim Error at 0 and Aim Point at Eye Level to
+preserve existing mob combat. The override applies to every guard targeting a
+player; it does not change ownership or which players a guard can attack.
+
+The shipped defaults remain zero added error, eye-level aim, and the player
+override off. The saved 2°/Center Mass player values take effect only after the
+override is enabled. Existing guards use changed aiming settings on subsequent
+shots; they do not need to respawn.
+
+After updating the mod, open the world or start the server once so it creates
+the new aiming settings. For a file edit, then stop the server or close the
+singleplayer world. In `config/villagerguardgunners/guard_gunners.toml`, replace the existing
+`[combat.aiming]` section with this starting preset, then restart. Keep the rest
+of the file and its version field intact; do not add a duplicate section.
+
+```toml
+[combat.aiming]
+errorDegrees = 0.0
+aimPoint = "EYE_LEVEL"
+overridePlayers = true
+playerErrorDegrees = 2.0
+playerAimPoint = "CENTER_MASS"
+```
+
+| Player adjustment | Error | Aim point | Use |
+| --- | ---: | --- | --- |
+| Light | 1.0° | Center Mass | Smaller deviation when the starting preset feels too inaccurate |
+| Starting preset | 2.0° | Center Mass | A moderate adjustment supported by the controlled tests |
+| Stronger | 3.0° | Center Mass | More deviation if guards remain too accurate |
+
+These are manual settings, not named preset buttons or hit percentages. Keep
+weapons, distance, armor, and guard counts consistent when comparing values.
+Test with the guns and terrain your players actually encounter. Groups remained
+very lethal in the [controlled tests](guard-accuracy-validation.md), even with
+added error. Values up to 10° are supported, but the gameplay comparison tested
+1–3°; larger values have not been established as balanced.
+
+**Aim Error** adds a bounded deviation before TaCZ's own gun spread. It is
+measured in degrees, so the same error covers more space farther away. Zero
+does not remove gun spread. **Aim Tolerance** is the separate facing threshold
+that permits firing; reducing it does not make shots randomly less accurate.
+Center Mass changes the intended target point and usually reduces headshots,
+but low cover can block that point while the target's head is visible.
+
+When the player override is off, players inherit both general settings. To
+adjust all targets, leave the override off and change general Aim Error and
+Aim Point. To return to the shipped aiming behavior, set general error to 0,
+general point to `EYE_LEVEL`, and turn the override off. Saved player values
+can remain in the file while inactive.
+
+Shot safety remains active at every setting. Guards can withhold fire around
+allies, including allies behind a target, or near an unsafe explosive impact.
+Some custom gun scripts use projectile behavior the guard safety checks cannot
+evaluate; those guns can be refused even at zero added error. Use
+`/vgg inspect @e[type=guardvillagers:guard,sort=nearest,limit=1]` to inspect the
+firing decision and last shot-safety result. `UNSUPPORTED_TRAJECTORY`
+identifies an unsupported trajectory such as a custom `calcSpread` script.
+See [shot safety](guard-shot-safety.md) for the integration limits.
 
 ## Village Defense Building integration
 
@@ -377,7 +447,8 @@ aggression against the guard or a currently protected ally, and `HOLD_FIRE`
 tracks an otherwise permitted target while holding position and never
 triggering TaCZ.
 
-Denied allied, excluded, non-hostile, and non-aggressive targets are released
+Creative and spectator players cannot be engaged, even through target additions
+or direct target assignment. Denied allied, excluded, non-hostile, and non-aggressive targets are released
 so Guard Villagers may select another threat. `HOLD_FIRE` retains its target.
 Every scheduled native burst round rechecks the policy, so config changes and
 expired defensive memory take effect before another round consumes ammunition.
@@ -490,10 +561,12 @@ For example:
 
 The report shows the active decision gate, target, rules-of-engagement mode and
 reason, retreat/preferred/maximum ranges, cached visibility,
-aim error, movement, muzzle/projectile/blast safety padding, friendly-fire blocker and ally-classification reason, gun identity, magazine/chamber state,
+facing error, movement, the last shot-safety
+result and its recorded geometry, gun identity, magazine/chamber state,
 actual compatible reserve units and scan completeness, TaCZ reload/bolt/cooldown/charge state, and the cached tactical
 profile, resolution source, structural traits, and normalized envelope. Its
-fresh descriptive safety query runs only for the requested command.
+shot-safety result is the last actual firing check; inspection does not sample
+another shot or advance the guard’s aim state.
 
 It also reports natural-loadout authentication, the last in-memory
 selection/issuance result, and persisted provenance fields. This is an

@@ -44,11 +44,23 @@ public final class VillageBuildingPoolIntegration {
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         startupDefinitions = Map.copyOf(VillageBuildingDefinitions.snapshot());
         boolean enabled = ModConfigs.GUARD_GUNNERS.villageBuildings.enabled.get();
+        Set<String> poolNamespaces = event.getServer().registryAccess()
+                .registryOrThrow(Registries.TEMPLATE_POOL).keySet().stream()
+                .map(ResourceLocation::getNamespace).collect(java.util.stream.Collectors.toSet());
         List<VillageBuildingPoolEntry> requestedEntries =
                 VillageBuildingDefinitions.enabledEntries(
                         ModConfigs.GUARD_GUNNERS.villageBuildings).stream()
                         .filter(entry -> com.gamergaming.villagerguardgunners.village.compat.SettlementDefinitions.snapshot().allowsPool(entry.targetPool().toString()))
                         .toList();
+        List<VillageBuildingPoolEntry> activeEntries = requestedEntries.stream()
+                .filter(entry -> !VillageBuildingOptionalProviders.isAbsent(
+                        entry.targetPool(), net.minecraftforge.fml.ModList.get()::isLoaded, poolNamespaces))
+                .toList();
+        int inactive = requestedEntries.size() - activeEntries.size();
+        if (enabled && inactive > 0) {
+            LOGGER.info("Skipped {} optional village-building entries because their village providers are absent", inactive);
+        }
+        requestedEntries = activeEntries;
         VillagePoolInjectionReport report = install(
                 event.getServer().registryAccess(),
                 event.getServer().getStructureManager(),

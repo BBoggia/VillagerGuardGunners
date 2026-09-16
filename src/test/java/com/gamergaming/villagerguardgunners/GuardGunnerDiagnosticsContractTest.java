@@ -44,8 +44,8 @@ final class GuardGunnerDiagnosticsContractTest {
                 () -> assertTrue(command.contains("\"Rules of engagement\"")),
                 () -> assertTrue(command.contains("snapshot.engagementMode()")),
                 () -> assertTrue(command.contains("snapshot.engagementReason()")),
-                () -> assertTrue(command.contains("allyReason=")),
-                () -> assertTrue(command.contains("safety.protectionReason()")),
+                () -> assertTrue(command.contains("Last shot safety")),
+                () -> assertTrue(command.contains("safety.entityId()")),
                 () -> assertTrue(command.contains("GuardWeaponAmmunition.captureSummary(")),
                 () -> assertTrue(command.contains("GuardAmmoAccess.getTaCZInventoryHandler")),
                 () -> assertTrue(command.contains("\"Primary ammo\"")),
@@ -76,7 +76,7 @@ final class GuardGunnerDiagnosticsContractTest {
 
         assertAll(
                 () -> assertTrue(goal.contains("public Diagnostics captureDiagnostics()")),
-                () -> assertTrue(goal.contains("GuardFriendlyFireSafety.diagnoseClearShot(")),
+                () -> assertTrue(goal.contains("gunController.lastShotSafety()")),
                 () -> assertTrue(safety.contains("public static DiagnosticResult diagnoseClearShot(")),
                 () -> assertTrue(controller.contains("public Diagnostics captureDiagnostics()")),
                 () -> assertTrue(controller.contains("lastShootResult = result")),

@@ -1386,9 +1386,7 @@ public final class PhaseEightPerformanceGameTests {
                 state.addProperty("safety", diagnostics.safety().status().name());
                 state.addProperty(
                         "safetyBlockerId",
-                        diagnostics.safety().blocker() == null
-                                ? -1
-                                : diagnostics.safety().blocker().getId());
+                        diagnostics.safety().entityId());
                 state.addProperty("nativeAiming", diagnostics.nativeState().aiming());
                 state.addProperty("nativeStateReady", diagnostics.nativeState().weaponDataReady());
                 state.addProperty("nativeSuspended", diagnostics.nativeState().suspended());

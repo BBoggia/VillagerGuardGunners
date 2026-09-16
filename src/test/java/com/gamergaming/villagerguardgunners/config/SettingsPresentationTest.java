@@ -20,7 +20,7 @@ final class SettingsPresentationTest {
     @Test void everySettingAndPreviewHasMatchingTextAtItsActualScope() throws Exception {
         JsonObject language = JsonParser.parseString(Files.readString(Path.of(
                 "src/main/resources/assets/villagerguardgunners/lang/en_us.json"))).getAsJsonObject();
-        assertEquals(147, check(new VillagerGuardGunnersConfig(), "villagerguardgunners.guard_gunners", language));
+        assertEquals(152, check(new VillagerGuardGunnersConfig(), "villagerguardgunners.guard_gunners", language));
     }
 
     private int check(Object section, String scope, JsonObject language) throws Exception {

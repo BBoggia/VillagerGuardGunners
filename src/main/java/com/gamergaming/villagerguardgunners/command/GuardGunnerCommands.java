@@ -124,7 +124,7 @@ public final class GuardGunnerCommands {
                 GuardWeaponAmmunition.captureSummary(
                         guard,
                         GuardAmmoAccess.getTaCZInventoryHandler(guard));
-        GuardFriendlyFireSafety.DiagnosticResult safety = snapshot.safety();
+        var safety = snapshot.safety();
         NaturalGuardLoadoutDiagnostics.Snapshot naturalLoadout =
                 NaturalGuardLoadoutDiagnostics.capture(guard);
         ArmoryResupplySettings armorySettings =
@@ -248,22 +248,15 @@ public final class GuardGunnerCommands {
                         + ", tolerance=" + degrees(snapshot.aimToleranceDegrees()),
                 ChatFormatting.GRAY));
 
-        String blocker = safety.blocker() == null
-                ? ""
-                : ", blocker=" + safety.blocker().getDisplayName().getString()
-                        + " (#" + safety.blocker().getId() + ")";
-        String protectionReason = safety.protectionReason() == null
-                ? ""
-                : ", allyReason=" + safety.protectionReason();
         send(source, line(
-                "Safety",
+                "Last shot safety",
                 safety.status().name()
-                        + ", muzzlePadding=" + decimal(snapshot.muzzleSafetyPadding())
-                        + ", projectilePadding=" + decimal(snapshot.projectileSafetyPadding())
-                        + ", blastPadding=" + decimal(snapshot.blastSafetyPadding())
-                        + blocker
-                        + protectionReason,
-                safety.clear() ? ChatFormatting.GREEN : ChatFormatting.RED));
+                        + (safety.entityId() < 0 ? "" : ", entity=#" + safety.entityId())
+                        + (safety.block() == null ? "" : ", block=" + safety.block().toShortString())
+                        + (safety.envelope() == null ? "" : ", tick=" + safety.envelope().aim().gameTick()
+                                + ", yaw=" + degrees(safety.envelope().aim().yaw())
+                                + ", pitch=" + degrees(safety.envelope().aim().pitch())),
+                safety.clear() ? ChatFormatting.GREEN : ChatFormatting.GRAY));
 
         String gunId = nativeState.gunId() == null ? "none" : nativeState.gunId().toString();
         send(source, line(

@@ -30,7 +30,10 @@ public enum GuardCombatStatus {
     COOLING_DOWN(20, "cooling_down"),
     READY(21, "ready"),
     WEAPON_RESTRICTED(22, "weapon_restricted"),
-    RECOVERY_REQUIRED(23, "recovery_required");
+    RECOVERY_REQUIRED(23, "recovery_required"),
+    UNSUPPORTED_GUN(24, "unsupported_gun"),
+    SAFETY_CHECK_LIMIT(25, "safety_check_limit"),
+    SAFETY_CHECK_UNAVAILABLE(26, "safety_check_unavailable");
 
     private static final String TRANSLATION_PREFIX =
             "container.villagerguardgunners.combat_status.";
@@ -83,6 +86,25 @@ public enum GuardCombatStatus {
             boolean unsafeShot,
             boolean repositioning,
             WeaponActivity weaponActivity) {
+        return resolveActiveCombat(mayEngage, weaponAllowed, trackingCurrentTarget, cachedLineOfSight,
+                visibilityRequirementMet, aimRequirementMet, validFiringWindow, belowMinimumRange,
+                withinMaximumRange, unsafeShot ? GuardShotSafety.Status.PROTECTED_ENTITY_IN_PATH
+                        : GuardShotSafety.Status.NOT_EVALUATED, repositioning, weaponActivity);
+    }
+
+    public static GuardCombatStatus resolveActiveCombat(
+            boolean mayEngage,
+            boolean weaponAllowed,
+            boolean trackingCurrentTarget,
+            boolean cachedLineOfSight,
+            boolean visibilityRequirementMet,
+            boolean aimRequirementMet,
+            boolean validFiringWindow,
+            boolean belowMinimumRange,
+            boolean withinMaximumRange,
+            GuardShotSafety.Status shotStatus,
+            boolean repositioning,
+            WeaponActivity weaponActivity) {
         if (!mayEngage) {
             return HOLDING_FIRE;
         }
@@ -129,9 +151,8 @@ public enum GuardCombatStatus {
         if (!aimRequirementMet) {
             return AIMING;
         }
-        if (unsafeShot) {
-            return repositioning ? REPOSITIONING : UNSAFE_SHOT;
-        }
+        GuardCombatStatus refusal = shotRefusalStatus(shotStatus, repositioning);
+        if (refusal != null) return refusal;
         if (weaponActivity == WeaponActivity.CHARGING) {
             return CHARGING;
         }
@@ -139,6 +160,22 @@ public enum GuardCombatStatus {
             return COOLING_DOWN;
         }
         return READY;
+    }
+
+    /** Tactical repositioning only describes geometric obstructions, not unsupported data or budgets. */
+    static GuardCombatStatus shotRefusalStatus(GuardShotSafety.Status status, boolean repositioning) {
+        if (status == null) return null;
+        return switch (status) {
+            case CLEAR, NOT_EVALUATED -> null;
+            case UNSUPPORTED_TRAJECTORY -> UNSUPPORTED_GUN;
+            case INVALID_AIM, INVALID_BALLISTICS -> WEAPON_ERROR;
+            case EXCESSIVE_ENVELOPE, ENTITY_LIMIT, BLOCK_LIMIT -> SAFETY_CHECK_LIMIT;
+            case INVALID_WORLD, UNLOADED_IMPACT_AREA, STALE_AIM -> SAFETY_CHECK_UNAVAILABLE;
+            case TARGET_IS_PROTECTED -> HOLDING_FIRE;
+            case PROTECTED_ENTITY_IN_PATH, EXPLOSIVE_ENTITY_IMPACT, EXPLOSIVE_BLOCK_IMPACT ->
+                    repositioning ? REPOSITIONING : UNSAFE_SHOT;
+            case UNSAFE_FUSE -> UNSAFE_SHOT;
+        };
     }
 
     private static GuardCombatStatus[] createNetworkIndex() {

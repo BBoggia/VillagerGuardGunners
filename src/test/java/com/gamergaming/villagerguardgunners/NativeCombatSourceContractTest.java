@@ -250,7 +250,7 @@ final class NativeCombatSourceContractTest {
                         "isFacingTarget(expectedTarget, aimToleranceDegrees)")),
                 () -> assertTrue(burstGate.contains(
                         "gunController.canFireAtDistanceSquared(distanceSquared)")),
-                () -> assertTrue(burstGate.contains("recordShotSafety(safeShot")),
+                () -> assertTrue(burstGate.contains("guard.hasLineOfSight(expectedTarget)")),
                 () -> assertFalse(goal.contains(
                         "config.combat.requiredVisibleTicks.get()")),
                 () -> assertFalse(goal.contains(
@@ -294,8 +294,8 @@ final class NativeCombatSourceContractTest {
                 () -> assertTrue(events.contains("preserveBlocksFromGuardExplosions.get()")),
                 () -> assertTrue(events.contains("getAffectedBlocks().clear()")),
                 () -> assertFalse(events.contains("java.lang.reflect")),
-                () -> assertTrue(goal.contains("cacheAge == 0L && endpointsUnchanged")),
-                () -> assertTrue(goal.contains("cacheAge <= config.performance.unsafeShotCacheTicks.get()")));
+                () -> assertFalse(goal.contains("cacheAge == 0L && endpointsUnchanged")),
+                () -> assertFalse(goal.contains("cacheAge <= config.performance.unsafeShotCacheTicks.get()")));
     }
 
     @Test

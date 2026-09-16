@@ -7,7 +7,7 @@ import com.gamergaming.villagerguardgunners.combat.WeaponReadiness;
 import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nullable;
 
-import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
+import com.gamergaming.villagerguardgunners.combat.GuardShotSafety;
 import com.gamergaming.villagerguardgunners.combat.GuardCombatStatus;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
@@ -60,16 +60,8 @@ public final class GuardGunCombatGoal extends Goal {
 
     private LivingEntity safetyTarget;
     private long safetyCheckGameTime = Long.MIN_VALUE;
-    private float muzzleSafetyPadding;
-    private float projectileSafetyPadding;
-    private float blastSafetyPadding;
     private boolean cachedSafeShot;
-    private double safetyShooterX;
-    private double safetyShooterY;
-    private double safetyShooterZ;
-    private double safetyTargetX;
-    private double safetyTargetY;
-    private double safetyTargetZ;
+    private GuardShotSafety.Result recordedShotSafety;
     private LivingEntity lastEngagementTarget;
     private GuardRulesOfEngagement.EngagementReason lastEngagementReason =
             GuardRulesOfEngagement.EngagementReason.NO_TARGET;
@@ -393,6 +385,20 @@ public final class GuardGunCombatGoal extends Goal {
                         && ((intent.intent() != CombatIntentPolicy.Intent.WITHDRAW
                                 && intent.intent() != CombatIntentPolicy.Intent.CREATE_DISTANCE)
                             || gunController.captureReadiness() == WeaponReadiness.READY));
+        var shotSafety = gunController.lastShotSafety();
+        if (gunController.lastShotTarget() == target && shotSafety != recordedShotSafety) {
+            recordedShotSafety = shotSafety;
+            // Tactical/support history only: never reused as permission for another discharge.
+            safetyTarget = target;
+            safetyCheckGameTime = gunController.lastShotGameTick();
+            cachedSafeShot = shotSafety.clear();
+            if (shotSafety.clear()) recordShotSafety(true, gameTime);
+            else if (shotSafety.status() == GuardShotSafety.Status.PROTECTED_ENTITY_IN_PATH
+                    || shotSafety.status() == GuardShotSafety.Status.EXPLOSIVE_BLOCK_IMPACT
+                    || shotSafety.status() == GuardShotSafety.Status.EXPLOSIVE_ENTITY_IMPACT) {
+                recordShotSafety(false, safetyCheckGameTime);
+            }
+        }
         evaluatePrimarySidearm(currentTarget, engagementReason.mayEngage());
         // Observe native reload/exhaustion and weapon swaps before issuing movement.
         tactics.decide(currentTarget, canSeeTarget, mayEngage, gunController.captureReadiness(),
@@ -495,10 +501,8 @@ public final class GuardGunCombatGoal extends Goal {
         boolean withinMaximumRange = GuardCombatMovement.isWithinEngagementRange(
                 distanceSquared,
                 gunController.getMaximumFiringRange());
-        boolean unsafeShot = trackingCurrentTarget
-                && currentTarget == safetyTarget
-                && !cachedSafeShot
-                && guard.level().getGameTime() <= friendlyBlockedUntilGameTick;
+        GuardShotSafety.Status shotStatus = trackingCurrentTarget
+                ? gunController.currentShotSafety(currentTarget).status() : GuardShotSafety.Status.NOT_EVALUATED;
 
         return GuardCombatStatus.resolveActiveCombat(
                 engagementReason.mayEngage(),
@@ -511,7 +515,7 @@ public final class GuardGunCombatGoal extends Goal {
                 validFiringWindow,
                 belowMinimumRange,
                 withinMaximumRange,
-                unsafeShot,
+                shotStatus,
                 movementState == GuardCombatMovement.State.REPOSITION,
                 gunController.getPlayerFacingActivity());
     }
@@ -540,7 +544,8 @@ public final class GuardGunCombatGoal extends Goal {
         }
         if (target == null) return;
         if (canSeeTarget) {
-            guard.getLookControl().setLookAt(target, 55.0F, 35.0F);
+            var point = gunController.intentionalAimPoint(target);
+            guard.getLookControl().setLookAt(point.x, point.y, point.z, 55.0F, 35.0F);
         } else {
             var remembered = tactics.tracker().remembered(target.getUUID());
             if (remembered != null) {
@@ -672,9 +677,10 @@ public final class GuardGunCombatGoal extends Goal {
     }
 
     private AimError measureAimError(LivingEntity observedTarget) {
-        double deltaX = observedTarget.getX() - guard.getX();
-        double deltaY = observedTarget.getEyeY() - guard.getEyeY();
-        double deltaZ = observedTarget.getZ() - guard.getZ();
+        var point = gunController.intentionalAimPoint(observedTarget);
+        double deltaX = point.x - guard.getX();
+        double deltaY = point.y - guard.getEyeY();
+        double deltaZ = point.z - guard.getZ();
         double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
         float targetYaw = (float) (Mth.atan2(deltaZ, deltaX) * Mth.RAD_TO_DEG) - 90.0F;
         float targetPitch = (float) -(Mth.atan2(deltaY, horizontalDistance) * Mth.RAD_TO_DEG);
@@ -715,24 +721,11 @@ public final class GuardGunCombatGoal extends Goal {
         AimError aimError = observedTarget == null
                 ? new AimError(Double.NaN, Double.NaN)
                 : measureAimError(observedTarget);
-        float muzzleSafetyPadding = observedTarget == null || !nativeState.weaponDataReady()
-                ? Float.NaN
-                : gunController.getMuzzleSafetyPadding();
-        float projectileSafetyPadding = gunController.getProjectileSafetyPadding(
-                distance,
-                muzzleSafetyPadding);
-        float blastSafetyPadding = gunController.getBlastSafetyPadding(projectileSafetyPadding);
-        GuardFriendlyFireSafety.DiagnosticResult safety = observedTarget == null
-                ? new GuardFriendlyFireSafety.DiagnosticResult(
-                        GuardFriendlyFireSafety.DiagnosticStatus.INVALID_PADDING,
-                        null,
-                        null)
-                : GuardFriendlyFireSafety.diagnoseClearShot(
-                        guard,
-                        observedTarget,
-                        muzzleSafetyPadding,
-                        projectileSafetyPadding,
-                        blastSafetyPadding);
+        GuardShotSafety.Result safety = gunController.currentShotSafety(observedTarget);
+        float muzzleSafetyPadding = safety.envelope() == null ? Float.NaN : (float)safety.envelope().clearance();
+        float projectileSafetyPadding = Float.NaN;
+        float blastSafetyPadding = safety.envelope() == null ? Float.NaN
+                : (float)safety.envelope().ballistics().blastReach();
         GuardRulesOfEngagement.EngagementReason engagementReason =
                 GuardRulesOfEngagement.classify(guard, observedTarget);
         boolean weaponAllowedByOrders = gunController.isWeaponAllowedByOrders();
@@ -789,7 +782,7 @@ public final class GuardGunCombatGoal extends Goal {
             boolean validFiringWindow,
             boolean belowMinimumRange,
             boolean withinMaximumRange,
-            GuardFriendlyFireSafety.DiagnosticResult safety,
+            GuardShotSafety.Result safety,
             NativeGunController.Diagnostics nativeState,
             GuardRulesOfEngagement.EngagementReason engagementReason,
             boolean weaponAllowedByOrders) {
@@ -839,7 +832,7 @@ public final class GuardGunCombatGoal extends Goal {
         if (!withinMaximumRange) {
             return FireDecision.OUT_OF_RANGE;
         }
-        if (!safety.clear()) {
+        if (!safety.clear() && safety.status() != GuardShotSafety.Status.NOT_EVALUATED) {
             return FireDecision.UNSAFE_SHOT;
         }
         if (nativeState.reloading()) {
@@ -858,79 +851,12 @@ public final class GuardGunCombatGoal extends Goal {
     }
 
     private boolean hasClearShot() {
-        long gameTime = guard.level().getGameTime();
-        double shooterX = guard.getX();
-        double shooterY = guard.getEyeY();
-        double shooterZ = guard.getZ();
-        double targetX = target.getX();
-        double targetY = target.getEyeY();
-        double targetZ = target.getZ();
-        double deltaX = targetX - shooterX;
-        double deltaY = targetY - shooterY;
-        double deltaZ = targetZ - shooterZ;
-        long cacheAge = gameTime - safetyCheckGameTime;
-        boolean endpointsUnchanged = shooterX == safetyShooterX
-                && shooterY == safetyShooterY
-                && shooterZ == safetyShooterZ
-                && targetX == safetyTargetX
-                && targetY == safetyTargetY
-                && targetZ == safetyTargetZ;
-        if (target == safetyTarget && cacheAge == 0L && endpointsUnchanged) {
-            float refreshedBlastPadding =
-                    gunController.getBlastSafetyPadding(projectileSafetyPadding);
-            boolean cachedTacticsStillValid = gunController.isWeaponAllowedByOrders()
-                    && gunController.canFireAtDistanceSquared(guard.distanceToSqr(target));
-            if (cachedTacticsStillValid
-                    && Float.compare(refreshedBlastPadding, blastSafetyPadding) == 0) {
-                recordShotSafety(cachedSafeShot, gameTime);
-                return cachedSafeShot;
-            }
-        }
-
-        float currentMuzzlePadding = gunController.getMuzzleSafetyPadding();
-        float currentProjectilePadding = gunController.getProjectileSafetyPadding(
-                Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ),
-                currentMuzzlePadding);
-        float currentBlastPadding = gunController.getBlastSafetyPadding(currentProjectilePadding);
-        if (!gunController.isWeaponAllowedByOrders()
-                || !gunController.canFireAtDistanceSquared(guard.distanceToSqr(target))) {
-            recordShotSafety(false, gameTime);
-            return false;
-        }
-        if (target == safetyTarget
-                && Float.compare(currentMuzzlePadding, muzzleSafetyPadding) == 0
-                && Float.compare(currentProjectilePadding, projectileSafetyPadding) == 0
-                && Float.compare(currentBlastPadding, blastSafetyPadding) == 0
-                && cacheAge >= 0L
-                && !cachedSafeShot
-                && cacheAge <= config.performance.unsafeShotCacheTicks.get()) {
-            recordShotSafety(false, gameTime);
-            return cachedSafeShot;
-        }
-
-        safetyTarget = target;
-        muzzleSafetyPadding = currentMuzzlePadding;
-        projectileSafetyPadding = currentProjectilePadding;
-        blastSafetyPadding = currentBlastPadding;
-        safetyCheckGameTime = gameTime;
-        safetyShooterX = shooterX;
-        safetyShooterY = shooterY;
-        safetyShooterZ = shooterZ;
-        safetyTargetX = targetX;
-        safetyTargetY = targetY;
-        safetyTargetZ = targetZ;
-        cachedSafeShot = GuardFriendlyFireSafety.hasClearShot(
-                guard,
-                target,
-                currentMuzzlePadding,
-                currentProjectilePadding,
-                currentBlastPadding);
-        recordShotSafety(cachedSafeShot, gameTime);
-        return cachedSafeShot;
+        // Geometry is checked once at the native per-round hook, using its captured ballistics.
+        return hasClearScheduledBurstShot(target);
     }
 
     private boolean hasClearScheduledBurstShot(LivingEntity expectedTarget) {
-        if (!config.enabled.get()
+        if (expectedTarget == null || !config.enabled.get()
                 || tacticalNavigation.isMoving()
                 || target != expectedTarget
                 || guard.getTarget() != expectedTarget
@@ -954,27 +880,7 @@ public final class GuardGunCombatGoal extends Goal {
             return false;
         }
 
-        double deltaX = expectedTarget.getX() - guard.getX();
-        double deltaY = expectedTarget.getEyeY() - guard.getEyeY();
-        double deltaZ = expectedTarget.getZ() - guard.getZ();
-        float currentMuzzlePadding = gunController.getMuzzleSafetyPadding();
-        float currentProjectilePadding = gunController.getProjectileSafetyPadding(
-                Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ),
-                currentMuzzlePadding);
-        float currentBlastPadding = gunController.getBlastSafetyPadding(currentProjectilePadding);
-        if (!gunController.isWeaponAllowedByOrders()
-                || !gunController.canFireAtDistanceSquared(distanceSquared)) {
-            recordShotSafety(false, guard.level().getGameTime());
-            return false;
-        }
-        boolean safeShot = GuardFriendlyFireSafety.hasClearShot(
-                guard,
-                expectedTarget,
-                currentMuzzlePadding,
-                currentProjectilePadding,
-                currentBlastPadding);
-        recordShotSafety(safeShot, guard.level().getGameTime());
-        return safeShot;
+        return guard.hasLineOfSight(expectedTarget);
     }
 
     private void recordShotSafety(boolean safeShot, long gameTime) {
@@ -984,18 +890,10 @@ public final class GuardGunCombatGoal extends Goal {
     }
 
     private void invalidateSafetyCache() {
+        recordedShotSafety = null;
         safetyTarget = null;
         safetyCheckGameTime = Long.MIN_VALUE;
-        muzzleSafetyPadding = 0.0F;
-        projectileSafetyPadding = 0.0F;
-        blastSafetyPadding = 0.0F;
         cachedSafeShot = false;
-        safetyShooterX = 0.0D;
-        safetyShooterY = 0.0D;
-        safetyShooterZ = 0.0D;
-        safetyTargetX = 0.0D;
-        safetyTargetY = 0.0D;
-        safetyTargetZ = 0.0D;
     }
 
     private record AimError(double yawDegrees, double pitchDegrees) {
@@ -1047,7 +945,7 @@ public final class GuardGunCombatGoal extends Goal {
             float muzzleSafetyPadding,
             float projectileSafetyPadding,
             float blastSafetyPadding,
-            GuardFriendlyFireSafety.DiagnosticResult safety,
+            GuardShotSafety.Result safety,
             EngagementMode engagementMode,
             GuardRulesOfEngagement.EngagementReason engagementReason,
             NativeGunController.Diagnostics nativeState) {

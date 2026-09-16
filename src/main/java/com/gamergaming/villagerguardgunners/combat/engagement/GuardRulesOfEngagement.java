@@ -11,6 +11,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.registries.ForgeRegistries;
 import tallestegg.guardvillagers.entities.Guard;
 
@@ -38,6 +39,11 @@ public final class GuardRulesOfEngagement {
         return classify(shooter, target).mayEngage();
     }
 
+    /** Game-mode protection also applies when another mod assigns the target directly. */
+    public static boolean isNonCombatPlayer(LivingEntity target) {
+        return target instanceof Player player && (player.isCreative() || player.isSpectator());
+    }
+
     /**
      * Classifies the current target using deterministic precedence. Protected
      * allies and hold-fire cannot be bypassed by an allowlist entry.
@@ -48,6 +54,9 @@ public final class GuardRulesOfEngagement {
         }
         if (!target.isAlive()) {
             return EngagementReason.TARGET_DEAD;
+        }
+        if (isNonCombatPlayer(target)) {
+            return EngagementReason.NON_COMBAT_PLAYER;
         }
         if (GuardAllyProtection.isProtected(shooter, target)) {
             return EngagementReason.PROTECTED_ALLY;
@@ -114,6 +123,7 @@ public final class GuardRulesOfEngagement {
     public enum EngagementReason {
         NO_TARGET(false, false),
         TARGET_DEAD(false, true),
+        NON_COMBAT_PLAYER(false, true),
         PROTECTED_ALLY(false, true),
         EXPLICIT_EXCLUSION(false, true),
         NEVER_ENGAGE_TAG(false, true),

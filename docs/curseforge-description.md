@@ -4,10 +4,8 @@ Villager Guard Gunners is an add-on for **Guard Villagers** and **Timeless and
 Classics Zero (TaCZ)** that lets guards use TaCZ guns. It also adds configurable
 combat behavior, squad commands, patrol routes, ammo resupply, and medical care.
 
-You can equip guards through their inventory, adjust their orders, and assign
-them to squads. Village Armories and Quartermasters provide supplies, while
-medic guards can treat injured allies. Optional building packs add regional
-defense buildings to newly generated villages.
+Equip guards through their inventory, adjust orders, and assign squads. Village Armories and Quartermasters provide supplies, while
+medic guards can treat injured allies. Optional packs add regional defense buildings to new villages.
 
 ## Features
 
@@ -18,6 +16,9 @@ defense buildings to newly generated villages.
   and their explosions preserve blocks by default.
   Guards with empty or unusable guns seek safer positions and can withdraw
   when injured or overwhelmed.
+- **Adjustable guard accuracy.** Configure aim error and target point. For player
+  combat, enable the optional player override and start with 2 degrees and
+  Center Mass. Groups remain dangerous; low cover can block center-mass shots.
 - **Ammo and backup sidearms.** Each guard has three dedicated ammo slots for
   loose ammo and ammo boxes. Equip a backup pistol for situations where the
   primary gun is empty, restricted by orders, or unsafe to use. Guards can also
@@ -54,9 +55,8 @@ defense buildings to newly generated villages.
   newly generated villages. Bells, threats, and raids change village readiness,
   while guards can take sentry, drill, overwatch, and muster duties.
 - **Status and settings.** The guard inventory explains conditions such
-  as empty ammo, reloading, blocked shots, and medical or supply shortages.
-  Configure combat, supplies, medical care, and village features through
-  Fzzy Config, with tooltips explaining the settings.
+  as empty ammo, reloading, blocked shots, and supply shortages.
+  Configure the mod through Fzzy Config; tooltips explain each setting.
 
 ## Getting Started
 
@@ -68,37 +68,36 @@ defense buildings to newly generated villages.
    For Quartermaster service, stock a staffed station and opt the guard into
    Restock or Loadout service.
 
-## Optional Village Building Packs
+## Optional Village Buildings Datapack
 
-Optional companion datapacks add larger, furnished defense buildings with
+The optional Village Buildings datapack adds larger, furnished defense buildings with
 materials and layouts suited to each village region. Layouts include courtyard
 Barracks, supply yards, roadside shelters, gatehouse lookouts, and Training Yards.
 
-**Each download includes all five building families:** Barracks, Village
+**One universal download includes all five building families:** Barracks, Village
 Armories, Sentry Posts, Village Watchtowers, and Training Yards, with two layouts
 per family in each supported region.
 
-- **[Vanilla Village Buildings](https://www.curseforge.com/minecraft/data-packs/villager-guard-gunners-vanilla-village-buildings)**
+- **Vanilla villages**
   — Plains, Desert, Savanna, Taiga, and Snowy designs. Also supports the vanilla
   village replacements used by Better Villages and Lios Overhauled Villages.
-- **[CTOV Village Buildings](https://www.curseforge.com/minecraft/data-packs/villager-guard-gunners-ctov-village-buildings)**
+- **ChoiceTheorem's Overhauled Village (CTOV)**
   — Designs for ChoiceTheorem's Overhauled Village: Plains, Desert, Taiga,
   Snowy Igloo, Swamp, and Jungle. Other CTOV themes aren't included.
-- **[Moog's Missing Villages Buildings](https://www.curseforge.com/minecraft/data-packs/villager-guard-gunners-moogs-missing-villages)**
+- **Moog's Missing Villages**
   — Jungle and Swamp designs for Moog's Missing Villages.
-- **[Tidal Towns Village Buildings](https://www.curseforge.com/minecraft/data-packs/villager-guard-gunners-tidal-towns-village)**
+- **Tidal Towns**
   — Deep-ocean designs for Tidal Towns settlements.
-- **[Sky Villages Buildings](https://www.curseforge.com/minecraft/data-packs/villager-guard-gunners-sky-villages-buildings)**
+- **Sky Villages**
   — Buildings on railed floating islands for Sky Villages.
 
-Install the matching village mod and its dependencies for each mod-specific
-pack. The Vanilla pack needs no additional village mod. You can combine packs
-for different village mods; use either the all-buildings pack or the individual
-family packs for the same village mod.
+The village mods above are optional. The pack uses the village content installed
+in your world and skips integrations for absent providers. Replace the separate
+building packs with the universal ZIP instead of keeping both enabled.
 
 **To enable the buildings:**
 
-1. Close the world or stop the server, then put the selected ZIPs, still zipped,
+1. Close the world or stop the server, then put the universal ZIP, still zipped,
    in the world's `datapacks` folder. For a new singleplayer world, use the
    creation screen's Data Packs option.
 2. Enable **Village Defense Building generation** in Fzzy Config. It starts
@@ -106,11 +105,11 @@ family packs for the same village mod.
 3. Reopen the world or restart the server, then explore newly generated
    villages. **`/reload` alone isn't enough.** Existing villages aren't rebuilt.
 
-On a dedicated server, install the ZIPs in the server world's `datapacks`
-folder. Joining players don't need local copies of the datapacks.
+On a dedicated server, install the ZIP in the server world's `datapacks`
+folder. Joining players don't need a local copy of the datapack.
 
-The base mod includes small built-in defense buildings; these packs are optional
-downloads for the larger regional designs. Large buildings need room and can be
+The base mod includes small built-in defense buildings; the datapack is an optional
+download for the larger regional designs. Large buildings need room and can be
 rare in crowded villages. Occasional awkward terrain placement is possible.
 
 ## Servers and Modpacks
@@ -121,6 +120,9 @@ default**. Enable the features you want through Fzzy Config. Cot care requires
 Medical Treatment and Downed Guards; carrying also requires a supplied medic
 and a reachable Recovery Cot. Individual guards start with Medic Duty and
 Medical Retreat off.
+
+Guards refuse unsupported scripted projectile behavior, including at zero added
+aim error.
 
 Enabling buildings doesn't automatically enable size-based staffing or patrol
 coverage. Completed buildings don't replace killed guards, repair themselves,

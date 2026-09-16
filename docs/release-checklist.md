@@ -6,7 +6,8 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: `1.7` release candidate; publication checks remain pending
+- Version: read `mod_version` in `gradle.properties`. It currently remains `1.7`;
+  the accuracy work is Unreleased and needs a new public version before upload.
 - Minecraft: `1.20.1`
 - Forge: `47.4.10` minimum; compatible 47.x releases
 - Guard Villagers: `1.20.1-1.6.19`
@@ -15,12 +16,29 @@ the relevant manual rows pass against the exact files being distributed.
 - Kotlin for Forge: `4.12.0`
 - Automated baseline gun pack: TaCZ Default Gun Pack bundled with TaCZ
   `1.1.8-hotfix`. Record additional tested pack versions with candidate evidence.
-- Candidate JAR SHA-256: `9f81a8fbc0c738c0514de4253de8edbd764ddf3eea0d71b649047f2b33b843a8`
+- Candidate JAR SHA-256: use the checksum shipped with the candidate being tested.
+  The earlier 1.7 preparation hash does not identify the current Unreleased build.
+
+## Guard accuracy candidate
+
+Use the [accuracy configuration guide](configuration.md#guard-accuracy-and-player-combat)
+and [validation results](guard-accuracy-validation.md) for the completed accuracy
+work. Its local review bundle contains the mod JAR, the aiming-section example,
+documentation, and checksums. It retains the current build version for local
+testing; it is not a replacement upload for published 1.7 release files.
+
+Confirm zero-error/eye-level defaults and disabled player overrides, the 2°
+center-mass starting example, current dependency metadata, no observer classes
+in the production JAR, and packaged client/server smoke evidence. Keep artifact
+hashes with each result. Text-only candidate updates do not require repeating
+unchanged balance trials; identify which artifact produced those measurements.
 
 ## Candidate evidence
 
 Use the checksum in the prepared candidate bundle's `SHA256SUMS.txt` to identify
 its exact files. Earlier development reports do not certify changed artifacts.
+The checked rows below are historical preparation results and apply only to
+their recorded artifact, not automatically to the current Unreleased JAR.
 Current preparation results are recorded with the candidate review evidence;
 manual, multiplayer, upgrade, performance, and remote CI checks still require
 matching evidence before public release.

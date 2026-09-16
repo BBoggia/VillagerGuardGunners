@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ final class ConfigFoundationContractTest {
         assertAll(
                 () -> assertTrue(config.contains(
                         "@Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)")),
-                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 21;")),
+                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 22;")),
                 () -> assertTrue(config.contains("public void update(int previousVersion)")),
                 () -> assertTrue(config.contains("previousVersion < 2")),
                 () -> assertTrue(config.contains("previousVersion < 3")),
@@ -83,7 +84,7 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(!config.matches("(?s).*public Validated\\w+ damage\\w*.*")),
                 () -> assertTrue(!config.contains("infiniteGuardAmmo")),
                 () -> assertTrue(!config.contains("reloadTimeMultiplier")),
-                () -> assertTrue(!config.contains("accuracy")));
+                () -> assertTrue(config.contains("public AimingSettings aiming")));
     }
 
     @Test
@@ -283,7 +284,7 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(goal.contains("config.performance.visibilitySampleIntervalTicks.get()")),
                 () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/GuardTacticalController.java").contains(".performance.movementDecisionIntervalTicks.get()")),
                 () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/SquadCommandMovementController.java").contains("config.performance.pathRecalculationIntervalTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.unsafeShotCacheTicks.get()")),
+                () -> assertFalse(goal.contains("config.performance.unsafeShotCacheTicks.get()")),
                 () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/TacticalNavigationController.java").contains("performance.repositionProgressCheckTicks.get()")),
                 () -> assertTrue(movement.contains("double retreatRangeSquared")),
                 () -> assertTrue(controller.contains("config.combat.requiredVisibleTicks.get()")),

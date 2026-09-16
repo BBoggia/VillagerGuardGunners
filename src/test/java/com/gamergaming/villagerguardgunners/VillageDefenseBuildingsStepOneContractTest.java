@@ -49,7 +49,7 @@ final class VillageDefenseBuildingsStepOneContractTest {
                 () -> assertTrue(integration.contains("new ArrayList<>(")),
                 () -> assertTrue(integration.contains("alreadyPresent++")),
                 () -> assertTrue(integration.contains("setMaxSize(SIZE_UNSET)")),
-                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 21")),
+                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 22")),
                 () -> assertTrue(config.contains("villageBuildings = new VillageBuildingSettings()")),
                 () -> assertTrue(config.contains("enabled = new ValidatedBoolean(false)")));
     }

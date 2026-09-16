@@ -56,7 +56,7 @@ not convenient:
 
 The resolver applies one deterministic order:
 
-1. Missing or dead target: deny.
+1. Missing or dead target, or creative/spectator player: deny.
 2. Central ally protection: deny.
 3. `engagement.excludedEntities`: deny.
 4. `#villagerguardgunners:never_engage`: deny.
@@ -66,13 +66,15 @@ The resolver applies one deterministic order:
 8. The selected mode's normal rule.
 
 An allow entry can broaden `HOSTILE_MOBS_ONLY` or `DEFENSIVE`, but cannot
-override ally protection, an exclusion, the never-engage tag, or `HOLD_FIRE`.
+override creative/spectator protection, ally protection, an exclusion, the
+never-engage tag, or `HOLD_FIRE`.
 Ally exclusions are configured separately under `safety.allies`; another guard
 and the shooter's owner remain protected even there.
 
 ## Target release and native firing
 
-A target denied because it is allied, excluded, non-hostile, or lacks recent
+A target denied because it is a creative/spectator player, allied, excluded,
+non-hostile, or lacks recent
 aggression is released back to Guard Villagers' existing target selector. This
 prevents a disallowed target from monopolizing the target slot while a valid
 threat is nearby. `HOLD_FIRE` is different by design: the guard retains and

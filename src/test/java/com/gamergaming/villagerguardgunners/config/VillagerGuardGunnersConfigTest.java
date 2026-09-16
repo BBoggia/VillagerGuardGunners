@@ -36,7 +36,7 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(21, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(22, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertFalse(config.medical.downed.get()),
                 () -> assertFalse(config.medical.transport.get()),
                 () -> assertEquals(40, config.medical.cotRevivalTicks.get()),

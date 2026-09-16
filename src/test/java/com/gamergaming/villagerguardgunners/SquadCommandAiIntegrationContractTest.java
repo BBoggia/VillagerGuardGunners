@@ -79,7 +79,9 @@ final class SquadCommandAiIntegrationContractTest {
                 () -> assertTrue(combatGoal.contains("moveTowardCombatTarget(")),
                 () -> assertTrue(combatGoal.contains("defendOverride")),
                 () -> assertTrue(combatGoal.contains("gunController.tick(")),
-                () -> assertTrue(combatGoal.contains("GuardFriendlyFireSafety")),
+                () -> assertTrue(combatGoal.contains("hasClearScheduledBurstShot(target)")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/combat/NativeGunController.java")
+                        .contains("GuardFriendlyFireSafety.diagnoseShot(guard, session.target, proposal.get()")),
                 () -> assertTrue(mixin.contains(
                         "addGoal(1, new SquadCommandMovementGoal")),
                 () -> assertTrue(mixin.contains(

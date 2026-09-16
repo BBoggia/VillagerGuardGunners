@@ -2,6 +2,9 @@ package com.gamergaming.villagerguardgunners.combat;
 
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection;
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection.ProtectionReason;
+import com.gamergaming.villagerguardgunners.combat.aim.GuardShotAim;
+import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngagement;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -15,6 +18,70 @@ import tallestegg.guardvillagers.entities.Guard;
 /** Performs the one entity query allowed for a shot that is actually due. */
 public final class GuardFriendlyFireSafety {
     private GuardFriendlyFireSafety() {
+    }
+
+    /**
+     * Proposed-shot path for the upcoming firing integration. Always checks current entities;
+     * callers must not cache this result or use the legacy eye-line cache with it.
+     * Diagnostics use this same function and never sample/commit aiming state.
+     */
+    public static GuardShotSafety.Result diagnoseShot(
+            Guard shooter, LivingEntity target, GuardShotAim aim,
+            GuardShotEnvelope.Ballistics ballistics, double clearance) {
+        if (!(shooter.level() instanceof net.minecraft.server.level.ServerLevel level)
+                || target.level() != level || !target.isAlive() || !shooter.isAlive()) {
+            return GuardShotSafety.result(GuardShotSafety.Status.INVALID_WORLD, -1, null, null);
+        }
+        if (target == shooter || GuardRulesOfEngagement.isNonCombatPlayer(target) || isProtected(shooter, target)) {
+            return GuardShotSafety.result(GuardShotSafety.Status.TARGET_IS_PROTECTED, target.getId(), null, null);
+        }
+        GuardShotEnvelope.Preparation preparation = GuardShotEnvelope.prepare(aim, ballistics, clearance);
+        if (!preparation.valid()) {
+            return GuardShotSafety.result(switch (preparation.failure()) {
+                case INVALID_AIM -> GuardShotSafety.Status.INVALID_AIM;
+                case INVALID_BALLISTICS -> GuardShotSafety.Status.INVALID_BALLISTICS;
+                default -> GuardShotSafety.Status.EXCESSIVE_ENVELOPE;
+            }, -1, null, null);
+        }
+        Vec3 origin = nativeProjectileOrigin(shooter);
+        Vec3 motion = shooter.getDeltaMovement();
+        Vec3 inherited = new Vec3(motion.x, shooter.onGround() ? 0 : motion.y, motion.z);
+        if (aim.gameTick() != level.getGameTime() || origin.distanceToSqr(aim.projectileOrigin()) > 1.0E-10
+                || inherited.distanceToSqr(ballistics.inheritedVelocity()) > 1.0E-10) {
+            return GuardShotSafety.result(GuardShotSafety.Status.STALE_AIM, -1, null, preparation.envelope());
+        }
+        return GuardShotSafety.check(preparation.envelope(), shooter.getBoundingBox(), new GuardShotSafety.Scene() {
+            @Override
+            public List<GuardShotSafety.Candidate> entities(AABB bounds, int limit) {
+                List<Entity> found = new ArrayList<>();
+                level.getEntities(net.minecraft.world.level.entity.EntityTypeTest.forClass(Entity.class),
+                        bounds, entity -> entity != shooter && entity.isAlive() && !entity.isSpectator()
+                                && (entity.isPickable() || isProtected(shooter, entity)), found, limit);
+                return found.stream().map(entity -> new GuardShotSafety.Candidate(entity.getId(),
+                        entity.getBoundingBox().minmax(com.tacz.guns.util.HitboxHelper.getFixedBoundingBox(entity, shooter)),
+                        isProtected(shooter, entity))).toList();
+            }
+
+            @Override
+            public List<AABB> blockShapes(net.minecraft.core.BlockPos pos) {
+                if (level.isOutsideBuildHeight(pos)) return List.of();
+                if (!level.hasChunkAt(pos)) return null;
+                return level.getBlockState(pos).getCollisionShape(level, pos).toAabbs().stream()
+                        .map(box -> box.move(pos)).toList();
+            }
+        });
+    }
+
+    /** TaCZ 1.1.8's final constructor position, after its initial eye-minus-.1 placement. */
+    public static Vec3 nativeProjectileOrigin(LivingEntity shooter) {
+        return new Vec3(shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0,
+                shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight(),
+                shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0);
+    }
+
+    public static boolean hasClearShot(Guard shooter, LivingEntity target, GuardShotAim aim,
+                                      GuardShotEnvelope.Ballistics ballistics, double clearance) {
+        return diagnoseShot(shooter, target, aim, ballistics, clearance).clear();
     }
 
     public static boolean hasClearShot(

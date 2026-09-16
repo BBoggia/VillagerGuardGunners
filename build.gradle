@@ -477,7 +477,23 @@ repositories {
     }
 }
 
+// TaCZ embeds its Lua API. Compile against those exact classes without bundling another Lua runtime.
+configurations { taczEmbeddedApi }
+dependencies { taczEmbeddedApi("maven.modrinth:timeless-and-classics-zero:${tacz_version}") { transitive = false } }
+def extractedTaCZLua = layout.buildDirectory.dir('tacz-embedded-api')
+def extractTaCZLua = tasks.register('extractTaCZLua', Sync) {
+    from({ zipTree(configurations.taczEmbeddedApi.singleFile) }) {
+        include 'META-INF/jarjar/luaj-*.jar'
+        eachFile { path = name }
+        includeEmptyDirs = false
+    }
+    into extractedTaCZLua
+}
+def taczLuaApi = files(provider { fileTree(extractedTaCZLua.get().asFile) { include '*.jar' } }).builtBy(extractTaCZLua)
+
 dependencies {
+    compileOnly taczLuaApi
+    testRuntimeOnly taczLuaApi
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation fg.deobf("maven.modrinth:guard-villagers:${guard_villager_version}")
@@ -487,6 +503,11 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:${junit_platform_version}"
+    // Forge loads these embedded Fzzy libraries in game; plain JUnit needs them explicitly.
+    testRuntimeOnly 'blue.endless:jankson:1.2.3'
+    testRuntimeOnly('net.peanuuutz.tomlkt:tomlkt-jvm:0.3.7') {
+        transitive = false // Use the Kotlin runtime supplied by Kotlin for Forge, as in game.
+    }
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
@@ -879,6 +900,8 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/mixin/RaidMixin.class',
                     'com/gamergaming/villagerguardgunners/mixin/RaiseShieldGoalMixin.class',
                     'com/gamergaming/villagerguardgunners/mixin/TaCZCommonAssetsManagerMixin.class',
+                    'com/gamergaming/villagerguardgunners/mixin/TaCZGuardShotMixin.class',
+                    'com/gamergaming/villagerguardgunners/mixin/TaCZGuardProjectileMixin.class',
                     'com/gamergaming/villagerguardgunners/mixin/VillagerToGuardMixin.class'
             ]
             ['plains', 'desert', 'savanna', 'snowy', 'taiga'].each { biome ->
@@ -905,6 +928,8 @@ tasks.register('verifyReleaseArtifact') {
             List<String> prohibitedMarkers = [
                     '/gametest/',
                     'vggcompatprobe',
+                    'accuracyprobe/',
+                    'vggaccuracyprobe',
                     'villagerguardgunners_gametest',
                     'GuardBullet',
                     'GunMechanicsHandler',
@@ -1031,6 +1056,8 @@ tasks.register('verifyReleaseArtifact') {
                         'RaidMixin',
                         'RaiseShieldGoalMixin',
                         'TaCZCommonAssetsManagerMixin',
+                        'TaCZGuardShotMixin',
+                        'TaCZGuardProjectileMixin',
                         'VillagerToGuardMixin',
                         'WalkBackToCheckPointGoalMixin',
                         'accessor.LootPoolAccessor',

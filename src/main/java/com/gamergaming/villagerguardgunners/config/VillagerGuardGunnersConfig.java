@@ -4,6 +4,8 @@ import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyLimits;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
+import com.gamergaming.villagerguardgunners.combat.aim.GuardAimPoint;
+import com.gamergaming.villagerguardgunners.combat.aim.GuardAimSettings;
 import com.gamergaming.villagerguardgunners.combat.tactics.ExplosiveStandoffPolicy;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfileDefinition;
@@ -47,7 +49,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 21;
+    public static final int CONFIG_VERSION = 22;
 
     @Comment("Enable gun combat, natural gun loadouts, command movement, squad patrols, village discovery, initial guard staffing, automatic defense duties, and Village Armory resupply. Medical treatment, Quartermaster service, and building generation have separate switches.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -244,6 +246,10 @@ public final class VillagerGuardGunnersConfig extends Config {
             // administrator choice remain unchanged.
             villageDefense.restoreVersionSixteenDefaults();
             squads.restoreVersionSixteenDefaults();
+        }
+        if (previousVersion < 22) {
+            // Initialize only the new aiming controls, preserving existing combat settings.
+            combat.aiming.restoreDefaults();
         }
     }
 
@@ -508,8 +514,44 @@ public final class VillagerGuardGunnersConfig extends Config {
         @Comment("Base distance at which the guard tries to retreat from a close target. The active tactical profile multiplies this distance, and explosive guns also require safe blast distance.")
         public ValidatedDouble closeRangeDistance = new ValidatedDouble(4.0D, 8.0D, 1.0D);
 
-        @Comment("Base allowed aiming error before firing. Smaller values require more precise aim. The active tactical profile multiplies this value; the final tolerance stays between 1 and 45 degrees. This does not change the gun’s spread.")
+        @Comment("Maximum difference between the guard’s facing direction and its intended target direction before firing. Smaller values require closer alignment. Tactical profiles adjust this threshold within 1–45 degrees. This does not add aim error or change gun spread.")
         public ValidatedDouble aimToleranceDegrees = new ValidatedDouble(10.0D, 45.0D, 1.0D);
+
+        @Comment("Adjust guard aim error and aim point. Player overrides apply only when enabled.")
+        public AimingSettings aiming = new AimingSettings();
+    }
+
+    @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.combat.aiming")
+    public static final class AimingSettings extends ConfigSection {
+        @Comment("Maximum guard aiming error in degrees before TaCZ applies gun spread. Zero adds no guard error; it does not remove gun spread. This is not a hit percentage.")
+        public ValidatedDouble errorDegrees = new ValidatedDouble(0.0D, GuardAimSettings.MAX_ERROR_DEGREES, 0.0D);
+
+        @Comment("Eye Level aims at the target's eyes. Center Mass aims at the center of its body bounds and can hit low cover even when the head is visible.")
+        public ValidatedEnum<GuardAimPoint> aimPoint = new ValidatedEnum<>(GuardAimPoint.EYE_LEVEL);
+
+        @Comment("Use separate aim error and aim point for player targets. When off, players inherit the general settings. Does not change which players guards can attack.")
+        public ValidatedBoolean overridePlayers = new ValidatedBoolean(false);
+
+        @Comment("Aim error for player targets, used only when Override Against Players is on. Start with 2 degrees and Center Mass, then adjust for your server. Groups of guards can still defeat players quickly.")
+        public ValidatedDouble playerErrorDegrees = new ValidatedDouble(2.0D, GuardAimSettings.MAX_ERROR_DEGREES, 0.0D);
+
+        @Comment("Aim point for player targets, used only when Override Against Players is on. Center Mass is the recommended starting point for player tuning; low cover can block it.")
+        public ValidatedEnum<GuardAimPoint> playerAimPoint = new ValidatedEnum<>(GuardAimPoint.CENTER_MASS);
+
+        /** Resolves numerical policy only; callers must separately enforce rules of engagement. */
+        public GuardAimSettings resolve(boolean playerTarget) {
+            boolean override = playerTarget && overridePlayers.get();
+            return new GuardAimSettings(override ? playerErrorDegrees.get() : errorDegrees.get(),
+                    override ? playerAimPoint.get() : aimPoint.get());
+        }
+
+        private void restoreDefaults() {
+            restoreDefault(errorDegrees);
+            restoreDefault(aimPoint);
+            restoreDefault(overridePlayers);
+            restoreDefault(playerErrorDegrees);
+            restoreDefault(playerAimPoint);
+        }
     }
 
     @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.movement")
@@ -1064,7 +1106,7 @@ public final class VillagerGuardGunnersConfig extends Config {
         @Comment("Ticks between cached TaCZ gun-data refreshes. 20 ticks = 1 second at normal game speed.")
         public ValidatedInt gunDataRefreshIntervalTicks = new ValidatedInt(20, 200, 5);
 
-        @Comment("Time a guard can reuse a blocked-shot result before checking again. Higher values reduce repeated checks but can delay firing after the obstruction clears. 0 keeps reuse within the same tick. Safety checks remain active. 20 ticks = 1 second at normal game speed.")
+        @Comment("Retained for existing configurations. Native rounds now check shot safety individually; this setting no longer delays those checks.")
         public ValidatedInt unsafeShotCacheTicks = new ValidatedInt(2, 5, 0);
 
         @Comment("A guard stops and replans after twice this duration without route progress, with a minimum of 20 ticks. 20 ticks = 1 second at normal game speed.")

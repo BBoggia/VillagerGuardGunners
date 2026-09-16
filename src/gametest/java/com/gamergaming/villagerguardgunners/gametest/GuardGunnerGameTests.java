@@ -7192,10 +7192,9 @@ public final class GuardGunnerGameTests {
                 helper.assertTrue(
                         state.decision() == GuardGunCombatGoal.FireDecision.UNSAFE_SHOT
                                 && state.safety().status()
-                                        == GuardFriendlyFireSafety.DiagnosticStatus
-                                                .BLOCKED_BY_PROTECTED_ENTITY
-                                && state.projectileSafetyPadding() > state.muzzleSafetyPadding()
-                                && state.blastSafetyPadding() > state.projectileSafetyPadding()
+                                        == com.gamergaming.villagerguardgunners.combat.GuardShotSafety.Status.PROTECTED_ENTITY_IN_PATH
+                                && state.safety().envelope() != null
+                                && state.safety().envelope().ballistics().blastReach() > 0
                                 && gunItem.getCurrentAmmoCount(gunStack) == initialAmmo,
                         "The RPG did not retain its full forward blast protection: decision="
                                 + state.decision()
@@ -7210,7 +7209,7 @@ public final class GuardGunnerGameTests {
                 helper.assertTrue(
                         forwardBlastGateObserved[0]
                                 && state.safety().status()
-                                        == GuardFriendlyFireSafety.DiagnosticStatus.CLEAR,
+                                        == com.gamergaming.villagerguardgunners.combat.GuardShotSafety.Status.CLEAR,
                         "The RPG fired without proving the narrowed muzzle envelope");
                 goal.stop();
                 helper.succeed();

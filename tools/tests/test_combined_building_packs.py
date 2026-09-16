@@ -3,10 +3,14 @@ import sys
 import tempfile
 import unittest
 import zipfile
+import contextlib
+import io
+from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from build_combined_building_packs import combine, source_names, PROVIDERS
+import build_combined_building_packs as builder
 
 
 class CombinedBuildingPackTests(unittest.TestCase):
@@ -59,6 +63,25 @@ class CombinedBuildingPackTests(unittest.TestCase):
         names = [name for provider in PROVIDERS for name in source_names(provider)]
         self.assertEqual(25, len(set(names)))
         self.assertTrue(all('all-buildings' not in name for name in names))
+
+    def test_universal_download_contains_every_provider_and_family_with_original_ids(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            distributions = root / 'build/distributions'
+            distributions.mkdir(parents=True)
+            expected = {}
+            for provider in PROVIDERS:
+                for family, name in enumerate(source_names(provider)):
+                    resource = f'data/example/village_buildings/{provider}/{family}.json'
+                    payload = json.dumps({'provider': provider, 'family': family}).encode()
+                    expected[resource] = payload
+                    self.pack(distributions / name, {resource: payload})
+            with patch.object(builder, 'ROOT', root), contextlib.redirect_stdout(io.StringIO()):
+                builder.main()
+            with zipfile.ZipFile(distributions / builder.UNIVERSAL_NAME) as archive:
+                actual = {n: archive.read(n) for n in archive.namelist() if n.startswith('data/')}
+                self.assertEqual(expected, actual)
+                self.assertEqual(25, len(actual))
 
 
 if __name__ == '__main__':

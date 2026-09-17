@@ -56,5 +56,9 @@ public final class ModMenus {
         MENUS.register(eventBus);
     }
 
+    public static final RegistryObject<MenuType<com.gamergaming.villagerguardgunners.menu.QuartermasterManagementMenu>> QUARTERMASTER_MANAGEMENT =
+            MENUS.register("quartermaster_management", () -> IForgeMenuType.create((id, inventory, data) ->
+                    new com.gamergaming.villagerguardgunners.menu.QuartermasterManagementMenu(id, inventory, data.readUUID())));
+
     private ModMenus() {}
 }

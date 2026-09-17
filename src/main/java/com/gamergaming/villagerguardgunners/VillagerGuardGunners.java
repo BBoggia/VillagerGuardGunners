@@ -41,6 +41,9 @@ public class VillagerGuardGunners {
         IEventBus modEventBus = context.getModEventBus();
 
         ModConfigs.init();
+        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::onReload);
+        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::started);
+        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::stopped);
         modEventBus.addListener(com.gamergaming.villagerguardgunners.medical.MedicalCapabilities::register);
         modEventBus.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterProfession::register);
         MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::damaged);
@@ -69,7 +72,13 @@ public class VillagerGuardGunners {
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::left);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::tick);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::stopped);
+        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.OverviewRuntime::tick);
+        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.OverviewRuntime::stopped);
+        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.ServiceHistory::stopped);
         TaCZGunPackSyncNetwork.init();
+        com.gamergaming.villagerguardgunners.quartermaster.management.ManagementNetwork.init();
+        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST,
+                com.gamergaming.villagerguardgunners.quartermaster.management.QuartermasterManagement::interact);
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);

@@ -12,4 +12,4 @@ public record ServicePlan(UUID operation, Guard guard, QuartermasterBlockEntity 
         ServiceSource source, int sourceSlot, int targetSlot, int returnSlot, ItemStack stockBefore,
         ItemStack replacement, List<ItemStack> guardBefore, long profileRevision,
         GuardServiceState.Policy policy, ResourceLocation profile, boolean replaceExisting,
-        long sourceRevision, long guardRevision, long expiresAt) {}
+        long sourceRevision, long guardRevision, long expiresAt, long settingsRevision) {}

@@ -85,6 +85,8 @@ public final class QuartermasterMenu extends AbstractContainerMenu {
         if (stillValid(player)) super.clicked(slot, button, type, player);
     }
     @Override public boolean clickMenuButton(Player player, int id) {
+        if(id==6)return stillValid(player)&&station!=null&&player instanceof net.minecraft.server.level.ServerPlayer server
+                &&com.gamergaming.villagerguardgunners.quartermaster.management.QuartermasterManagement.open(server,station,null);
         return stillValid(player) && station != null && station.changeSetting(player, id);
     }
     @Override public ItemStack quickMoveStack(Player player, int index) {

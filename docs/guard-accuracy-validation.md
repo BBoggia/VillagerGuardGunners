@@ -47,7 +47,7 @@ across two boots. No observer classes are included in the candidate JAR.
 
 ## Current accuracy fixes
 
-The follow-up candidate is SHA-256
+The follow-up test candidate is SHA-256
 `8a147bd442a21d7dbd3bf8a59deb9db76c2213768bf7c111afbc2e860a695bb6`.
 It supersedes the earlier candidate above, which had three reproduced firing
 issues and incomplete refusal messages.
@@ -76,9 +76,25 @@ balance measurement or proof of compatibility with every community gun pack.
 
 The [shot-safety contract](guard-shot-safety.md) describes the supported script
 behavior and remaining limits. Defaults and the aim-error sampler are unchanged.
-This remains an Unreleased test candidate with the existing internal 1.7 identity.
+That test candidate retained the existing internal 1.7 identity.
 The earlier balance and performance figures remain measurements of the hashes
 explicitly named alongside them.
+
+## Version 1.8 packaging
+
+The versioned 1.8 JAR has SHA-256
+`0808c25eb5c0b790ab6f8f5f151cd09511bfa5227c9eff9201ed050b8b27d510`.
+Entry-by-entry comparison with the follow-up test candidate above found changes
+only in `META-INF/mods.toml` and `META-INF/MANIFEST.MF`. All executable classes
+and other packaged resources are byte-for-byte identical.
+
+The 1.8 build passed 934 Java tests, artifact verification, and release-identity
+checks. A fresh observer-free ordinary Forge server using this exact JAR passed
+open-lane combat, blocked-shot ammo and ally-health checks, and complete saved
+configuration preservation across two starts. Earlier balance, real-client,
+and targeted regression results remain attributed to their original hashes;
+they were not repeated as part of this version-only change. Broader manual
+release checklist items remain separate from these accuracy checks.
 
 ## Controlled accuracy comparison
 

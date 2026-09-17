@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "level": 5,
+  "inputs": [
+    {
+      "type": "item",
+      "id": "minecraft:emerald",
+      "count": 6
+    }
+  ],
+  "output": {
+    "type": "ammo",
+    "id": "tacz:12g",
+    "count": 8
+  },
+  "max_uses": 6,
+  "xp": 30,
+  "price_multiplier": 0.05
+}

@@ -154,7 +154,7 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardProjectileMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\"]")),
+                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardProjectileMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\",\"QuartermasterOfferMixin\",\"QuartermasterOffersMixin\",\"QuartermasterLevelTradesMixin\",\"QuartermasterResultSlotMixin\",\"QuartermasterMerchantMenuMixin\"]")),
                 () -> assertTrue(mixins.contains(
                         "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\",\"client.CasualtyRendererMixin\",\"client.CotNameTagMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));
@@ -228,7 +228,11 @@ final class PhaseSevenCleanupContractTest {
                         + "SquadRegistrySavedData.java");
         String villagePopulation = read("src/main/java/com/gamergaming/villagerguardgunners/village/population/VillagePopulationRuntime.java");
         String medicalReload = read("src/main/java/com/gamergaming/villagerguardgunners/medical/TreatmentProfiles.java");
+        String tradeRuntime = read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/trade/QuartermasterTrades.java");
+        assertTrue(tradeRuntime.contains("if(WARNED.add(id))"));
         String performanceSensitiveSource = productionSource
+                .replace(tradeRuntime, "")
+                .replace(read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/trade/TradeDefinitions.java"), "")
                 .replace(medicalReload, "")
                 .replace(read("src/main/java/com/gamergaming/villagerguardgunners/village/compat/SettlementDefinitions.java"), "")
                 .replace(read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/service/EquipmentProfiles.java"), "")

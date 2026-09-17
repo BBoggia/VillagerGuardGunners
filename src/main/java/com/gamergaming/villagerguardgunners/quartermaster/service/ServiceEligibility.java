@@ -13,11 +13,23 @@ import net.minecraftforge.registries.ForgeRegistries;
 import tallestegg.guardvillagers.entities.Guard;
 
 public final class ServiceEligibility {
-    public static ServiceStatus guard(Guard guard) {
+    public static ServiceStatus guard(Guard guard) { return guard(guard,true); }
+    public static ServiceStatus inspectGuard(Guard guard) { return guard(guard,false); }
+    private static boolean receipt(ServerLevel level, ServiceReceipt receipt, boolean verify) {
+        var journal=ServiceJournal.get(level.getServer());
+        return verify?journal.verify(receipt):journal.matches(receipt);
+    }
+    private static ServiceStatus guard(Guard guard, boolean verify) {
+        return guard(guard, verify, GuardEquipmentServiceAccess.get(guard).policy());
+    }
+    public static ServiceStatus inspectGuard(Guard guard, GuardServiceState.Policy requested) {
+        return guard(guard, false, requested);
+    }
+    private static ServiceStatus guard(Guard guard, boolean verify, GuardServiceState.Policy policy) {
         var state = GuardEquipmentServiceAccess.get(guard);
         if (!(guard.level() instanceof ServerLevel level) || com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) || !guard.isAlive() || guard.isRemoved() || !state.readable()
-                || !ServiceJournal.get(level.getServer()).verify(state.receipt)) return ServiceStatus.RECOVERY_REQUIRED;
-        if (state.policy() == GuardServiceState.Policy.MANUAL) return ServiceStatus.MANUAL;
+                || !receipt(level,state.receipt,verify)) return ServiceStatus.RECOVERY_REQUIRED;
+        if (policy == GuardServiceState.Policy.MANUAL) return ServiceStatus.MANUAL;
         if (guard.getTarget() != null && guard.getTarget().isAlive()) return ServiceStatus.FIGHTING;
         var order = com.gamergaming.villagerguardgunners.role.GuardRoleResolver.effectiveOrders(guard).movement();
         if (com.gamergaming.villagerguardgunners.medical.MedicRuntime.busy(guard) || guard.interacting || guard.isPassenger() || guard.isSleeping() || ((GuardCoverageAccess) guard).villagerGuardGunners$hasFollowOrder()
@@ -28,9 +40,11 @@ public final class ServiceEligibility {
                 || !((GuardCoverageAccess) guard).villagerGuardGunners$nativeEquipmentServiceSafe()) return ServiceStatus.NATIVE_ACTION;
         return ServiceStatus.READY;
     }
-    public static ServiceStatus station(QuartermasterBlockEntity station) {
+    public static ServiceStatus station(QuartermasterBlockEntity station) { return station(station,true); }
+    public static ServiceStatus inspectStation(QuartermasterBlockEntity station) { return station(station,false); }
+    private static ServiceStatus station(QuartermasterBlockEntity station, boolean verify) {
         if (!(station.getLevel() instanceof ServerLevel level) || station.isRemoved() || !station.readable()
-                || !ServiceJournal.get(level.getServer()).verify(station.serviceReceipt())) return ServiceStatus.RECOVERY_REQUIRED;
+                || !receipt(level,station.serviceReceipt(),verify)) return ServiceStatus.RECOVERY_REQUIRED;
         if (!level.hasChunkAt(station.getBlockPos()) || level.getBlockEntity(station.getBlockPos()) != station
                 || !level.isPositionEntityTicking(station.getBlockPos())) return ServiceStatus.OPERATOR_UNAVAILABLE;
         long time = Math.floorMod(level.getDayTime(), 24000L);
@@ -46,7 +60,7 @@ public final class ServiceEligibility {
         return ServiceStatus.READY;
     }
     /** POIs store ticket counts, not owner UUIDs; the live villager checks above supply identity evidence. */
-    private static boolean claimedStation(ServerLevel level, net.minecraft.core.BlockPos pos) {
+    public static boolean claimedStation(ServerLevel level, net.minecraft.core.BlockPos pos) {
         var cached = ((com.gamergaming.villagerguardgunners.mixin.accessor.VillagePoiStorageAccessor) level.getPoiManager())
                 .villagerGuardGunners$cachedSection(net.minecraft.core.SectionPos.of(pos).asLong());
         if (cached == null || cached.isEmpty() || !(cached.get() instanceof net.minecraft.world.entity.ai.village.poi.PoiSection section)) return false;

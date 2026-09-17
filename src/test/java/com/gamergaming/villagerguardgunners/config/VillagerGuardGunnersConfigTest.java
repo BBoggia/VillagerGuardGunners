@@ -32,11 +32,20 @@ import org.junit.jupiter.api.Test;
 final class VillagerGuardGunnersConfigTest {
 
     @Test
+    void tradeMigrationPreservesUnrelatedSettingsAndCurrentTradeChoices() {
+        var config=new VillagerGuardGunnersConfig();config.enabled.accept(false);
+        config.quartermasterTrades.suppliesEnabled.accept(false);config.quartermasterTrades.gunSalesEnabled.accept(true);
+        config.update(22);assertFalse(config.enabled.get());assertTrue(config.quartermasterTrades.suppliesEnabled.get());assertFalse(config.quartermasterTrades.gunSalesEnabled.get());
+        config.quartermasterTrades.suppliesEnabled.accept(false);config.quartermasterTrades.gunSalesEnabled.accept(true);
+        config.update(23);assertFalse(config.quartermasterTrades.suppliesEnabled.get());assertTrue(config.quartermasterTrades.gunSalesEnabled.get());
+    }
+
+    @Test
     void defaultsMatchTheRecommendedGuardProfile() {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(22, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(23, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertFalse(config.medical.downed.get()),
                 () -> assertFalse(config.medical.transport.get()),
                 () -> assertEquals(40, config.medical.cotRevivalTicks.get()),

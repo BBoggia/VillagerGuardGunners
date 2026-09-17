@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "level": 1,
+  "inputs": [
+    {
+      "type": "item",
+      "id": "minecraft:emerald",
+      "count": 5
+    }
+  ],
+  "output": {
+    "type": "item",
+    "id": "minecraft:shield",
+    "count": 1
+  },
+  "max_uses": 3,
+  "xp": 2,
+  "price_multiplier": 0.05
+}

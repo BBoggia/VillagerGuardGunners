@@ -49,7 +49,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 22;
+    public static final int CONFIG_VERSION = 23;
 
     @Comment("Enable gun combat, natural gun loadouts, command movement, squad patrols, village discovery, initial guard staffing, automatic defense duties, and Village Armory resupply. Medical treatment, Quartermaster service, and building generation have separate switches.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -66,6 +66,17 @@ public final class VillagerGuardGunnersConfig extends Config {
     public VillagePopulationSettings villagePopulation = new VillagePopulationSettings();
     @Comment("Treat injured guards and optionally rescue downed guards. Server permissions below work together with each guard’s Medic Duty and Medical Retreat controls. Timings affect new treatment actions; ongoing actions keep their starting duration.")
     public MedicalSettings medical = new MedicalSettings();
+
+    @Comment("Quartermaster merchant offers. These switches also block saved offers while disabled. Deposited supplies and automatic service are separate.")
+    public QuartermasterTradeSettings quartermasterTrades = new QuartermasterTradeSettings();
+
+    @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.quartermasterTrades")
+    public static final class QuartermasterTradeSettings extends ConfigSection {
+        @Comment("Enable Quartermaster supply offers. Prices and items are defined in quartermaster_trades datapack files. New or newly unlocked offers use the current definitions.")
+        public ValidatedBoolean suppliesEnabled = new ValidatedBoolean(true);
+        @Comment("Enable optional Quartermaster gun sales, independently of supply offers. Guns are sold unloaded. Existing saved gun offers cannot be completed while disabled.")
+        public ValidatedBoolean gunSalesEnabled = new ValidatedBoolean(false);
+    }
 
     @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.medical")
     public static final class MedicalSettings extends ConfigSection {
@@ -250,6 +261,10 @@ public final class VillagerGuardGunnersConfig extends Config {
         if (previousVersion < 22) {
             // Initialize only the new aiming controls, preserving existing combat settings.
             combat.aiming.restoreDefaults();
+        }
+        if (previousVersion < 23) {
+            quartermasterTrades.suppliesEnabled.accept(true);
+            quartermasterTrades.gunSalesEnabled.accept(false);
         }
     }
 

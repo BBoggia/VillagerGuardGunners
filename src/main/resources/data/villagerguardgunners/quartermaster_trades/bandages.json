@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "level": 1,
+  "inputs": [
+    {
+      "type": "item",
+      "id": "minecraft:emerald",
+      "count": 2
+    }
+  ],
+  "output": {
+    "type": "item",
+    "id": "villagerguardgunners:bandage",
+    "count": 4
+  },
+  "max_uses": 12,
+  "xp": 2,
+  "price_multiplier": 0.05
+}

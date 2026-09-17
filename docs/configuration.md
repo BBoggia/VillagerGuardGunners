@@ -69,6 +69,13 @@ guards means the station owner’s guards. Linked Village Armories supply ammo;
 guns, armor, and medicine come from station Stock. See
 [Quartermaster service](quartermaster-service.md) for details.
 
+**Quartermaster Trades.** `quartermasterTrades.suppliesEnabled` defaults to `true`;
+`quartermasterTrades.gunSalesEnabled` defaults to `false`. They control separate
+merchant offer categories, including whether saved offers can be purchased.
+They do not enable guard service or deposit purchased items in station stock.
+Enabling a category does not reroll levels whose offers were already generated;
+use a new villager or unlock another level. See [trade definitions and defaults](quartermaster-trades.md).
+
 ## Supported settings
 
 Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritative for hostile-entity effects, ammunition, reloads, fire modes, projectile behavior, recoil, spread, sounds, heat, and attachments. The block-preservation option only filters the mutable block list from a guard-owned native explosion after TaCZ and Forge have computed it.

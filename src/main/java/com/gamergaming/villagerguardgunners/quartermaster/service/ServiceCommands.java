@@ -23,7 +23,10 @@ public final class ServiceCommands {
                     boolean empty = GuardEquipmentServiceAccess.get(guard).known() && ServiceEquipment.snapshot(guard).stream().allMatch(stack -> stack.isEmpty()) && guard.getOffhandItem().isEmpty()
                             && com.gamergaming.villagerguardgunners.api.GuardSidearmAccess.getState(guard) == com.gamergaming.villagerguardgunners.sidearm.SidearmState.PRIMARY_ACTIVE
                             && com.gamergaming.villagerguardgunners.api.GuardMedicalAccess.get(guard).readable();
-                    int result = run(context.getSource(), GuardEquipmentServiceAccess.get(guard).receipt, recover, empty);
+                    var settings = GuardEquipmentServiceAccess.get(guard);
+                    int result = run(context.getSource(), settings.receipt, recover, empty);
+                    if (!recover && settings.readable()) context.getSource().sendSuccess(() -> Component.literal(
+                            "Quartermaster assignment: " + (settings.assignment() == null ? "Auto" : settings.assignment().toString())), false);
                     if (recover && result == 1) { QuartermasterServiceRuntime.cancel(guard, ServiceStatus.MANUAL); GuardEquipmentServiceAccess.get(guard).policy(GuardServiceState.Policy.MANUAL); }
                     return result;
                 })))

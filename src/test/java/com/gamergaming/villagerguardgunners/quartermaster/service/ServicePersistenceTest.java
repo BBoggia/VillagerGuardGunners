@@ -10,6 +10,16 @@ import org.junit.jupiter.api.io.TempDir;
 
 class ServicePersistenceTest {
     @TempDir Path directory;
+    @Test void readOnlyComparisonNeverQuarantinesOrWrites() throws Exception {
+        Path file=directory.resolve("journal.dat"); var journal=new ServiceJournal(file);
+        var source=new ServiceReceipt(); var guard=new ServiceReceipt();
+        assertTrue(journal.matches(source)); assertFalse(Files.exists(file));
+        assertTrue(journal.begin(source,guard)); byte[] bytes=Files.readAllBytes(file);
+        assertFalse(journal.matches(source)); assertFalse(source.locked());
+        assertArrayEquals(bytes,Files.readAllBytes(file));
+        source.revision(1); assertTrue(journal.matches(source));
+        assertFalse(journal.matches(guard)); assertFalse(guard.locked());
+    }
     @Test void intentQuarantinesBothOldOwnersAfterRestart() {
         Path file = directory.resolve("journal.dat"); var journal = new ServiceJournal(file);
         var source = new ServiceReceipt(); var guard = new ServiceReceipt();

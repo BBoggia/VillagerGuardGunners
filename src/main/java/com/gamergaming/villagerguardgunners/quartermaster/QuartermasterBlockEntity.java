@@ -45,6 +45,7 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
     public UUID operator;
     public com.gamergaming.villagerguardgunners.quartermaster.service.ServiceStatus serviceStatus = com.gamergaming.villagerguardgunners.quartermaster.service.ServiceStatus.OPERATOR_UNAVAILABLE;
     public com.gamergaming.villagerguardgunners.quartermaster.service.ServiceReceipt serviceReceipt() { return serviceReceipt; }
+    public boolean serviceReadable() { return readable() && preservedService == null && !released; }
     public int guardAccess() { return guardAccess; }
     public java.util.List<BlockPos> linkedArmories() { return java.util.List.copyOf(linkedArmories); }
     public boolean mayService(tallestegg.guardvillagers.entities.Guard guard) {
@@ -201,51 +202,55 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
     }
 
     @Override public void load(CompoundTag tag) {
-        super.load(tag);
-        owner = null; squad = null; access = PRIVATE; automation = false; released = false;
-        stationId = UUID.randomUUID(); dropId = UUID.randomUUID();
-        inventory.setSize(SLOTS);
-        preserved = null;
-        if (!tag.contains(DATA_TAG)) { loadService(tag); return; }
-        preserved = tag.get(DATA_TAG).copy();
-        if (!(preserved instanceof CompoundTag data)) return;
-        // Retain unknown or malformed payloads verbatim; never turn them into empty stock.
-        if (!data.contains("Version", Tag.TAG_INT) || data.getInt("Version") != 1
-                || !data.hasUUID("StationId") || !data.hasUUID("DropId") || !data.contains("Access", Tag.TAG_INT)
-                || data.getInt("Access") < PRIVATE || data.getInt("Access") > PUBLIC
-                || !data.contains("Automation", Tag.TAG_BYTE)
-                || (data.contains("Owner") && !data.hasUUID("Owner"))
-                || (data.contains("Squad") && !data.hasUUID("Squad"))
-                || !data.contains("Inventory", Tag.TAG_COMPOUND)) return;
-        Set<String> known = Set.of("Version", "StationId", "DropId", "Owner", "Squad", "Access", "Automation", "Inventory");
-        if (!known.containsAll(data.getAllKeys())) return;
-        CompoundTag items = data.getCompound("Inventory");
-        if (!items.contains("Size", Tag.TAG_INT) || items.getInt("Size") != SLOTS
-                || !items.contains("Items", Tag.TAG_LIST)
-                || !Set.of("Size", "Items").containsAll(items.getAllKeys())) return;
-        var list = items.getList("Items", Tag.TAG_COMPOUND);
-        if (list.size() != ((net.minecraft.nbt.ListTag) items.get("Items")).size()) return;
-        Set<Integer> used = new HashSet<>();
-        for (Tag entry : list) {
-            CompoundTag item = (CompoundTag) entry;
-            int slot = item.getInt("Slot");
-            ItemStack stack = ItemStack.of(item);
-            if (!item.contains("Slot", Tag.TAG_INT) || slot < 0 || slot >= SLOTS || !used.add(slot)
-                    || stack.isEmpty() || stack.getCount() > Math.min(64, stack.getMaxStackSize())
-                    || !stack.getItem().canFitInsideContainerItems()) return;
-            CompoundTag roundTrip = stack.save(new CompoundTag());
-            roundTrip.putInt("Slot", slot);
-            if (!roundTrip.equals(item)) return;
+        try {
+            super.load(tag);
+            owner = null; squad = null; access = PRIVATE; automation = false; released = false;
+            stationId = UUID.randomUUID(); dropId = UUID.randomUUID();
+            inventory.setSize(SLOTS);
+            preserved = null;
+            if (!tag.contains(DATA_TAG)) { loadService(tag); return; }
+            preserved = tag.get(DATA_TAG).copy();
+            if (!(preserved instanceof CompoundTag data)) return;
+            // Retain unknown or malformed payloads verbatim; never turn them into empty stock.
+            if (!data.contains("Version", Tag.TAG_INT) || data.getInt("Version") != 1
+                    || !data.hasUUID("StationId") || !data.hasUUID("DropId") || !data.contains("Access", Tag.TAG_INT)
+                    || data.getInt("Access") < PRIVATE || data.getInt("Access") > PUBLIC
+                    || !data.contains("Automation", Tag.TAG_BYTE)
+                    || (data.contains("Owner") && !data.hasUUID("Owner"))
+                    || (data.contains("Squad") && !data.hasUUID("Squad"))
+                    || !data.contains("Inventory", Tag.TAG_COMPOUND)) return;
+            Set<String> known = Set.of("Version", "StationId", "DropId", "Owner", "Squad", "Access", "Automation", "Inventory");
+            if (!known.containsAll(data.getAllKeys())) return;
+            CompoundTag items = data.getCompound("Inventory");
+            if (!items.contains("Size", Tag.TAG_INT) || items.getInt("Size") != SLOTS
+                    || !items.contains("Items", Tag.TAG_LIST)
+                    || !Set.of("Size", "Items").containsAll(items.getAllKeys())) return;
+            var list = items.getList("Items", Tag.TAG_COMPOUND);
+            if (list.size() != ((net.minecraft.nbt.ListTag) items.get("Items")).size()) return;
+            Set<Integer> used = new HashSet<>();
+            for (Tag entry : list) {
+                CompoundTag item = (CompoundTag) entry;
+                int slot = item.getInt("Slot");
+                ItemStack stack = ItemStack.of(item);
+                if (!item.contains("Slot", Tag.TAG_INT) || slot < 0 || slot >= SLOTS || !used.add(slot)
+                        || stack.isEmpty() || stack.getCount() > Math.min(64, stack.getMaxStackSize())
+                        || !stack.getItem().canFitInsideContainerItems()) return;
+                CompoundTag roundTrip = stack.save(new CompoundTag());
+                roundTrip.putInt("Slot", slot);
+                if (!roundTrip.equals(item)) return;
+            }
+            inventory.deserializeNBT(items);
+            owner = data.hasUUID("Owner") ? data.getUUID("Owner") : null;
+            squad = data.hasUUID("Squad") ? data.getUUID("Squad") : null;
+            stationId = data.getUUID("StationId");
+            dropId = data.getUUID("DropId");
+            access = data.getInt("Access");
+            automation = data.getBoolean("Automation");
+            preserved = null;
+            loadService(tag);
+        } finally {
+            com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime.refreshIdentity(this);
         }
-        inventory.deserializeNBT(items);
-        owner = data.hasUUID("Owner") ? data.getUUID("Owner") : null;
-        squad = data.hasUUID("Squad") ? data.getUUID("Squad") : null;
-        stationId = data.getUUID("StationId");
-        dropId = data.getUUID("DropId");
-        access = data.getInt("Access");
-        automation = data.getBoolean("Automation");
-        preserved = null;
-        loadService(tag);
     }
 
     public ItemStack packedStack() {

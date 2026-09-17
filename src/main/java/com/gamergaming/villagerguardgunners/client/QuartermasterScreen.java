@@ -34,6 +34,8 @@ public final class QuartermasterScreen extends AbstractContainerScreen<Quarterma
         unlink = serviceButton(5, 68); unlink.setMessage(text("clear_armories"));
         service.setTooltip(Tooltip.create(text("service_access_help")));
         link.setTooltip(Tooltip.create(text("link_armories_help")));
+        var management=serviceButton(6,202);
+        management.setMessage(com.gamergaming.villagerguardgunners.quartermaster.management.QuartermasterManagement.text("open_management"));
         updateControls();
     }
     private Button button(int id, int x, int width) {

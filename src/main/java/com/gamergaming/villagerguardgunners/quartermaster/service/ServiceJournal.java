@@ -52,8 +52,12 @@ public final class ServiceJournal {
     }
     public static void stopped(net.minecraftforge.event.server.ServerStoppedEvent event) { SERVERS.remove(event.getServer()); }
     public boolean healthy() { return healthy; }
+    /** Read-only checkpoint comparison for reports; unlike verify, this never quarantines an owner. */
+    public boolean matches(ServiceReceipt receipt) {
+        return healthy && !receipt.locked() && revisions.getOrDefault(receipt.id(), 0L) == receipt.revision();
+    }
     public boolean verify(ServiceReceipt receipt) {
-        if (!healthy || receipt.locked() || revisions.getOrDefault(receipt.id(), 0L) != receipt.revision()) {
+        if (!matches(receipt)) {
             receipt.quarantine(); return false;
         }
         return true;

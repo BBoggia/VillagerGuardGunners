@@ -86,7 +86,7 @@ final class VillageDefenseBuildingsStepThreeContractTest {
                 () -> assertTrue(bootstrap.contains(
                         "VillageBuildingPoolIntegration::onServerAboutToStart")),
                 () -> assertTrue(integration.contains("VillageBuildingDefinitions.enabledEntries")),
-                () -> assertTrue(config.contains("CONFIG_VERSION = 22")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 23")),
                 () -> assertTrue(config.contains("restoreVersionThirteenDefaults")),
                 () -> assertTrue(config.contains("integratedWatchtowers")),
                 () -> assertTrue(build.contains("generateVillageBuildingTemplates")),

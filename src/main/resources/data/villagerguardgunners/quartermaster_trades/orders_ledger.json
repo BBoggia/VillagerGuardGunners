@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "level": 2,
+  "inputs": [
+    {
+      "type": "item",
+      "id": "minecraft:emerald",
+      "count": 6
+    }
+  ],
+  "output": {
+    "type": "item",
+    "id": "villagerguardgunners:orders_ledger",
+    "count": 1
+  },
+  "max_uses": 2,
+  "xp": 5,
+  "price_multiplier": 0.05
+}

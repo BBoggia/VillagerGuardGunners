@@ -22,6 +22,7 @@ public final class ClientEventHandler {
                             GuardGunnerInventoryScreen::new);
                     MenuScreens.register(ModMenus.ARMORY.get(), ArmoryScreen::new);
                     MenuScreens.register(ModMenus.QUARTERMASTER.get(), QuartermasterScreen::new);
+                    MenuScreens.register(ModMenus.QUARTERMASTER_MANAGEMENT.get(), QuartermasterManagementScreen::new);
                 });
     }
 

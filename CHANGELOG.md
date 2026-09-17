@@ -8,6 +8,57 @@ in local development notes.
 
 ### Added
 
+- Station managers can remove unavailable guards' last-seen roster records from
+  the Quartermaster overview. Returning guards restore their records automatically.
+- Quartermasters sell bandages, ammo, ledgers and basic equipment through normal
+  villager trades. Datapacks can define offers for all five levels; optional gun
+  sales start disabled. Existing offers keep their saved prices and uses, while
+  disabled offers and removed gun or ammo definitions cannot be purchased.
+  An installable example datapack demonstrates an ammo trade with two input items.
+- Quartermaster management can apply equipment policies, loadouts, replacement
+  permissions, and station assignments to selected guards or loaded squad members.
+  Preview shows the exact guards, proposed settings, supply estimates, and service
+  delays before applying. Settings and permission changes require a new preview.
+- Quartermasters open an overview when interacted with using empty hands. The
+  station's Overview button opens the same menu, with stock, equipment needs,
+  guard service status, recent deliveries, and access to existing villager trades. Visitors
+  can reach trades without gaining access to private supplies.
+- Equipment-service integrations can assign a guard to one Quartermaster station
+  or retain automatic nearby selection. Station requests check both station and
+  guard-management permissions; existing guards keep their current service settings.
+- Equipment-service integrations can preview guard needs and available stock without
+  changing equipment or service state. Reports account for existing reservations,
+  shared supplies, protected gear, unavailable guards, and storage limits.
+
+### Fixed
+
+- Quartermaster bulk supply estimates spread their work across ticks, including
+  automatic refreshes and concurrent editors. Pending estimates are labeled, and
+  valid settings can be saved while estimates finish.
+- Rapid clicks between the Quartermaster overview and Manage screen no longer
+  leave the client waiting on a screen the server did not open.
+- Quartermaster management can browse more than 64 eligible guards and apply
+  settings in successive batches of up to 64.
+- Switching a guard to Manual can retain its existing station assignment after
+  service access is revoked. Reenabling service still requires valid access.
+- Unemployed adult villagers can discover Quartermaster stations and claim the
+  profession naturally. Replacement villagers can take over an unclaimed station.
+- Quartermaster help text clarifies that Manual disables automatic equipment
+  service and that enabling replacement can replace named items. The station guide
+  identifies the Pipes control correctly.
+- Shared Quartermaster overviews retain each viewer's linked Armory visibility when
+  another viewer moves or closes the menu.
+- Quartermaster Needs lists incoming deliveries separately, so reserved supplies
+  do not appear as missing stock for the receiving guard.
+- Quartermaster reports remain visible when returning to a recently cached guard state.
+- Assigned guards remain in the Quartermaster roster when their chunks unload.
+- Quartermaster ammo service checks native TaCZ ammo compatibility and skips loose
+  ammo requests for guns using dummy or infinite reserves.
+
+## 1.8 - 2026-09-16
+
+### Added
+
 - Server operators can configure guards’ aim error and choose eye-level or
   center-mass targeting, with separate optional settings against players.
   Defaults retain zero added error and eye-level targeting. Player overrides

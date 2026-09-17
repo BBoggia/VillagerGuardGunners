@@ -6,8 +6,7 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: read `mod_version` in `gradle.properties`. It currently remains `1.7`;
-  the accuracy work is Unreleased and needs a new public version before upload.
+- Version: read `mod_version` in `gradle.properties`. The current candidate is `1.8`.
 - Minecraft: `1.20.1`
 - Forge: `47.4.10` minimum; compatible 47.x releases
 - Guard Villagers: `1.20.1-1.6.19`
@@ -17,15 +16,15 @@ the relevant manual rows pass against the exact files being distributed.
 - Automated baseline gun pack: TaCZ Default Gun Pack bundled with TaCZ
   `1.1.8-hotfix`. Record additional tested pack versions with candidate evidence.
 - Candidate JAR SHA-256: use the checksum shipped with the candidate being tested.
-  The earlier 1.7 preparation hash does not identify the current Unreleased build.
+  The earlier 1.7 preparation hash does not identify the current 1.8 build.
 
 ## Guard accuracy candidate
 
 Use the [accuracy configuration guide](configuration.md#guard-accuracy-and-player-combat)
 and [validation results](guard-accuracy-validation.md) for the completed accuracy
-work. Its local review bundle contains the mod JAR, the aiming-section example,
-documentation, and checksums. It retains the current build version for local
-testing; it is not a replacement upload for published 1.7 release files.
+work. Earlier accuracy test bundles used an internal 1.7 identity. The 1.8
+candidate has its own versioned JAR, release notes, documentation, and checksums;
+earlier runtime results remain attributed to their recorded artifact hashes.
 
 Confirm zero-error/eye-level defaults and disabled player overrides, the 2°
 center-mass starting example, current dependency metadata, no observer classes
@@ -38,13 +37,13 @@ unchanged balance trials; identify which artifact produced those measurements.
 Use the checksum in the prepared candidate bundle's `SHA256SUMS.txt` to identify
 its exact files. Earlier development reports do not certify changed artifacts.
 The checked rows below are historical preparation results and apply only to
-their recorded artifact, not automatically to the current Unreleased JAR.
+their recorded artifact, not automatically to the current 1.8 JAR.
 Current preparation results are recorded with the candidate review evidence;
 manual, multiplayer, upgrade, performance, and remote CI checks still require
 matching evidence before public release.
 
 Build a local review bundle with `./gradlew prepareReleaseCandidate`. It contains
-the mod JAR, 25 individual player datapacks, five all-buildings alternatives,
+the mod JAR, one universal datapack, 25 individual player datapacks, five all-buildings alternatives,
 release notes, documentation, and checksums under `build/distributions/release-candidate/<version>/`. This task
 runs `check` and release-identity verification. It does not mark pending manual
 rows complete or bypass the public `prepareCurseForgeRelease` gates.
@@ -301,6 +300,10 @@ notes. Detailed behavior and troubleshooting are documented in
 
 ## Packaging
 
+- [ ] For Quartermaster changes, run the [packaged acceptance checks](quartermaster-validation.md)
+  against the candidate, including a copied-world upgrade, two-client management and
+  trading, reconnect conservation, and loaded 25/100-guard scale comparisons. Keep
+  the observer mod out of distribution artifacts and record any untested conditions.
 - [ ] Complete every `VBUILD-MANUAL-*` row and resolve every Partial or Manual
   row in `docs/village-defense-buildings-release-matrix.md` against the exact
   candidate JAR.

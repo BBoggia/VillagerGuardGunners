@@ -184,7 +184,7 @@ public final class QuartermasterServiceGameTests {
             }
         };
         var source = new ServiceSource(f.station, faulty, f.station.serviceReceipt(), 27);
-        var p = new ServicePlan(base.operation(), base.guard(), base.station(), base.placement(), source, base.sourceSlot(), base.targetSlot(), base.returnSlot(), base.stockBefore(), base.replacement(), base.guardBefore(), base.profileRevision(), base.policy(), base.profile(), base.replaceExisting(), base.sourceRevision(), base.guardRevision(), base.expiresAt());
+        var p = new ServicePlan(base.operation(), base.guard(), base.station(), base.placement(), source, base.sourceSlot(), base.targetSlot(), base.returnSlot(), base.stockBefore(), base.replacement(), base.guardBefore(), base.profileRevision(), base.policy(), base.profile(), base.replaceExisting(), base.sourceRevision(), base.guardRevision(), base.expiresAt(), base.settingsRevision());
         h.assertTrue(ServiceTransactions.transfer(p) == ServiceStatus.RECOVERY_REQUIRED, "Failure escaped recovery");
         h.assertTrue(f.guard.getMainHandItem().isEmpty() && ItemStack.matches(stock, f.station.inventory().getStackInSlot(0)), "Rollback failed item conservation");
         h.assertTrue(f.station.serviceReceipt().locked() && GuardEquipmentServiceAccess.get(f.guard).receipt.locked(), "Failed owners not quarantined"); h.succeed();

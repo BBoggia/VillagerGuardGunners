@@ -102,6 +102,22 @@ def run(args):
         shutil.copy2(jar, mods / jar.name)
     if args.mode != 'smoke':
         shutil.copy2(args.observer, mods / args.observer.name)
+    # Forge resolves shared Jar-in-Jar libraries; reject duplicate top-level mods only.
+    installed_ids = {key for jar in mods.glob('*.jar') for key in qa.jar_metadata(jar)[0]['mods']}
+    for jar in getattr(args, 'extra_mod', []):
+        ids = set(qa.jar_metadata(jar)[0]['mods'])
+        if not ids or ids & installed_ids or (mods / jar.name).exists():
+            raise ValueError('Missing mod metadata or duplicate compatibility mod: ' + str(jar))
+        shutil.copy2(jar, mods / jar.name)
+        installed_ids.update(ids)
+    config_hashes = {}
+    for config in getattr(args, 'config_file', []):
+        destination = out / 'config' / config.name
+        destination.parent.mkdir(exist_ok=True)
+        if destination.exists():
+            raise ValueError('Duplicate configuration filename: ' + config.name)
+        shutil.copy2(config, destination)
+        config_hashes[config.name] = qa.sha(destination)
     if args.mode == 'firing':
         test_guns(providers['tacz'], out)
     if args.mode == 'regression':
@@ -120,6 +136,7 @@ def run(args):
     command += ['@libraries/net/minecraftforge/forge/1.20.1-47.4.10/unix_args.txt', 'nogui']
     before = {p.name: qa.sha(p) for p in mods.glob('*.jar')}
     manifest = {'command': command, 'mode': args.mode, 'jars': before,
+                'initialConfigFiles': config_hashes,
                 'runnerSha256': qa.sha(Path(__file__)), 'forgeArgumentsSha256': qa.sha(arguments)}
     (out / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     log_path = out / 'console.log'
@@ -147,7 +164,9 @@ def run(args):
         result = {'passed': stopped and code == 0, 'observerInstalled': False}
         (out / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
     else:
-        result = json.loads((out / 'result.json').read_text())
+        result_path = out / 'result.json'
+        result = json.loads(result_path.read_text()) if result_path.exists() else {
+            'passed': False, 'failure': 'Server exited without a completion marker; see console.log'}
     passed = code == 0 and unchanged and result.get('passed', False)
     manifest.update(exitCode=code, jarsUnchanged=unchanged, passed=passed)
     (out / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')

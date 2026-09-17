@@ -27,7 +27,7 @@ final class ArmoryResupplyStepFiveContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/armory/resupply/ArmoryResupplySettings.java");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 22")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 23")),
                 () -> assertTrue(config.contains("previousVersion < 9")),
                 () -> assertTrue(config.contains("restoreVersionNineDefaults()")),
                 () -> assertTrue(config.contains("public ArmorySettings armoryResupply")),

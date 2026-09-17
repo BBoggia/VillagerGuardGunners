@@ -16,7 +16,7 @@ village pools available in your world; content for absent providers stays inacti
 The pack preserves the resources and building IDs from all five provider packs.
 It works with Villager Guard Gunners 1.7. That original JAR can report missing-pool
 warnings for absent village mods; those entries are skipped and the other
-buildings still load. Updated builds skip known absent providers before the
+buildings still load. Version 1.8 skips known absent providers before the
 installation checks, while retaining warnings for missing pools in installed
 providers. Pools supplied by datapacks also remain supported without a mod wrapper.
 

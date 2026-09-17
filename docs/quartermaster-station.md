@@ -21,6 +21,104 @@ linked Village Armories. Stations work outside villages and do not require
 Village Defense Buildings. Equipment service stocks medical supplies but does
 not treat injuries.
 
+## Quartermaster overview
+
+For a first setup, let an unemployed adult villager claim the station. Buy supplies
+through **Trade**, then deposit the purchased items through **Open Stock**. Purchases
+stay in your inventory until you deposit them. Use **Manage** to choose guards,
+select **Restock Current** or **Maintain Loadout**, and set **Station: This station**.
+Preview and apply the settings, then check **Needs** for remaining shortages.
+Restock Current needs an equipped gun and an existing medical supply in the pouch
+to know what to replenish; Maintain Loadout uses its selected profile instead.
+
+Choose **Overview** in the station screen, or right-click a nearby adult
+Quartermaster with both hands empty. The villager must still claim a loaded
+Quartermaster station. Holding an item or sneaking keeps the normal villager
+interaction available, including name tags and interactions added by other mods.
+
+The overview has four views:
+
+- **Stock** lists viewable equipment, ammo types and medical supplies. Counts show
+  available / total; hover a row for reserved amounts and equipment details.
+- **Needs** shows requested / available / incoming / missing supplies for assigned
+  guards and current Auto visitors. Select a shortage to see affected guards. Conditional or
+  unavailable needs are marked **Unknown**. Incoming supplies are reserved for an
+  active delivery and have not arrived yet; they reduce the missing amount.
+- **Guards** separates assigned guards, current visitors and nearby candidates.
+  Hover a guard for its group, policy and loadout. Nearby candidates do not add
+  demand or enroll themselves in service. **All guards** clears a shortage filter.
+- **Service** shows recent completed deliveries to visible guards. This short
+  history resets when the server stops.
+
+Scroll within a page and use the arrow buttons for more pages. **Refresh** requests
+an updated estimate; the screen also refreshes automatically. The footer shows the
+report's age, checked/unavailable guard counts and whether the report is limited.
+A limited report can omit guards or linked stock. Linked Village Armories must be
+loaded, readable and within eight blocks of you to show their supplies.
+
+Unloaded guards remain unavailable with last-seen information. In **Guards**, a
+station manager can select **Forget record** on an unavailable guard's row to remove
+that last-seen entry. This leaves the guard's saved settings unchanged; its record
+returns if it comes back with the assignment intact. Loaded guards cannot be forgotten,
+including guards loaded in another dimension.
+
+Missing stock,
+protected equipment, full return storage and unknown gun definitions have separate
+explanations. Estimates do not reserve supplies or guarantee a service trip.
+**Open Stock** returns to the station inventory and requires normal permission and
+the eight-block range.
+
+**Trade** opens the villager's ordinary merchant screen. Quartermasters sell
+[bandages, ammo and equipment](quartermaster-trades.md), with optional gun sales
+disabled by default. Keep both hands empty and stop sneaking to use it. The villager must be
+within four blocks, visible, awake, and free to trade. A villager responding to
+danger or already trading with another player cannot start another trade. If it
+has no offers, a message explains that. Prices, XP and restocking follow normal
+villager trading; purchases go to you for manual deposit into station stock.
+
+Visitors can reach Trade through the villager without seeing private supplies or
+guard management. Browsing leaves the Quartermaster free to work and move. Walking
+out of range, losing permission, replacing the station, or losing the villager's
+job-site association closes the affected overview. Trading pauses equipment service
+until the merchant interaction ends.
+
+## Manage guard equipment
+
+Open **Manage** from the overview. You need permission to manage both the station
+and each selected guard. Select guards individually, or use a guard's **Squad**
+button to replace the selection with its loaded members within 48 blocks.
+Browse all eligible loaded guards with the page arrows, then apply changes in
+batches of up to 64. The screen counts excluded loaded squad
+members. Guards assigned to another station are excluded. Unloaded guards and
+members who join later are not added to the selection.
+
+Choose each setting separately:
+
+- **Policy:** Keep, Manual, Restock Current, or Maintain Loadout.
+- **Loadout:** Keep or one of the available equipment profiles. Hover for the full
+  profile ID. Maintain Loadout requires a valid profile.
+- **Replace:** Keep, No, or Yes. Keep preserves each guard's existing permission.
+  Hover to see the current selection, including Mixed permissions. Yes permits
+  replacing named equipment; Binding Curse and items that cannot enter returns
+  remain protected.
+- **Station:** Keep, Auto, or This station. Manual can retain an assignment for
+  later use, including after that station revokes service access; Auto lets normal
+  service choose a nearby station. Reenabling service still requires valid access.
+
+Choose **Preview**, then inspect **Changes** and **Needs**. Hover rows for guard IDs,
+before/after settings, service delays, supply amounts, and protected equipment.
+Use the arrows for more pages. Estimates share the available stock across selected
+guards and reserve nothing. Missing supplies do not prevent saving the settings.
+Large estimates finish over several ticks and show **Updating supply estimate…**
+while pending. You can apply valid settings before the supply estimate finishes.
+
+Choose **Apply** to save the batch. A preview lasts 30 seconds. Changes to a selected
+guard's settings, squad membership, permissions, availability, or loadout definitions
+require a fresh preview. Stock changes update the estimate without canceling it.
+The result shows how many guards were updated; hover guard rows for current service
+waiting conditions. Guards collect equipment during normal service when supplies,
+work hours, and their duties allow it. Their movement orders remain unchanged.
+
 ## Access
 
 The player who places a newly crafted station becomes its owner. The owner and
@@ -52,7 +150,7 @@ they are not included in general block-entity update packets.
 ## Hoppers and pipes
 
 Automation is off by default and is independent of player access. The owner can
-enable it with **Auto: off**. All faces then expose the same transport rules:
+enable it with **Pipes: Off**. All faces then expose the same transport rules:
 
 - Insert into stock slots only.
 - Extract from return slots only.

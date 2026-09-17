@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "level": 3,
+  "inputs": [
+    {"type": "item", "id": "minecraft:emerald", "count": 8},
+    {"type": "item", "id": "minecraft:iron_ingot", "count": 1}
+  ],
+  "output": {"type": "ammo", "id": "tacz:762x39", "count": 30},
+  "max_uses": 4,
+  "xp": 10,
+  "price_multiplier": 0.05
+}

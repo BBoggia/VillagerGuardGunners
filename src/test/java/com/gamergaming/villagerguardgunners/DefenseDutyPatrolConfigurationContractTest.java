@@ -24,7 +24,7 @@ final class DefenseDutyPatrolConfigurationContractTest {
                         + "PatrolRouteExecutionSettings.java");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 22")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 23")),
                 () -> assertTrue(config.contains("villageDefense.restoreVersionSixteenDefaults()")),
                 () -> assertTrue(config.contains("squads.restoreVersionSixteenDefaults()")),
                 () -> assertTrue(config.contains("patrolRouteExecution")),

@@ -32,7 +32,12 @@
     "accessor.StructureTemplatePoolAccessor",
     "accessor.VillagePoiStorageAccessor",
     "accessor.VillagePoolElementAccessor",
-    "IntegratedVillageTagLoaderMixin"
+    "IntegratedVillageTagLoaderMixin",
+    "QuartermasterOfferMixin",
+    "QuartermasterOffersMixin",
+    "QuartermasterLevelTradesMixin",
+    "QuartermasterResultSlotMixin",
+    "QuartermasterMerchantMenuMixin"
   ],
   "client": [
     "client.GuardModelMixin",

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "level": 3,
+  "inputs": [
+    {
+      "type": "item",
+      "id": "minecraft:emerald",
+      "count": 8
+    }
+  ],
+  "output": {
+    "type": "item",
+    "id": "minecraft:iron_helmet",
+    "count": 1
+  },
+  "max_uses": 3,
+  "xp": 10,
+  "price_multiplier": 0.05
+}

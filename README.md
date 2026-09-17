@@ -45,7 +45,7 @@ orders, join squads, restock from Village Armories, and protect their allies.
 
 ## Requirements
 
-Villager Guard Gunners 1.7 targets this dependency combination:
+Villager Guard Gunners 1.8 targets this dependency combination:
 
 | Component | Version |
 | --- | --- |
@@ -147,9 +147,23 @@ their inventory screen. The owner can choose private, squad-creator, or public
 access and enable hopper or pipe transport. Breaking the station packs its
 contents and settings into one item for relocation.
 
+Use **Overview** in the station screen, or right-click its Quartermaster with both
+hands empty, to inspect stock, equipment needs, guard status and recent deliveries.
+Select a shortage to see affected guards. Open Stock and villager trades are also
+available from the overview; private supplies require station access.
+Use **Manage** to select nearby guards individually or by squad, preview equipment
+policies and station assignments, then apply the settings to the selected guards.
+
 See [Quartermaster stations](docs/quartermaster-station.md) for crafting,
 permissions, and transport rules. A working Quartermaster can provide
 [automatic equipment service](docs/quartermaster-service.md) to enrolled guards.
+Quartermasters also sell bandages, ammo and equipment through
+[normal villager trades](docs/quartermaster-trades.md). Gun sales are optional and
+disabled by default. Deposit purchases in station stock before guards can collect
+them. The [setup guide](docs/quartermaster-station.md#quartermaster-overview)
+connects trading, stocking, guard selection, and service.
+See [Quartermaster compatibility](docs/quartermaster-compatibility.md) for tested
+villager mods and their setup requirements.
 
 ## Ammo and Village Armories
 
@@ -279,7 +293,7 @@ These diagnostics do not issue equipment, locate structures, or load chunks.
 
 ## Documentation
 
-- [Version 1.7 release notes](docs/releases/1.7.md)
+- [Version 1.8 release notes](docs/releases/1.8.md)
 - [Current development changelog](CHANGELOG.md)
 - [CurseForge description](docs/curseforge-description.md)
 - [Configuration](docs/configuration.md)

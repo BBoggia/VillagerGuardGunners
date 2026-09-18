@@ -102,9 +102,22 @@ public final class GuardGunnerCommands {
                 + ", combatRetained=" + gunGoal.retainsCombatOwnership()
                 + ", lastInterruption=" + gunGoal.lastInterruption(), ChatFormatting.GRAY));
         send(source, line("Tactical route", route.status() + ", destination=" + route.destination()
+                + ", ownsPath=" + route.ownsPath() + ", moving=" + route.isMoving() + ", laneChange=" + route.isLaneChange()
                 + ", pathAttempts=" + route.pathAttempts() + ", failedDestinations=" + route.failedDestinations()
                 + ", candidates=" + route.candidatesChecked(), ChatFormatting.GRAY));
+        var combatDuty = com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard);
+        var combatSupply = com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess.getController(guard);
+        send(source, line("Combat duty", combatDuty == null ? "none" : "anchor=" + combatDuty.anchor()
+                + ", radius=" + combatDuty.radius() + ", source=" + combatDuty.source()
+                + ", returning=" + (dutyGoal != null && dutyGoal.activeOwner() == GuardAutomaticDutyMovementGoal.MovementOwner.RETURN), ChatFormatting.GRAY));
+        send(source, line("Emergency resupply", combatSupply != null && combatSupply.isEmergency()
+                ? combatSupply.snapshot().state().name() : "inactive", ChatFormatting.GRAY));
         long now = guard.level().getGameTime();
+        send(source, line("Target ranking", gunGoal.targetRankingStatus(), ChatFormatting.GRAY));
+        send(source, line("Investigation", gunGoal.investigation().status()
+                + ", lastSeen=" + gunGoal.investigation().lastSeenPosition()
+                + ", destination=" + gunGoal.investigation().destination()
+                + ", attempts=" + gunGoal.investigation().attempts(), ChatFormatting.GRAY));
         send(source, line("Tactical intent", tacticalController.decision().intent()
                 + ", reason=" + tacticalController.decision().reason()
                 + ", readiness=" + nativeState.readiness()

@@ -271,15 +271,15 @@ final class VillageCoveragePolicyTest {
         assertEquals(assigned.assignments(), book.forVillage(VILLAGE));
     }
 
-    @Test void emptyOrOversizedReplacementReleasesOldCoverageAndRetainsNoPartialAreas() {
+    @Test void oversizedReplacementRetainsUsefulPartialCoverage() {
         plan(layout(1), 1, 0);
         var oversized = VillageCoverageLayout.partition(VILLAGE, 2,
                 IntStream.range(0, 17).mapToObj(i -> new Site(new BlockPos(i * 64, 64, 0), SiteKind.HOME)).toList());
-        var plan = schedule(oversized, List.of(), candidates(1), Set.of(), Set.of(), VillageDefenseState.PEACE, 1);
+        var plan = schedule(oversized, destinations(oversized), candidates(1), Set.of(), Set.of(), VillageDefenseState.PEACE, 1);
         assertEquals(VillageCoverageLayout.Status.AREA_LIMIT, plan.layoutStatus());
-        assertTrue(plan.assignments().isEmpty());
-        assertTrue(plan.areas().isEmpty());
-        assertEquals(0, book.size());
+        assertEquals(1, plan.assignments().size());
+        assertEquals(VillageCoverageLayout.MAX_AREAS, plan.areas().size());
+        assertEquals(1, book.size());
     }
 
     @Test void clocksAreMonotonicAcrossCallbacksAndConfigurationIsBounded() {

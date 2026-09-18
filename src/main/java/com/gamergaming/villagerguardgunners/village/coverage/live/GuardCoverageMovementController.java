@@ -52,6 +52,8 @@ public final class GuardCoverageMovementController {
             ownedPath = new Path(new java.util.ArrayList<>(route.positions().stream().map(p -> new Node(p.getX(), p.getY(), p.getZ())).toList()), target, true);
             try {
                 if (!guard.getNavigation().moveTo(ownedPath, 0.8)) { finish(false, true); return; }
+                ownedPath = guard.getNavigation().getPath();
+                if (ownedPath == null) { finish(false, true); return; }
             } catch (RuntimeException exception) { finish(false, true); return; }
             remember();
         }
@@ -69,6 +71,7 @@ public final class GuardCoverageMovementController {
             remember();
         }
     }
+    public boolean ownsPath() { return ownedPath != null && guard.getNavigation().getPath() == ownedPath; }
     public void stop() {
         if (active && lease != null) VillageCoverageRuntime.finish(guard, lease, false, false);
         stopOwnedPath(); active = false; lease = null;

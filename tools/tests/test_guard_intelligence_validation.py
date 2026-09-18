@@ -85,5 +85,73 @@ class CombatEvidenceTest(unittest.TestCase):
         self.assertEqual(set(validation.source_identity(root)), {'docs/behavior.md'})
 
 
+class VillageEvidenceTest(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.directory = Path(self.temporary.name)
+        for scenario in validation.VILLAGE_SCENARIOS:
+            report = {
+                'schema': 1, 'scenario': scenario, 'mode': 'baseline',
+                'fixtureValid': True, 'fixtureFailure': None, 'metrics': {},
+                'settings': {'automaticCoverage': scenario != 'village_default',
+                             'homesConnected': scenario != 'village_divided',
+                             'squadMembers': 2, 'initialAffiliatedGuards': 5,
+                             'villagers': 36 if scenario == 'village_crowd' else 4},
+                'samples': [{'tick': tick, 'guards': {
+                    name: {'squadMember': name.startswith('squad_'),
+                           'affiliated': name != 'newcomer', 'lease': None}
+                    for name in validation.VILLAGE_GUARDS}} for tick in range(1, 601)],
+            }
+            (self.directory / f'{scenario}.json').write_text(json.dumps(report))
+
+    def mutate(self, update, scenario='village_default'):
+        path = self.directory / f'{scenario}.json'
+        report = json.loads(path.read_text())
+        update(report)
+        path.write_text(json.dumps(report))
+
+    def read(self):
+        return validation.read_reports(self.directory, 'baseline', 'village')
+
+    def test_observations_do_not_claim_future_acceptance(self):
+        self.assertEqual(set(self.read()), validation.VILLAGE_SCENARIOS)
+        self.assertNotIn('acceptance', self.read()['village_default'])
+
+    def test_village_baseline_cannot_be_promoted_to_acceptance(self):
+        with self.assertRaises(ValueError):
+            validation.read_reports(self.directory, 'acceptance', 'village')
+
+    def test_configuration_must_match_the_scenario(self):
+        self.mutate(lambda report: report['settings'].update(automaticCoverage=True))
+        with self.assertRaises(ValueError): self.read()
+
+    def test_excluded_participants_cannot_receive_coverage(self):
+        self.mutate(lambda report: report['samples'][20]['guards']['resident_west'].update(lease={'destination': 'unexpected'}))
+        with self.assertRaises(ValueError): self.read()
+
+    def test_membership_must_survive_the_observation_window(self):
+        self.mutate(lambda report: report['samples'][400]['guards']['squad_a'].update(squadMember=False))
+        with self.assertRaises(ValueError): self.read()
+
+    def test_newcomer_can_join_through_normal_discovery_before_receiving_coverage(self):
+        def joined(report):
+            for row in report['samples'][300:]:
+                row['guards']['newcomer'].update(affiliated=True, lease={'destination': 'home'})
+        self.mutate(joined, 'village_coverage')
+        self.assertIn('village_coverage', self.read())
+
+    def test_newcomer_cannot_receive_coverage_before_affiliation(self):
+        self.mutate(lambda report: report['samples'][30]['guards']['newcomer'].update(lease={'destination': 'home'}),
+                    'village_coverage')
+        with self.assertRaises(ValueError): self.read()
+
+    def test_missing_participants_or_truncated_windows_cannot_pass(self):
+        self.mutate(lambda report: report['samples'][30]['guards'].pop('hold_position'))
+        with self.assertRaises(ValueError): self.read()
+        self.mutate(lambda report: report['samples'].pop())
+        with self.assertRaises(ValueError): self.read()
+
+
 if __name__ == '__main__':
     unittest.main()

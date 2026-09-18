@@ -142,6 +142,12 @@ public enum GuardCombatStatus {
         if (!trackingCurrentTarget) {
             return ACQUIRING_TARGET;
         }
+        // A moving guard intentionally looks along its route and releases aim.
+        // Its completed shot-history entry can expire before the maneuver ends.
+        GuardCombatStatus movingRefusal = shotRefusalStatus(shotStatus, repositioning);
+        if (repositioning && (movingRefusal == null || movingRefusal == REPOSITIONING)) {
+            return REPOSITIONING;
+        }
         if (!cachedLineOfSight) {
             return NO_LINE_OF_SIGHT;
         }

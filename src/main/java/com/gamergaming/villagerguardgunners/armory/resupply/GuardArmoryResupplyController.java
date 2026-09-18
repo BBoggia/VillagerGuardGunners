@@ -25,6 +25,9 @@ import tallestegg.guardvillagers.entities.Guard;
  * is available from this class.</p>
  */
 public final class GuardArmoryResupplyController {
+    private boolean emergency;
+    private long emergencyPermitTick = Long.MIN_VALUE;
+    private java.util.List<com.gamergaming.villagerguardgunners.ai.tactics.ThreatMemory.Observation> emergencyThreats = java.util.List.of();
     private final Guard guard;
     private final VillagerGuardGunnersConfig config;
 
@@ -65,6 +68,57 @@ public final class GuardArmoryResupplyController {
     public GuardArmoryResupplyController(Guard guard) {
         this.guard = Objects.requireNonNull(guard, "guard");
         this.config = ModConfigs.GUARD_GUNNERS;
+    }
+
+    /** Called only by the owning combat goal after observing threats and closing its trigger. */
+    public boolean tickEmergency(boolean safe, java.util.List<com.gamergaming.villagerguardgunners.ai.tactics.ThreatMemory.Observation> threats, Runnable takeMovement) {
+        if (!safe) { cancelEmergency(); return false; }
+        if (hasActiveRequest() && !emergency) return false;
+        emergency = true;
+        emergencyPermitTick = guard.level().getGameTime();
+        emergencyThreats = java.util.List.copyOf(threats);
+        boolean starting = !hasActiveRequest();
+        if (starting && !canStart()) { emergency = false; emergencyThreats = java.util.List.of(); return false; }
+        if (starting) takeMovement.run();
+        tick();
+        if (!hasActiveRequest()) { emergency = false; emergencyThreats = java.util.List.of(); }
+        return true;
+    }
+
+    public boolean emergencyCombatPermitted() {
+        return emergency && emergencyPermitTick == guard.level().getGameTime()
+                && (guard.getTarget() == null || guard.distanceToSqr(guard.getTarget()) >= 64)
+                && completelyDry(guard);
+    }
+    public boolean isEmergency() { return emergency; }
+    public boolean ownsEmergencyPath() { return emergency && movement != null && movement.ownsPath(); }
+    public void invalidateEmergencyPath() { if (ownsEmergencyPath()) movement.invalidateForWorldChange(); }
+    public void cancelEmergency() {
+        if (emergency) { cancelActive(RuntimeOutcome.CANCELLED, true); emergency = false; }
+        emergencyPermitTick = Long.MIN_VALUE;
+        emergencyThreats = java.util.List.of();
+    }
+    public boolean safeEmergencyRoute(net.minecraft.world.level.pathfinder.Path path) {
+        try {
+            if (!emergencyCombatPermitted()) return false;
+            var planner = new com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner(guard);
+            return path != null && path.canReach() && planner.safeRoute(path, path.getNextNodeIndex(), emergencyThreats,
+                    com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.bounds(guard), false);
+        } catch (RuntimeException ignored) { return false; }
+    }
+    public static boolean completelyDry(Guard guard) {
+        try {
+            var loadout = GuardWeaponAmmunition.captureSummary(guard, GuardAmmoAccess.getTaCZInventoryHandler(guard));
+            return loadout.state() != com.gamergaming.villagerguardgunners.sidearm.SidearmState.RECOVERY_REQUIRED
+                    && dryWeapon(loadout.primary()) && dryWeapon(loadout.sidearm())
+                    && (loadout.primary().isReady() || loadout.sidearm().isReady());
+        } catch (RuntimeException ignored) { return false; }
+    }
+    private static boolean dryWeapon(com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary.Snapshot weapon) {
+        return weapon != null && (weapon.status() == com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary.Status.NO_GUN
+                || (weapon.isReady() && weapon.reserveScanComplete() && !weapon.infiniteReserve()
+                    && weapon.reserveSource() == com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary.ReserveSource.PHYSICAL
+                    && weapon.displayedLoadedAmmo() == 0 && weapon.reserveUnits() == 0));
     }
 
     /** Called from Goal#canUse; expensive work occurs only on a due tick. */
@@ -161,6 +215,7 @@ public final class GuardArmoryResupplyController {
 
     /** Entity/server lifecycle cleanup; leaves no retry state behind. */
     public void discard() {
+        cancelEmergency();
         releaseActiveResources();
         state = ArmoryResupplyState.IDLE;
         request = null;
@@ -377,6 +432,9 @@ public final class GuardArmoryResupplyController {
             int reservationLifetimeTicks) {
         ArmoryResupplyRequest activeRequest = Objects.requireNonNull(request);
         for (ArmoryBlockEntity armory : query.armories()) {
+            if (emergency && (guard.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(armory.getBlockPos())) > 24 * 24
+                    || !com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.bounds(guard)
+                        .contains(net.minecraft.world.phys.Vec3.atCenterOf(armory.getBlockPos())))) continue;
             int slots;
             try {
                 slots = Math.min(

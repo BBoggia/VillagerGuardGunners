@@ -139,7 +139,7 @@ public final class VillagerGuardGunnersConfig extends Config {
     @Comment("Profile selection and guard behavior controls. These settings do not change TaCZ weapon statistics.")
     public TacticalSettings tactics = new TacticalSettings();
 
-    @Comment("Server-authoritative firing policy applied after Guard Villagers chooses a target.")
+    @Comment("Server-authoritative firing policy for the guard's selected target.")
     public EngagementSettings engagement = new EngagementSettings();
 
     @Comment("Friendly-fire clearance settings. Core friendly-fire protection stays active.")
@@ -721,14 +721,14 @@ public final class VillagerGuardGunnersConfig extends Config {
     @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.engagement")
     public static final class EngagementSettings extends ConfigSection {
 
-        @Comment("Choose whether guards follow normal Guard Villagers targets, restrict proactive fire to hostile mobs, retaliate defensively, or hold fire.")
+        @Comment("Choose whether guards engage their selected targets, restrict proactive fire to hostile mobs, retaliate defensively, or hold fire.")
         public ValidatedEnum<EngagementMode> mode =
                 new ValidatedEnum<>(EngagementMode.GUARD_TARGETS);
 
         @Comment("Ticks after an attack during which DEFENSIVE guards can engage the attacker. 20 ticks = 1 second at normal game speed.")
         public ValidatedInt defensiveMemoryTicks = new ValidatedInt(200, 1200, 20);
 
-        @Comment("Allow these entity types in restricted firing modes if Guard Villagers already selects them as targets. Does not make guards search for them. Hold Fire, target exclusions, and ally protection still take priority. Example: minecraft:zombie.")
+        @Comment("Allow these entity types in restricted firing modes if the guard selects them as targets. Does not make guards search for them. Hold Fire, target exclusions, and ally protection still take priority. Example: minecraft:zombie.")
         public ValidatedSet<ResourceLocation> additionalTargets =
                 new ValidatedSet<>(Set.of(), new ValidatedIdentifier());
 
@@ -843,7 +843,7 @@ public final class VillagerGuardGunnersConfig extends Config {
     @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.armoryResupply")
     public static final class ArmorySettings extends ConfigSection {
 
-        @Comment("Let otherwise-idle guards with low spare ammo visit accessible Village Armories in loaded chunks. Requires Combat and Village AI. Quartermaster service is configured separately.")
+        @Comment("Let guards with low spare ammo visit accessible Village Armories in loaded chunks. Guards with no usable gun ammo can also resupply during combat when threats leave enough space. Requires Combat and Village AI. Quartermaster service is configured separately.")
         public ValidatedBoolean enabled = new ValidatedBoolean(true);
 
         @Comment("Ticks between staggered ammo-need assessments. Higher values reduce server work but react more slowly. 20 ticks = 1 second at normal game speed.")

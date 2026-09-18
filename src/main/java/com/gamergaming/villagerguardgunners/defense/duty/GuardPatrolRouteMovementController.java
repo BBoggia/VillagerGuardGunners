@@ -11,11 +11,9 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
 import tallestegg.guardvillagers.entities.Guard;
 
@@ -333,16 +331,8 @@ public final class GuardPatrolRouteMovementController {
         if (!(guard.level() instanceof ServerLevel level)) {
             return false;
         }
-        BlockPos headPosition = destination.above();
-        BlockPos floorPosition = destination.below();
-        BlockState feet = level.getBlockState(destination);
-        BlockState head = level.getBlockState(headPosition);
-        BlockState floor = level.getBlockState(floorPosition);
-        return feet.getCollisionShape(level, destination).isEmpty()
-                && head.getCollisionShape(level, headPosition).isEmpty()
-                && feet.getFluidState().isEmpty()
-                && head.getFluidState().isEmpty()
-                && floor.isFaceSturdy(level, floorPosition, Direction.UP);
+        return com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard,
+                net.minecraft.world.phys.Vec3.atBottomCenterOf(destination));
     }
 
     private void attemptPath(BlockPos destination, long gameTime) {

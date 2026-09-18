@@ -242,7 +242,8 @@ public final class VillageCoverageRuntime {
         Dimension d = LEVELS.get((ServerLevel) guard.level());
         UUID id = d == null ? null : d.guards.get(guard.getUUID());
         Village v = id == null ? null : d.villages.get(id);
-        try { return v != null && v.terrain != null && v.terrain.usable() && v.terrain.walkable(p); }
+        try { return v != null && v.terrain != null && v.terrain.usable() && v.terrain.walkable(p)
+                && com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard, net.minecraft.world.phys.Vec3.atBottomCenterOf(p)); }
         catch (RuntimeException exception) { return false; }
     }
     public static boolean safeTransition(Guard guard, BlockPos from, BlockPos to) {

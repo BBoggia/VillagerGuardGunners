@@ -6,6 +6,17 @@ in local development notes.
 
 ## Unreleased
 
+### Improved
+
+- Guards prioritize urgent visible threats to nearby allies and can spread their attention when another ready guard is already covering an enemy.
+- Guards can make a short local search after losing sight of an enemy, then resume fighting or end the search.
+- Guards seeking a clear shot avoid firing positions already reserved by another guard.
+
+- Guards use village paths with slabs, stairs, and unlit campfires more consistently during combat and patrols.
+- Village defenders stay near their combat duty position and return after fighting, while player orders retain priority.
+- Guards with no usable gun ammo can resupply from a nearby Village Armory during combat when threats leave enough space.
+- Automatic village coverage keeps verified reachable areas active when a large village exceeds its survey limits.
+
 ### Added
 
 - Station managers can remove unavailable guards' last-seen roster records from
@@ -32,6 +43,15 @@ in local development notes.
 
 ### Fixed
 
+- Guards cancel emergency resupply safely when a route becomes hazardous or gun AI is disabled.
+- Changing targets preserves the guard's patrol boundary; rejected target changes preserve aiming and movement.
+- Guards can return to duty positions on slabs and release an unreachable return point to resume other duties.
+- Crowds of villagers and idle animals no longer prevent guards from assessing
+  nearby threats. Guards seeking a firing lane consider the selected target,
+  nearby allies, and their gun's range, and can finish the move before firing.
+- Guard movement status correctly reports firing-lane changes as Repositioning.
+  Tactical movement keeps track of the path Minecraft actually follows and
+  releases ownership when another movement action replaces it.
 - Quartermaster bulk supply estimates spread their work across ticks, including
   automatic refreshes and concurrent editors. Pending estimates are labeled, and
   valid settings can be saved while estimates finish.

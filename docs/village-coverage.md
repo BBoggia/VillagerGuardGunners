@@ -52,9 +52,17 @@ Destination IDs are unique across the village, positions belong to their area,
 and changes to position, component, state, or terrain revision cancel old leases.
 
 If the partition needs more than 16 areas, the result reports `AREA_LIMIT` and
-contains no partial layout. Empty occupancy reports `NO_OCCUPIED_SITES`. These
-states cannot create assignments. The cap never joins disconnected areas just
-to make an oversized village appear fully supported.
+retains the first 16 independently partitioned areas in stable spatial order.
+Verified destinations in those areas can still receive assignments. Empty
+occupancy reports `NO_OCCUPIED_SITES` and creates no assignments. The cap never
+joins disconnected areas or claims that omitted areas are covered.
+
+Terrain surveys likewise retain verified nodes and edges when the anchor, domain,
+or node cap is reached. `terrain_limit` identifies this partial observation.
+Unknown positions have no component and cannot receive a path. Missing chunks,
+blocked approaches, and disconnected components retain their existing eligibility
+checks. Partial coverage can therefore keep the reachable local area active
+without claiming that the whole village is patrolled.
 
 ## Guard availability and ownership
 
@@ -199,8 +207,9 @@ it repeatedly. Operator status reports `refreshing`
 while an active map has a replacement survey in progress.
 
 Changed footprints, block/chunk events, and survey errors still invalidate the
-whole village. District-specific replacement and continuation beyond the current
-coverage limits are not implemented yet. Running two survey maps temporarily
+whole village. District-specific replacement is not implemented. Capped surveys
+retain usable local components, but omitted areas need a later survey with space
+inside the same limits. Running two survey maps temporarily
 increases memory use within the existing village and terrain limits.
 
 ## Route step revalidation

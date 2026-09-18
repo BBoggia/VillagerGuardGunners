@@ -94,7 +94,7 @@ public final class TacticalIntentGameTests {
                         && tracker.observations().size() <= ThreatMemory.CAPACITY,
                 "Perception exceeded a candidate, sight, or memory bound");
         tracker.update(crowd.get(0), true);
-        h.assertTrue(tracker.queryCount() == 1, "Repeated updates bypassed the perception cadence");
+        h.assertTrue(tracker.queryCount() == 2, "Repeated updates bypassed the perception cadence");
         crowd.forEach(Mob::discard); guard.discard(); h.succeed();
     }
 
@@ -144,7 +144,7 @@ public final class TacticalIntentGameTests {
         });
     }
 
-    @GameTest(batch = "tactics_stale_target", templateNamespace = "minecraft", template = ARENA, timeoutTicks = 100)
+    @GameTest(batch = "tactics_stale_target", templateNamespace = "minecraft", template = ARENA, timeoutTicks = 130)
     public static void hiddenStaleTargetIsReleasedWithoutFollowingIt(GameTestHelper h) {
         Guard guard = guard(h, 4, 4);
         var enemy = mob(h, EntityType.HUSK, 12, 4);
@@ -161,7 +161,7 @@ public final class TacticalIntentGameTests {
                 goal.stop(); guard.discard(); enemy.discard(); h.succeed();
             }
         });
-        h.runAtTickTime(90, () -> h.assertTrue(guard.getTarget() == null,
+        h.runAtTickTime(115, () -> h.assertTrue(guard.getTarget() == null,
                 "Hidden contact failed to expire: " + goal.tacticalController().decision()
                         + ", assessment=" + goal.tacticalController().assessment()));
     }
@@ -262,7 +262,14 @@ public final class TacticalIntentGameTests {
                 == CombatIntentPolicy.Intent.ENGAGE, "DEFEND intent used vertical distance for a horizontal area");
         tactics.clear(); tactics.observe(enemy, true);
         tactics.decide(enemy, true, true, WeaponReadiness.READY, null, false, 4);
-        for (int i = 0; i < 34; i++) mob(h, EntityType.COW, 5 + i % 5, 8 + i / 5);
+        for (int i = 0; i < 40; i++) mob(h, EntityType.VILLAGER, 5 + i % 5, 8 + i / 5);
+        for (int i = 0; i < 12; i++) guard(h, 5 + i % 4, 4 + i / 4);
+        tactics.tracker().clear(); tactics.observe(enemy, true);
+        h.assertTrue(tactics.assessment().complete() && tactics.tracker().remembered(enemy.getUUID()) != null,
+                "Civilians saturated the threat scan or hid the selected hostile");
+        h.assertTrue(tactics.decide(enemy, true, true, WeaponReadiness.READY, null, true, 4).intent()
+                == CombatIntentPolicy.Intent.REPOSITION, "Civilian density prevented a lane change");
+        for (int i = 0; i < 34; i++) mob(h, EntityType.HUSK, 24 + i % 4, 12 + i / 4);
         tactics.tracker().clear(); tactics.observe(enemy, true);
         h.assertFalse(tactics.assessment().complete(), "Fixture did not exhaust perception budget");
         h.assertTrue(tactics.decide(enemy, true, true, WeaponReadiness.READY, null, false, 4).reason()

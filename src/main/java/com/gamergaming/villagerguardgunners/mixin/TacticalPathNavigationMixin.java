@@ -30,8 +30,22 @@ public abstract class TacticalPathNavigationMixin {
             callback.cancel();
             return;
         }
+        var resupply = com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess.getController(guard);
+        if (resupply != null && resupply.ownsEmergencyPath()) {
+            hasDelayedRecomputation = false;
+            resupply.invalidateEmergencyPath(); callback.cancel(); return;
+        }
         for (var wrapped : guard.goalSelector.getAvailableGoals()) {
+            if (wrapped.getGoal() instanceof com.gamergaming.villagerguardgunners.ai.GuardAutomaticDutyMovementGoal duty
+                    && duty.ownsScreenedGroundPath()) {
+                hasDelayedRecomputation = false;
+                duty.invalidateGroundPath(); callback.cancel(); return;
+            }
             if (!(wrapped.getGoal() instanceof GuardGunCombatGoal goal)) continue;
+            if (goal.investigation().ownsPath()) {
+                hasDelayedRecomputation = false;
+                goal.investigation().invalidate(); callback.cancel(); return;
+            }
             if (goal.ownsScreenedCombatApproach()) {
                 hasDelayedRecomputation = false;
                 goal.invalidateCombatApproach();

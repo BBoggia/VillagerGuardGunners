@@ -8,17 +8,7 @@ import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.TrapDoorBlock;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.Half;
-import net.minecraft.world.level.block.state.properties.SlabType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal;
 
 /** Incremental, conservative walking graph. Every block read is cache-only. */
 public final class CoverageTerrain {
@@ -30,7 +20,6 @@ public final class CoverageTerrain {
             .comparingInt((BlockPos p) -> p.getX()).thenComparingInt(BlockPos::getY).thenComparingInt(BlockPos::getZ);
     private final ServerLevel level;
     private final VillageRecord record;
-    private final CachedBlocks blocks;
     private final Map<Long, List<Bounds>> domain = new HashMap<>();
     private final List<BlockPos> anchors;
     private final List<BlockPos> approaches = new ArrayList<>();
@@ -46,7 +35,6 @@ public final class CoverageTerrain {
     public CoverageTerrain(ServerLevel level, VillageRecord record) {
         this.level = level;
         this.record = record;
-        this.blocks = new CachedBlocks(level);
         TreeSet<BlockPos> seeds = new TreeSet<>(ORDER);
         var definitions = com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingDefinitions.snapshot();
         Set<net.minecraft.resources.ResourceLocation> defenseTemplates = definitions.size() > 256 ? Set.of()
@@ -80,10 +68,10 @@ public final class CoverageTerrain {
             if (seeds.size() > MAX_ANCHORS) { limited = true; break; }
             if (seeds.stream().noneMatch(p -> p.distSqr(home) < 144)) seeds.add(home);
         }
-        // Publish no silently truncated village. Oversized observations remain diagnostic.
+        // Keep verified local components usable; the limited flag reports incomplete village coverage.
         limited = limited || seeds.size() > MAX_ANCHORS;
-        anchors = limited ? List.of() : List.copyOf(seeds);
-        complete = limited || anchors.isEmpty();
+        anchors = seeds.stream().limit(MAX_ANCHORS).toList();
+        complete = anchors.isEmpty();
     }
 
     /** One unit tests one seed position or expands one node (at most 12 step probes). */
@@ -117,7 +105,7 @@ public final class CoverageTerrain {
                     BlockPos to = from.relative(direction).offset(0, dy, 0);
                     if (!inDomain(to)) continue;
                     probes++;
-                    if (!safeStep(level, blocks, from, to)) continue;
+                    if (!safeStep(level, from, to)) continue;
                     if (!edges.containsKey(to) && edges.size() == MAX_NODES) {
                         limited = true;
                         complete = true;
@@ -130,7 +118,7 @@ public final class CoverageTerrain {
                     union(from, to);
                     break;
                 }
-                if (limited) break;
+                if (complete) break;
             }
         }
         return used;
@@ -139,13 +127,13 @@ public final class CoverageTerrain {
     /** Exact completed navigation observations; object identity and survey counters are irrelevant. */
     public boolean sameNavigation(CoverageTerrain other) {
         return other != null && usable() && other.usable()
-                && anchors.equals(other.anchors) && resolved.equals(other.resolved)
+                && limited == other.limited && anchors.equals(other.anchors) && resolved.equals(other.resolved)
                 && defenseAnchors.equals(other.defenseAnchors) && domain.equals(other.domain)
                 && edges.equals(other.edges);
     }
 
     public boolean complete() { return complete; }
-    public boolean usable() { return complete && !limited; }
+    public boolean usable() { return complete; }
     public boolean limited() { return limited; }
     public int nodeCount() { return edges.size(); }
     public long probes() { return probes; }
@@ -202,67 +190,18 @@ public final class CoverageTerrain {
 
     public boolean walkable(BlockPos feet) {
         probes++;
-        return walkable(level, blocks, feet);
+        return safeStandingPosition(level, feet);
     }
 
     /** A cached route edge must still exist, and its real support/headroom must still be safe. */
     public boolean safeTransition(BlockPos from, BlockPos to) {
-        return edges.getOrDefault(from, List.of()).contains(to) && safeStep(level, blocks, from, to);
+        return edges.getOrDefault(from, List.of()).contains(to) && safeStep(level, from, to);
     }
     public static boolean safeStep(ServerLevel level, BlockPos from, BlockPos to) {
-        return safeStep(level, new CachedBlocks(level), from, to);
+        return GuardGroundTraversal.safeStep(level, from, to);
     }
-    private static boolean safeStep(ServerLevel level, CachedBlocks blocks, BlockPos from, BlockPos to) {
-        long horizontal = Math.abs((long)from.getX() - to.getX()) + Math.abs((long)from.getZ() - to.getZ());
-        long dy = (long)to.getY() - from.getY();
-        if (horizontal != 1 || Math.abs(dy) > 1) return false;
-        double fromHeight = standingHeight(level, blocks, from);
-        double toHeight = standingHeight(level, blocks, to);
-        if (!Double.isFinite(fromHeight) || !Double.isFinite(toHeight)
-                || Math.abs(toHeight - fromHeight) > 1.0) return false;
-        return dy == 0 || clear(blocks, (dy > 0 ? from : to).above(2));
-    }
-
     public static boolean safeStandingPosition(ServerLevel level, BlockPos feet) {
-        return walkable(level, new CachedBlocks(level), feet);
-    }
-
-    private static boolean walkable(ServerLevel level, CachedBlocks blocks, BlockPos feet) {
-        return Double.isFinite(standingHeight(level, blocks, feet));
-    }
-
-    // Graph nodes remain the air cell above support. Native navigation resolves
-    // its fractional floor height when executing the path.
-    private static double standingHeight(ServerLevel level, CachedBlocks blocks, BlockPos feet) {
-        if (!level.getWorldBorder().isWithinBounds(feet)
-                || level.getChunkSource().getChunkNow(feet.getX() >> 4, feet.getZ() >> 4) == null
-                || !clear(blocks, feet) || !clear(blocks, feet.above())) return Double.NaN;
-        BlockState floor = blocks.getBlockState(feet.below());
-        boolean campfire = floor.is(Blocks.CAMPFIRE) || floor.is(Blocks.SOUL_CAMPFIRE);
-        if (floor.is(Blocks.MAGMA_BLOCK)
-                || (campfire && floor.getValue(BlockStateProperties.LIT))
-                || floor.is(Blocks.CACTUS) || floor.is(Blocks.POWDER_SNOW)) return Double.NaN;
-        // Water beneath a full-height deck top does not immerse the guard.
-        // Keep submerged bottom slabs/campfires and open trapdoors excluded.
-        boolean dryWaterloggedTop = floor.getFluidState().is(net.minecraft.tags.FluidTags.WATER)
-                && ((floor.getBlock() instanceof SlabBlock && floor.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.TOP)
-                || (floor.getBlock() instanceof TrapDoorBlock && floor.getValue(BlockStateProperties.HALF) == Half.TOP
-                && !floor.getValue(BlockStateProperties.OPEN)));
-        if (!floor.getFluidState().isEmpty() && !dryWaterloggedTop) return Double.NaN;
-        VoxelShape shape = floor.getCollisionShape(blocks, feet.below());
-        boolean supported = !shape.isEmpty() && shape.max(Direction.Axis.Y) >= (campfire ? 7.0 / 16.0 : 0.5)
-                && shape.max(Direction.Axis.Y) <= 1.0
-                && shape.min(Direction.Axis.X) <= 0.1 && shape.max(Direction.Axis.X) >= 0.9
-                && shape.min(Direction.Axis.Z) <= 0.1 && shape.max(Direction.Axis.Z) >= 0.9;
-        return supported ? feet.getY() - 1 + shape.max(Direction.Axis.Y) : Double.NaN;
-    }
-
-    private boolean clear(BlockPos p) { return clear(blocks, p); }
-    private static boolean clear(CachedBlocks blocks, BlockPos p) {
-        BlockState state = blocks.getBlockState(p);
-        return state.getFluidState().isEmpty() && state.getCollisionShape(blocks, p).isEmpty()
-                && !state.is(Blocks.FIRE) && !state.is(Blocks.SOUL_FIRE) && !state.is(Blocks.SWEET_BERRY_BUSH)
-                && !state.is(Blocks.COBWEB) && !state.is(Blocks.WITHER_ROSE) && !state.is(Blocks.POWDER_SNOW);
+        return GuardGroundTraversal.safeStandingPosition(level, feet);
     }
     private boolean inDomain(BlockPos pos) {
         var boxes = domain.get(net.minecraft.world.level.ChunkPos.asLong(pos));
@@ -289,17 +228,5 @@ public final class CoverageTerrain {
     private void union(BlockPos a, BlockPos b) {
         a = root(a); b = root(b);
         if (ORDER.compare(a, b) < 0) roots.put(b, a); else roots.put(a, b);
-    }
-    private static final class CachedBlocks implements BlockGetter {
-        private final ServerLevel level;
-        CachedBlocks(ServerLevel level) { this.level = level; }
-        public BlockState getBlockState(BlockPos p) {
-            var chunk = level.getChunkSource().getChunkNow(p.getX() >> 4, p.getZ() >> 4);
-            return chunk == null ? Blocks.BARRIER.defaultBlockState() : chunk.getBlockState(p);
-        }
-        public FluidState getFluidState(BlockPos p) { return getBlockState(p).getFluidState(); }
-        public BlockEntity getBlockEntity(BlockPos p) { return null; }
-        public int getHeight() { return level.getHeight(); }
-        public int getMinBuildHeight() { return level.getMinBuildHeight(); }
     }
 }

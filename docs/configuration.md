@@ -145,7 +145,7 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `movement.friendlyRepositionTicks` | 20 | 5–100 ticks | Delay before retrying a lane blocked by a protected entity. |
 | `tactics.typeProfiles` | seven mappings | validated map | Maps TaCZ type labels to profiles. Keys are trimmed and matched without regard to capitalization; conflicting normalized aliases are ignored. |
 | `tactics.gunOverrides` | empty | resource-ID map | Selects a profile for an exact TaCZ gun ID. Individual Guard Orders take precedence; this overrides gun-type mappings. |
-| `engagement.mode` | `GUARD_TARGETS` | enum | Filters the target already selected by Guard Villagers using compatibility, hostile-only, defensive, or hold-fire policy. |
+| `engagement.mode` | `GUARD_TARGETS` | enum | Filters the guard's selected target using compatibility, hostile-only, defensive, or hold-fire policy. |
 | `engagement.defensiveMemoryTicks` | 200 | 20–1200 ticks | Time that an attack against the guard or a protected ally remains engageable in `DEFENSIVE` mode. |
 | `engagement.additionalTargets` | empty | resource-ID set | Permits entity types in restricted modes. Cannot bypass ally protection, exclusions, or `HOLD_FIRE`. |
 | `engagement.excludedEntities` | empty | resource-ID set | Prevents gun engagement of entity types and takes precedence over additions. |
@@ -446,9 +446,10 @@ consume physical inventory ammunition.
 
 ## Rules of engagement
 
-Rules of engagement filter Guard Villagers' existing selected target; they do
-not replace its target selectors or make guards search for explicitly added
-types. `GUARD_TARGETS` preserves the established behavior, `HOSTILE_MOBS_ONLY`
+Rules of engagement filter the guard's selected target, including replacements
+chosen by [local tactical ranking](guard-tactical-intent.md#target-priority-and-cooperation).
+Adding a type grants firing permission without making guards search for it.
+`GUARD_TARGETS` permits the selected non-allied target, `HOSTILE_MOBS_ONLY`
 requires Minecraft's hostile-enemy contract, `DEFENSIVE` requires recent
 aggression against the guard or a currently protected ally, and `HOLD_FIRE`
 tracks an otherwise permitted target while holding position and never

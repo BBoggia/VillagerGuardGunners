@@ -101,6 +101,67 @@ report directory and does not create an identity manifest. Both modes reset only
 `build/guard-intelligence-runtime`, never ordinary development or player worlds.
 
 
+## Village baseline observations
+
+Use the separate village suite to establish how combat and automatic village
+coverage interact before changing their decision rules:
+
+```sh
+python3 tools/validate_guard_intelligence.py --suite village --mode baseline --offline
+```
+
+Select JDK 17 through `JAVA_HOME`, as for the combat suite. Run validation
+sequentially: both suites share the disposable runtime and Gradle outputs.
+The village suite supports baseline mode only. A successful run proves that the
+fixtures and existing participation contracts held; it does not certify guard
+intelligence, village survival, or the proposed AI improvements.
+
+| Scenario | Automatic coverage | Population and terrain |
+| --- | --- | --- |
+| `village_default` | Off, matching the default | Four villagers and two connected homes |
+| `village_coverage` | On | Same layout and population |
+| `village_crowd` | On | 36 villagers around the eastern home |
+| `village_divided` | On | Four villagers; a full wall separates the homes |
+
+Every scenario includes six armed guards: two ordinary affiliated residents, two
+affiliated squad members sharing a squad ID without an active command, one
+affiliated guard with Hold Position, and one newcomer without an initial village
+affiliation. Ordinary residents can receive automatic coverage assignments.
+Normal village discovery can affiliate the newcomer during the observation;
+the report records when that happens and allows subsequent coverage. Squad
+membership does not opt guards into coverage. The fixture records participation
+every tick and fails if coverage overrides these exclusions or loses an existing
+affiliation.
+
+Each scenario runs for 600 ticks at real-time 20 TPS. At tick 160, three husks
+enter and target a villager. At tick 360, the fixture removes them to expose the
+guards' recovery behavior. It never assigns guard targets, manually ticks their
+goals, installs navigation paths, or rewrites TaCZ timestamps. The guards retain
+their normal combat, movement, and target selectors. Coverage runs through its
+ordinary server events. An independent terrain observation verifies whether the
+two sides are connected without advancing the live scheduler.
+
+Per-tick JSON records positions, active goals, targets, ammo, reload state,
+tactical intent, perception completeness, historical shot safety, coverage availability, assignments,
+area visit state, and coverage work budgets. Summary metrics include combat and
+assignment ticks, incomplete perception during combat, actual visits observed,
+and assignments during recovery. Compare these measurements and their samples;
+an assignment alone does not prove arrival, useful defense, or a safe firing lane.
+
+The manifest retains source and artifact hashes, the runtime config, and each
+scenario's effective settings. The wrapper rejects missing or truncated reports,
+wrong populations/settings, changed participation, and invalid fixtures. Village
+reports intentionally have no future acceptance assertions, and their manifest's
+`acceptance_passed` is `null`.
+
+These are controlled, synthetic recorded villages on an enclosed flat floor.
+Actors have 10,000 health to preserve observation time. There are no generated
+Village Defense Buildings or automatic garrison assignments. Terrain generation,
+raids, player commands, ordinary-health casualties, emergency resupply, and large
+village performance still require separate scenarios. Coverage is the only
+configuration value changed by these fixtures; the original value and village
+registry are restored after each batch, including failures.
+
 ## Integrated client on generated terrain
 
 After the full automated matrix has produced version-matched world metadata,

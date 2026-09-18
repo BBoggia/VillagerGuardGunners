@@ -136,6 +136,16 @@ final class GuardCombatStatusTest {
                 GuardCombatStatus.shotRefusalStatus(GuardShotSafety.Status.PROTECTED_ENTITY_IN_PATH, true));
     }
 
+    @Test
+    void activeLaneMovementRemainsVisibleAfterShotHistoryExpiresAndAimIsReleased() {
+        assertEquals(GuardCombatStatus.REPOSITIONING,
+                GuardCombatStatus.resolveActiveCombat(true, true, true, true, true, false,
+                        true, false, true, GuardShotSafety.Status.NOT_EVALUATED, true, WeaponActivity.READY));
+        assertEquals(GuardCombatStatus.HOLDING_FIRE,
+                GuardCombatStatus.resolveActiveCombat(false, true, true, true, true, false,
+                        true, false, true, GuardShotSafety.Status.NOT_EVALUATED, true, WeaponActivity.READY));
+    }
+
     private static GuardCombatStatus resolve(
             boolean mayEngage,
             boolean trackingCurrentTarget,

@@ -96,8 +96,9 @@ public final class VillageCoverageLayout {
         TreeSet<RegionCell> remaining = new TreeSet<>(occupied.keySet());
         while (!remaining.isEmpty()) {
             if (areas.size() == MAX_AREAS) {
-                // Never publish a partial village or merge disconnected outliers to fit.
-                return new VillageCoverageLayout(villageId, revision, List.of(), Status.AREA_LIMIT);
+                // Retain independent areas without claiming that the whole village is covered.
+                areas.sort(Comparator.comparing(Area::id));
+                return new VillageCoverageLayout(villageId, revision, areas, Status.AREA_LIMIT);
             }
             TreeSet<RegionCell> cells = new TreeSet<>();
             ArrayDeque<RegionCell> queue = new ArrayDeque<>();

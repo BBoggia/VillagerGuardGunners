@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run isolated combat observations or future acceptance checks and retain their identity."""
+"""Run isolated combat/village observations or combat acceptance checks and retain their identity."""
 import argparse
 from datetime import datetime, timezone
 import fcntl
@@ -20,6 +20,8 @@ CONTRACTS = {
     'reload': {'noAdvanceIntoClosingGroupWhileReloading', 'createSeparationDuringVulnerableReload'},
     'wall': {'reachSafeSideOfWall'},
 }
+VILLAGE_SCENARIOS = {'village_default', 'village_coverage', 'village_crowd', 'village_divided'}
+VILLAGE_GUARDS = {'resident_west', 'resident_east', 'squad_a', 'squad_b', 'hold_position', 'newcomer'}
 
 
 def digest(path):
@@ -35,20 +37,47 @@ def source_identity(root):
     return {str(p.relative_to(root)): digest(p) for p in sorted(set(files)) if p.is_file()}
 
 
-def read_reports(directory, mode):
+def read_reports(directory, mode, suite='combat'):
     """An observation pass proves fixture validity, never future AI acceptance."""
     results = {}
-    if {p.stem for p in directory.glob('*.json')} != set(CONTRACTS):
-        raise ValueError('Missing or unexpected combat scenario reports')
-    for scenario, names in CONTRACTS.items():
+    if suite not in ('combat', 'village') or suite == 'village' and mode != 'baseline':
+        raise ValueError('Village observations cannot be used as combat acceptance evidence')
+    scenarios = CONTRACTS if suite == 'combat' else {name: set() for name in VILLAGE_SCENARIOS}
+    if {p.stem for p in directory.glob('*.json')} != set(scenarios):
+        raise ValueError('Missing or unexpected scenario reports')
+    for scenario, names in sorted(scenarios.items()):
         data = json.loads((directory / f'{scenario}.json').read_text())
         if data.get('schema') != 1 or data.get('scenario') != scenario or data.get('mode') != mode:
             raise ValueError(f'{scenario}: report identity/mode mismatch')
         if data.get('fixtureValid') is not True or data.get('fixtureFailure') is not None:
             raise ValueError(f'{scenario}: fixture did not complete validly: {data.get("fixtureFailure")}')
         samples = data.get('samples', [])
-        if len(samples) != 180 or [row.get('tick') for row in samples] != list(range(1, 181)):
+        duration = 180 if suite == 'combat' else 600
+        if len(samples) != duration or [row.get('tick') for row in samples] != list(range(1, duration + 1)):
             raise ValueError(f'{scenario}: incomplete observation window')
+        if suite == 'village':
+            settings = data.get('settings', {})
+            expected_coverage = scenario != 'village_default'
+            expected_connected = scenario != 'village_divided'
+            if (settings.get('automaticCoverage') is not expected_coverage
+                    or settings.get('homesConnected') is not expected_connected
+                    or settings.get('squadMembers') != 2 or settings.get('initialAffiliatedGuards') != 5
+                    or settings.get('villagers') != (36 if scenario == 'village_crowd' else 4)):
+                raise ValueError(f'{scenario}: configuration/population mismatch')
+            for row in samples:
+                actors = row.get('guards', {})
+                if set(actors) != VILLAGE_GUARDS:
+                    raise ValueError(f'{scenario}: missing participant observations')
+                for name, actor in actors.items():
+                    if (actor.get('squadMember') is not name.startswith('squad_')
+                            or type(actor.get('affiliated')) is not bool
+                            or name != 'newcomer' and actor['affiliated'] is not True):
+                        raise ValueError(f'{scenario}: participant identity changed')
+                    if (not expected_coverage or name.startswith('squad_') or name == 'hold_position'
+                            or not actor['affiliated']) and actor.get('lease') is not None:
+                        raise ValueError(f'{scenario}: excluded participant received coverage')
+            results[scenario] = {'settings': settings, 'metrics': data['metrics']}
+            continue
         contracts = data.get('acceptance', {})
         if set(contracts) != names or any(type(value) is not bool for value in contracts.values()):
             raise ValueError(f'{scenario}: missing or invalid acceptance assertions')
@@ -64,7 +93,7 @@ def verify_acceptance_failure(log, exit_code, observations):
         raise ValueError('Runtime failure does not match the planned acceptance assertions')
 
 
-def run(mode, offline):
+def run(mode, offline, suite='combat'):
     base = ROOT / 'build/reports/guard-intelligence'
     base.mkdir(parents=True, exist_ok=True)
     # Both modes share one disposable runtime and generated Gradle resources.
@@ -76,7 +105,7 @@ def run(mode, offline):
         reports.mkdir(parents=True)
         sources = source_identity(ROOT)
         manifest = {
-            'schema': 1, 'mode': mode, 'run_id': run_id, 'status': 'running',
+            'schema': 1, 'mode': mode, 'suite': suite, 'run_id': run_id, 'status': 'running',
             'sources': sources,
             'git_head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
             'git_status': subprocess.check_output(['git', 'status', '--porcelain=v1', '-uall'], cwd=ROOT, text=True).splitlines(),
@@ -87,10 +116,11 @@ def run(mode, offline):
         path = output / 'manifest.json'
         path.write_text(json.dumps(manifest, indent=2) + '\n')
         command = ['./gradlew', 'reobfJar', 'runGameTestServer', '--console=plain',
-                   f'-PguardIntelligenceTestMode={mode}', f'-PguardIntelligenceReportDir={reports}']
+                   f'-PguardIntelligenceTestMode={mode}', f'-PguardIntelligenceSuite={suite}',
+                   f'-PguardIntelligenceReportDir={reports}']
         if offline:
             command.append('--offline')
-        print(f'Combat {mode} evidence: {output}', flush=True)
+        print(f'{suite.title()} {mode} evidence: {output}', flush=True)
         with (output / 'gradle.log').open('w') as log:
             result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
         manifest['command'] = command
@@ -102,9 +132,9 @@ def run(mode, offline):
         try:
             if sources != source_identity(ROOT):
                 raise ValueError('Sources changed during the run; evidence cannot identify one candidate')
-            observations = read_reports(reports, mode)
+            observations = read_reports(reports, mode, suite)
             manifest['observations'] = observations
-            accepted = all(all(row['acceptance'].values()) for row in observations.values())
+            accepted = all(all(row['acceptance'].values()) for row in observations.values()) if suite == 'combat' else None
             manifest['acceptance_passed'] = accepted
             log = (output / 'gradle.log').read_text(errors='replace')
             if mode == 'baseline' or accepted:
@@ -114,7 +144,7 @@ def run(mode, offline):
             else:
                 verify_acceptance_failure(log, result.returncode, observations)
                 manifest['status'] = 'acceptance_failed'
-        except (ValueError, KeyError, TypeError) as error:
+        except (ValueError, KeyError, TypeError, AttributeError) as error:
             manifest['status'] = 'invalid_evidence'
             manifest['error'] = str(error)
         manifest['evidence'] = {str(p.relative_to(output)): digest(p) for p in output.rglob('*')
@@ -129,9 +159,12 @@ def run(mode, offline):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=('baseline', 'acceptance'), default='baseline')
+    parser.add_argument('--suite', choices=('combat', 'village'), default='combat')
     parser.add_argument('--offline', action='store_true')
     args = parser.parse_args()
+    if args.suite == 'village' and args.mode != 'baseline':
+        parser.error('The village suite records baselines only; it has no future acceptance contracts')
     try:
-        sys.exit(run(args.mode, args.offline))
+        sys.exit(run(args.mode, args.offline, args.suite))
     except BlockingIOError:
-        sys.exit('Another combat validation runner is active')
+        sys.exit('Another guard intelligence validation runner is active')

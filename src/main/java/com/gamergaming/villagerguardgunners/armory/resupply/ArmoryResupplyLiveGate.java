@@ -80,13 +80,16 @@ public final class ArmoryResupplyLiveGate {
             return ArmoryResupplyGate.GateStatus.RECOVERY_REQUIRED;
         }
         LivingEntity target = guard.getTarget();
-        if (target != null && target.isAlive()) {
+        var resupply = com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess.getController(guard);
+        if (target != null && target.isAlive()
+                && (resupply == null || !resupply.emergencyCombatPermitted())) {
             return ArmoryResupplyGate.GateStatus.COMBAT_ACTIVE;
         }
         if (GuardSquadCommandAccess.getCommand(guard) != null) {
             return ArmoryResupplyGate.GateStatus.SQUAD_COMMAND_ACTIVE;
         }
-        if (guard.isFollowing()) {
+        if (guard.isFollowing() || (guard instanceof com.gamergaming.villagerguardgunners.api.GuardCoverageAccess access
+                && access.villagerGuardGunners$hasFollowOrder())) {
             return ArmoryResupplyGate.GateStatus.FOLLOWING;
         }
         GuardOrders.MovementOrder movement =
@@ -94,7 +97,10 @@ public final class ArmoryResupplyLiveGate {
         if (movement.holdsPosition()) {
             return ArmoryResupplyGate.GateStatus.HOLD_POSITION;
         }
-        if (movement.treatAsPatrolling(guard.isPatrolling())) {
+        var duty = com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard);
+        if (movement.treatAsPatrolling(guard.isPatrolling())
+                || (resupply != null && resupply.isEmergency() && duty != null
+                    && duty.source() == com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.Source.PATROL_ROUTE)) {
             return ArmoryResupplyGate.GateStatus.PATROL_BOUND;
         }
         return nativeWeaponBusy(guard)

@@ -7131,6 +7131,8 @@ public final class GuardGunnerGameTests {
         configureFixedCombatant(guard);
         configureFixedCombatant(target);
         configureFixedCombatant(protectedGuard);
+        // This fixture ticks its own goal; do not also run the registered combat goal.
+        guard.setNoAi(true);
         target.setInvulnerable(true);
         ItemStack gunStack = gun(RPG_7, FireMode.SEMI, 1, true);
         IGun gunItem = (IGun) gunStack.getItem();
@@ -7177,14 +7179,9 @@ public final class GuardGunnerGameTests {
             guard.setTarget(target);
             guard.getSensing().tick();
             faceTarget(guard, target);
-            long relativeNow = System.currentTimeMillis()
-                    - operator.getDataHolder().baseTimestamp;
-            // This isolated batch begins before enough wall-clock time has
-            // elapsed for TaCZ's draw animation. Keep only that native clock
-            // due; ordinary gameplay advances it naturally.
-            operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
-            operator.getDataHolder().shootTimestamp = relativeNow - 10_000L;
-            operator.getDataHolder().lastShootTimestamp = relativeNow - 10_000L;
+            forceNativeShotFixtureReady(guard, operator);
+            // Test the aimed RPG's blast geometry, not its much wider hip-fire spread.
+            com.tacz.guns.entity.sync.ModSyncedEntityData.AIMING_PROGRESS_KEY.setValue(guard, 1.0F);
             goal.tick();
 
             GuardGunCombatGoal.Diagnostics state = goal.captureDiagnostics();
@@ -7201,7 +7198,9 @@ public final class GuardGunnerGameTests {
                                 + ", safety=" + state.safety().status()
                                 + ", muzzlePadding=" + state.muzzleSafetyPadding()
                                 + ", projectilePadding=" + state.projectileSafetyPadding()
-                                + ", blastPadding=" + state.blastSafetyPadding());
+                                + ", blastPadding=" + state.blastSafetyPadding()
+                                + ", native=" + state.nativeState()
+                                + ", aimProgress=" + operator.getSynAimingProgress());
                 forwardBlastGateObserved[0] = true;
             }
             if (testTick >= 20L
@@ -8191,36 +8190,35 @@ public final class GuardGunnerGameTests {
 
             settings.mode.accept(EngagementMode.HOSTILE_MOBS_ONLY);
             guard.setTarget(neutral);
-            GuardGunCombatGoal releaseGoal = new GuardGunCombatGoal(guard);
-            helper.assertTrue(releaseGoal.canUse(),
+            // Keep one entity-owned shot controller across all start/stop probes.
+            helper.assertTrue(goal.canUse(),
                     "A denied neutral target did not enter the gun goal safely");
-            releaseGoal.start();
-            releaseGoal.tick();
+            goal.start();
+            goal.tick();
             helper.assertTrue(guard.getTarget() == null,
                     "A restricted target was not released to the upstream target selector");
-            releaseGoal.stop();
+            goal.stop();
 
             settings.mode.accept(EngagementMode.HOLD_FIRE);
             guard.setTarget(hostile);
             ItemStack dryGunStack = gun(GLOCK_17, FireMode.SEMI, 0, false);
             guard.setItemSlot(EquipmentSlot.MAINHAND, dryGunStack);
-            GuardGunCombatGoal dryGoal = new GuardGunCombatGoal(guard);
-            helper.assertTrue(dryGoal.canUse(),
+            helper.assertTrue(goal.canUse(),
                     "HOLD_FIRE did not acquire a target with a newly equipped dry gun");
-            dryGoal.start();
-            dryGoal.tick();
-            helper.assertTrue(dryGoal.captureDiagnostics().nativeState().dryRetryTicks() > 0L,
+            goal.start();
+            goal.tick();
+            helper.assertTrue(goal.captureDiagnostics().nativeState().dryRetryTicks() > 0L,
                     "The empty gun fixture did not enter its bounded dry retry state");
-            helper.assertTrue(dryGoal.canContinueToUse(),
+            helper.assertTrue(goal.canContinueToUse(),
                     "A dry gun yielded HOLD_FIRE ownership to the melee goal");
             settings.mode.accept(EngagementMode.HOSTILE_MOBS_ONLY);
             guard.setTarget(neutral);
-            helper.assertTrue(dryGoal.canContinueToUse(),
+            helper.assertTrue(goal.canContinueToUse(),
                     "A denied target could not be retained long enough for safe release");
-            dryGoal.tick();
+            goal.tick();
             helper.assertTrue(guard.getTarget() == null,
                     "A denied target was not released while the gun was dry");
-            dryGoal.stop();
+            goal.stop();
 
             settings.mode.accept(EngagementMode.HOLD_FIRE);
             guard.setItemSlot(EquipmentSlot.MAINHAND, gunStack);
@@ -8248,9 +8246,7 @@ public final class GuardGunnerGameTests {
                 guard.setTarget(hostile);
                 guard.getSensing().tick();
                 faceTarget(guard, hostile);
-                long relativeNow = System.currentTimeMillis() - operator.getDataHolder().baseTimestamp;
-                operator.getDataHolder().shootTimestamp = relativeNow - 10_000L;
-                operator.getDataHolder().lastShootTimestamp = relativeNow - 10_000L;
+                forceNativeShotFixtureReady(guard, operator);
                 goal.tick();
 
                 if (helper.getTick() < 20L) {
@@ -8296,7 +8292,8 @@ public final class GuardGunnerGameTests {
                     previousAdditional,
                     previousExcluded);
             helper.fail("The live goal did not resume after ROE changed: decision="
-                    + stalled.decision() + ", reason=" + stalled.engagementReason());
+                    + stalled.decision() + ", reason=" + stalled.engagementReason()
+                    + ", native=" + stalled.nativeState() + ", safety=" + stalled.safety());
         });
     }
 
@@ -9417,6 +9414,17 @@ public final class GuardGunnerGameTests {
     private static void configureFixedCombatant(LivingEntity entity) {
         entity.setInvulnerable(true);
         entity.setNoGravity(true);
+    }
+
+    /** Advance both native clock views for manually ticked, accelerated firing fixtures. */
+    private static void forceNativeShotFixtureReady(Guard guard, IGunOperator operator) {
+        long now = System.currentTimeMillis();
+        var data = operator.getDataHolder();
+        data.drawTimestamp = now - 10_000L;
+        data.shootTimestamp = now - data.baseTimestamp - 10_000L;
+        data.lastShootTimestamp = data.shootTimestamp;
+        com.tacz.guns.entity.sync.ModSyncedEntityData.DRAW_COOL_DOWN_KEY.setValue(guard, 0L);
+        com.tacz.guns.entity.sync.ModSyncedEntityData.SHOOT_COOL_DOWN_KEY.setValue(guard, 0L);
     }
 
     /** Clears wall-clock TaCZ actions that are irrelevant to swap-lifecycle fixtures. */

@@ -46,7 +46,7 @@ final class VillageDefenseDutyMovementIntegrationContractTest {
                 () -> assertTrue(controller.contains(
                         "VillageDefenseDutyDestination.evaluate(")),
                 () -> assertTrue(destination.contains("level.hasChunk(")),
-                () -> assertTrue(destination.contains("floor.isFaceSturdy(")),
+                () -> assertTrue(destination.contains("GuardGroundTraversal.safeStandingPosition(")),
                 () -> assertTrue(controller.contains("navigation.createPath(destination, 0)")),
                 () -> assertTrue(controller.contains("MAXIMUM_RETRY_TICKS = 200")),
                 () -> assertTrue(controller.contains("PROGRESS_CHECK_TICKS = 40")),

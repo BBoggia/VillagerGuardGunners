@@ -198,29 +198,38 @@ public final class SquadCommandMovementController {
             double speed) {
         if (!takePathSlot(guard.level().getGameTime())) return;
         screenedCombatPath = null;
-        if (command == null || command.type() != SquadCommandType.DEFEND) {
+        var dutyBounds = com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.bounds(guard);
+        boolean defend = command != null && command.type() == SquadCommandType.DEFEND;
+        if (!defend && !Double.isFinite(dutyBounds.radius())) {
             navigation.moveTo(target, speed);
             return;
         }
-        Vec3 destination = constrainToDefendBoundary(
+        Vec3 destination = defend ? constrainToDefendBoundary(
                 target.getX(),
                 target.getY(),
                 target.getZ(),
                 command.position(),
-                command.radius());
+                command.radius()) : constrainToDefendBoundary(target.getX(), target.getY(), target.getZ(),
+                        BlockPos.containing(dutyBounds.center()), dutyBounds.radius() + 1);
         BlockPos destinationBlock = BlockPos.containing(destination);
         var screening = new com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner(guard);
         if (isLoaded(destinationBlock) && screening.pathRegionLoaded()) {
             var path = navigation.createPath(destinationBlock, 0,
                     com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner.PATH_RANGE);
-            var bounds = new com.gamergaming.villagerguardgunners.ai.tactics.TacticalAssignmentBounds(
-                    Vec3.atBottomCenterOf(command.position()), defendMovementRadius(command.radius()));
+            var bounds = defend ? new com.gamergaming.villagerguardgunners.ai.tactics.TacticalAssignmentBounds(
+                    Vec3.atBottomCenterOf(command.position()), defendMovementRadius(command.radius())) : dutyBounds;
             if (path != null && path.canReach() && screening.safeRoute(path, 0, java.util.List.of(), bounds, false)) {
                 if (navigation.moveTo(path, speed)) {
                     // Native navigation retains its existing Path when nodes match.
                     // Track the path actually installed, not the proposed object.
                     screenedCombatPath = navigation.getPath();
                     screenedCombatBounds = bounds;
+                    if (screenedCombatPath == null || !screenedCombatPath.canReach()
+                            || !screening.safeRoute(screenedCombatPath, screenedCombatPath.getNextNodeIndex(),
+                                    java.util.List.of(), bounds, false)) {
+                        invalidateCombatPath();
+                        return;
+                    }
                     nextCombatPathValidation = guard.level().getGameTime() + 10;
                 } else {
                     navigation.stop();
@@ -248,9 +257,11 @@ public final class SquadCommandMovementController {
             screenedCombatBounds = null;
             return;
         }
-        if (command == null || command.type() != SquadCommandType.DEFEND
-                || !screenedCombatBounds.equals(new com.gamergaming.villagerguardgunners.ai.tactics.TacticalAssignmentBounds(
-                        Vec3.atBottomCenterOf(command.position()), defendMovementRadius(command.radius())))) {
+        var currentBounds = command != null && command.type() == SquadCommandType.DEFEND
+                ? new com.gamergaming.villagerguardgunners.ai.tactics.TacticalAssignmentBounds(
+                        Vec3.atBottomCenterOf(command.position()), defendMovementRadius(command.radius()))
+                : com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.bounds(guard);
+        if (!screenedCombatBounds.equals(currentBounds)) {
             invalidateCombatPath();
             return;
         }

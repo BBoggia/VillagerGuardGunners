@@ -43,6 +43,18 @@ the guard or recent observations justify continuation. They reopen after combat
 ends and native actions settle. Existing armory, quartermaster, and duty eligibility
 checks still decide whether any particular service or assignment can start.
 
+A completely dry guard has a separate, scoped emergency armory handoff inside the
+combat goal. It retains its target and suspends firing while the existing resupply
+controller owns the trip. Complete threat evidence, distance, orders, native
+weapon state, and physical ammo checks can revoke the handoff each tick. This
+exception does not reopen quartermaster equipment service. See
+[Armory resupply contracts](armory-resupply-contracts.md#emergency-combat-resupply).
+
+Village combat duty keeps a transient local anchor through short combat gaps.
+Once combat ends, the automatic duty goal returns to it before resuming ordinary
+coverage. New manual orders, membership changes, and entity departure revoke
+that anchor; persistent orders and village membership are never rewritten.
+
 ## Inspection
 
 `/vgg inspect` includes the running movement-goal names, retained combat ownership,

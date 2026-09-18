@@ -17,7 +17,7 @@ import tallestegg.guardvillagers.entities.Guard;
 
 /**
  * Allocation-free, server-authoritative firing policy for a target already
- * selected by Guard Villagers. This class deliberately performs no entity or
+ * selected by Guard Villagers or the bounded tactical ranking policy. This class deliberately performs no entity or
  * world scans.
  */
 public final class GuardRulesOfEngagement {

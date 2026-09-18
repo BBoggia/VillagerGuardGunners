@@ -55,8 +55,8 @@ final class ArmoryResupplyStepSixContractTest {
 
         assertAll(
                 () -> assertTrue(runtime.contains("ArmoryResupplyLiveGate.evaluate(")),
-                () -> assertTrue(runtime.indexOf("ArmoryResupplyLiveGate.evaluate(")
-                        < runtime.indexOf("GuardWeaponAmmunition.captureSummary(")),
+                () -> assertTrue(runtime.indexOf("ArmoryResupplyLiveGate.evaluate(", runtime.indexOf("private boolean assessAndReserve("))
+                        < runtime.indexOf("GuardWeaponAmmunition.captureSummary(", runtime.indexOf("private boolean assessAndReserve("))),
                 () -> assertTrue(runtime.contains("loadedArmories().query(")),
                 () -> assertTrue(runtime.contains("ArmorySupplyCandidate.inspect(")),
                 () -> assertTrue(runtime.contains("reservations.reserve(")),

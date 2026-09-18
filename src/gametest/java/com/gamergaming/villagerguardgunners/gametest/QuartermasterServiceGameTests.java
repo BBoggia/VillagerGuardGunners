@@ -144,6 +144,9 @@ public final class QuartermasterServiceGameTests {
         var cached = f.guard.getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER).orElseThrow(AssertionError::new);
         h.assertTrue(ServiceJournal.get(h.getLevel().getServer()).begin(f.station.serviceReceipt(), receipt), "Intent failed");
         h.assertTrue(!ServiceTransactions.valid(plan(f)), "Old owner accepted after intent");
+        h.assertTrue(!receipt.locked(), "Read-only planning mutated the ownership receipt");
+        h.assertTrue(ServiceEligibility.guard(f.guard) == ServiceStatus.RECOVERY_REQUIRED,
+                "Live service eligibility did not quarantine the interrupted owner");
         h.assertTrue(cached.getStackInSlot(6).isEmpty() && cached.extractItem(6, 3, false).isEmpty()
                 && GuardAmmoAccess.getAmmoHandler(f.guard).getStackInSlot(0).getCount() == 3, "Cached transport bypassed quarantine");
         h.assertTrue(f.guard.getMainHandItem().isEmpty() && ItemStack.matches(stock, f.station.inventory().getStackInSlot(0)), "Intent moved physical stock"); h.succeed();

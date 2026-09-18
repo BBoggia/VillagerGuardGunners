@@ -1,10 +1,12 @@
 # Rules of Engagement
 
-Rules of engagement (ROE) decide whether a Guard Villager may use its TaCZ gun
-against the target already selected by Guard Villagers. The add-on does not
-replace Guard Villagers' target acquisition, reputation, village-defense, or
-retaliation goals. An allow entry therefore permits a selected target; it does
-not make guards search for that entity type.
+Rules of engagement (ROE) decide whether a guard can use its TaCZ gun
+against its selected target. Guard Villagers supplies ordinary target acquisition,
+reputation, village-defense, and retaliation goals. During gun combat,
+[local target ranking](guard-tactical-intent.md#target-priority-and-cooperation)
+can prefer another observed eligible threat. Both paths must pass the same ROE
+check before firing. An allow entry grants permission for a selected target;
+it does not make guards search for that entity type.
 
 ## Modes
 
@@ -12,7 +14,7 @@ The synchronized `engagement.mode` setting supports four policies:
 
 | Mode | Behavior |
 | --- | --- |
-| `GUARD_TARGETS` | Compatibility default. Engage every living, non-allied target selected by Guard Villagers. |
+| `GUARD_TARGETS` | Compatibility default. Engage the guard's living, non-allied selected target. |
 | `HOSTILE_MOBS_ONLY` | Engage targets implementing Minecraft's `Enemy` contract. Neutral mobs and players require an explicit allow entry. |
 | `DEFENSIVE` | Engage only a recent attacker of the guard or one of the guard's currently protected allies. |
 | `HOLD_FIRE` | Keep tracking an otherwise permitted current target, but stop engagement movement and never trigger the gun. |

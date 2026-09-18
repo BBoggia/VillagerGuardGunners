@@ -72,7 +72,10 @@ Armory. The query has no block/entity scan, persistent data, chunk ticket, or
 A successful selection owns one expiring reservation and the low-priority MOVE
 goal only while travelling. Combat, squad commands, follow, Hold, patrol,
 sidearm recovery, lifecycle changes, and unreadable native TaCZ actions retain
-the established precedence. Final withdrawal revalidates the live weapon,
+the established precedence. A completely dry guard can make an emergency trip
+under combat-goal ownership when threats leave enough space. Player orders and
+native gun actions still take priority; see the
+[emergency resupply contract](armory-resupply-contracts.md#emergency-combat-resupply). Final withdrawal revalidates the live weapon,
 need, lock, source fingerprint, destination, distance, and feature switches
 before the existing transactional transfer. `/vgg inspect` now reports
 `runtime=REGISTERED` with the authoritative state, outcome, selected slot,

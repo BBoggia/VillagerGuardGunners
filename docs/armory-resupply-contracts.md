@@ -10,7 +10,7 @@ live input.
 
 ## Precedence gate
 
-The constant-time gate is evaluated before an ammunition summary and before
+The routine gate is evaluated before an ammunition summary and before
 any Armory query. The first blocking condition wins in this order:
 
 1. feature disabled;
@@ -51,8 +51,30 @@ be filled through later bounded attempts rather than one unbounded claim.
 
 Urgency is `OUT_OF_AMMO` only when the active gun has no displayed loaded round
 and no physical reserve. Every other request is `LOW_RESERVE`. Urgency is
-descriptive and must not bypass combat, squad-command, ally, rules-of-
-engagement, explosive, movement, or native TaCZ safety.
+descriptive and never independently authorizes the emergency handoff or bypasses
+squad-command, ally, rules-of-engagement, explosive, movement, or native TaCZ safety.
+
+
+## Emergency combat resupply
+
+The gun-combat goal can temporarily drive the registered resupply controller
+without clearing its target. This requires a dry active gun, a complete threat
+assessment, at least eight blocks from observed threats and the live target,
+no immediate explosive danger, and no recent observed damage. The live gate
+also confirms that both primary and sidearm lack loaded rounds and compatible
+reserve; unreadable or infinite-ammo weapons cannot authorize this exception.
+A usable sidearm or ordinary low-reserve need keeps normal combat precedence.
+
+The permit is valid only during the owning combat tick. Player commands, follow
+orders, Hold Position, patrol-bound movement, medical preemption, and native
+weapon actions retain their gates. Aim and scheduled fire are released before
+movement begins. The ordinary staggered assessment, reservation lifetime,
+source/destination validation, physical transfer, and failure backoffs apply.
+Only loaded armories within 24 blocks and the current combat duty boundary are
+considered. Emergency paths pass tactical terrain, threat-clearance, and boundary
+screening and are rechecked while travelling. New close danger or available ammo
+ends the handoff. A successful transfer resumes native combat maintenance and
+reload; it does not fill the magazine directly or authorize equipment service.
 
 ## Immutable request identity
 

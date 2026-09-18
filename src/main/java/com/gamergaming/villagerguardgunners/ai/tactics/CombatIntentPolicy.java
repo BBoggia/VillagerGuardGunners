@@ -5,13 +5,13 @@ import com.gamergaming.villagerguardgunners.combat.WeaponReadiness;
 /** Pure intent rules; no entity access, actions, scans, or navigation. */
 public final class CombatIntentPolicy {
     public static final int MINIMUM_WITHDRAW_TICKS = 20;
-    public enum Intent { ENGAGE, HOLD, REPOSITION, CREATE_DISTANCE, WITHDRAW, FINISH_COMBAT }
+    public enum Intent { ENGAGE, HOLD, INVESTIGATE, REPOSITION, CREATE_DISTANCE, WITHDRAW, FINISH_COMBAT }
     public enum Reason {
         NO_COMBAT, CONTACT_EXPIRED, MOVEMENT_ORDER, FIRE_NOT_PERMITTED, UNOBSERVED_TARGET,
         INCOMPLETE_ASSESSMENT, WEAPON_UNAVAILABLE, EMPTY_WEAPON, VULNERABLE_ACTION,
         CLOSE_CONTACT, EXPLOSIVE_DANGER, LOW_HEALTH, RECENT_DAMAGE, SURROUNDED,
         OVERWHELMED, WITHDRAWAL_COMMITMENT, RECOVERY_NOT_READY, BLOCKED_SHOT,
-        MANAGEABLE_ENGAGEMENT, TARGET_GAP
+        MANAGEABLE_ENGAGEMENT, TARGET_GAP, LAST_SEEN_POSITION
     }
     public record Input(boolean combatActive, boolean targetPresent, boolean targetVisible,
             boolean mayEngage, boolean movementLocked, boolean commandMoving,

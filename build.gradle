@@ -44,6 +44,11 @@ if (!(guardIntelligenceTestMode.get() in ['off', 'baseline', 'acceptance'])) {
     throw new GradleException('guardIntelligenceTestMode must be off, baseline, or acceptance')
 }
 def guardIntelligenceTestsEnabled = guardIntelligenceTestMode.get() != 'off'
+def guardIntelligenceSuite = providers.gradleProperty('guardIntelligenceSuite').orElse('combat')
+if (!(guardIntelligenceSuite.get() in ['combat', 'village'])
+        || guardIntelligenceSuite.get() == 'village' && guardIntelligenceTestMode.get() == 'acceptance') {
+    throw new GradleException('guardIntelligenceSuite must be combat or village; village supports baseline observations only')
+}
 def guardIntelligenceReportDirectory = providers.gradleProperty('guardIntelligenceReportDir')
         .orElse(layout.buildDirectory.dir('reports/guard-intelligence/' + guardIntelligenceTestMode.get())
                 .get().asFile.absolutePath)
@@ -326,7 +331,10 @@ tasks.register('generateIsolatedGameTestArena') {
     File combatArena = generatedGameTestArenaDirectory.get().file(
             'data/villagerguardgunners_combat_baseline/structures/'
                     + 'villagerguardgunners/gametest_arena.nbt').asFile
-    outputs.files arena, villageBuildingArena, integrationArena, combatArena
+    File villageArena = generatedGameTestArenaDirectory.get().file(
+            'data/villagerguardgunners_village_baseline/structures/'
+                    + 'villagerguardgunners/gametest_arena.nbt').asFile
+    outputs.files arena, villageBuildingArena, integrationArena, combatArena, villageArena
     doLast {
         byte[] encodedArena = Base64.decoder.decode(
                 'H4sIAAAAAAAC/2WPzU4DMQyEB7Y/2VQV3JB4gj4DZ86IE9eVd+sWl2y8SixV8Aa8NYkK7KGW5jC2xprPAy0WWb64AVC1K3qsauE4mphwRp0Wqz7o8JF9MTceTezNYXlSiQaXNATqAztsDhIpdNnIGNtRIg+JDvZEkhwWkUbGw7wdte8GjcWa1vukGnA333mc7NPhVva4n7cnOWY6O6yM0pHtKlDKNpPmP6b/abC89LoArScKbMa/RP416cSpEhcMTVL4yUQj/F7PsYua7B2l5EuFuKpTvm+eyeiNU64hbL/xA1qm2jdgAQAA')
@@ -338,6 +346,8 @@ tasks.register('generateIsolatedGameTestArena') {
         integrationArena.bytes = encodedArena
         combatArena.parentFile.mkdirs()
         combatArena.bytes = encodedArena
+        villageArena.parentFile.mkdirs()
+        villageArena.bytes = encodedArena
     }
 }
 
@@ -403,7 +413,7 @@ minecraft {
                     throw new GradleException('Guard intelligence fixtures must run separately from integration/performance modes.')
                 }
                 workingDirectory layout.buildDirectory.dir('guard-intelligence-runtime').get().asFile
-                property 'forge.enabledGameTestNamespaces', "${mod_id}_combat_baseline"
+                property 'forge.enabledGameTestNamespaces', "${mod_id}_${guardIntelligenceSuite.get()}_baseline"
                 property 'villagerguardgunners.combatTestMode', guardIntelligenceTestMode.get()
                 property 'villagerguardgunners.combatReportDir', file(guardIntelligenceReportDirectory.get()).absolutePath
             }

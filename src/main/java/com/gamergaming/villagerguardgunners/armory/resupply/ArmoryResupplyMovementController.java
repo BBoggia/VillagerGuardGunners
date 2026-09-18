@@ -45,8 +45,10 @@ public final class ArmoryResupplyMovementController {
     private List<BlockPos> approachPositions = List.of();
     @Nullable
     private BlockPos ownedNavigationTarget;
+    private net.minecraft.world.level.pathfinder.Path ownedNavigationPath;
     @Nullable
     private BlockPos pausedNavigationTarget;
+    private long nextEmergencyValidation;
     private int pathAttempts;
     private int nativePathResumes;
     private long nextPathAttemptGameTick = Long.MIN_VALUE;
@@ -150,7 +152,7 @@ public final class ArmoryResupplyMovementController {
             return terminate(MovementStatus.RESERVATION_LOST, null, false);
         }
         if (ownedNavigationTarget != null
-                && !ownedNavigationTarget.equals(navigation.getTargetPos())) {
+                && (!ownedNavigationTarget.equals(navigation.getTargetPos()) || navigation.getPath() != ownedNavigationPath)) {
             return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
         }
 
@@ -179,6 +181,14 @@ public final class ArmoryResupplyMovementController {
         }
 
         if (ownedNavigationTarget != null) {
+            var emergency = com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess.getController(guard);
+            if (emergency != null && emergency.isEmergency() && gameTick >= nextEmergencyValidation) {
+                nextEmergencyValidation = gameTick + 10;
+                if (!emergency.safeEmergencyRoute(navigation.getPath())) {
+                    stopOwnedNavigation();
+                    return terminate(MovementStatus.LOGISTICS_PREEMPTED, ArmoryResupplyGate.GateStatus.STATE_UNAVAILABLE, true);
+                }
+            }
             if (!navigation.isDone()) {
                 if (gameTick >= nextProgressCheckGameTick) {
                     if (!madeProgress(
@@ -276,7 +286,7 @@ public final class ArmoryResupplyMovementController {
             return terminate(MovementStatus.RESERVATION_LOST, null, false);
         }
         if (ownedNavigationTarget != null
-                && !ownedNavigationTarget.equals(navigation.getTargetPos())) {
+                && (!ownedNavigationTarget.equals(navigation.getTargetPos()) || navigation.getPath() != ownedNavigationPath)) {
             return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
         }
         MovementResult validation = validateSession(featureEnabled, level, gameTick);
@@ -427,11 +437,18 @@ public final class ArmoryResupplyMovementController {
     private boolean startNavigation(BlockPos approach, long gameTick) {
         boolean started;
         try {
-            started = navigation.moveTo(
-                    approach.getX() + 0.5D,
-                    approach.getY(),
-                    approach.getZ() + 0.5D,
-                    movementSpeed);
+            var emergency = com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess.getController(guard);
+            if (emergency != null && emergency.isEmergency()) {
+                var planner = new com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner(guard);
+                if (!planner.pathRegionLoaded()) return false;
+                var path = navigation.createPath(approach, 0,
+                        com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner.PATH_RANGE);
+                if (path == null || path.getEndNode() == null || path.getEndNode().asBlockPos().distSqr(approach) > 1
+                        || !emergency.safeEmergencyRoute(path)) return false;
+                started = navigation.moveTo(path, movementSpeed);
+            } else {
+                started = navigation.moveTo(approach.getX() + 0.5D, approach.getY(), approach.getZ() + 0.5D, movementSpeed);
+            }
         } catch (RuntimeException exception) {
             stopNavigationAt(approach);
             return false;
@@ -442,6 +459,15 @@ public final class ArmoryResupplyMovementController {
             return false;
         }
         ownedNavigationTarget = actualTarget.immutable();
+        ownedNavigationPath = navigation.getPath();
+        var emergency = com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess.getController(guard);
+        if (ownedNavigationPath == null || (emergency != null && emergency.isEmergency()
+                && (ownedNavigationPath.getEndNode() == null
+                    || ownedNavigationPath.getEndNode().asBlockPos().distSqr(approach) > 1
+                    || !emergency.safeEmergencyRoute(ownedNavigationPath)))) {
+            stopOwnedNavigation(); return false;
+        }
+        nextEmergencyValidation = gameTick + 10;
         captureProgressAnchor(gameTick);
         return true;
     }
@@ -489,9 +515,15 @@ public final class ArmoryResupplyMovementController {
                 ArmoryResupplyLimits.DEFAULT_PROGRESS_CHECK_TICKS);
     }
 
+    public boolean ownsPath() { return ownedNavigationPath != null && navigation.getPath() == ownedNavigationPath; }
+    public void invalidateForWorldChange() {
+        stopOwnedNavigation();
+        nextPathAttemptGameTick = Math.max(nextPathAttemptGameTick, guard.level().getGameTime() + 20);
+    }
+
     private void stopOwnedNavigation() {
         if (ownedNavigationTarget != null
-                && ownedNavigationTarget.equals(navigation.getTargetPos())) {
+                && ownedNavigationTarget.equals(navigation.getTargetPos()) && navigation.getPath() == ownedNavigationPath) {
             navigation.stop();
         }
         clearNavigationOwnership();
@@ -502,7 +534,7 @@ public final class ArmoryResupplyMovementController {
         if (ownedNavigationTarget == null) {
             return;
         }
-        if (ownedNavigationTarget.equals(navigation.getTargetPos())) {
+        if (ownedNavigationTarget.equals(navigation.getTargetPos()) && navigation.getPath() == ownedNavigationPath) {
             pausedNavigationTarget = ownedNavigationTarget;
             navigation.stop();
         }
@@ -517,6 +549,7 @@ public final class ArmoryResupplyMovementController {
 
     private void clearNavigationOwnership() {
         ownedNavigationTarget = null;
+        ownedNavigationPath = null;
         nextProgressCheckGameTick = Long.MIN_VALUE;
     }
 

@@ -86,11 +86,12 @@ final class VillageCoverageLayoutTest {
         assertEquals(2, layout.areas().stream().mapToInt(area -> area.anchors().size()).sum());
     }
 
-    @Test void excessiveDisconnectedAreasRejectTheWholeLayout() {
+    @Test void excessiveDisconnectedAreasRetainBoundedIndependentCoverage() {
         var layout = VillageCoverageLayout.partition(VILLAGE, 1,
                 IntStream.range(0, 17).mapToObj(i -> home(i * 64, 64, 0)).toList());
         assertEquals(VillageCoverageLayout.Status.AREA_LIMIT, layout.status());
-        assertTrue(layout.areas().isEmpty());
+        assertEquals(VillageCoverageLayout.MAX_AREAS, layout.areas().size());
+        assertEquals(16, layout.areas().stream().flatMap(area -> area.anchors().stream()).distinct().count());
         assertThrows(IllegalArgumentException.class, () -> VillageCoverageLayout.partition(VILLAGE, 1,
                 Collections.nCopies(VillageCoverageLayout.MAX_SITES + 1, home(0, 64, 0))));
     }

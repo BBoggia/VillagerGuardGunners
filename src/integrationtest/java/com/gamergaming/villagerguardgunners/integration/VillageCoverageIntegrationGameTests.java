@@ -271,7 +271,10 @@ public final class VillageCoverageIntegrationGameTests {
             VillageCoverageRuntime.tick(f.level);
             var alternative = VillageCoverageRuntime.lease(guard);
             helper.assertTrue(alternative != null && !alternative.destinationId().equals(failedDestination[0]),
-                    "Failed destination prevented alternate coverage");
+                    "Failed destination prevented alternate coverage: lease=" + alternative + ", failed=" + failedDestination[0]
+                            + ", blocked=" + blocked[0] + ", guard=" + guard.position()
+                            + ", availability=" + VillageCoverageRuntime.availability(guard)
+                            + ", snapshot=" + VillageCoverageRuntime.snapshot(f.level, f.identity.id()));
             controller.start();
             VillageCoverageRuntime.tick(f.level);
             controller.tick();
@@ -311,8 +314,8 @@ public final class VillageCoverageIntegrationGameTests {
         var bounds = new VillageFootprint.Bounds(f.origin.getX() + 8, f.origin.getY() - 1, f.origin.getZ() + 6,
                 f.origin.getX() + 28, f.origin.getY() + 3, f.origin.getZ() + 16);
         for (int i = 0; i < 8; i++) {
-            var id = new VillageIdentity(f.level.dimension().location(), ResourceLocation.parse("test:budget_" + i),
-                    net.minecraft.world.level.ChunkPos.asLong(f.origin));
+            var id = new VillageIdentity(f.level.dimension().location(), ResourceLocation.parse("minecraft:village_plains"),
+                    net.minecraft.world.level.ChunkPos.asLong((f.origin.getX() >> 4) + i + 1, f.origin.getZ() >> 4));
             data.observe(id, VillageFootprint.of(List.of(new VillageFootprint.Piece(f.origin, "NONE",
                     ResourceLocation.parse("minecraft:village/plains/houses/plains_small_house_1"), bounds))));
             Guard guard = f.guard(f.origin.offset(18, 0, 8), id.id());
@@ -394,6 +397,101 @@ public final class VillageCoverageIntegrationGameTests {
             } finally { ModConfigs.GUARD_GUNNERS.medical.downed.accept(downed); f.close(); }
             helper.succeed();
         });
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_combat_duty", timeoutTicks = 180)
+    public static void villageCombatDutySurvivesMovementAndReturnsWithoutChangingOrders(GameTestHelper helper) {
+        Fixture f = new Fixture(helper);
+        Guard guard = f.guard(f.origin.offset(12, 0, 8));
+        guard.goalSelector.removeAllGoals(goal -> !(goal instanceof com.gamergaming.villagerguardgunners.ai.GuardAutomaticDutyMovementGoal));
+        var anchor = guard.blockPosition();
+        com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.capture(guard);
+        var duty = com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard);
+        helper.assertTrue(duty != null && duty.bounds().contains(guard.position())
+                && !duty.bounds().contains(guard.position().add(25, 0, 0)), "Village engagement has no local boundary");
+        guard.moveTo(guard.getX() + 10, guard.getY(), guard.getZ());
+        com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.capture(guard);
+        helper.assertTrue(com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard).anchor().equals(anchor),
+                "Movement moved the engagement anchor");
+        helper.runAfterDelay(170, f::close);
+        helper.onEachTick(() -> {
+            if (f.closed || helper.getTick() < 10) return;
+            if (guard.distanceToSqr(net.minecraft.world.phys.Vec3.atBottomCenterOf(anchor)) <= 2.25) {
+                helper.assertTrue(GuardOrdersAccess.getOrders(guard).equals(GuardOrders.DEFAULT), "Return rewrote orders");
+                com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.capture(guard);
+                GuardOrdersAccess.setOrders(guard, GuardOrders.DEFAULT.withMovement(GuardOrders.MovementOrder.HOLD_POSITION));
+                helper.assertTrue(com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard) == null,
+                        "Manual Hold Position retained automatic duty ownership");
+                f.close(); helper.succeed();
+            }
+        });
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_return_failure", timeoutTicks = 210)
+    public static void unreachableCombatDutyReleasesAutomaticMovement(GameTestHelper helper) {
+        Fixture f = new Fixture(helper);
+        Guard guard = f.guard(f.origin.offset(12, 0, 8));
+        guard.goalSelector.removeAllGoals(goal -> true);
+        com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.capture(guard);
+        helper.assertTrue(com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard) != null, "No duty captured");
+        guard.moveTo(guard.getX() + 10, guard.getY(), guard.getZ());
+        for (int x = 10; x <= 14; x++) for (int z = 6; z <= 10; z++)
+            if (x == 10 || x == 14 || z == 6 || z == 10)
+                for (int y = 0; y < 4; y++) f.level.setBlock(f.origin.offset(x, y, z), Blocks.STONE.defaultBlockState(), 3);
+        var controller = new com.gamergaming.villagerguardgunners.ai.GuardDutyReturnController(guard);
+        helper.runAfterDelay(200, f::close);
+        helper.onEachTick(() -> {
+            if (f.closed) return;
+            controller.tick();
+            if (helper.getTick() > 1 && !controller.canStart()) {
+                helper.assertTrue(com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard) == null
+                        && !controller.ownsPath() && GuardOrdersAccess.getOrders(guard).equals(GuardOrders.DEFAULT),
+                        "Unreachable return retained movement ownership or changed orders");
+                f.close(); helper.succeed();
+            }
+        });
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_return_slab", timeoutTicks = 180)
+    public static void combatDutyOnSlabReturnsToNativeAirCell(GameTestHelper helper) {
+        Fixture f = new Fixture(helper);
+        var anchor = f.origin.offset(12, 0, 8);
+        f.level.setBlock(anchor.below(), Blocks.STONE_SLAB.defaultBlockState(), 3);
+        Guard guard = f.guard(anchor); guard.setPos(guard.getX(), guard.getY() - .5, guard.getZ());
+        guard.goalSelector.removeAllGoals(goal -> true);
+        com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.capture(guard);
+        var duty = com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard);
+        helper.assertTrue(duty != null && duty.anchor().equals(anchor), "Fractional support stored a solid-block duty target");
+        guard.moveTo(guard.getX() + 8, f.origin.getY(), guard.getZ());
+        var controller = new com.gamergaming.villagerguardgunners.ai.GuardDutyReturnController(guard);
+        helper.runAfterDelay(170, f::close);
+        helper.onEachTick(() -> {
+            if (f.closed) return;
+            controller.tick();
+            if (guard.distanceToSqr(anchor.getX() + .5, anchor.getY() - .5, anchor.getZ() + .5) <= 2.25) {
+                f.close(); helper.succeed();
+            }
+        });
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_partial")
+    public static void cappedTerrainRetainsVerifiedLocalComponents(GameTestHelper helper) {
+        try (Fixture f = new Fixture(helper); ProbeScope scope = new ProbeScope()) {
+            var bounds = new VillageFootprint.Bounds(f.origin.getX(), f.origin.getY() - 1, f.origin.getZ(),
+                    f.origin.getX() + 130, f.origin.getY() + 4, f.origin.getZ() + 130);
+            var footprint = VillageFootprint.of(List.of(new VillageFootprint.Piece(f.origin, "NONE", ResourceLocation.parse("test:partial"), bounds)));
+            Set<BlockPos> homes = new HashSet<>();
+            for (int x = 3; x <= 120; x += 13) for (int z = 3; z <= 120; z += 13) homes.add(f.origin.offset(x, 0, z));
+            var terrain = new CoverageTerrain(f.level, new VillageRecord(f.identity, footprint, 1, homes));
+            for (int i = 0; i < 500 && !terrain.complete(); i++) helper.assertTrue(terrain.advance(128) <= 128, "Survey exceeded budget");
+            helper.assertTrue(terrain.limited() && terrain.usable() && terrain.nodeCount() > 0
+                    && terrain.anchors().size() == CoverageTerrain.MAX_ANCHORS, "Cap discarded verified local coverage");
+            var left = f.origin.offset(7, 0, 8); var right = f.origin.offset(30, 0, 8);
+            helper.assertTrue(!terrain.path(left, right).isEmpty(), "Verified connected route was lost at the anchor cap");
+            helper.assertTrue(terrain.component(f.origin.offset(120, 0, 120)) == null, "Unknown terrain was promoted to reachable");
+            helper.assertTrue(scope.missingChunkRequests == 0 && scope.poiReads == 0, "Partial survey requested unknown terrain");
+        }
+        helper.succeed();
     }
 
     private static final class Fixture implements AutoCloseable {

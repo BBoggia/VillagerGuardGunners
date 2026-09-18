@@ -9,6 +9,8 @@ import tallestegg.guardvillagers.entities.Guard;
 
 /** Lowest VGG movement owner for squad routes, defense posts, and village coverage. */
 public final class GuardAutomaticDutyMovementGoal extends Goal {
+    private final Guard guard;
+    private final GuardDutyReturnController returnController;
     private final GuardCoverageMovementController coverageController;
     private final GuardAutomaticDutyMovementController postController;
     private final GuardPatrolRouteMovementController routeController;
@@ -16,6 +18,8 @@ public final class GuardAutomaticDutyMovementGoal extends Goal {
     private MovementOwner activeOwner = MovementOwner.NONE;
 
     public GuardAutomaticDutyMovementGoal(Guard guard) {
+        this.guard = guard;
+        returnController = new GuardDutyReturnController(guard);
         coverageController = new GuardCoverageMovementController(guard);
         postController = new GuardAutomaticDutyMovementController(guard);
         routeController = new GuardPatrolRouteMovementController(guard);
@@ -28,6 +32,8 @@ public final class GuardAutomaticDutyMovementGoal extends Goal {
             pendingOwner = MovementOwner.ROUTE;
             return routeController.canStart();
         }
+        pendingOwner = MovementOwner.RETURN;
+        if (returnController.canStart()) return true;
         pendingOwner = MovementOwner.POST;
         if (postController.canStart()) return true;
         pendingOwner = MovementOwner.COVERAGE;
@@ -37,6 +43,7 @@ public final class GuardAutomaticDutyMovementGoal extends Goal {
     @Override
     public boolean canContinueToUse() {
         return switch (activeOwner) {
+            case RETURN -> !routeController.hasExecutableRoute() && returnController.canStart();
             case ROUTE -> routeController.shouldContinue();
             case POST -> !routeController.hasExecutableRoute()
                     && postController.shouldContinue();
@@ -54,6 +61,7 @@ public final class GuardAutomaticDutyMovementGoal extends Goal {
     public void start() {
         activeOwner = pendingOwner;
         if (activeOwner == MovementOwner.ROUTE) {
+            com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.forget(guard);
             routeController.start();
         } else if (activeOwner == MovementOwner.POST) {
             postController.start();
@@ -64,7 +72,9 @@ public final class GuardAutomaticDutyMovementGoal extends Goal {
 
     @Override
     public void tick() {
-        if (activeOwner == MovementOwner.ROUTE) {
+        if (activeOwner == MovementOwner.RETURN) {
+            returnController.tick();
+        } else if (activeOwner == MovementOwner.ROUTE) {
             routeController.tick();
         } else if (activeOwner == MovementOwner.POST) {
             postController.tick();
@@ -75,7 +85,9 @@ public final class GuardAutomaticDutyMovementGoal extends Goal {
 
     @Override
     public void stop() {
-        if (activeOwner == MovementOwner.ROUTE) {
+        if (activeOwner == MovementOwner.RETURN) {
+            returnController.stop();
+        } else if (activeOwner == MovementOwner.ROUTE) {
             routeController.stopForHigherPriorityGoal();
         } else if (activeOwner == MovementOwner.POST) {
             postController.stopForHigherPriorityGoal();
@@ -94,17 +106,24 @@ public final class GuardAutomaticDutyMovementGoal extends Goal {
         return routeController.snapshot();
     }
 
+    public boolean ownsScreenedGroundPath() { return returnController.ownsPath() || coverageController.ownsPath(); }
+    public void invalidateGroundPath() {
+        if (returnController.ownsPath()) returnController.stop();
+        if (coverageController.ownsPath()) coverageController.stop();
+    }
+
     public MovementOwner activeOwner() {
         return activeOwner;
     }
 
     /** A road-end defense post can lie outside vanilla's village POI boundary. */
     public boolean prioritizesDefensePost() {
-        return !routeController.hasExecutableRoute() && postController.shouldContinue();
+        return !routeController.hasExecutableRoute() && (returnController.canStart() || postController.shouldContinue());
     }
 
     public enum MovementOwner {
         NONE,
+        RETURN,
         COVERAGE,
         POST,
         ROUTE

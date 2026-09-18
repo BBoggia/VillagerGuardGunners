@@ -9,6 +9,13 @@ import net.minecraft.world.phys.Vec3;
 import org.junit.jupiter.api.Test;
 
 class TacticalRoutePolicyTest {
+    @Test void protectedBodiesBlockOnlyIntersectingCandidateLanes() {
+        var ally = new net.minecraft.world.phys.AABB(6, 0, -.5, 7, 2, .5);
+        Vec3 target = new Vec3(14, 1.6, 0);
+        assertTrue(TacticalFiringLane.intersects(ally, new Vec3(0, 1.6, 0), target, .5));
+        assertFalse(TacticalFiringLane.intersects(ally, new Vec3(0, 1.6, 6), target, .5));
+        assertTrue(TacticalFiringLane.intersects(ally, new Vec3(6.5, 1.6, 0), target, .5));
+    }
     @Test void assignmentIncludesBoundaryButRejectsOutsideSamples() {
         var bounds = new TacticalAssignmentBounds(new Vec3(.5, 1, .5), 4);
         assertTrue(bounds.contains(new Vec3(4.5, 1, .5)));

@@ -25,6 +25,8 @@ public final class GuardThreatTracker {
     public static final int SAMPLE_INTERVAL = 10;
     public static final int CANDIDATE_LIMIT = 32;
     public static final int SIGHT_LIMIT = 12;
+    public static final int SUPPORT_CANDIDATE_LIMIT = 8;
+    public static final int SUPPORT_SIGHT_LIMIT = 3;
     public static final double SCAN_RADIUS = 24;
     private final Guard guard;
     private final ThreatMemory memory = new ThreatMemory();
@@ -38,8 +40,10 @@ public final class GuardThreatTracker {
     private double recentDamage;
     private double support;
     private final ArrayList<Vec3> supportPositions = new ArrayList<>(3);
+    private final java.util.Map<UUID, Integer> coveringTargets = new java.util.HashMap<>();
     private boolean complete;
     private int sightChecks;
+    private int supportSightChecks;
     private int queryCount;
     private int candidateCount;
 
@@ -76,8 +80,10 @@ public final class GuardThreatTracker {
 
     private void scan(ServerLevel level, LivingEntity target, boolean permittedTarget, long now) {
         sightChecks = 0;
+        supportSightChecks = 0;
         support = 0;
         supportPositions.clear();
+        coveringTargets.clear();
         complete = true;
         candidateCount = 0;
         try {
@@ -91,33 +97,45 @@ public final class GuardThreatTracker {
             LivingEntity attacker = recentAttacker();
             if (attacker != target) observe(attacker, true, now);
             candidates.clear();
+            // Civilians and idle neutral animals cannot consume the threat candidate cap.
+            // Selected targets and recent direct attackers were observed first, independently.
             level.getEntities(EntityTypeTest.forClass(LivingEntity.class),
-                    guard.getBoundingBox().inflate(SCAN_RADIUS), entity -> true,
+                    guard.getBoundingBox().inflate(SCAN_RADIUS),
+                    entity -> entity != target && entity != attacker && entity != guard
+                            && eligible(entity) && potentiallyThreatening(entity),
                     candidates, CANDIDATE_LIMIT + 1);
             queryCount++;
             candidateCount = Math.min(candidates.size(), CANDIDATE_LIMIT);
             if (candidates.size() > CANDIDATE_LIMIT) complete = false;
-            candidates.sort(Comparator.comparingInt(LivingEntity::getId));
-            for (int i = 0; i < candidateCount; i++) {
-                LivingEntity candidate = candidates.get(i);
-                if (candidate == target || candidate == attacker || candidate == guard || !eligible(candidate)) continue;
-                if (GuardAllyProtection.isProtected(guard, candidate)) {
-                    if (candidate instanceof Guard ally && guard.distanceToSqr(ally) <= 256
-                            && !GuardLifeRuntime.blocked(ally) && !MedicRuntime.busy(ally)) {
-                        LivingEntity allyTarget = ally.getTarget();
-                        if (allyTarget == null || (allyTarget != target && memory.get(allyTarget.getUUID()) == null)) continue;
-                        for (var wrapped : ally.goalSelector.getAvailableGoals()) {
-                            if (wrapped.getGoal() instanceof GuardGunCombatGoal goal
-                                    && goal.providesTacticalSupport(now, allyTarget) && visible(ally)) {
-                                if (supportPositions.size() < 3) supportPositions.add(ally.position());
-                                support = Math.min(3, support + (allyTarget == target ? 1 : .5));
-                                break;
+            candidates.sort(Comparator.<LivingEntity>comparingDouble(guard::distanceToSqr).thenComparingInt(LivingEntity::getId));
+            for (int i = 0; i < candidateCount; i++) observe(candidates.get(i), false, now);
+            // Support has its own candidate/sight allowance. Missing support is conservative;
+            // it must never turn an otherwise complete threat assessment into an incomplete one.
+            var allies = new ArrayList<Guard>(SUPPORT_CANDIDATE_LIMIT);
+            level.getEntities(EntityTypeTest.forClass(Guard.class), guard.getBoundingBox().inflate(16),
+                    ally -> ally != guard && eligible(ally) && guard.distanceToSqr(ally) <= 256,
+                    allies, SUPPORT_CANDIDATE_LIMIT);
+            queryCount++;
+            allies.sort(Comparator.<Guard>comparingDouble(guard::distanceToSqr).thenComparingInt(Guard::getId));
+            for (Guard ally : allies) {
+                if (supportSightChecks >= SUPPORT_SIGHT_LIMIT) break;
+                try {
+                    if (!GuardAllyProtection.isProtected(guard, ally) || GuardLifeRuntime.blocked(ally)
+                            || MedicRuntime.busy(ally)) continue;
+                    LivingEntity allyTarget = ally.getTarget();
+                    if (allyTarget == null || (allyTarget != target && memory.get(allyTarget.getUUID()) == null)) continue;
+                    for (var wrapped : ally.goalSelector.getAvailableGoals()) {
+                        if (wrapped.getGoal() instanceof GuardGunCombatGoal goal && goal.providesTacticalSupport(now, allyTarget)) {
+                            supportSightChecks++;
+                            if (guard.getSensing().hasLineOfSight(ally)) {
+                                supportPositions.add(ally.position());
+                                coveringTargets.merge(allyTarget.getUUID(), 1, Integer::sum);
+                                support += allyTarget == target ? 1 : .5;
                             }
+                            break;
                         }
                     }
-                } else {
-                    observe(candidate, false, now);
-                }
+                } catch (RuntimeException ignored) { /* Unknown support grants no pressure reduction. */ }
             }
         } catch (RuntimeException ignored) {
             // Third-party relationship/type hooks cannot turn an incomplete scan into safety.
@@ -125,6 +143,15 @@ public final class GuardThreatTracker {
         } finally {
             candidates.clear();
         }
+    }
+
+    private boolean potentiallyThreatening(LivingEntity entity) {
+        if (entity instanceof Enemy) return true;
+        if (entity instanceof Mob mob && mob.getTarget() != null && mob.getTarget().isAlive()
+                && GuardAllyProtection.isProtected(guard, mob.getTarget())) return true;
+        int age = entity.tickCount - entity.getLastHurtMobTimestamp();
+        return entity.getLastHurtMob() != null && age >= 0 && age < ThreatMemory.LIFETIME_TICKS
+                && GuardAllyProtection.isProtected(guard, entity.getLastHurtMob());
     }
 
     private LivingEntity recentAttacker() {
@@ -168,7 +195,7 @@ public final class GuardThreatTracker {
     }
 
     private boolean visible(LivingEntity entity) {
-        if (sightChecks >= SIGHT_LIMIT) { complete = false; return false; }
+        if (sightChecks >= SIGHT_LIMIT - SUPPORT_SIGHT_LIMIT) { complete = false; return false; }
         sightChecks++;
         return guard.getSensing().hasLineOfSight(entity);
     }
@@ -209,16 +236,17 @@ public final class GuardThreatTracker {
         return now < contextUntil && now >= sampledAt
                 && (memory.size() > 0 || (now >= damagedAt && now - damagedAt < ThreatMemory.LIFETIME_TICKS));
     }
+    public int coveringAllies(UUID target) { return coveringTargets.getOrDefault(target, 0); }
     public ThreatMemory.Observation remembered(UUID id) { return memory.get(id); }
     public java.util.List<ThreatMemory.Observation> observations() { return java.util.List.copyOf(memory.observations()); }
     public java.util.List<Vec3> supportPositions() { return java.util.List.copyOf(supportPositions); }
-    public int sightChecks() { return sightChecks; }
+    public int sightChecks() { return sightChecks + supportSightChecks; }
     public int candidateCount() { return candidateCount; }
     public int queryCount() { return queryCount; }
     public void clear() {
-        memory.clear(); candidates.clear(); supportPositions.clear(); dimension = null; nextSample = Long.MIN_VALUE;
+        memory.clear(); candidates.clear(); supportPositions.clear(); coveringTargets.clear(); dimension = null; nextSample = Long.MIN_VALUE;
         sampledAt = Long.MIN_VALUE; contextUntil = Long.MIN_VALUE; damagedAt = Long.MIN_VALUE;
         previousHealth = Float.NaN; recentDamage = 0; support = 0; complete = false;
-        sightChecks = 0; candidateCount = 0; queryCount = 0;
+        sightChecks = 0; supportSightChecks = 0; candidateCount = 0; queryCount = 0;
     }
 }

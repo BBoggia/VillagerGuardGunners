@@ -32,6 +32,11 @@ public final class GuardTacticalController {
     }
     public CombatIntentPolicy.Decision decide(LivingEntity target, boolean visible, boolean mayEngage,
             WeaponReadiness readiness, SquadCommand command, boolean friendlyBlocked, double retreatDistance) {
+        return decide(target, visible, mayEngage, readiness, command, friendlyBlocked, retreatDistance, false);
+    }
+    public CombatIntentPolicy.Decision decide(LivingEntity target, boolean visible, boolean mayEngage,
+            WeaponReadiness readiness, SquadCommand command, boolean friendlyBlocked, double retreatDistance,
+            boolean investigate) {
         long now = guard.level().getGameTime();
         boolean targetPresent = target != null && target.isAlive();
         if (targetPresent && (visible || lastTargetEvidence == Long.MIN_VALUE)) lastTargetEvidence = now;
@@ -50,10 +55,15 @@ public final class GuardTacticalController {
         boolean equipmentOrOrdersChanged = readiness != previousReadiness
                 || previousWeapon != guard.getMainHandItem() || revision != previousOrdersRevision;
         var next = CombatIntentPolicy.decide(new CombatIntentPolicy.Input(
-                targetContext || tracker.hasContinuation(now), targetPresent, visible, mayEngage,
+                targetContext || tracker.hasContinuation(now) || investigate, targetPresent, visible, mayEngage,
                 hold, movingCommand, friendlyBlocked, guard.getHealth() / Math.max(1, guard.getMaxHealth()),
                 retreatDistance, readiness, assessment), decision.intent(), equipmentOrOrdersChanged
                         ? CombatIntentPolicy.MINIMUM_WITHDRAW_TICKS : now - enteredAt);
+        if (investigate && next.reason() == CombatIntentPolicy.Reason.UNOBSERVED_TARGET
+                && assessment.complete() && assessment.nearestDistance() > retreatDistance) {
+            next = new CombatIntentPolicy.Decision(CombatIntentPolicy.Intent.INVESTIGATE,
+                    CombatIntentPolicy.Reason.LAST_SEEN_POSITION);
+        }
         boolean urgent = equipmentOrOrdersChanged || command != previousCommand
                 || revision != previousOrdersRevision || targetPresent != previousTargetPresent
                 || visible != previousVisible || guard.getHealth() < previousHealth

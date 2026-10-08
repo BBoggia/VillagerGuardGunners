@@ -157,6 +157,9 @@ public final class TargetIntelligenceGameTests {
     public static void liveGuardPeeksAroundCornerAndResumesNativeFire(GameTestHelper h) {
         guard(h).discard();
         Guard guard = armed(h, 20, 12);
+        // Establish the first shot from a fixed position. An earlier approach or
+        // firing-lane maneuver can otherwise round the new wall before a peek starts.
+        GuardOrdersAccess.setOrders(guard, GuardOrders.DEFAULT.withMovement(GuardOrders.MovementOrder.HOLD_POSITION));
         var target = h.spawnWithNoFreeWill(EntityType.RAVAGER, new BlockPos(34, 1, 12));
         // Keep the target eligible for vanilla target selection while allowing repeated real shots.
         target.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).setBaseValue(10000);
@@ -169,7 +172,17 @@ public final class TargetIntelligenceGameTests {
             var safety = com.gamergaming.villagerguardgunners.api.GuardNativeShotAccess.controller(guard).currentShotSafety(target);
             if (stage[0] == 0 && ammo < 17 && safety.clear()) {
                 ammoAtWall[0] = ammo;
-                for (int y = 1; y <= 3; y++) for (int z = 11; z <= 13; z++) h.setBlock(new BlockPos(26, y, z), Blocks.STONE);
+                // Native movement before the first shot can shift the firing line.
+                // Center the obstruction on the actual ray, then verify this fixture lost sight.
+                double wallX = h.absolutePos(new BlockPos(26, 1, 0)).getX() + .5;
+                double fraction = (wallX - guard.getX()) / (target.getX() - guard.getX());
+                int centerZ = net.minecraft.util.Mth.floor(guard.getZ() + fraction * (target.getZ() - guard.getZ()))
+                        - h.absolutePos(BlockPos.ZERO).getZ();
+                // Keep a short peek available from the stationary start.
+                for (int y = 1; y <= 3; y++) for (int z = centerZ - 1; z <= centerZ + 1; z++)
+                    h.setBlock(new BlockPos(26, y, z), Blocks.STONE);
+                h.assertFalse(guard.hasLineOfSight(target), "Corner fixture failed to obstruct the current firing line");
+                GuardOrdersAccess.setOrders(guard, GuardOrders.DEFAULT.withMovement(GuardOrders.MovementOrder.TACTICAL));
                 stage[0] = 1;
             } else if (stage[0] == 1 && goal.investigation().isMoving()) {
                 stage[0] = 2;

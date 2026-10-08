@@ -16,9 +16,9 @@ public final class GuardDutyReturnController {
     private final SquadCommandMovementController budget;
     private final TacticalPositionPlanner planner;
     private Path owned;
-    private long nextCheck, lastProgress, retryAt;
-    private double bestRemaining;
-    private int lastNode;
+    private long nextCheck, retryAt;
+    private final com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress routeProgress =
+            new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
     public GuardDutyReturnController(Guard guard) { this.guard = guard; budget = new SquadCommandMovementController(guard); planner = new TacticalPositionPlanner(guard); }
     public boolean canStart() {
         try { return eligible(); }
@@ -37,7 +37,7 @@ public final class GuardDutyReturnController {
                 || com.gamergaming.villagerguardgunners.api.GuardSidearmAccess.getState(guard)
                     == com.gamergaming.villagerguardgunners.sidearm.SidearmState.RECOVERY_REQUIRED
                 || !com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess.get(guard).readable()) return false;
-        if (guard.position().distanceToSqr(Vec3.atBottomCenterOf(duty.anchor())) <= 2.25) {
+        if (com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteArrival.at(guard, duty.anchor(), 1.5, 1)) {
             GuardCombatDuty.forget(guard); return false;
         }
         var resupply = GuardArmoryResupplyAccess.getController(guard);
@@ -60,15 +60,11 @@ public final class GuardDutyReturnController {
             stop(); returningDuty = duty; returnStarted = now; attempts = 0;
         }
         if (owned != null) {
-            if (guard.getNavigation().getPath() != owned) { owned = null; return; }
-            int node = owned.getNextNodeIndex();
-            double remaining = TacticalNavigationController.remainingDistance(owned, node, guard.position());
-            if (node > lastNode || remaining < bestRemaining - .25) {
-                lastNode = node; bestRemaining = remaining; lastProgress = now;
-            }
+            if (!routeProgress.owns(guard, owned)) { routeProgress.clear(); owned = null; retryAt = now + 20; return; }
+            boolean stalled = routeProgress.stalled(guard, owned, now, 40);
             if (now >= nextCheck) {
                 nextCheck = now + 10;
-                if (guard.getNavigation().isDone() || now - lastProgress >= 40
+                if (guard.getNavigation().isDone() || stalled
                         || !planner.safeRoute(owned, owned.getNextNodeIndex(), java.util.List.of(),
                                 TacticalAssignmentBounds.UNBOUNDED, !planner.safeStanding(guard.position()))) stop();
             }
@@ -76,8 +72,8 @@ public final class GuardDutyReturnController {
         }
         if (!budget.takePathSlot(now)) return;
         attempts++;
-        if (!planner.pathRegionLoaded()) return;
-        var path = guard.getNavigation().createPath(duty.anchor(), 0, TacticalPositionPlanner.PATH_RANGE);
+        var path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, duty.anchor(), TacticalPositionPlanner.PATH_RANGE);
+        if (path == null && com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.deferred(guard)) { attempts--; retryAt = now + 20; return; }
         if (path == null || !path.canReach() || path.getEndNode() == null
                 || path.getEndNode().asBlockPos().distSqr(duty.anchor()) > 1
                 || !planner.safeRoute(path, 0, java.util.List.of(), TacticalAssignmentBounds.UNBOUNDED,
@@ -90,14 +86,14 @@ public final class GuardDutyReturnController {
                             TacticalAssignmentBounds.UNBOUNDED, !planner.safeStanding(guard.position()))) {
                 stop(); return;
             }
-            lastNode = owned.getNextNodeIndex();
-            bestRemaining = TacticalNavigationController.remainingDistance(owned, lastNode, guard.position());
-            lastProgress = now; nextCheck = now + 10;
+            nextCheck = now + 10;
+            routeProgress.start(guard, owned, now);
         }
     }
-    public boolean ownsPath() { return owned != null && guard.getNavigation().getPath() == owned; }
+    public boolean ownsPath() { return routeProgress.owns(guard, owned); }
     public void stop() {
-        if (owned != null && guard.getNavigation().getPath() == owned) guard.getNavigation().stop();
+        if (ownsPath()) guard.getNavigation().stop();
+        routeProgress.clear();
         owned = null;
     }
 }

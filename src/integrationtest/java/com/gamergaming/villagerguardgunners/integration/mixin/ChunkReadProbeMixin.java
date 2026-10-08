@@ -11,6 +11,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ServerChunkCache.class, remap = false)
 public abstract class ChunkReadProbeMixin {
+    @Inject(method = "getChunkNow", at = @At("HEAD"))
+    private void observeCachedLookup(int x, int z,
+                                    CallbackInfoReturnable<net.minecraft.world.level.chunk.LevelChunk> callback) {
+        ProbeScope.cachedChunkLookup();
+    }
+
     @Inject(method = "getChunk(IILnet/minecraft/world/level/chunk/ChunkStatus;Z)Lnet/minecraft/world/level/chunk/ChunkAccess;", at = @At("HEAD"))
     private void observeRequest(int x, int z, ChunkStatus status, boolean create,
                                 CallbackInfoReturnable<ChunkAccess> callback) {

@@ -32,6 +32,69 @@ import org.junit.jupiter.api.Test;
 final class VillagerGuardGunnersConfigTest {
 
     @Test
+    void peacefulLoadoutsCanBeTunedAndDisabledIndependentlyOfEasy() {
+        var config = new VillagerGuardGunnersConfig();
+        var loadouts = config.naturalLoadouts;
+        var customPool = ResourceLocation.fromNamespaceAndPath("example", "peaceful");
+        loadouts.peaceful.upgradeChance.accept(0.8D);
+        loadouts.peaceful.maximumNearby.accept(3);
+        loadouts.peaceful.poolId.accept(customPool);
+        assertEquals(new NaturalGuardDifficultySettings(0.8D, 3, customPool),
+                loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL));
+        assertEquals(NaturalGuardLoadoutDefaults.settingsFor(NaturalGuardDifficulty.EASY),
+                loadouts.settingsFor(NaturalGuardDifficulty.EASY));
+
+        loadouts.peaceful.upgradeChance.accept(0.0D);
+        assertFalse(loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL).enabled());
+        loadouts.peaceful.upgradeChance.accept(0.8D);
+        loadouts.peaceful.maximumNearby.accept(0);
+        assertFalse(loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL).enabled());
+        assertTrue(loadouts.settingsFor(NaturalGuardDifficulty.EASY).enabled());
+    }
+
+    @Test
+    void versionTwentyThreeAddsOnlyPeacefulDefaultsAndPreservesCurrentChoices() {
+        var config = new VillagerGuardGunnersConfig();
+        var loadouts = config.naturalLoadouts;
+        config.enabled.accept(false);
+        loadouts.enabled.accept(false);
+        loadouts.enabledSpawnSources.accept(Set.of(NaturalGuardSpawnSource.STRUCTURE));
+        loadouts.replaceCrossbowsOnly.accept(false);
+        loadouts.nearbyCapRadius.accept(96.0D);
+        loadouts.allowExplosiveWeapons.accept(true);
+        loadouts.easy.upgradeChance.accept(0.8D);
+        loadouts.normal.maximumNearby.accept(9);
+        var customPool = ResourceLocation.fromNamespaceAndPath("example", "custom");
+        loadouts.hard.poolId.accept(customPool);
+        var previousRules = loadouts.spawnRules();
+        var previousEasy = loadouts.settingsFor(NaturalGuardDifficulty.EASY);
+        var previousNormal = loadouts.settingsFor(NaturalGuardDifficulty.NORMAL);
+        var previousHard = loadouts.settingsFor(NaturalGuardDifficulty.HARD);
+        loadouts.peaceful.upgradeChance.accept(0.0D);
+        loadouts.peaceful.maximumNearby.accept(0);
+        loadouts.peaceful.poolId.accept(customPool);
+
+        config.update(23);
+
+        assertAll(
+                () -> assertEquals(NaturalGuardLoadoutDefaults.settingsFor(NaturalGuardDifficulty.EASY),
+                        loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL)),
+                () -> assertFalse(config.enabled.get()),
+                () -> assertFalse(loadouts.enabled.get()),
+                () -> assertEquals(previousRules, loadouts.spawnRules()),
+                () -> assertEquals(previousEasy, loadouts.settingsFor(NaturalGuardDifficulty.EASY)),
+                () -> assertEquals(previousNormal, loadouts.settingsFor(NaturalGuardDifficulty.NORMAL)),
+                () -> assertEquals(previousHard, loadouts.settingsFor(NaturalGuardDifficulty.HARD)));
+
+        loadouts.peaceful.upgradeChance.accept(0.0D);
+        loadouts.peaceful.maximumNearby.accept(7);
+        loadouts.peaceful.poolId.accept(customPool);
+        var savedPeaceful = loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL);
+        config.update(24);
+        assertEquals(savedPeaceful, loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL));
+    }
+
+    @Test
     void tradeMigrationPreservesUnrelatedSettingsAndCurrentTradeChoices() {
         var config=new VillagerGuardGunnersConfig();config.enabled.accept(false);
         config.quartermasterTrades.suppliesEnabled.accept(false);config.quartermasterTrades.gunSalesEnabled.accept(true);
@@ -45,7 +108,7 @@ final class VillagerGuardGunnersConfigTest {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(23, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(24, VillagerGuardGunnersConfig.CONFIG_VERSION),
                 () -> assertFalse(config.medical.downed.get()),
                 () -> assertFalse(config.medical.transport.get()),
                 () -> assertEquals(40, config.medical.cotRevivalTicks.get()),

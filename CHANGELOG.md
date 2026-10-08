@@ -6,52 +6,76 @@ in local development notes.
 
 ## Unreleased
 
-### Improved
-
-- Guards prioritize urgent visible threats to nearby allies and can spread their attention when another ready guard is already covering an enemy.
-- Guards can make a short local search after losing sight of an enemy, then resume fighting or end the search.
-- Guards seeking a clear shot avoid firing positions already reserved by another guard.
-
-- Guards use village paths with slabs, stairs, and unlit campfires more consistently during combat and patrols.
-- Village defenders stay near their combat duty position and return after fighting, while player orders retain priority.
-- Guards with no usable gun ammo can resupply from a nearby Village Armory during combat when threats leave enough space.
-- Automatic village coverage keeps verified reachable areas active when a large village exceeds its survey limits.
+## 1.9 - 2026-10-08
 
 ### Added
 
-- Station managers can remove unavailable guards' last-seen roster records from
-  the Quartermaster overview. Returning guards restore their records automatically.
-- Quartermasters sell bandages, ammo, ledgers and basic equipment through normal
-  villager trades. Datapacks can define offers for all five levels; optional gun
-  sales start disabled. Existing offers keep their saved prices and uses, while
-  disabled offers and removed gun or ammo definitions cannot be purchased.
-  An installable example datapack demonstrates an ammo trade with two input items.
+- Quartermasters open an overview when interacted with using empty hands. The
+  station's Overview button opens the same menu, with stock, equipment needs,
+  guard service status, recent deliveries, and access to villager trades.
+  Visitors can reach trades without gaining access to private supplies.
 - Quartermaster management can apply equipment policies, loadouts, replacement
   permissions, and station assignments to selected guards or loaded squad members.
   Preview shows the exact guards, proposed settings, supply estimates, and service
   delays before applying. Settings and permission changes require a new preview.
-- Quartermasters open an overview when interacted with using empty hands. The
-  station's Overview button opens the same menu, with stock, equipment needs,
-  guard service status, recent deliveries, and access to existing villager trades. Visitors
-  can reach trades without gaining access to private supplies.
+- Quartermasters sell bandages, ammo, ledgers, shields, iron helmets, and Recovery
+  Cots through normal villager trades. Offers span all five profession levels.
+  Supply trades start enabled; optional unloaded gun sales start disabled.
+  Existing Quartermasters receive offers for their current and earlier levels.
+  Purchases go to the player for deposit into station or Village Armory stock.
+- Datapacks can define Quartermaster trades, including two-input offers. An
+  installable example demonstrates an ammo trade. Saved offers keep their prices
+  and uses; disabled offers and removed gun or ammo definitions cannot be
+  purchased. Changing definitions or enabling gun sales does not reroll levels
+  whose offers were already generated.
+- Station managers can remove unavailable guards' last-seen roster records from
+  the Quartermaster overview. Returning guards restore their records automatically.
 - Equipment-service integrations can assign a guard to one Quartermaster station
   or retain automatic nearby selection. Station requests check both station and
   guard-management permissions; existing guards keep their current service settings.
 - Equipment-service integrations can preview guard needs and available stock without
   changing equipment or service state. Reports account for existing reservations,
   shared supplies, protected gear, unavailable guards, and storage limits.
+- Peaceful difficulty has configurable automatic gun loadouts, starting with a
+  35% chance, one nearby automatic gunner, and the Easy pistol pool. Upgrading
+  initializes this new section while retaining other difficulty settings and
+  spawn-source choices. Set Peaceful's chance or cap to zero to disable it.
+  Existing guards keep their equipment; defense buildings still create no guards
+  on Peaceful.
+
+### Improved
+
+- Guards prioritize urgent visible threats to nearby allies and can spread their
+  attention when another ready guard is already covering an enemy. Player Focus
+  Target orders and rules of engagement still apply.
+- Guards can make a short local search after losing sight of an enemy, then
+  resume fighting or end the search. Guards seeking a clear shot avoid firing
+  positions already reserved by another guard.
+- Village defenders stay near their combat duty position and return after
+  fighting, while player orders retain priority.
+- Guards with no usable gun ammo can resupply from a nearby Village Armory during
+  combat when threats leave enough space.
+- Guards recognize progress along winding routes and wait briefly for temporary
+  obstructions before retrying. Duties, patrols, and resupply can use loaded local
+  detours when normal navigation cannot find a complete route. Searches are
+  shared more fairly when many guards need routes.
+- Guards use village paths with slabs, stairs, and unlit campfires more
+  consistently during combat and patrols. They can open supported wooden doors
+  when their navigation settings allow it and take turns entering short narrow
+  passages, including slab bridges.
+- Automatic village coverage prefers verified building entrances, keeps verified
+  reachable areas active when a large village exceeds survey limits, and lets
+  unrelated patrol trips continue during local terrain repairs.
+- Guard navigation and village coverage perform less repeated work while
+  retaining route safety checks. `/vgg inspect` shows route progress, passage
+  waits, and local-search results.
+- New configurations allow guards spawned with eggs to receive automatic gun
+  loadouts. Existing servers can enable **Spawn Egg** under **Eligible Spawn
+  Sources**. Difficulty, starting-weapon, and nearby limits still apply; enabling
+  this source does not guarantee a gun from every egg.
 
 ### Fixed
 
-- Guards cancel emergency resupply safely when a route becomes hazardous or gun AI is disabled.
-- Changing targets preserves the guard's patrol boundary; rejected target changes preserve aiming and movement.
-- Guards can return to duty positions on slabs and release an unreachable return point to resume other duties.
-- Crowds of villagers and idle animals no longer prevent guards from assessing
-  nearby threats. Guards seeking a firing lane consider the selected target,
-  nearby allies, and their gun's range, and can finish the move before firing.
-- Guard movement status correctly reports firing-lane changes as Repositioning.
-  Tactical movement keeps track of the path Minecraft actually follows and
-  releases ownership when another movement action replaces it.
 - Quartermaster bulk supply estimates spread their work across ticks, including
   automatic refreshes and concurrent editors. Pending estimates are labeled, and
   valid settings can be saved while estimates finish.
@@ -74,6 +98,37 @@ in local development notes.
 - Assigned guards remain in the Quartermaster roster when their chunks unload.
 - Quartermaster ammo service checks native TaCZ ammo compatibility and skips loose
   ammo requests for guns using dummy or infinite reserves.
+- Zombie villagers with the Quartermaster profession display their profession
+  texture correctly, including those created with spawn eggs.
+- Crowds of villagers and idle animals no longer prevent guards from assessing
+  nearby threats. Firing-lane choices account for the selected target, nearby
+  allies, and gun range, and guards can finish repositioning before firing.
+- Changing targets preserves the guard's patrol boundary; rejected target changes
+  preserve aiming and movement. Guards stop their old chase while planning a
+  search for an enemy they have lost sight of.
+- Guards can find short peeks around wider walls when nearby positions cannot see
+  the enemy's last known position. Tactical movement and duty returns no longer
+  reject safe local detours as blocked.
+- Guards resume travel after yielding at a narrow passage without treating the
+  wait as a movement timeout. New local routes start with a fresh timeout, and
+  repeated combat route updates cannot extend a blocked passage wait indefinitely.
+  Sidesteps and returns are rechecked when terrain or orders change.
+- Interrupted movement tasks preserve the replacement task's route and progress
+  tracking, including when Minecraft reuses a path. Changing destinations after
+  a local detour no longer accepts a cached route to the previous destination.
+- Guards no longer count nearby duty and patrol positions across a wall or on
+  another floor as reached. They can return to duty positions on slabs and
+  release an unreachable return point to resume other duties.
+- Guards cancel emergency resupply safely when a route becomes hazardous or
+  gun AI is disabled.
+- Guard movement status correctly reports firing-lane changes as Repositioning.
+
+## 1.8.1 - 2026-10-07
+
+### Compatibility
+
+- Allow TaCZ 1.1.8 and newer releases for Minecraft 1.20.1, including
+  1.1.8-hotfix2, without requiring an exact TaCZ version.
 
 ## 1.8 - 2026-09-16
 

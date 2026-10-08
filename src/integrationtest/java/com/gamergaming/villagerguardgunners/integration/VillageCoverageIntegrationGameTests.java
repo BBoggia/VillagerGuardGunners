@@ -32,6 +32,255 @@ import tallestegg.guardvillagers.entities.Guard;
 public final class VillageCoverageIntegrationGameTests {
     private static final String NS = VillageIntegrationGameTests.NAMESPACE, ARENA = VillageIntegrationGameTests.ARENA;
 
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "navigation_progress_allocation")
+    public static void progressDiagnosticsPreserveSamplesAndAvoidPerTickAllocations(GameTestHelper helper) {
+        try (Fixture f = new Fixture(helper)) {
+            Guard guard = f.guard(f.origin.offset(8, 0, 5));
+            guard.setOnGround(true);
+            var route = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.search(guard, f.origin.offset(18, 0, 5), 24);
+            helper.assertTrue(route != null && guard.getNavigation().moveTo(route, .85), "Progress route installation failed");
+            var progress = new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
+            long now = f.level.getGameTime();
+            try {
+                guard.getNavigation().getPath().setNextNodeIndex(1);
+                progress.start(guard, guard.getNavigation().getPath(), now);
+                helper.assertTrue(com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress.snapshot(guard).status().equals("IDLE"),
+                        "Diagnostics exposed an unsampled route");
+                for (int i = 0; i < 2000; i++) progress.stalled(guard, guard.getNavigation().getPath(), now, 80);
+                var bean = java.lang.management.ManagementFactory.getPlatformMXBean(com.sun.management.ThreadMXBean.class);
+                if (bean != null && bean.isThreadAllocatedMemorySupported()) {
+                    if (!bean.isThreadAllocatedMemoryEnabled()) bean.setThreadAllocatedMemoryEnabled(true);
+                    long thread = Thread.currentThread().getId();
+                    long before = bean.getThreadAllocatedBytes(thread);
+                    int stalled = 0;
+                    for (int i = 0; i < 10000; i++) if (progress.stalled(guard, guard.getNavigation().getPath(), now, 80)) stalled++;
+                    long bytes = bean.getThreadAllocatedBytes(thread) - before;
+                    helper.assertTrue(stalled == 0, "Repeated diagnostics changed stall behavior");
+                    System.out.println("VGG_PROGRESS_ALLOCATIONS samples=10000 bytes=" + bytes);
+                    // Allow VM bookkeeping, but not an escaping record per sample.
+                    helper.assertTrue(bytes <= 40000, "Ordinary progress samples allocated per tick: " + bytes);
+                }
+                var sample = com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress.snapshot(guard);
+                helper.assertTrue(sample.status().equals("MOVING") && sample.remainingDistance() > 0 && sample.lastProgressTick() == now,
+                        "Diagnostics lost the sampled progress state");
+                guard.setPos(guard.getX() + .75, guard.getY(), guard.getZ());
+                helper.assertTrue(sample.equals(com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress.snapshot(guard)),
+                        "Diagnostics changed before another progress sample");
+                helper.assertFalse(progress.stalled(guard, guard.getNavigation().getPath(), now + 1, 80), "Forward movement counted as a stall");
+                helper.assertTrue(com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress.snapshot(guard).remainingDistance() < sample.remainingDistance(),
+                        "Diagnostics did not observe the next progress sample");
+                var replacement = new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
+                replacement.start(guard, guard.getNavigation().getPath(), now + 1);
+                replacement.stalled(guard, guard.getNavigation().getPath(), now + 1, 80);
+                progress.clear();
+                helper.assertTrue(com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress.snapshot(guard).status().equals("MOVING"),
+                        "Old tracker cleared replacement diagnostics");
+                replacement.clear();
+                helper.assertTrue(com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress.snapshot(guard).status().equals("IDLE"),
+                        "Released route retained active diagnostics");
+            } finally { progress.clear(); com.gamergaming.villagerguardgunners.ai.navigation.GuardNavigationRuntime.release(guard); }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "navigation_lookup_work")
+    public static void repeatedNavigationChecksUseFreshLoadedTerrain(GameTestHelper helper) {
+        try (Fixture f = new Fixture(helper)) {
+            Guard guard = f.guard(f.origin.offset(8, 0, 5));
+            BlockPos far = f.origin.offset(30, 0, 5);
+            int standing, step, arrival;
+            try (ProbeScope scope = new ProbeScope()) {
+                for (int i = 0; i < 1000; i++) helper.assertTrue(
+                        com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard, guard.position()),
+                        "Safe loaded floor was rejected");
+                standing = scope.cachedChunkLookups;
+                helper.assertTrue(scope.missingChunkRequests == 0, "Standing checks requested missing chunks");
+            }
+            try (ProbeScope scope = new ProbeScope()) {
+                for (int i = 0; i < 1000; i++) helper.assertTrue(
+                        com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStep(f.level, guard.blockPosition(), guard.blockPosition().south()),
+                        "Safe loaded step was rejected");
+                step = scope.cachedChunkLookups;
+            }
+            try (ProbeScope scope = new ProbeScope()) {
+                for (int i = 0; i < 1000; i++) helper.assertFalse(
+                        com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteArrival.at(guard, far, 1.5, 1),
+                        "Distant target counted as arrival");
+                arrival = scope.cachedChunkLookups;
+            }
+            helper.assertTrue(standing == 1000, "Standing checks repeated their chunk lookup: " + standing);
+            helper.assertTrue(step <= 2000, "Steps repeated chunk lookups beyond their two possible chunks: " + step);
+            helper.assertTrue(arrival == 0, "Distant arrival checks read terrain unnecessarily: " + arrival);
+            BlockPos support = guard.blockPosition().below();
+            f.level.setBlock(support, Blocks.MAGMA_BLOCK.defaultBlockState(), 3);
+            helper.assertFalse(com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard, guard.position()),
+                    "A repeated check reused safe footing after it became hazardous");
+            f.level.setBlock(support, Blocks.STONE.defaultBlockState(), 3);
+            helper.assertTrue(com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard, guard.position()),
+                    "A repaired floor was not observed immediately");
+            System.out.println("VGG_NAVIGATION_LOOKUPS samples=1000 standing=" + standing + " step=" + step + " distantArrival=" + arrival);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_dirty_halo")
+    public static void dirtyHaloMatchesAllNineNeighborCellsAcrossNegativeChunkBoundaries(GameTestHelper helper) {
+        try (Fixture f = new Fixture(helper)) {
+            BlockPos origin = new BlockPos(-33, f.origin.getY(), -17);
+            var identity = new VillageIdentity(f.level.dimension().location(), ResourceLocation.parse("minecraft:village_plains"),
+                    net.minecraft.world.level.ChunkPos.asLong(origin));
+            var bounds = new VillageFootprint.Bounds(-33, origin.getY() - 1, -17, 2, origin.getY() + 4, 4);
+            var footprint = VillageFootprint.of(List.of(new VillageFootprint.Piece(origin, "NONE", ResourceLocation.parse("test:layout"), bounds)));
+            var terrain = new CoverageTerrain(f.level, new VillageRecord(identity, footprint, 1, Set.of()));
+            Set<Long> dirty = new HashSet<>();
+            for (long chunk : terrain.chunks().stream().sorted().toList()) {
+                terrain.invalidateChunk(chunk); dirty.add(chunk);
+                for (int x = -40; x <= 9; x++) for (int z = -24; z <= 11; z++) {
+                    BlockPos p = new BlockPos(x, origin.getY(), z);
+                    boolean expected = false;
+                    for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++)
+                        expected |= dirty.contains(net.minecraft.world.level.ChunkPos.asLong(p.offset(dx, 0, dz)));
+                    helper.assertTrue(terrain.affected(p) == expected, "Dirty halo changed at " + p);
+                }
+            }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_graph_comparison")
+    public static void cleanAndReusedGraphsAgreeUntilFootingActuallyChanges(GameTestHelper helper) {
+        try (Fixture f = new Fixture(helper)) {
+            var original = f.terrain();
+            var fresh = f.terrain();
+            helper.assertTrue(original.sameNavigation(fresh), "Identical full surveys disagreed");
+            BlockPos from = f.origin.offset(7, 0, 5), to = f.origin.offset(28, 0, 5);
+            var route = original.path(from, to);
+            helper.assertTrue(!route.isEmpty(), "Fixture has no route");
+            original.invalidateChunk(net.minecraft.world.level.ChunkPos.asLong(from));
+            var repaired = CoverageTerrain.repair(f.level, f.record, original);
+            for (int i = 0; i < 500 && !repaired.complete(); i++) repaired.advance(128);
+            helper.assertTrue(repaired.complete() && repaired.sameNavigation(fresh), "Reused adjacency order changed graph equality");
+            helper.assertTrue(route.equals(repaired.path(from, to)), "Optimization changed route selection");
+            f.level.setBlock(from.below(), Blocks.MAGMA_BLOCK.defaultBlockState(), 3);
+            helper.assertFalse(fresh.sameNavigation(f.terrain()), "Changed footing was mistaken for an unchanged graph");
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_unrelated_repair", timeoutTicks = 220)
+    public static void repairOutsideActiveRoutePreservesItsLeaseAndRealMovement(GameTestHelper helper) {
+        Fixture f = new Fixture(helper);
+        Guard guard = f.guard(f.origin.offset(18, 0, 8));
+        guard.goalSelector.removeAllGoals(goal -> true);
+        var controller = new GuardCoverageMovementController(guard);
+        boolean[] started = {false};
+        helper.runAfterDelay(210, f::close);
+        helper.startSequence().thenIdle(20).thenWaitUntil(() -> {
+            VillageCoverageRuntime.synchronizeGuard(guard);
+            for (int i = 0; i < 200; i++) VillageCoverageRuntime.tick(f.level);
+            helper.assertTrue(VillageCoverageRuntime.lease(guard) != null, "Waiting for initial coverage lease");
+        }).thenExecute(() -> {
+            var lease = VillageCoverageRuntime.lease(guard);
+            controller.start(); VillageCoverageRuntime.tick(f.level); controller.tick();
+            var path = guard.getNavigation().getPath();
+            helper.assertTrue(path != null && path.getNodeCount() > 2, "No route for repair fixture");
+            Set<Long> dependencies = new HashSet<>();
+            for (int i = 0; i < path.getNodeCount(); i++) for (int dx : new int[]{-1, 0, 1}) for (int dz : new int[]{-1, 0, 1})
+                dependencies.add(net.minecraft.world.level.ChunkPos.asLong(path.getNodePos(i).offset(dx, 0, dz)));
+            long unrelated = f.terrain().chunks().stream().filter(c -> !dependencies.contains(c)).findFirst().orElseThrow();
+            VillageCoverageRuntime.dirty(f.level, unrelated);
+            helper.assertTrue(lease.equals(VillageCoverageRuntime.lease(guard)) && controller.shouldContinue()
+                    && guard.getNavigation().getPath() == path, "Unrelated repair canceled the active trip");
+            started[0] = true;
+        });
+        helper.onEachTick(() -> {
+            if (!started[0] || f.closed) return;
+            controller.tick();
+            var snapshot = VillageCoverageRuntime.snapshot(f.level, f.identity.id());
+            if (snapshot.plan() != null && snapshot.plan().areas().stream().anyMatch(a -> a.lastSuccessfulVisit() >= 0)) {
+                f.close(); helper.succeed();
+            }
+        });
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "navigation_chunk_edge")
+    public static void nearbyLocalRouteAtCachedBoundaryDoesNotRequestMissingChunks(GameTestHelper helper) {
+        try (Fixture f = new Fixture(helper)) {
+            int cx = f.origin.getX() >> 4, cz = f.origin.getZ() >> 4;
+            int edge = cx;
+            for (int x = cx; x < cx + 64; x++) {
+                if (f.level.getChunkSource().getChunkNow(x, cz) == null) break;
+                edge = x;
+            }
+            helper.assertTrue(f.level.getChunkSource().getChunkNow(edge + 1, cz) == null, "No cached boundary found");
+            BlockPos start = new BlockPos(edge * 16 + 8, f.origin.getY(), cz * 16 + 5), target = start.south(6);
+            for (int x = 4; x <= 14; x++) for (int z = 3; z <= 13; z++) {
+                BlockPos p = new BlockPos(edge * 16 + x, start.getY(), cz * 16 + z);
+                f.level.setBlock(p.below(), Blocks.STONE.defaultBlockState(), 2);
+                for (int y = 0; y <= 3; y++) f.level.setBlock(p.above(y), Blocks.AIR.defaultBlockState(), 2);
+            }
+            Guard guard = GuardEntityType.GUARD.get().create(f.level);
+            guard.moveTo(net.minecraft.world.phys.Vec3.atBottomCenterOf(start)); guard.setOnGround(true);
+            guard.goalSelector.removeAllGoals(g -> true); guard.targetSelector.removeAllGoals(g -> true);
+            var tickets = new java.util.HashSet<>(f.level.getForcedChunks());
+            try (ProbeScope scope = new ProbeScope()) {
+                helper.assertTrue(!com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.nativeRegionLoaded(guard, 24),
+                        "Fixture unexpectedly allowed broad native path construction");
+                var path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, target, 24);
+                helper.assertTrue(path != null && path.canReach(), "Loaded local route was unavailable");
+                helper.assertTrue(guard.getNavigation().moveTo(path, .85), "Local path installation failed");
+                var tracker = new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
+                tracker.start(guard, guard.getNavigation().getPath(), f.level.getGameTime());
+                // Tick the actual entity and its native movement in a non-ticking boundary chunk.
+                for (int i = 0; i < 160 && !guard.getNavigation().isDone(); i++) guard.tick();
+                helper.assertTrue(com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteArrival.at(guard, target, 1.5, 1),
+                        "Boundary guard did not physically reach its destination: " + guard.position());
+                helper.assertTrue(scope.missingChunkRequests == 0, "Boundary navigation requested unknown chunks: " + scope.firstMissingChunkTrace);
+                helper.assertTrue(tickets.equals(f.level.getForcedChunks())
+                        && f.level.getChunkSource().getChunkNow(edge + 1, cz) == null, "Navigation loaded or ticketed the neighboring chunk");
+                tracker.clear();
+            } finally { guard.discard(); }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_local_repair")
+    public static void localRepairReusesCleanTerrainAndRebuildsSplitConnectivity(GameTestHelper helper) {
+        try (Fixture f = new Fixture(helper); ProbeScope scope = new ProbeScope()) {
+            BlockPos left = f.origin.offset(7, 0, 8), right = f.origin.offset(30, 0, 8);
+            var original = f.terrain();
+            var initial = original.path(left, right);
+            helper.assertTrue(!initial.isEmpty(), "Initial route was not connected");
+            long dirty = net.minecraft.world.level.ChunkPos.asLong(f.origin.offset(19, 0, 8));
+            original.invalidateChunk(dirty);
+            helper.assertTrue(initial.stream().anyMatch(original::affected), "Fixture did not invalidate its original route");
+            var masked = original.path(left, right);
+            // The arena's chunk alignment can leave a valid detour around one dirty chunk.
+            helper.assertTrue(masked.stream().noneMatch(original::affected), "Invalidated cached edge was still offered");
+            System.out.println("VGG_COVERAGE_MASK originalNodes=" + initial.size() + " alternateNodes=" + masked.size()
+                    + " dirtyNodes=" + masked.stream().filter(original::affected).count());
+            for (int z = -4; z <= 26; z++) for (int y = -2; y <= 6; y++) {
+                BlockPos changed = f.origin.offset(19, y, z);
+                f.level.setBlock(changed, Blocks.STONE.defaultBlockState(), 3);
+                original.invalidateChunk(net.minecraft.world.level.ChunkPos.asLong(changed));
+            }
+            var split = CoverageTerrain.repair(f.level, f.record, original);
+            for (int i = 0; i < 500 && !split.complete(); i++) helper.assertTrue(split.advance(128) <= 128, "Repair exceeded its slice");
+            helper.assertTrue(split.usable() && split.reusedNodes() > 0, "Repair did not reuse clean observations");
+            helper.assertTrue(split.component(left) != null && split.component(right) != null
+                    && !split.component(left).equals(split.component(right)) && split.path(left, right).isEmpty(),
+                    "Repair retained stale union-find connectivity");
+            for (int y = 0; y <= 2; y++) f.level.setBlock(f.origin.offset(19, y, 8), Blocks.AIR.defaultBlockState(), 3);
+            split.invalidateChunk(dirty);
+            var joined = CoverageTerrain.repair(f.level, f.record, split);
+            for (int i = 0; i < 500 && !joined.complete(); i++) joined.advance(128);
+            helper.assertTrue(joined.component(left).equals(joined.component(right)) && !joined.path(left, right).isEmpty(),
+                    "Repaired opening did not restore real connectivity");
+            helper.assertTrue(scope.missingChunkRequests == 0 && scope.poiReads == 0, "Local repair loaded unknown world data");
+        }
+        helper.succeed();
+    }
+
     @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_terrain")
     public static void terrainGraphUsesCachedBlocksAndSeparatesBarriersUntilRepaired(GameTestHelper helper) {
         try (Fixture f = new Fixture(helper)) {
@@ -235,8 +484,11 @@ public final class VillageCoverageIntegrationGameTests {
                 VillageCoverageRuntime.tick(f.level);
                 helper.assertTrue(VillageCoverageRuntime.snapshot(f.level, f.identity.id()).readiness()
                         == com.gamergaming.villagerguardgunners.defense.VillageDefenseState.WATCH, "Ordinary village did not receive bell readiness");
-                VillageCoverageRuntime.onChunkChange(new net.minecraftforge.event.level.ChunkEvent.Unload(f.level.getChunkAt(f.origin)));
-                helper.assertTrue(VillageCoverageRuntime.lease(guard) == null, "Chunk lifecycle did not invalidate coverage");
+                var active = VillageCoverageRuntime.lease(guard);
+                helper.assertTrue(active != null, "No coverage claim available for unload check");
+                var affected = VillageCoverageRuntime.destination(guard, active).position();
+                VillageCoverageRuntime.onChunkChange(new net.minecraftforge.event.level.ChunkEvent.Unload(f.level.getChunkAt(affected)));
+                helper.assertTrue(VillageCoverageRuntime.lease(guard) == null, "Unloading the destination retained its coverage claim");
             } finally { f.close(); }
         }).thenSucceed();
     }
@@ -402,17 +654,23 @@ public final class VillageCoverageIntegrationGameTests {
     @GameTest(templateNamespace = NS, template = ARENA, batch = "coverage_combat_duty", timeoutTicks = 180)
     public static void villageCombatDutySurvivesMovementAndReturnsWithoutChangingOrders(GameTestHelper helper) {
         Fixture f = new Fixture(helper);
-        Guard guard = f.guard(f.origin.offset(12, 0, 8));
+        // Keep the setup teleport inside one entity section. Crossing into a
+        // newly loaded but not yet tracked chunk can emit EntityLeaveLevelEvent,
+        // which intentionally forgets combat duty and is not ordinary movement.
+        int anchorX = ((f.origin.getX() + 18) >> 4) * 16 + 2;
+        Guard guard = f.guard(new BlockPos(anchorX, f.origin.getY(), f.origin.getZ() + 8));
         guard.goalSelector.removeAllGoals(goal -> !(goal instanceof com.gamergaming.villagerguardgunners.ai.GuardAutomaticDutyMovementGoal));
         var anchor = guard.blockPosition();
         com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.capture(guard);
         var duty = com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard);
         helper.assertTrue(duty != null && duty.bounds().contains(guard.position())
                 && !duty.bounds().contains(guard.position().add(25, 0, 0)), "Village engagement has no local boundary");
+        helper.assertTrue(duty.anchor().equals(anchor), "Initial engagement anchor differs from the fixture: expected=" + anchor + ", duty=" + duty);
         guard.moveTo(guard.getX() + 10, guard.getY(), guard.getZ());
         com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.capture(guard);
         helper.assertTrue(com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard).anchor().equals(anchor),
-                "Movement moved the engagement anchor");
+                "Movement moved the engagement anchor: before=" + duty + ", after="
+                        + com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard));
         helper.runAfterDelay(170, f::close);
         helper.onEachTick(() -> {
             if (f.closed || helper.getTick() < 10) return;

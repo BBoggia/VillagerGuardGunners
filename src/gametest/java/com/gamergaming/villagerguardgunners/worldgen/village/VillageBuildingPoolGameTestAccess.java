@@ -68,7 +68,9 @@ public final class VillageBuildingPoolGameTestAccess {
         boolean originalEnabled = settings.enabled.get();
         boolean originalSpawnGarrisons = settings.spawnGarrisons.get();
         int originalMaximum = settings.maximumGuardsPerBuilding.get();
-        BlockPos anchor = helper.absolutePos(new BlockPos(20008, 2, 20008));
+        // The remote chunks contain natural terrain. Keep the recovery fixture
+        // above it so underground lava cannot flow into its spawn/duty slot.
+        BlockPos anchor = helper.absolutePos(new BlockPos(20008, 2, 20008)).atY(280);
         var area = new com.gamergaming.villagerguardgunners.defense.duty.LoadedDutyTestArea(level, anchor);
         Guard[] accepted = new Guard[1];
         List<Integer> spawnTicks = new ArrayList<>();

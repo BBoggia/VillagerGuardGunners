@@ -24,13 +24,38 @@ public final class CoverageTerrain {
     private final List<BlockPos> anchors;
     private final List<BlockPos> approaches = new ArrayList<>();
     private final Map<BlockPos, BlockPos> resolved = new HashMap<>();
+    private final Map<BlockPos, BlockPos> entranceAnchors = new HashMap<>();
     private final Set<BlockPos> defenseAnchors = new HashSet<>();
     private final Map<BlockPos, List<BlockPos>> edges = new HashMap<>();
     private final Map<BlockPos, BlockPos> roots = new HashMap<>();
     private final ArrayDeque<BlockPos> pending = new ArrayDeque<>();
     private int anchorIndex, probeIndex;
     private boolean complete, limited;
-    private long probes;
+    private long probes, reusedNodes;
+    private final Set<Long> invalidChunks = new HashSet<>();
+    private CoverageTerrain reuse;
+    private Set<Long> repairChunks = Set.of();
+
+    /** Reuse clean observations, but rebuild connectivity from scratch under the normal tick budget. */
+    public static CoverageTerrain repair(ServerLevel level, VillageRecord record, CoverageTerrain active) {
+        CoverageTerrain next = new CoverageTerrain(level, record);
+        next.reuse = active;
+        next.repairChunks = Set.copyOf(active.invalidChunks);
+        return next;
+    }
+    public void invalidateChunk(long chunk) { if (domain.containsKey(chunk)) invalidChunks.add(chunk); }
+    public boolean repairing() { return !invalidChunks.isEmpty(); }
+    public boolean affected(BlockPos p) { return affected(p, invalidChunks); }
+    private static boolean affected(BlockPos p, Set<Long> chunks) {
+        if (chunks.isEmpty()) return false;
+        // One block of support/headroom and edge context across a chunk boundary.
+        // Check each intersecting chunk once instead of allocating nine positions.
+        for (int x = (p.getX() - 1) >> 4; x <= (p.getX() + 1) >> 4; x++)
+            for (int z = (p.getZ() - 1) >> 4; z <= (p.getZ() + 1) >> 4; z++)
+                if (chunks.contains(net.minecraft.world.level.ChunkPos.asLong(x, z))) return true;
+        return false;
+    }
+    public long reusedNodes() { return reusedNodes; }
 
     public CoverageTerrain(ServerLevel level, VillageRecord record) {
         this.level = level;
@@ -56,7 +81,18 @@ public final class CoverageTerrain {
             }
             boolean defense = defenseTemplates.contains(piece.template());
             if (classification.kind(piece.template().toString()) == SettlementProfile.Kind.RESIDENCE || defense) {
-                // Probe outside the building bounds near its foundation height.
+                var meaning = classification.meaning(piece.template().toString());
+                if (meaning.supported()) {
+                    for (BlockPos entrance : SettlementObservations.worldPoints(piece, meaning.entrances())) {
+                        Direction outward = nearestSide(b, entrance);
+                        BlockPos approach = entrance.relative(outward, 2);
+                        // Fingerprinted metadata nominates a position; advance still checks the placed terrain.
+                        seeds.add(approach);
+                        entranceAnchors.put(approach, entrance);
+                        if (defense) defenseAnchors.add(approach);
+                    }
+                }
+                // Unknown/damaged entrances retain the conservative discovery fallback.
                 BlockPos left = new BlockPos(b.minX() - 2, b.minY() + 1, (b.minZ() + b.maxZ()) / 2);
                 BlockPos right = new BlockPos(b.maxX() + 2, b.minY() + 1, (b.minZ() + b.maxZ()) / 2);
                 seeds.add(left); seeds.add(right);
@@ -70,7 +106,7 @@ public final class CoverageTerrain {
         }
         // Keep verified local components usable; the limited flag reports incomplete village coverage.
         limited = limited || seeds.size() > MAX_ANCHORS;
-        anchors = seeds.stream().limit(MAX_ANCHORS).toList();
+        anchors = seeds.stream().sorted(Comparator.comparing((BlockPos p) -> !entranceAnchors.containsKey(p)).thenComparing(ORDER)).limit(MAX_ANCHORS).toList();
         complete = anchors.isEmpty();
     }
 
@@ -81,9 +117,21 @@ public final class CoverageTerrain {
             used++;
             if (anchorIndex < anchors.size()) {
                 BlockPos anchor = anchors.get(anchorIndex);
-                int dy = probeIndex % 5 - 2;
-                int horizontal = probeIndex / 5;
-                BlockPos p = anchor.offset(horizontal % 7 - 3, dy, horizontal / 7 - 3);
+                BlockPos old = reuse == null ? null : reuse.resolved.get(anchor);
+                if (old != null && !affected(old, repairChunks)) {
+                    approaches.add(old); resolved.put(anchor, old); add(old);
+                    anchorIndex++; probeIndex = 0; continue;
+                }
+                BlockPos entrance = entranceAnchors.get(anchor);
+                if (entrance != null) {
+                    BlockPos midway = new BlockPos((anchor.getX() + entrance.getX()) / 2, anchor.getY(), (anchor.getZ() + entrance.getZ()) / 2);
+                    if (inDomain(anchor) && walkable(anchor) && GuardGroundTraversal.planningStep(level, entrance, midway, true)
+                            && GuardGroundTraversal.planningStep(level, midway, anchor, true)) {
+                        approaches.add(anchor); resolved.put(anchor, anchor); add(anchor);
+                    }
+                    anchorIndex++; probeIndex = 0; continue;
+                }
+                BlockPos p = anchor.offset(PROBE_OFFSETS.get(probeIndex));
                 probeIndex++;
                 if (inDomain(p) && Math.floorMod(p.getX(), 32) >= 2 && Math.floorMod(p.getX(), 32) <= 29
                         && Math.floorMod(p.getZ(), 32) >= 2 && Math.floorMod(p.getZ(), 32) <= 29 && walkable(p)) {
@@ -100,27 +148,34 @@ public final class CoverageTerrain {
             }
             if (pending.isEmpty()) { complete = true; break; }
             BlockPos from = pending.removeFirst();
+            if (reuse != null && !affected(from, repairChunks) && reuse.edges.containsKey(from)
+                    && reuse.edges.get(from).stream().noneMatch(p -> affected(p, repairChunks))) {
+                reusedNodes++;
+                for (BlockPos to : reuse.edges.get(from)) {
+                    if (!edges.containsKey(to) && edges.size() >= MAX_NODES) { limited = true; complete = true; pending.clear(); break; }
+                    connect(from, to);
+                }
+                continue;
+            }
             for (Direction direction : Direction.Plane.HORIZONTAL) {
                 for (int dy : new int[]{0, 1, -1}) {
                     BlockPos to = from.relative(direction).offset(0, dy, 0);
                     if (!inDomain(to)) continue;
                     probes++;
-                    if (!safeStep(level, from, to)) continue;
+                    if (!GuardGroundTraversal.planningStep(level, from, to, true)) continue;
                     if (!edges.containsKey(to) && edges.size() == MAX_NODES) {
                         limited = true;
                         complete = true;
                         pending.clear();
                         break;
                     }
-                    add(to);
-                    if (!edges.get(from).contains(to)) edges.get(from).add(to);
-                    if (!edges.get(to).contains(from)) edges.get(to).add(from);
-                    union(from, to);
+                    connect(from, to);
                     break;
                 }
                 if (complete) break;
             }
         }
+        if (complete) reuse = null;
         return used;
     }
 
@@ -129,7 +184,11 @@ public final class CoverageTerrain {
         return other != null && usable() && other.usable()
                 && limited == other.limited && anchors.equals(other.anchors) && resolved.equals(other.resolved)
                 && defenseAnchors.equals(other.defenseAnchors) && domain.equals(other.domain)
-                && edges.equals(other.edges);
+                && edges.keySet().equals(other.edges.keySet())
+                // connect() keeps these short adjacency lists unique. Compare their
+                // contents without allocating two hash sets for every surveyed node.
+                && edges.entrySet().stream().allMatch(e -> e.getValue().size() == other.edges.get(e.getKey()).size()
+                        && e.getValue().containsAll(other.edges.get(e.getKey())));
     }
 
     public boolean complete() { return complete; }
@@ -155,47 +214,39 @@ public final class CoverageTerrain {
     public BlockPos nodeNear(BlockPos position) {
         for (int dy : new int[]{0, -1, 1}) {
             BlockPos p = position.offset(0, dy, 0);
-            if (edges.containsKey(p)) return p;
+            if (!affected(p) && edges.containsKey(p)) return p;
         }
         return null;
     }
 
     /** Bounded graph search; constructs no PathNavigationRegion and requests no chunks. */
     public List<BlockPos> path(BlockPos position, BlockPos target) {
+        return path(position, target, MAX_NODES);
+    }
+    public List<BlockPos> path(BlockPos position, BlockPos target, int workLimit) {
         BlockPos start = nodeNear(position);
         if (!usable() || start == null || !edges.containsKey(target) || !root(start).equals(root(target))) return List.of();
-        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
-        Map<BlockPos, BlockPos> previous = new HashMap<>();
-        queue.add(start);
-        previous.put(start, start);
-        while (!queue.isEmpty() && previous.size() <= MAX_NODES) {
-            BlockPos p = queue.removeFirst();
-            if (p.equals(target)) {
-                List<BlockPos> result = new ArrayList<>();
-                while (!p.equals(start)) {
-                    result.add(p);
-                    if (result.size() == MAX_PATH_NODES) return List.of();
-                    p = previous.get(p);
-                }
-                result.add(start);
-                Collections.reverse(result);
-                return List.copyOf(result);
-            }
-            for (BlockPos neighbor : edges.get(p)) {
-                if (!previous.containsKey(neighbor)) { previous.put(neighbor, p); queue.add(neighbor); }
-            }
-        }
-        return List.of();
+        return com.gamergaming.villagerguardgunners.ai.navigation.BoundedRouteSearch.find(start, target,
+                this::availableNeighbors,
+                (from, to) -> Math.sqrt(from.distSqr(to)) + (from.getY() == to.getY() ? 0 : .25)
+                        + (edges.getOrDefault(to, List.of()).size() <= 2 ? .15 : 0), Math.min(MAX_NODES, workLimit), MAX_PATH_NODES).positions();
+    }
+
+    private List<BlockPos> availableNeighbors(BlockPos p) {
+        List<BlockPos> neighbors = edges.getOrDefault(p, List.of());
+        if (invalidChunks.isEmpty()) return neighbors;
+        return affected(p) ? List.of() : neighbors.stream().filter(n -> !affected(n)).toList();
     }
 
     public boolean walkable(BlockPos feet) {
         probes++;
-        return safeStandingPosition(level, feet);
+        return !affected(feet) && GuardGroundTraversal.planningStanding(level, feet);
     }
 
     /** A cached route edge must still exist, and its real support/headroom must still be safe. */
     public boolean safeTransition(BlockPos from, BlockPos to) {
-        return edges.getOrDefault(from, List.of()).contains(to) && safeStep(level, from, to);
+        return !affected(from) && !affected(to) && edges.getOrDefault(from, List.of()).contains(to)
+                && GuardGroundTraversal.planningStep(level, from, to, true);
     }
     public static boolean safeStep(ServerLevel level, BlockPos from, BlockPos to) {
         return GuardGroundTraversal.safeStep(level, from, to);
@@ -207,6 +258,26 @@ public final class CoverageTerrain {
         var boxes = domain.get(net.minecraft.world.level.ChunkPos.asLong(pos));
         return boxes != null && boxes.stream().anyMatch(b -> b.contains(pos)
                 && pos.getY() >= b.minY() - 8 && pos.getY() <= b.maxY() + 4);
+    }
+    private void connect(BlockPos from, BlockPos to) {
+        add(to);
+        if (!edges.get(from).contains(to)) edges.get(from).add(to);
+        if (!edges.get(to).contains(from)) edges.get(to).add(from);
+        union(from, to);
+    }
+    private static Direction nearestSide(Bounds b, BlockPos p) {
+        return java.util.stream.Stream.of(Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH)
+                .min(Comparator.comparingInt(d -> switch (d) {
+                    case WEST -> Math.abs(p.getX() - b.minX()); case EAST -> Math.abs(p.getX() - b.maxX());
+                    case NORTH -> Math.abs(p.getZ() - b.minZ()); default -> Math.abs(p.getZ() - b.maxZ());
+                })).orElse(Direction.NORTH);
+    }
+    private static final List<BlockPos> PROBE_OFFSETS = probeOffsets();
+    private static List<BlockPos> probeOffsets() {
+        var positions = new ArrayList<BlockPos>();
+        for (int x = -3; x <= 3; x++) for (int z = -3; z <= 3; z++) for (int y = -2; y <= 2; y++) positions.add(new BlockPos(x, y, z));
+        positions.sort(Comparator.comparingDouble((BlockPos p) -> p.distSqr(BlockPos.ZERO)).thenComparing(ORDER));
+        return List.copyOf(positions);
     }
     private void add(BlockPos pos) {
         if (!edges.containsKey(pos)) {

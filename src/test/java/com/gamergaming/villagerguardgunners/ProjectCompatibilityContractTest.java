@@ -2,6 +2,7 @@ package com.gamergaming.villagerguardgunners;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -10,6 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +34,8 @@ final class ProjectCompatibilityContractTest {
 
         modsToml = Files.readString(
                 projectDirectory.resolve("src/main/resources/META-INF/mods.toml"), StandardCharsets.UTF_8);
+        gradleProperties.forEach((key, value) ->
+                modsToml = modsToml.replace("${" + key + "}", value.toString()));
     }
 
     @Test
@@ -56,9 +62,24 @@ final class ProjectCompatibilityContractTest {
     void declaresGuardVillagersAndTaczAsRequiredRuntimeDependencies() {
         assertAll(
                 () -> assertDependency("guardvillagers", "[1.20.1-1.6.19]"),
-                () -> assertDependency("tacz", "[1.1.8-hotfix]"),
+                () -> assertDependency("tacz", property("tacz_version_range")),
                 () -> assertDependency("fzzy_config", property("fzzy_config_version_range")),
                 () -> assertDependency("kotlinforforge", property("kotlin_for_forge_version_range")));
+    }
+
+    @Test
+    void acceptsTacz118AndNewerWithoutAnUpperBound() throws InvalidVersionSpecificationException {
+        assertEquals("[1.1.8,)", property("tacz_version_range"));
+        VersionRange range = VersionRange.createFromVersionSpec(property("tacz_version_range"));
+        for (String version : new String[] {"1.1.8", "1.1.8-release", "1.1.8-hotfix",
+                "1.1.8-hotfix2", "1.1.9", "1.2.0", "2.0.0"}) {
+            assertTrue(range.containsVersion(new DefaultArtifactVersion(version)),
+                    () -> "TaCZ " + version + " should be allowed by the loader");
+        }
+        for (String version : new String[] {"1.0.0", "1.1.7", "1.1.7-hotfix2", "1.1.8-beta"}) {
+            assertFalse(range.containsVersion(new DefaultArtifactVersion(version)),
+                    () -> "TaCZ " + version + " is below the minimum release");
+        }
     }
 
     private static String property(String key) {

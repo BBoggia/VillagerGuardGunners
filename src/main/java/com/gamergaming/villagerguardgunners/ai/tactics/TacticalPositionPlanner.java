@@ -43,7 +43,7 @@ public final class TacticalPositionPlanner {
         if (reposition && lane == null) return new Plan(null, null, 0, "NO_FIRING_CONTEXT");
         var reserved = reposition ? FiringPositionReservations.positions(guard) : List.<Vec3>of();
         Vec3 start = guard.position();
-        if (!(guard.level() instanceof ServerLevel) || !pathRegionLoaded()) return new Plan(null, null, 0, "UNLOADED_REGION");
+        if (!(guard.level() instanceof ServerLevel) ) return new Plan(null, null, 0, "UNLOADED_REGION");
         // REPOSITION is requested only after the firing adapter observed a blocked lane.
         double baseline = score(start, start, threats, bounds, reposition) - (reposition ? 4 : 0);
         double baselineExposure = (reposition ? 0 : exposureScore(start, threats, false)) + roomScore(start);
@@ -92,7 +92,8 @@ public final class TacticalPositionPlanner {
         Candidate candidate = finalists.get(0);
         // One native construction per shared slot. Rejected destinations let the next slot try another.
         pathsBuilt++;
-        Path path = guard.getNavigation().createPath(candidate.position(), 0, PATH_RANGE);
+        Path path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, candidate.position(), PATH_RANGE);
+        if (path == null && com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.deferred(guard)) return new Plan(null, null, 0, "WAITING_FOR_TERRAIN_OR_BUDGET");
         if (path == null || !path.canReach() || path.getNodeCount() > MAX_NODES
                 || path.getEndNode() == null
                 || path.getEndNode().asBlockPos().distSqr(candidate.position()) > 1) {
@@ -108,27 +109,39 @@ public final class TacticalPositionPlanner {
     public Plan planPeek(Vec3 sighting, Vec3 origin, List<ThreatMemory.Observation> threats,
                          TacticalAssignmentBounds bounds, Set<BlockPos> failed) {
         candidatesChecked = 0; pathsBuilt = 0; sightRays = 0;
-        if (!(guard.level() instanceof ServerLevel level) || !pathRegionLoaded())
+        if (!(guard.level() instanceof ServerLevel level) )
             return new Plan(null, null, 0, "UNLOADED_REGION");
         Vec3 start = guard.position();
-        var candidates = new ArrayList<Candidate>();
-        for (int radius : new int[]{3, 6, 10}) for (int angle = 0; angle < 16; angle++) {
-            candidatesChecked++;
-            double direction = angle * Math.PI / 8;
-            BlockPos column = BlockPos.containing(start.add(Math.cos(direction) * radius, 0, Math.sin(direction) * radius));
-            for (int dy : new int[]{0, 1, -1, 2, -2}) {
-                BlockPos node = column.offset(0, dy, 0);
-                Vec3 point = standingPosition(node);
-                if (point == null || origin.distanceToSqr(point) > 100 || !bounds.contains(point)
-                        || nearFailedDestination(node, failed) || !safeStanding(point)
-                        || point.distanceToSqr(sighting) < 16) continue;
-                double score = -point.distanceTo(start) * .5 - point.distanceTo(sighting) * .15;
-                candidates.add(new Candidate(node, score)); break;
+        var rings = new ArrayList<List<Candidate>>(3);
+        for (int radius : new int[]{3, 6, 10}) {
+            var ring = new ArrayList<Candidate>(16);
+            for (int angle = 0; angle < 16; angle++) {
+                candidatesChecked++;
+                double direction = angle * Math.PI / 8;
+                BlockPos column = BlockPos.containing(start.add(Math.cos(direction) * radius, 0, Math.sin(direction) * radius));
+                for (int dy : new int[]{0, 1, -1, 2, -2}) {
+                    BlockPos node = column.offset(0, dy, 0);
+                    Vec3 point = standingPosition(node);
+                    if (point == null || origin.distanceToSqr(point) > 100 || !bounds.contains(point)
+                            || nearFailedDestination(node, failed) || !safeStanding(point)
+                            || point.distanceToSqr(sighting) < 16) continue;
+                    double score = -point.distanceTo(start) * .5 - point.distanceTo(sighting) * .15;
+                    ring.add(new Candidate(node, score)); break;
+                }
+            }
+            ring.sort(Comparator.comparingDouble(Candidate::score).reversed().thenComparingLong(c -> c.position().asLong()));
+            rings.add(ring);
+        }
+        // Preserve the eight-check budget while giving farther rings a turn.
+        // Otherwise nearby blind spots can exclude every useful wider peek.
+        var finalists = new ArrayList<Candidate>(8);
+        for (int rank = 0; rank < 16 && finalists.size() < 8; rank++) {
+            for (var ring : rings) {
+                if (rank < ring.size()) finalists.add(ring.get(rank));
+                if (finalists.size() == 8) break;
             }
         }
-        candidates.sort(Comparator.comparingDouble(Candidate::score).reversed().thenComparingLong(c -> c.position().asLong()));
-        for (int i = 0; i < Math.min(8, candidates.size()); i++) {
-            Candidate candidate = candidates.get(i);
+        for (Candidate candidate : finalists) {
             Vec3 point = standingPosition(candidate.position());
             Vec3 eye = point.add(0, guard.getEyeHeight(), 0), known = sighting.add(0, 1.3, 0);
             if (!TacticalFiringLane.loadedCorridor(level, eye, known)) continue;
@@ -138,7 +151,8 @@ public final class TacticalPositionPlanner {
                     net.minecraft.world.level.ClipContext.Fluid.NONE, guard)).getType()
                     != net.minecraft.world.phys.HitResult.Type.MISS) continue;
             pathsBuilt++;
-            Path path = guard.getNavigation().createPath(candidate.position(), 0, PATH_RANGE);
+            Path path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, candidate.position(), PATH_RANGE);
+            if (path == null && com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.deferred(guard)) return new Plan(null, null, 0, "WAITING_FOR_TERRAIN_OR_BUDGET");
             if (path == null || !path.canReach() || path.getEndNode() == null
                     || path.getEndNode().asBlockPos().distSqr(candidate.position()) > 1
                     || !safePeekRoute(path, threats, bounds, origin))
@@ -231,7 +245,7 @@ public final class TacticalPositionPlanner {
                 if (!bounds.contains(sample)) return false;
                 // The starting hazard can be left, but never crossed again later in the route.
                 boolean leavingStart = hazardousStart && length <= 1.5;
-                if (!leavingStart && !safeStanding(sample)) return false;
+                if (!leavingStart && !com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard, sample, true)) return false;
                 for (var threat : threats) {
                     double original = guard.position().distanceTo(threat.position());
                     double distance = sample.distanceTo(threat.position());
@@ -272,5 +286,6 @@ public final class TacticalPositionPlanner {
         return guard.level() instanceof ServerLevel level && level.hasChunk(pos.getX() >> 4, pos.getZ() >> 4);
     }
     public int candidatesChecked() { return candidatesChecked; }
+    public int sightRays() { return sightRays; }
     public int pathsBuilt() { return pathsBuilt; }
 }

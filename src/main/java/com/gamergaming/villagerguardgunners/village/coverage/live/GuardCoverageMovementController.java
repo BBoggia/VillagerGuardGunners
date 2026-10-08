@@ -2,7 +2,6 @@ package com.gamergaming.villagerguardgunners.village.coverage.live;
 
 import com.gamergaming.villagerguardgunners.village.coverage.VillageCoverageReservations.Lease;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import tallestegg.guardvillagers.entities.Guard;
 
@@ -12,8 +11,8 @@ public final class GuardCoverageMovementController {
     private Lease lease;
     private Path ownedPath;
     private boolean active;
-    private long nextProgress;
-    private double lastX, lastY, lastZ;
+    private final com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress progress =
+            new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
 
     public GuardCoverageMovementController(Guard guard) { this.guard = guard; }
     public boolean canStart() { return VillageCoverageRuntime.lease(guard) != null; }
@@ -22,7 +21,7 @@ public final class GuardCoverageMovementController {
         lease = VillageCoverageRuntime.lease(guard);
         active = lease != null;
         ownedPath = null;
-        remember();
+        progress.clear();
         if (active) {
             guard.getNavigation().stop();
             VillageCoverageRuntime.requestPath(guard, lease);
@@ -33,8 +32,7 @@ public final class GuardCoverageMovementController {
         var destination = VillageCoverageRuntime.destination(guard, lease);
         if (destination == null || !VillageCoverageRuntime.safe(guard, destination.position())) { finish(false, true); return; }
         BlockPos target = destination.position();
-        if (guard.distanceToSqr(target.getX() + 0.5, target.getY(), target.getZ() + 0.5) <= 2.25
-                && Math.abs(guard.getY() - target.getY()) <= 1) { finish(true, false); return; }
+        if (com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteArrival.at(guard, target, 1.5, 1)) { finish(true, false); return; }
         if (ownedPath == null) {
             var route = VillageCoverageRuntime.takePath(guard);
             if (route == null) return;
@@ -49,15 +47,15 @@ public final class GuardCoverageMovementController {
             }
             // Nodes came from a bounded, loaded-only walk graph. Native pathfinding
             // would construct a region that can request absent chunks.
-            ownedPath = new Path(new java.util.ArrayList<>(route.positions().stream().map(p -> new Node(p.getX(), p.getY(), p.getZ())).toList()), target, true);
+            ownedPath = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.fromVerifiedGround(route.positions(), target);
             try {
                 if (!guard.getNavigation().moveTo(ownedPath, 0.8)) { finish(false, true); return; }
                 ownedPath = guard.getNavigation().getPath();
                 if (ownedPath == null) { finish(false, true); return; }
             } catch (RuntimeException exception) { finish(false, true); return; }
-            remember();
+            progress.start(guard, ownedPath, guard.level().getGameTime());
         }
-        if (guard.getNavigation().getPath() != ownedPath) { finish(false, false); return; }
+        if (!ownsPath()) { finish(false, false); return; }
         for (int i = ownedPath.getNextNodeIndex(); i < Math.min(ownedPath.getNodeCount(), ownedPath.getNextNodeIndex() + 8); i++) {
             if (!VillageCoverageRuntime.safe(guard, ownedPath.getNodePos(i))
                     || (i > 0 && !VillageCoverageRuntime.safeTransition(guard, ownedPath.getNodePos(i - 1), ownedPath.getNodePos(i)))) {
@@ -65,13 +63,11 @@ public final class GuardCoverageMovementController {
             }
         }
         if (guard.getNavigation().isDone()) { finish(false, true); return; }
-        if (guard.level().getGameTime() >= nextProgress) {
-            double dx = guard.getX() - lastX, dy = guard.getY() - lastY, dz = guard.getZ() - lastZ;
-            if (dx * dx + dy * dy + dz * dz < 0.0625) { finish(false, true); return; }
-            remember();
+        if (progress.stalled(guard, ownedPath, guard.level().getGameTime(), 40)) {
+            finish(false, true);
         }
     }
-    public boolean ownsPath() { return ownedPath != null && guard.getNavigation().getPath() == ownedPath; }
+    public boolean ownsPath() { return progress.owns(guard, ownedPath); }
     public void stop() {
         if (active && lease != null) VillageCoverageRuntime.finish(guard, lease, false, false);
         stopOwnedPath(); active = false; lease = null;
@@ -81,11 +77,9 @@ public final class GuardCoverageMovementController {
         stopOwnedPath(); active = false;
     }
     private void stopOwnedPath() {
-        if (ownedPath != null && guard.getNavigation().getPath() == ownedPath) guard.getNavigation().stop();
+        if (ownsPath()) guard.getNavigation().stop();
         ownedPath = null;
+        progress.clear();
     }
-    private void remember() {
-        lastX = guard.getX(); lastY = guard.getY(); lastZ = guard.getZ();
-        nextProgress = guard.level().getGameTime() + 40;
-    }
+
 }

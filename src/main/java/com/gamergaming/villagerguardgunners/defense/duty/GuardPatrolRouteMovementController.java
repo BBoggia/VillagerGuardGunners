@@ -48,12 +48,7 @@ public final class GuardPatrolRouteMovementController {
     private MovementStatus movementStatus = MovementStatus.NO_ROUTE;
     private long evaluationGameTime = Long.MIN_VALUE;
     private long nextPathAttemptGameTime = Long.MIN_VALUE;
-    private long nextProgressCheckGameTime = Long.MIN_VALUE;
     private long dwellUntilGameTime = Long.MIN_VALUE;
-    private double lastDistance = Double.POSITIVE_INFINITY;
-    private double lastProgressX;
-    private double lastProgressY;
-    private double lastProgressZ;
     private int consecutivePathFailures;
     private int pathAttempts;
     private int skippedWaypoints;
@@ -62,6 +57,9 @@ public final class GuardPatrolRouteMovementController {
     private boolean atWaypoint;
     private boolean routeHasLoadedWaypoint;
     private boolean ownsMovement;
+    private Path ownedPath;
+    private final com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress routeProgress =
+            new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
 
     public GuardPatrolRouteMovementController(Guard guard) {
         this(guard, null);
@@ -94,6 +92,8 @@ public final class GuardPatrolRouteMovementController {
     public void start() {
         ownsMovement = true;
         navigation.stop();
+        ownedPath = null;
+        routeProgress.clear();
         nextPathAttemptGameTime = guard.level().getGameTime();
         tick();
     }
@@ -106,22 +106,25 @@ public final class GuardPatrolRouteMovementController {
         }
         long gameTime = guard.level().getGameTime();
         if (!destinationValid) {
-            navigation.stop();
+            stopOwnedPath();
             if (gameTime >= nextPathAttemptGameTime) {
                 recordPathFailure(gameTime, MovementStatus.INVALID_DESTINATION);
             }
             return;
         }
         if (!destinationLoaded) {
-            navigation.stop();
+            stopOwnedPath();
             movementStatus = MovementStatus.DESTINATION_UNLOADED;
             if (gameTime >= nextPathAttemptGameTime) {
-                recordPathFailure(gameTime, MovementStatus.DESTINATION_UNLOADED);
+                // Unknown terrain is not proof of an unreachable waypoint. Select loaded work
+                // without poisoning this waypoint's static-failure history.
+                advanceWaypoint(gameTime, false);
+                nextPathAttemptGameTime = gameTime + MINIMUM_RETRY_TICKS;
             }
             return;
         }
         if (atWaypoint) {
-            navigation.stop();
+            stopOwnedPath();
             if (dwellUntilGameTime == Long.MIN_VALUE) {
                 dwellUntilGameTime = saturatingAdd(
                         gameTime, settings.waypointDwellTicks());
@@ -137,26 +140,16 @@ public final class GuardPatrolRouteMovementController {
         }
 
         dwellUntilGameTime = Long.MIN_VALUE;
-        if (movementStatus == MovementStatus.TRAVELLING
-                && gameTime >= nextProgressCheckGameTime) {
-            BlockPos destination = destination(current);
-            double distance = distanceTo(destination);
-            if (!madeProgress(
-                    lastDistance,
-                    distance,
-                    lastProgressX,
-                    lastProgressY,
-                    lastProgressZ,
-                    guard.getX(),
-                    guard.getY(),
-                    guard.getZ())) {
-                navigation.stop();
-                recordPathFailure(gameTime, MovementStatus.STALLED);
-                return;
-            }
-            lastDistance = distance;
-            rememberProgressPosition();
-            nextProgressCheckGameTime = saturatingAdd(gameTime, PROGRESS_CHECK_TICKS);
+        if (ownedPath != null && !routeProgress.owns(guard, ownedPath)) {
+            ownedPath = null;
+            routeProgress.clear();
+            movementStatus = MovementStatus.INTERRUPTED;
+            return;
+        }
+        if (ownedPath != null && routeProgress.stalled(guard, ownedPath, gameTime, PROGRESS_CHECK_TICKS)) {
+            stopOwnedPath();
+            recordPathFailure(gameTime, MovementStatus.STALLED);
+            return;
         }
         if (!navigation.isDone()) {
             movementStatus = MovementStatus.TRAVELLING;
@@ -170,7 +163,7 @@ public final class GuardPatrolRouteMovementController {
     }
 
     public void stopForHigherPriorityGoal() {
-        navigation.stop();
+        stopOwnedPath();
         if (route != null) {
             movementStatus = MovementStatus.INTERRUPTED;
             nextPathAttemptGameTime = guard.level().getGameTime();
@@ -246,7 +239,7 @@ public final class GuardPatrolRouteMovementController {
                 || !sameRoute(route, candidate);
         if (routeChanged) {
             if (ownsMovement) {
-                navigation.stop();
+                stopOwnedPath();
             }
             observedSquadId = squadId;
             observedMembershipRevision = membershipRevision;
@@ -274,7 +267,7 @@ public final class GuardPatrolRouteMovementController {
         }
 
         BlockPos destination = destination(current);
-        atWaypoint = atPosition(guard.getX(), guard.getY(), guard.getZ(), destination);
+        atWaypoint = com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteArrival.at(guard, destination, ARRIVAL_HORIZONTAL_DISTANCE, ARRIVAL_VERTICAL_DISTANCE);
         gateStatus = GuardAutomaticDutyLiveGate.evaluate(
                 settings.enabled(), guard, AutomaticDutyKind.PATROL_ROUTE, atWaypoint);
         destinationValid = basicDestinationValid(current, destination);
@@ -338,8 +331,14 @@ public final class GuardPatrolRouteMovementController {
     private void attemptPath(BlockPos destination, long gameTime) {
         pathAttempts = increment(pathAttempts);
         try {
-            Path path = navigation.createPath(destination, 0);
-            if (path == null || !navigation.moveTo(path, settings.movementSpeed())) {
+            Path path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, destination, 32);
+            if (path == null && com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.deferred(guard)) {
+                pathAttempts--;
+                nextPathAttemptGameTime = gameTime + MINIMUM_RETRY_TICKS;
+                movementStatus = MovementStatus.WAITING_TO_RETRY;
+                return;
+            }
+            if (path == null || !path.canReach() || !navigation.moveTo(path, settings.movementSpeed())) {
                 recordPathFailure(gameTime, MovementStatus.PATH_UNAVAILABLE);
                 return;
             }
@@ -348,9 +347,10 @@ public final class GuardPatrolRouteMovementController {
             return;
         }
         movementStatus = MovementStatus.TRAVELLING;
-        lastDistance = distanceTo(destination);
-        rememberProgressPosition();
-        nextProgressCheckGameTime = saturatingAdd(gameTime, PROGRESS_CHECK_TICKS);
+
+        ownedPath = navigation.getPath();
+        routeProgress.start(guard, ownedPath, gameTime);
+
         nextPathAttemptGameTime = saturatingAdd(
                 gameTime,
                 Math.max(MINIMUM_RETRY_TICKS, pathRecalculationInterval()));
@@ -367,9 +367,6 @@ public final class GuardPatrolRouteMovementController {
         nextPathAttemptGameTime = saturatingAdd(
                 gameTime,
                 retryDelayTicks(MINIMUM_RETRY_TICKS, consecutivePathFailures));
-        nextProgressCheckGameTime = saturatingAdd(
-                nextPathAttemptGameTime, PROGRESS_CHECK_TICKS);
-        lastDistance = Double.POSITIVE_INFINITY;
     }
 
     private void advanceWaypoint(long gameTime, boolean skipped) {
@@ -382,15 +379,14 @@ public final class GuardPatrolRouteMovementController {
             skippedWaypoints = increment(skippedWaypoints);
         }
         consecutivePathFailures = 0;
-        lastDistance = Double.POSITIVE_INFINITY;
+
         dwellUntilGameTime = Long.MIN_VALUE;
         atWaypoint = false;
         destinationLoaded = false;
         destinationValid = false;
         nextPathAttemptGameTime = saturatingAdd(
                 gameTime, skipped ? MINIMUM_RETRY_TICKS : 0L);
-        nextProgressCheckGameTime = saturatingAdd(
-                nextPathAttemptGameTime, PROGRESS_CHECK_TICKS);
+
         movementStatus = skipped
                 ? MovementStatus.SKIPPING_UNREACHABLE
                 : MovementStatus.ADVANCING;
@@ -399,9 +395,9 @@ public final class GuardPatrolRouteMovementController {
 
     private void resetProgress(long gameTime) {
         nextPathAttemptGameTime = gameTime;
-        nextProgressCheckGameTime = saturatingAdd(gameTime, PROGRESS_CHECK_TICKS);
+
         dwellUntilGameTime = Long.MIN_VALUE;
-        lastDistance = Double.POSITIVE_INFINITY;
+
         consecutivePathFailures = 0;
         pathAttempts = 0;
         skippedWaypoints = 0;
@@ -411,24 +407,14 @@ public final class GuardPatrolRouteMovementController {
         routeHasLoadedWaypoint = false;
     }
 
-    private void rememberProgressPosition() {
-        lastProgressX = guard.getX();
-        lastProgressY = guard.getY();
-        lastProgressZ = guard.getZ();
+    private void stopOwnedPath() {
+        if (routeProgress.owns(guard, ownedPath)) navigation.stop();
+        ownedPath = null;
+        routeProgress.clear();
     }
 
     private BlockPos destination(SquadPatrolRoute current) {
         return current.waypoints().get(waypointIndex);
-    }
-
-    private double distanceTo(BlockPos destination) {
-        double distanceSquared = guard.distanceToSqr(
-                destination.getX() + 0.5D,
-                destination.getY(),
-                destination.getZ() + 0.5D);
-        return Double.isFinite(distanceSquared)
-                ? Math.sqrt(distanceSquared)
-                : Double.POSITIVE_INFINITY;
     }
 
     private int pathRecalculationInterval() {

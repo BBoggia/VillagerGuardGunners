@@ -206,11 +206,15 @@ in-progress survey finish and queue a follow-up survey, rather than restarting
 it repeatedly. Operator status reports `refreshing`
 while an active map has a replacement survey in progress.
 
-Changed footprints, block/chunk events, and survey errors still invalidate the
-whole village. District-specific replacement is not implemented. Capped surveys
-retain usable local components, but omitted areas need a later survey with space
-inside the same limits. Running two survey maps temporarily
-increases memory use within the existing village and terrain limits.
+Block/chunk events mask the affected chunk and its edge context. Routes depending
+on that region are retired while unrelated verified trips continue. A bounded
+repair reuses clean edges and rebuilds component connectivity before allocation
+resumes. Unchanged destination identities can retain leases and visit history.
+Changed footprints and survey errors still invalidate the whole village.
+Capped surveys retain usable local components, but omitted areas need a later
+survey with space inside the same limits. Running two survey maps temporarily
+increases memory use within the existing village and terrain limits. See
+[Guard navigation](guard-navigation.md) for repair and route-execution contracts.
 
 ## Route step revalidation
 
@@ -222,8 +226,9 @@ through the existing retry policy. It does not change explicit Guard Orders.
 
 Graph nodes identify the air cell above support, and step checks use the actual
 surface height, including dry unlit campfire decks. Native navigation resolves
-the floor height while moving. Water recovery, crossing reservations, and a
-guarantee against all native navigation corner-cutting behavior remain outside
+the floor height while moving. Conditional wooden-door transitions and short
+straight-passage reservations use the shared navigation adapter. Water recovery
+and a guarantee against all native corner-cutting behavior remain outside
 these checks. Broader generated bridge and Tidal/Sky/Integrated route coverage
 still needs separate testing.
 

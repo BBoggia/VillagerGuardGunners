@@ -2278,6 +2278,137 @@ public final class GuardGunnerGameTests {
         }
     }
 
+    @GameTest(batch = "peaceful_loadout", templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void peacefulEggLoadoutsUseConfiguredPoolRespectCapAndCanBeDisabled(GameTestHelper helper) {
+        NaturalLoadoutConfigSnapshot original = NaturalLoadoutConfigSnapshot.capture(helper);
+        java.util.List<Guard> guards = new java.util.ArrayList<>();
+        Runnable cleanup = () -> { guards.forEach(Guard::discard); original.restore(helper); };
+        helper.runAfterDelay(95, cleanup);
+        java.util.function.Function<BlockPos, Guard> spawnEgg = position -> {
+            var egg = tallestegg.guardvillagers.GuardItems.GUARD_SPAWN_EGG.get();
+            Guard guard = GuardEntityType.GUARD.get().spawn(helper.getLevel(), new ItemStack(egg), null,
+                    helper.absolutePos(position), MobSpawnType.SPAWN_EGG, false, false);
+            helper.assertTrue(guard != null, "Peaceful spawn egg failed to create a guard");
+            guards.add(guard);
+            return guard;
+        };
+        try {
+            var config = ModConfigs.GUARD_GUNNERS;
+            helper.getLevel().getServer().setDifficulty(Difficulty.PEACEFUL, true);
+            config.enabled.accept(true);
+            config.naturalLoadouts.enabled.accept(true);
+            config.naturalLoadouts.enabledSpawnSources.accept(Set.of(NaturalGuardSpawnSource.SPAWN_EGG));
+            config.naturalLoadouts.replaceCrossbowsOnly.accept(false);
+            config.naturalLoadouts.nearbyCapRadius.accept(8.0D);
+            // Eliminate the random rejection while retaining Peaceful's default pool and cap.
+            config.naturalLoadouts.peaceful.upgradeChance.accept(1.0D);
+            config.naturalLoadouts.peaceful.maximumNearby.accept(1);
+            config.naturalLoadouts.peaceful.poolId.accept(NaturalGuardLoadoutDefaults.EASY_POOL);
+            Guard armed = spawnEgg.apply(new BlockPos(0, 1, 0));
+            helper.runAfterDelay(4, () -> {
+                try {
+                    var state = NaturalGuardLoadoutDiagnostics.capture(armed);
+                    helper.assertTrue(state.active()
+                                    && state.lastIssuance() == NaturalGuardLoadoutIssuance.IssuanceStatus.ISSUED
+                                    && state.provenance().difficulty() == NaturalGuardDifficulty.PEACEFUL
+                                    && state.provenance().poolId().equals(NaturalGuardLoadoutDefaults.EASY_POOL)
+                                    && state.provenance().spawnSource() == NaturalGuardSpawnSource.SPAWN_EGG,
+                            "Peaceful did not issue its configured gun loadout: " + state);
+                    Guard capped = spawnEgg.apply(new BlockPos(2, 1, 0));
+                    helper.runAfterDelay(4, () -> {
+                        try {
+                            var cappedState = NaturalGuardLoadoutDiagnostics.capture(capped);
+                            helper.assertTrue(cappedState.lastDecision()
+                                            == NaturalGuardLoadoutSelector.DecisionStatus.NEARBY_CAP_REACHED
+                                            && !(capped.getMainHandItem().getItem() instanceof IGun),
+                                    "Peaceful ignored its automatic-gunner cap: " + cappedState);
+                            config.naturalLoadouts.peaceful.upgradeChance.accept(0.0D);
+                            Guard disabled = spawnEgg.apply(new BlockPos(4, 1, 0));
+                            helper.runAfterDelay(4, () -> {
+                                try {
+                                    var disabledState = NaturalGuardLoadoutDiagnostics.capture(disabled);
+                                    helper.assertTrue(disabledState.lastDecision()
+                                                    == NaturalGuardLoadoutSelector.DecisionStatus.DIFFICULTY_DISABLED
+                                                    && !(disabled.getMainHandItem().getItem() instanceof IGun),
+                                            "Peaceful ignored a zero loadout chance: " + disabledState);
+                                    helper.succeed();
+                                } finally { cleanup.run(); }
+                            });
+                        } catch (RuntimeException | Error e) { cleanup.run(); throw e; }
+                    });
+                } catch (RuntimeException | Error e) { cleanup.run(); throw e; }
+            });
+        } catch (RuntimeException | Error e) { cleanup.run(); throw e; }
+    }
+
+    @GameTest(batch = "spawn_egg_loadout", templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
+    public static void spawnEggLoadoutRespectsConfiguredSourceAndIssuesOnce(GameTestHelper helper) {
+        NaturalLoadoutConfigSnapshot original = NaturalLoadoutConfigSnapshot.capture(helper);
+        java.util.List<Guard> guards = new java.util.ArrayList<>();
+        Runnable cleanup = () -> { guards.forEach(Guard::discard); original.restore(helper); };
+        helper.runAfterDelay(95, cleanup);
+        try {
+            var config = ModConfigs.GUARD_GUNNERS;
+            helper.getLevel().getServer().setDifficulty(Difficulty.NORMAL, true);
+            config.enabled.accept(true); config.naturalLoadouts.enabled.accept(true);
+            config.naturalLoadouts.enabledSpawnSources.accept(Set.of(NaturalGuardSpawnSource.STRUCTURE));
+            // Make the source test independent of the native sword/crossbow roll and chance.
+            config.naturalLoadouts.replaceCrossbowsOnly.accept(false);
+            config.naturalLoadouts.normal.upgradeChance.accept(1.0D);
+            config.naturalLoadouts.normal.maximumNearby.accept(32);
+            config.naturalLoadouts.normal.poolId.accept(NaturalGuardLoadoutDefaults.NORMAL_POOL);
+            var egg = tallestegg.guardvillagers.GuardItems.GUARD_SPAWN_EGG.get();
+            helper.assertTrue(egg != null, "Guard spawn egg is not registered");
+            Guard excluded = GuardEntityType.GUARD.get().spawn(helper.getLevel(), new ItemStack(egg), null,
+                    helper.absolutePos(new BlockPos(0, 1, 0)), MobSpawnType.SPAWN_EGG, false, false);
+            helper.assertTrue(excluded != null, "Guard spawn egg failed to create a guard");
+            guards.add(excluded);
+            helper.runAfterDelay(4, () -> {
+                try {
+                    var excludedAccess = (GuardNaturalLoadoutAccess) excluded;
+                    helper.assertTrue(excludedAccess.villagerGuardGunners$getNaturalLoadoutDecisionStatus()
+                                    == NaturalGuardLoadoutSelector.DecisionStatus.SPAWN_SOURCE_DISABLED
+                                    && !(excluded.getMainHandItem().getItem() instanceof IGun),
+                            "Saved source exclusions were ignored or the native egg lifecycle did not finish: "
+                                    + NaturalGuardLoadoutDiagnostics.capture(excluded)
+                                    + ", ticks=" + excluded.tickCount + ", alive=" + excluded.isAlive()
+                                    + ", added=" + excluded.isAddedToWorld() + ", held=" + excluded.getMainHandItem());
+                    config.naturalLoadouts.enabledSpawnSources.accept(NaturalGuardLoadoutDefaults.SPAWN_RULES.enabledSources());
+                    Guard enabled = GuardEntityType.GUARD.get().spawn(helper.getLevel(), new ItemStack(egg), null,
+                            helper.absolutePos(new BlockPos(2, 1, 0)), MobSpawnType.SPAWN_EGG, false, false);
+                    helper.assertTrue(enabled != null, "Enabled spawn egg failed to create a guard");
+                    guards.add(enabled);
+                    helper.runAfterDelay(4, () -> {
+                        try {
+                            var access = (GuardNaturalLoadoutAccess) enabled;
+                            var provenance = access.villagerGuardGunners$getNaturalLoadoutProvenance();
+                            helper.assertTrue(access.villagerGuardGunners$getNaturalLoadoutDecisionStatus()
+                                            == NaturalGuardLoadoutSelector.DecisionStatus.SELECTED
+                                            && access.villagerGuardGunners$getNaturalLoadoutIssuanceStatus()
+                                            == NaturalGuardLoadoutIssuance.IssuanceStatus.ISSUED
+                                            && enabled.getMainHandItem().getItem() instanceof IGun
+                                            && NaturalGuardLoadoutProvenanceCodec.matchesIssuedGun(enabled, provenance)
+                                            && provenance.spawnSource() == NaturalGuardSpawnSource.SPAWN_EGG,
+                                    "Enabled egg source did not issue a valid gun loadout after native equipment: "
+                                            + NaturalGuardLoadoutDiagnostics.capture(enabled)
+                                            + ", ticks=" + enabled.tickCount + ", held=" + enabled.getMainHandItem());
+                            ItemStack issuedGun = enabled.getMainHandItem();
+                            NaturalGuardSpawnIntegration.onInitialEquipmentReady(enabled);
+                            helper.runAfterDelay(3, () -> {
+                                try {
+                                    helper.assertTrue(enabled.getMainHandItem() == issuedGun
+                                                    && access.villagerGuardGunners$getNaturalLoadoutProvenance().equals(provenance),
+                                            "A repeated readiness callback reissued the egg loadout");
+                                    helper.succeed();
+                                } finally { cleanup.run(); }
+                            });
+                        } catch (RuntimeException | Error e) { cleanup.run(); throw e; }
+                    });
+                } catch (RuntimeException | Error e) { cleanup.run(); throw e; }
+            });
+        } catch (RuntimeException | Error e) { cleanup.run(); throw e; }
+    }
+
     @GameTest(templateNamespace = "minecraft", template = EMPTY_TEMPLATE)
     public static void naturalLoadoutStructureMarkerSurvivesDeferredWorldgenJoin(
             GameTestHelper helper) {
@@ -9617,6 +9748,9 @@ public final class GuardGunnerGameTests {
             Set<NaturalGuardSpawnSource> enabledSources,
             boolean replaceCrossbowsOnly,
             double nearbyCapRadius,
+            double peacefulUpgradeChance,
+            int peacefulMaximumNearby,
+            ResourceLocation peacefulPoolId,
             double normalUpgradeChance,
             int normalMaximumNearby,
             ResourceLocation normalPoolId) {
@@ -9629,6 +9763,9 @@ public final class GuardGunnerGameTests {
                     Set.copyOf(config.naturalLoadouts.enabledSpawnSources.get()),
                     config.naturalLoadouts.replaceCrossbowsOnly.get(),
                     config.naturalLoadouts.nearbyCapRadius.get(),
+                    config.naturalLoadouts.peaceful.upgradeChance.get(),
+                    config.naturalLoadouts.peaceful.maximumNearby.get(),
+                    config.naturalLoadouts.peaceful.poolId.get(),
                     config.naturalLoadouts.normal.upgradeChance.get(),
                     config.naturalLoadouts.normal.maximumNearby.get(),
                     config.naturalLoadouts.normal.poolId.get());
@@ -9642,6 +9779,9 @@ public final class GuardGunnerGameTests {
             config.naturalLoadouts.enabledSpawnSources.accept(enabledSources);
             config.naturalLoadouts.replaceCrossbowsOnly.accept(replaceCrossbowsOnly);
             config.naturalLoadouts.nearbyCapRadius.accept(nearbyCapRadius);
+            config.naturalLoadouts.peaceful.upgradeChance.accept(peacefulUpgradeChance);
+            config.naturalLoadouts.peaceful.maximumNearby.accept(peacefulMaximumNearby);
+            config.naturalLoadouts.peaceful.poolId.accept(peacefulPoolId);
             config.naturalLoadouts.normal.upgradeChance.accept(normalUpgradeChance);
             config.naturalLoadouts.normal.maximumNearby.accept(normalMaximumNearby);
             config.naturalLoadouts.normal.poolId.accept(normalPoolId);

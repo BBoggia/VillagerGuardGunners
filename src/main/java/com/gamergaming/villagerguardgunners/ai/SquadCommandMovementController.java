@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.ai;
 
 import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
+import com.gamergaming.villagerguardgunners.ai.navigation.GuardNavigationRuntime;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
@@ -42,6 +43,8 @@ public final class SquadCommandMovementController {
     private MovementOutcome lastOutcome = MovementOutcome.NOT_HANDLED;
     private boolean positionalCommandActive;
     private net.minecraft.world.level.pathfinder.Path screenedCombatPath;
+    private net.minecraft.world.level.pathfinder.Path combatApproachPath;
+    private final Object screenedPathOwner = new Object();
     private com.gamergaming.villagerguardgunners.ai.tactics.TacticalAssignmentBounds screenedCombatBounds;
     private long nextCombatPathValidation;
 
@@ -197,11 +200,14 @@ public final class SquadCommandMovementController {
             LivingEntity target,
             double speed) {
         if (!takePathSlot(guard.level().getGameTime())) return;
+        var previousScreenedPath = screenedCombatPath;
         screenedCombatPath = null;
         var dutyBounds = com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.bounds(guard);
         boolean defend = command != null && command.type() == SquadCommandType.DEFEND;
         if (!defend && !Double.isFinite(dutyBounds.radius())) {
-            navigation.moveTo(target, speed);
+            GuardNavigationRuntime.release(guard, previousScreenedPath, screenedPathOwner);
+            if (navigation.moveTo(target, speed)) combatApproachPath = navigation.getPath();
+            else invalidateCombatPath();
             return;
         }
         Vec3 destination = defend ? constrainToDefendBoundary(
@@ -213,8 +219,8 @@ public final class SquadCommandMovementController {
                         BlockPos.containing(dutyBounds.center()), dutyBounds.radius() + 1);
         BlockPos destinationBlock = BlockPos.containing(destination);
         var screening = new com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner(guard);
-        if (isLoaded(destinationBlock) && screening.pathRegionLoaded()) {
-            var path = navigation.createPath(destinationBlock, 0,
+        if (isLoaded(destinationBlock)) {
+            var path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, destinationBlock,
                     com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner.PATH_RANGE);
             var bounds = defend ? new com.gamergaming.villagerguardgunners.ai.tactics.TacticalAssignmentBounds(
                     Vec3.atBottomCenterOf(command.position()), defendMovementRadius(command.radius())) : dutyBounds;
@@ -223,6 +229,8 @@ public final class SquadCommandMovementController {
                     // Native navigation retains its existing Path when nodes match.
                     // Track the path actually installed, not the proposed object.
                     screenedCombatPath = navigation.getPath();
+                    combatApproachPath = screenedCombatPath;
+                    GuardNavigationRuntime.register(guard, screenedCombatPath, screenedPathOwner);
                     screenedCombatBounds = bounds;
                     if (screenedCombatPath == null || !screenedCombatPath.canReach()
                             || !screening.safeRoute(screenedCombatPath, screenedCombatPath.getNextNodeIndex(),
@@ -241,11 +249,20 @@ public final class SquadCommandMovementController {
     }
 
     public boolean ownsScreenedCombatPath() {
-        return screenedCombatPath != null && navigation.getPath() == screenedCombatPath;
+        return screenedCombatPath != null && navigation.getPath() == screenedCombatPath
+                && GuardNavigationRuntime.owns(guard, screenedCombatPath, screenedPathOwner);
     }
 
     public void invalidateCombatPath() {
-        if (ownsScreenedCombatPath()) navigation.stop();
+        // Ordinary native chases also need to yield while a peek waits for its
+        // planning slot. Leaving the old MoveControl target active keeps walking.
+        if (combatApproachPath != null && navigation.getPath() == combatApproachPath
+                && !GuardNavigationRuntime.ownedByOther(guard, combatApproachPath, screenedPathOwner)) {
+            navigation.stop();
+            guard.getMoveControl().setWantedPosition(guard.getX(), guard.getY(), guard.getZ(), 0);
+        }
+        GuardNavigationRuntime.release(guard, combatApproachPath, screenedPathOwner);
+        combatApproachPath = null;
         screenedCombatPath = null;
         screenedCombatBounds = null;
     }
@@ -253,6 +270,8 @@ public final class SquadCommandMovementController {
     private void validateCombatPath(@Nullable SquadCommand command) {
         if (screenedCombatPath == null) return;
         if (!ownsScreenedCombatPath() || navigation.isDone()) {
+            GuardNavigationRuntime.release(guard, screenedCombatPath, screenedPathOwner);
+            if (combatApproachPath == screenedCombatPath) combatApproachPath = null;
             screenedCombatPath = null;
             screenedCombatBounds = null;
             return;
@@ -278,9 +297,8 @@ public final class SquadCommandMovementController {
     }
 
     public void stop() {
-        screenedCombatPath = null;
-        screenedCombatBounds = null;
-        navigation.stop();
+        invalidateCombatPath();
+        if (!GuardNavigationRuntime.ownedByOther(guard, navigation.getPath(), screenedPathOwner)) navigation.stop();
         lastOutcome = MovementOutcome.NOT_HANDLED;
     }
 

@@ -26,7 +26,7 @@ final class VillageWatchtowerStepFifteenContractTest {
                 + "worldgen/structure/VillageWatchtowerPiece.java");
 
         assertAll(
-                () -> assertTrue(config.contains("CONFIG_VERSION = 23")),
+                () -> assertTrue(config.contains("CONFIG_VERSION = 24")),
                 () -> assertTrue(config.contains("previousVersion < 10")),
                 () -> assertTrue(config.contains("restoreVersionTenDefaults()")),
                 () -> assertTrue(config.contains("previousVersion < 11")),

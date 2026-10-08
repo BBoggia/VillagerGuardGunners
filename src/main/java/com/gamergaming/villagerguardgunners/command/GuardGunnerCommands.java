@@ -105,6 +105,12 @@ public final class GuardGunnerCommands {
                 + ", ownsPath=" + route.ownsPath() + ", moving=" + route.isMoving() + ", laneChange=" + route.isLaneChange()
                 + ", pathAttempts=" + route.pathAttempts() + ", failedDestinations=" + route.failedDestinations()
                 + ", candidates=" + route.candidatesChecked(), ChatFormatting.GRAY));
+        var progress = com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress.snapshot(guard);
+        send(source, line("Navigation progress", progress.status() + ", node=" + progress.nextNode()
+                + ", remaining=" + decimal(progress.remainingDistance())
+                + ", lastProgressTick=" + progress.lastProgressTick()
+                + ", transition=" + com.gamergaming.villagerguardgunners.ai.navigation.GuardNavigationRuntime.status(guard)
+                + ", search=" + com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.status(guard), ChatFormatting.GRAY));
         var combatDuty = com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.current(guard);
         var combatSupply = com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess.getController(guard);
         send(source, line("Combat duty", combatDuty == null ? "none" : "anchor=" + combatDuty.anchor()

@@ -52,11 +52,9 @@ public final class ArmoryResupplyMovementController {
     private int pathAttempts;
     private int nativePathResumes;
     private long nextPathAttemptGameTick = Long.MIN_VALUE;
-    private long nextProgressCheckGameTick = Long.MIN_VALUE;
     private long nextTripRevalidationGameTick = Long.MIN_VALUE;
-    private double progressAnchorX;
-    private double progressAnchorY;
-    private double progressAnchorZ;
+    private final com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress routeProgress =
+            new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
 
     public ArmoryResupplyMovementController(
             Guard guard,
@@ -134,7 +132,7 @@ public final class ArmoryResupplyMovementController {
 
     /**
      * Advances one active session. It creates at most one path on a due tick,
-     * samples progress only every bounded interval, and rechecks precedence,
+     * samples cached route progress, and rechecks precedence,
      * reservation ownership, dimension, squad, range, load state, and lock.
      */
     public MovementResult tick(boolean featureEnabled) {
@@ -152,7 +150,7 @@ public final class ArmoryResupplyMovementController {
             return terminate(MovementStatus.RESERVATION_LOST, null, false);
         }
         if (ownedNavigationTarget != null
-                && (!ownedNavigationTarget.equals(navigation.getTargetPos()) || navigation.getPath() != ownedNavigationPath)) {
+                && (!ownedNavigationTarget.equals(navigationTarget()) || !ownsPath())) {
             return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
         }
 
@@ -190,19 +188,10 @@ public final class ArmoryResupplyMovementController {
                 }
             }
             if (!navigation.isDone()) {
-                if (gameTick >= nextProgressCheckGameTick) {
-                    if (!madeProgress(
-                            progressAnchorX,
-                            progressAnchorY,
-                            progressAnchorZ,
-                            guard.getX(),
-                            guard.getY(),
-                            guard.getZ(),
-                            ArmoryResupplyLimits.MIN_PROGRESS_DISTANCE_SQUARED)) {
-                        stopOwnedNavigation();
-                        return pathAttemptFailed(gameTick);
-                    }
-                    captureProgressAnchor(gameTick);
+                if (routeProgress.stalled(guard, ownedNavigationPath, gameTick,
+                        ArmoryResupplyLimits.DEFAULT_PROGRESS_CHECK_TICKS)) {
+                    stopOwnedNavigation();
+                    return pathAttemptFailed(gameTick);
                 }
                 return result(MovementStatus.MOVING, null);
             }
@@ -240,13 +229,20 @@ public final class ArmoryResupplyMovementController {
                 pathAttempts % approachPositions.size());
         pathAttempts++;
         if (!level.hasChunkAt(approach)) {
-            return pathAttemptFailed(gameTick);
+            pathAttempts--;
+            nextPathAttemptGameTick = gameTick + 20;
+            return result(MovementStatus.WAITING_TO_RETRY, null);
         }
 
         if (!navigation.isDone()) {
             return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
         }
         if (!startNavigation(approach, gameTick)) {
+            if (com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.deferred(guard)) {
+                pathAttempts--;
+                nextPathAttemptGameTick = gameTick + 20;
+                return result(MovementStatus.WAITING_TO_RETRY, null);
+            }
             return pathAttemptFailed(gameTick);
         }
         return result(MovementStatus.MOVING, null);
@@ -286,7 +282,7 @@ public final class ArmoryResupplyMovementController {
             return terminate(MovementStatus.RESERVATION_LOST, null, false);
         }
         if (ownedNavigationTarget != null
-                && (!ownedNavigationTarget.equals(navigation.getTargetPos()) || navigation.getPath() != ownedNavigationPath)) {
+                && (!ownedNavigationTarget.equals(navigationTarget()) || !ownsPath())) {
             return terminate(MovementStatus.NAVIGATION_PREEMPTED, null, true);
         }
         MovementResult validation = validateSession(featureEnabled, level, gameTick);
@@ -431,7 +427,10 @@ public final class ArmoryResupplyMovementController {
                 guard.getZ());
         this.nextPathAttemptGameTick = gameTick;
         this.nextTripRevalidationGameTick = gameTick;
-        captureProgressAnchor(gameTick);
+    }
+
+    private BlockPos navigationTarget() {
+        return navigation.getPath() == null ? navigation.getTargetPos() : navigation.getPath().getTarget();
     }
 
     private boolean startNavigation(BlockPos approach, long gameTick) {
@@ -439,21 +438,20 @@ public final class ArmoryResupplyMovementController {
         try {
             var emergency = com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess.getController(guard);
             if (emergency != null && emergency.isEmergency()) {
-                var planner = new com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner(guard);
-                if (!planner.pathRegionLoaded()) return false;
-                var path = navigation.createPath(approach, 0,
+                var path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, approach,
                         com.gamergaming.villagerguardgunners.ai.tactics.TacticalPositionPlanner.PATH_RANGE);
                 if (path == null || path.getEndNode() == null || path.getEndNode().asBlockPos().distSqr(approach) > 1
                         || !emergency.safeEmergencyRoute(path)) return false;
                 started = navigation.moveTo(path, movementSpeed);
             } else {
-                started = navigation.moveTo(approach.getX() + 0.5D, approach.getY(), approach.getZ() + 0.5D, movementSpeed);
+                var path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, approach, 32);
+                started = path != null && path.canReach() && navigation.moveTo(path, movementSpeed);
             }
         } catch (RuntimeException exception) {
             stopNavigationAt(approach);
             return false;
         }
-        BlockPos actualTarget = navigation.getTargetPos();
+        BlockPos actualTarget = navigationTarget();
         if (!started || actualTarget == null || !actualTarget.equals(approach)) {
             stopNavigationAt(approach);
             return false;
@@ -468,7 +466,8 @@ public final class ArmoryResupplyMovementController {
             stopOwnedNavigation(); return false;
         }
         nextEmergencyValidation = gameTick + 10;
-        captureProgressAnchor(gameTick);
+
+        routeProgress.start(guard, ownedNavigationPath, gameTick);
         return true;
     }
 
@@ -506,16 +505,7 @@ public final class ArmoryResupplyMovementController {
                 ownedNavigationTarget);
     }
 
-    private void captureProgressAnchor(long gameTick) {
-        progressAnchorX = guard.getX();
-        progressAnchorY = guard.getY();
-        progressAnchorZ = guard.getZ();
-        nextProgressCheckGameTick = ArmoryResupplyLimits.retryAt(
-                gameTick,
-                ArmoryResupplyLimits.DEFAULT_PROGRESS_CHECK_TICKS);
-    }
-
-    public boolean ownsPath() { return ownedNavigationPath != null && navigation.getPath() == ownedNavigationPath; }
+    public boolean ownsPath() { return routeProgress.owns(guard, ownedNavigationPath); }
     public void invalidateForWorldChange() {
         stopOwnedNavigation();
         nextPathAttemptGameTick = Math.max(nextPathAttemptGameTick, guard.level().getGameTime() + 20);
@@ -523,7 +513,7 @@ public final class ArmoryResupplyMovementController {
 
     private void stopOwnedNavigation() {
         if (ownedNavigationTarget != null
-                && ownedNavigationTarget.equals(navigation.getTargetPos()) && navigation.getPath() == ownedNavigationPath) {
+                && ownedNavigationTarget.equals(navigationTarget()) && ownsPath()) {
             navigation.stop();
         }
         clearNavigationOwnership();
@@ -534,7 +524,7 @@ public final class ArmoryResupplyMovementController {
         if (ownedNavigationTarget == null) {
             return;
         }
-        if (ownedNavigationTarget.equals(navigation.getTargetPos()) && navigation.getPath() == ownedNavigationPath) {
+        if (ownedNavigationTarget.equals(navigationTarget()) && ownsPath()) {
             pausedNavigationTarget = ownedNavigationTarget;
             navigation.stop();
         }
@@ -542,7 +532,7 @@ public final class ArmoryResupplyMovementController {
     }
 
     private void stopNavigationAt(BlockPos target) {
-        if (target.equals(navigation.getTargetPos())) {
+        if (target.equals(navigationTarget())) {
             navigation.stop();
         }
     }
@@ -550,7 +540,7 @@ public final class ArmoryResupplyMovementController {
     private void clearNavigationOwnership() {
         ownedNavigationTarget = null;
         ownedNavigationPath = null;
-        nextProgressCheckGameTick = Long.MIN_VALUE;
+        routeProgress.clear();
     }
 
     private void clearSession() {
@@ -563,9 +553,6 @@ public final class ArmoryResupplyMovementController {
         nativePathResumes = 0;
         nextPathAttemptGameTick = Long.MIN_VALUE;
         nextTripRevalidationGameTick = Long.MIN_VALUE;
-        progressAnchorX = 0.0D;
-        progressAnchorY = 0.0D;
-        progressAnchorZ = 0.0D;
     }
 
     static List<BlockPos> approachPositions(

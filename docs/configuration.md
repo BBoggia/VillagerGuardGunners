@@ -93,10 +93,13 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `medical.enabled` | `true` | boolean | Enables manual and medic treatment; disabling it leaves pouch stocking, withdrawal, and recovery available. See [medical supplies](medical-supplies.md). |
 | `enabled` | `true` | boolean | Enables combat and village AI, including loadouts, command movement, patrols, village discovery/staffing, and Armory resupply. Medical, Quartermaster, and building controls are separate. |
 | `naturalLoadouts.enabled` | `true` | boolean | Master switch for one-time automatic loadouts on otherwise eligible newly spawned guards. |
-| `naturalLoadouts.enabledSpawnSources` | `STRUCTURE` | enum set | Limits automatic loadouts by initial spawn origin. Conversion, spawn-egg, command, and unknown origins are opt-in. |
+| `naturalLoadouts.enabledSpawnSources` | `STRUCTURE`, `SPAWN_EGG` | enum set | Limits automatic loadouts by initial spawn origin. Conversion, command, and unknown origins are opt-in. Existing saved source choices are preserved when updating. |
 | `naturalLoadouts.replaceCrossbowsOnly` | `true` | boolean | Prevents automatic loadouts from overwriting starting equipment supplied by another mod. |
 | `naturalLoadouts.nearbyCapRadius` | 64 | 8–256 blocks | Radius for the one-time nearby natural-gunner population check, including authenticated reservations in unloaded chunks. This is not a repeating scan. |
 | `naturalLoadouts.allowExplosiveWeapons` | `false` | boolean | Permits explosive entries from datapack pools; all existing explosive safety still applies. |
+| `naturalLoadouts.peaceful.upgradeChance` | 0.35 | 0–1 | Chance that a valid new Peaceful guard receives an automatic gun loadout. Zero disables Peaceful loadouts. |
+| `naturalLoadouts.peaceful.maximumNearby` | 1 | 0–32 guards | Nearby cap for automatically equipped guards on Peaceful. Zero disables Peaceful loadouts. |
+| `naturalLoadouts.peaceful.poolId` | `villagerguardgunners:easy` | resource ID | Datapack pool selected on Peaceful; starts with the Easy pistol pool. |
 | `naturalLoadouts.easy.upgradeChance` | 0.35 | 0–1 | Chance that an eligible Easy guard advances to pool and population-cap evaluation. |
 | `naturalLoadouts.easy.maximumNearby` | 1 | 0–32 guards | Nearby cap for naturally equipped Easy guards. Zero disables Easy loadouts. |
 | `naturalLoadouts.easy.poolId` | `villagerguardgunners:easy` | resource ID | Datapack pool selected on Easy. |
@@ -343,9 +346,11 @@ authorization per guard, and stops at the configured member cap. Unloaded and
 distant members are deliberately unchanged. Command records are separate from
 permanent Guard Orders, equipment, patrol positions, and squad membership.
 
-Config version 7 established the synchronized server policy for natural guard
-loadouts. Peaceful is deliberately disabled and does not expose a pool setting.
-Easy, Normal, and Hard each select a namespaced datapack pool independently, so
+Each difficulty, including Peaceful, has its own gun chance, nearby cap, and
+namespaced datapack pool. Peaceful starts with the Easy defaults: a 35% chance,
+a cap of one, and the Easy pistol pool. Changing Easy settings does not change
+Peaceful settings. Set Peaceful's chance or cap to zero to disable its loadouts.
+All four difficulties select a namespaced datapack pool independently, so
 modpack authors can replace the built-in progression without editing code. The
 complete versioned JSON format, built-in weights, replacement semantics, and
 reload behavior are documented in
@@ -521,15 +526,20 @@ For non-explosive weapons, a custom profile whose firing cap is narrower than it
 
 The firing window is inclusive at both boundaries. Missing, stale, unreadable, or contradictory tactical metadata cannot bypass it: the gun goal yields to Guard Villagers' lower-priority combat and retries only at the bounded gun-data refresh cadence. Unreadable effective-range properties also fail closed for profiles that derive their firing cap from that value. These checks are constant-time reads of cached values and do not invoke TaCZ property scripts or scan configuration maps from the combat tick.
 
+Config version 24 adds `naturalLoadouts.peaceful`. Upgrading an older file
+initializes only this new section with the Easy defaults; existing source
+choices, difficulty settings, and master switches are retained. Saved Peaceful
+settings are preserved on subsequent loads.
+
 Config version 8 adds the `squads` section. Loading a version-7 file selects a
 48-block one-shot query, a 32-member hard cap, 1200-tick positional commands,
 400-tick Focus commands, a 12-block Defend radius, and a 32-block air projection.
 Existing natural-loadout, combat, movement, tactical, engagement, safety,
 ammunition, and performance values are retained. Config version 7 added the
 `naturalLoadouts` section. Loading a version-6 file
-selects structure spawns only, preserves non-crossbow equipment, disallows
+selects structure and spawn-egg sources, preserves non-crossbow equipment, disallows
 explosive natural weapons, uses a 64-block cap radius, and initializes the
-35%/1, 50%/2, and 65%/2 Easy/Normal/Hard defaults. Existing combat, movement,
+35%/1, 35%/1, 50%/2, and 65%/2 Peaceful/Easy/Normal/Hard defaults. Existing combat, movement,
 tactical, engagement, safety, ammunition, and performance values are retained.
 Config version 6 added the `ammunition` section. Loading a version-5 file enables
 passive pickup and emergency sharing, selects 1.5-block and 8-block radii,

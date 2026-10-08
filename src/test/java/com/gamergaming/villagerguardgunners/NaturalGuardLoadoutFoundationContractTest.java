@@ -23,8 +23,7 @@ final class NaturalGuardLoadoutFoundationContractTest {
 
         assertAll(
                 () -> assertTrue(defaults.contains(
-                        "Set.of(NaturalGuardSpawnSource.STRUCTURE)")),
-                () -> assertTrue(defaults.contains("new NaturalGuardDifficultySettings(0.0D, 0, null)")),
+                        "Set.of(NaturalGuardSpawnSource.STRUCTURE, NaturalGuardSpawnSource.SPAWN_EGG)")),
                 () -> assertTrue(defaults.contains("new NaturalGuardDifficultySettings(0.35D, 1, EASY_POOL)")),
                 () -> assertTrue(defaults.contains("new NaturalGuardDifficultySettings(0.50D, 2, NORMAL_POOL)")),
                 () -> assertTrue(defaults.contains("new NaturalGuardDifficultySettings(0.65D, 2, HARD_POOL)")),

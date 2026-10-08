@@ -6,38 +6,46 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: read `mod_version` in `gradle.properties`. The current candidate is `1.8`.
+- Version: read `mod_version` in `gradle.properties`. The current candidate is `1.9`.
 - Minecraft: `1.20.1`
 - Forge: `47.4.10` minimum; compatible 47.x releases
 - Guard Villagers: `1.20.1-1.6.19`
-- TaCZ: `1.1.8-hotfix`
+- TaCZ runtime requirement: `1.1.8` or newer for Minecraft `1.20.1` (`[1.1.8,)`).
+  The compile dependency remains pinned by `tacz_version`; the loader range is
+  defined separately by `tacz_version_range` in `gradle.properties`.
 - Fzzy Config: `0.7.6+1.20.1`
 - Kotlin for Forge: `4.12.0`
 - Automated baseline gun pack: TaCZ Default Gun Pack bundled with TaCZ
   `1.1.8-hotfix`. Record additional tested pack versions with candidate evidence.
 - Candidate JAR SHA-256: use the checksum shipped with the candidate being tested.
-  The earlier 1.7 preparation hash does not identify the current 1.8 build.
+  Earlier release and development hashes do not identify the current 1.9 build.
 
-## Guard accuracy candidate
+## Full update from 1.8
+
+The 1.9 candidate includes the Quartermaster expansion, combat and navigation
+improvements, automatic-loadout changes, and the TaCZ compatibility update.
+The 1.8.1 patch contains only the TaCZ compatibility change and is not the
+baseline for certifying the additional gameplay features.
+
+Check the packaged Quartermaster journey, upgrade persistence, and concurrent
+management using [Quartermaster validation](quartermaster-validation.md).
+Check duty returns, local detours, passage waits, entrance selection, and coverage
+repairs using [guard navigation](guard-navigation.md). Preserve the published 1.8
+JAR and use a disposable copied world for upgrade checks.
 
 Use the [accuracy configuration guide](configuration.md#guard-accuracy-and-player-combat)
-and [validation results](guard-accuracy-validation.md) for the completed accuracy
-work. Earlier accuracy test bundles used an internal 1.7 identity. The 1.8
-candidate has its own versioned JAR, release notes, documentation, and checksums;
-earlier runtime results remain attributed to their recorded artifact hashes.
-
-Confirm zero-error/eye-level defaults and disabled player overrides, the 2°
-center-mass starting example, current dependency metadata, no observer classes
-in the production JAR, and packaged client/server smoke evidence. Keep artifact
-hashes with each result. Text-only candidate updates do not require repeating
-unchanged balance trials; identify which artifact produced those measurements.
+and [validation results](guard-accuracy-validation.md) for accuracy coverage.
+Confirm zero-error/eye-level defaults, disabled player overrides, current dependency
+metadata, no observer classes in the production JAR, and packaged client/server
+smoke evidence. Identify which artifact produced every measurement; previous
+results do not certify changed code merely because its version was unchanged.
 
 ## Candidate evidence
 
 Use the checksum in the prepared candidate bundle's `SHA256SUMS.txt` to identify
 its exact files. Earlier development reports do not certify changed artifacts.
 The checked rows below are historical preparation results and apply only to
-their recorded artifact, not automatically to the current 1.8 JAR.
+their recorded artifact, not automatically to the current 1.9 JAR.
 Current preparation results are recorded with the candidate review evidence;
 manual, multiplayer, upgrade, performance, and remote CI checks still require
 matching evidence before public release.
@@ -237,7 +245,7 @@ storage integration used by the target modpack.
 | NATURAL-LIFE-01 | Allow a structure guard to receive a natural gun, then unload/reload its chunk and restart the server before spawning another eligible guard inside the cap radius. | The original guard keeps its gun, ammunition, and identity; it still consumes exactly one nearby-cap slot after both reload boundaries. | Not run | |
 | NATURAL-LIFE-02 | Replace an issued gun with an unmarked copy of the same TaCZ gun, move the marked original to another guard, save, and reload both. | Neither guard is counted as a natural gunner: the source record is cleared and an item marker without the matching guard record is inert. No equipment is deleted. | Not run | |
 | NATURAL-DROP-01 | Exercise ordinary death, zombie conversion, and lightning conversion with naturally issued guns and partially used dedicated ammunition. | The gun follows Guard Villagers/Minecraft equipment behavior and appears at most once; dedicated ammunition follows the documented add-on path without loss or duplication. | Not run | |
-| NATURAL-DIFF-01 | At each difficulty, generate a documented sample of otherwise eligible structure guards with an isolated village and default config. | Peaceful issues none; Easy remains pistol-only and locally capped at one; Normal introduces SMGs and caps at two; Hard permits occasional rifles while retaining a cap of two. Results are treated as a random sample, not exact percentages. | Not run | |
+| NATURAL-DIFF-01 | At each difficulty, generate a documented sample of otherwise eligible structure guards with an isolated village and default config. Also test Peaceful with zero chance and zero nearby cap. | Peaceful and Easy use the pistol pool and cap at one; Normal introduces SMGs and caps at two; Hard permits occasional rifles while retaining a cap of two. Either zero setting disables Peaceful loadouts. Results are treated as a random sample, not exact percentages. | Not run | |
 | NATURAL-POOL-01 | Add a custom namespaced weighted pool, select it for one difficulty, run `/reload`, then replace it with an invalid document and reload again. | Valid entries are selected according to their integer weights; invalid pool data is reported and that pool becomes unavailable without retaining a stale pre-reload copy or affecting other pools. | Not run | |
 | NATURAL-SOURCE-01 | Exercise structure, villager conversion, spawn egg, command, and another finalized source with each source disabled and enabled. Repeat with a crossbow and non-crossbow starting weapon. | Only configured sources are eligible; crossbow-only replacement protects all other starting equipment unless explicitly disabled; each entity is attempted at most once. | Not run | |
 | NATURAL-AMMO-01 | Issue representative pistol, SMG, rifle, attachment-modified, dummy/infinite-reserve, and physical-ammo custom definitions. Fill all dedicated slots before one attempt. | Eligible physical guns receive a loaded native gun plus exactly one TaCZ-defined full loose-ammo stack; unsupported reserve models and insufficient capacity leave the original weapon and every slot unchanged. | Not run | |

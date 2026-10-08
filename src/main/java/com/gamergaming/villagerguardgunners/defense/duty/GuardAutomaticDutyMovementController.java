@@ -40,11 +40,6 @@ public final class GuardAutomaticDutyMovementController {
     private MovementStatus movementStatus = MovementStatus.IDLE;
     private long evaluationGameTime = Long.MIN_VALUE;
     private long nextPathAttemptGameTime = Long.MIN_VALUE;
-    private long nextProgressCheckGameTime = Long.MIN_VALUE;
-    private double lastDistance = Double.POSITIVE_INFINITY;
-    private double lastProgressX;
-    private double lastProgressY;
-    private double lastProgressZ;
     private int consecutivePathFailures;
     private int pathAttempts;
     private boolean destinationLoaded;
@@ -53,6 +48,9 @@ public final class GuardAutomaticDutyMovementController {
     private boolean facingApplied;
     private boolean restaffReviewRequested;
     private boolean ownsMovement;
+    private Path ownedPath;
+    private final com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress routeProgress =
+            new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
 
     public GuardAutomaticDutyMovementController(Guard guard) {
         this(guard, null);
@@ -93,37 +91,27 @@ public final class GuardAutomaticDutyMovementController {
         long gameTime = guard.level().getGameTime();
         if (atDutyPosition) {
             if (movementStatus != MovementStatus.HOLDING_POST) {
-                navigation.stop();
+                stopOwnedPath();
             }
             movementStatus = MovementStatus.HOLDING_POST;
             consecutivePathFailures = 0;
-            lastDistance = 0.0D;
+
             applyFacingOnce(current.slot().facing());
             return;
         }
 
         facingApplied = false;
-        if (movementStatus == MovementStatus.TRAVELLING
-                && gameTime >= nextProgressCheckGameTime) {
-            double distance = distanceTo(current.slot().position());
-            if (!madeProgress(
-                    lastDistance,
-                    distance,
-                    lastProgressX,
-                    lastProgressY,
-                    lastProgressZ,
-                    guard.getX(),
-                    guard.getY(),
-                    guard.getZ())) {
-                navigation.stop();
-                recordPathFailure(gameTime, MovementStatus.STALLED);
-                return;
-            }
-            lastDistance = distance;
-            rememberProgressPosition();
-            nextProgressCheckGameTime = gameTime + PROGRESS_CHECK_TICKS;
+        if (ownedPath != null && !routeProgress.owns(guard, ownedPath)) {
+            ownedPath = null;
+            routeProgress.clear();
+            movementStatus = MovementStatus.INTERRUPTED;
+            return;
         }
-
+        if (ownedPath != null && routeProgress.stalled(guard, ownedPath, gameTime, PROGRESS_CHECK_TICKS)) {
+            stopOwnedPath();
+            recordPathFailure(gameTime, MovementStatus.STALLED);
+            return;
+        }
         if (!navigation.isDone()) {
             movementStatus = MovementStatus.TRAVELLING;
             return;
@@ -139,13 +127,15 @@ public final class GuardAutomaticDutyMovementController {
     public void start() {
         ownsMovement = true;
         navigation.stop();
+        ownedPath = null;
+        routeProgress.clear();
         nextPathAttemptGameTime = guard.level().getGameTime();
         tick();
     }
 
     /** Stops only navigation owned while this MOVE goal was running. */
     public void stopForHigherPriorityGoal() {
-        navigation.stop();
+        stopOwnedPath();
         facingApplied = false;
         if (assignment != null
                 && destinationValid
@@ -204,13 +194,12 @@ public final class GuardAutomaticDutyMovementController {
                         || !assignment.slot().equals(next.slot());
         if (!Objects.equals(observedSlotId, nextSlotId) || destinationChanged) {
             if (ownsMovement) {
-                navigation.stop();
+                stopOwnedPath();
             }
             observedSlotId = nextSlotId;
             assignment = next;
             nextPathAttemptGameTime = gameTime;
-            nextProgressCheckGameTime = gameTime + PROGRESS_CHECK_TICKS;
-            lastDistance = Double.POSITIVE_INFINITY;
+
             consecutivePathFailures = 0;
             pathAttempts = 0;
             destinationLoaded = false;
@@ -234,8 +223,7 @@ public final class GuardAutomaticDutyMovementController {
         }
 
         BlockPos destination = current.slot().position();
-        atDutyPosition = atPosition(
-                guard.getX(), guard.getY(), guard.getZ(), destination);
+        atDutyPosition = com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteArrival.at(guard, destination, ARRIVAL_HORIZONTAL_DISTANCE, ARRIVAL_VERTICAL_DISTANCE);
         gateStatus = GuardAutomaticDutyLiveGate.evaluate(
                 featureEnabled(), guard, AutomaticDutyKind.DEFENSE_POST, atDutyPosition);
         destinationValid = validateAssignment(current);
@@ -283,8 +271,14 @@ public final class GuardAutomaticDutyMovementController {
     private void attemptPath(BlockPos destination, long gameTime) {
         pathAttempts = increment(pathAttempts);
         try {
-            Path path = navigation.createPath(destination, 0);
-            if (path == null || !navigation.moveTo(path, movementSpeed())) {
+            Path path = com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.create(guard, destination, 32);
+            if (path == null && com.gamergaming.villagerguardgunners.ai.navigation.GuardLocalRoutes.deferred(guard)) {
+                pathAttempts--;
+                nextPathAttemptGameTime = gameTime + MINIMUM_RETRY_TICKS;
+                movementStatus = MovementStatus.WAITING_TO_RETRY;
+                return;
+            }
+            if (path == null || !path.canReach() || !navigation.moveTo(path, movementSpeed())) {
                 recordPathFailure(gameTime, MovementStatus.PATH_UNAVAILABLE);
                 return;
             }
@@ -292,11 +286,11 @@ public final class GuardAutomaticDutyMovementController {
             recordPathFailure(gameTime, MovementStatus.PATH_UNAVAILABLE);
             return;
         }
-        consecutivePathFailures = 0;
         movementStatus = MovementStatus.TRAVELLING;
-        lastDistance = distanceTo(destination);
-        rememberProgressPosition();
-        nextProgressCheckGameTime = gameTime + PROGRESS_CHECK_TICKS;
+
+        ownedPath = navigation.getPath();
+        routeProgress.start(guard, ownedPath, gameTime);
+
         nextPathAttemptGameTime = gameTime + Math.max(
                 MINIMUM_RETRY_TICKS,
                 pathRecalculationInterval());
@@ -307,14 +301,12 @@ public final class GuardAutomaticDutyMovementController {
         movementStatus = status;
         nextPathAttemptGameTime = gameTime + retryDelayTicks(
                 MINIMUM_RETRY_TICKS, consecutivePathFailures);
-        nextProgressCheckGameTime = nextPathAttemptGameTime + PROGRESS_CHECK_TICKS;
-        lastDistance = Double.POSITIVE_INFINITY;
     }
 
-    private void rememberProgressPosition() {
-        lastProgressX = guard.getX();
-        lastProgressY = guard.getY();
-        lastProgressZ = guard.getZ();
+    private void stopOwnedPath() {
+        if (routeProgress.owns(guard, ownedPath)) navigation.stop();
+        ownedPath = null;
+        routeProgress.clear();
     }
 
     private void requestRestaffReview(VillageDefenseDutyAssignment current) {
@@ -334,16 +326,6 @@ public final class GuardAutomaticDutyMovementController {
         guard.setYHeadRot(yaw);
         guard.setYBodyRot(yaw);
         facingApplied = true;
-    }
-
-    private double distanceTo(BlockPos destination) {
-        double distanceSquared = guard.distanceToSqr(
-                destination.getX() + 0.5D,
-                destination.getY(),
-                destination.getZ() + 0.5D);
-        return Double.isFinite(distanceSquared)
-                ? Math.sqrt(distanceSquared)
-                : Double.POSITIVE_INFINITY;
     }
 
     private boolean featureEnabled() {

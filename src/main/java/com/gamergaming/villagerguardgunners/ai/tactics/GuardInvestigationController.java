@@ -23,10 +23,11 @@ public final class GuardInvestigationController {
     private ThreatMemory.Observation sighting;
     private Vec3 origin;
     private Path path;
+    private final com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress progress =
+            new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
     private BlockPos destination;
-    private long startedAt, retryAt, cooldownUntil, nextValidation, lastProgress;
-    private int attempts, lastNode, revision;
-    private double bestRemaining;
+    private long startedAt, retryAt, cooldownUntil, nextValidation;
+    private int attempts, revision;
     private ItemStack weapon;
     private SquadCommand command;
     private final Set<BlockPos> failed = new HashSet<>();
@@ -80,14 +81,9 @@ public final class GuardInvestigationController {
         if (threats.stream().noneMatch(t -> t.id().equals(sighting.id()))) threats.add(sighting);
         if (path != null) {
             if (!ownsPath()) { finish("ROUTE_REPLACED"); return; }
-            if (guard.position().distanceToSqr(Vec3.atBottomCenterOf(destination)) < 1) { finish("SEARCHED"); return; }
+            if (com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteArrival.at(guard, destination, 1, 1)) { finish("SEARCHED"); return; }
             if (guard.getNavigation().isDone()) { invalidate(); return; }
-            int node = path.getNextNodeIndex();
-            double remaining = TacticalNavigationController.remainingDistance(path, node, guard.position());
-            if (node > lastNode || remaining < bestRemaining - .25) {
-                lastNode = node; bestRemaining = remaining; lastProgress = now;
-            }
-            if (now - lastProgress >= 30) { finish("NO_PROGRESS"); return; }
+            if (progress.stalled(guard, path, now, 30)) { finish("NO_PROGRESS"); return; }
             if (now >= nextValidation) {
                 nextValidation = now + 10;
                 if (!planner.safePeekRoute(path, threats, bounds, origin)) { invalidate(); return; }
@@ -100,14 +96,15 @@ public final class GuardInvestigationController {
         attempts++;
         var plan = planner.planPeek(sighting.position(), origin, threats, bounds, failed);
         destination = plan.destination(); status = plan.reason(); retryAt = now + 20;
+        if (plan.path() == null && plan.reason().equals("WAITING_FOR_TERRAIN_OR_BUDGET")) { attempts--; return; }
         if (plan.path() == null) { if (destination != null) failed.add(destination); return; }
         if (!guard.getNavigation().moveTo(plan.path(), speed)) { invalidate(); return; }
         path = guard.getNavigation().getPath();
         if (path == null || !path.canReach() || path.getEndNode() == null
                 || path.getEndNode().asBlockPos().distSqr(destination) > 1
                 || !planner.safePeekRoute(path, threats, bounds, origin)) { invalidate(); return; }
-        status = "MOVING"; lastProgress = now; nextValidation = now + 10;
-        lastNode = path.getNextNodeIndex(); bestRemaining = TacticalNavigationController.remainingDistance(path, lastNode, guard.position());
+        progress.start(guard, path, now);
+        status = "MOVING"; nextValidation = now + 10;
     }
     public void invalidate() {
         if (destination != null) failed.add(destination);
@@ -119,12 +116,12 @@ public final class GuardInvestigationController {
     private void finish(String reason) {
         stopPath(); origin = null; status = reason; cooldownUntil = guard.level().getGameTime() + COOLDOWN;
     }
-    private void stopPath() { if (ownsPath()) guard.getNavigation().stop(); path = null; }
+    private void stopPath() { if (ownsPath()) guard.getNavigation().stop(); path = null; progress.clear(); }
     public void clear() {
         stopPath(); sighting = null; origin = null; destination = null; weapon = null; command = null;
         attempts = 0; failed.clear(); cooldownUntil = 0; retryAt = 0; status = "IDLE";
     }
-    public boolean ownsPath() { return path != null && guard.getNavigation().getPath() == path; }
+    public boolean ownsPath() { return progress.owns(guard, path); }
     public boolean isMoving() { return ownsPath() && !guard.getNavigation().isDone(); }
     public Vec3 lookDestination() { return isMoving() ? path.getNextEntityPos(guard) : null; }
     public Vec3 lastSeenPosition() { return sighting == null ? null : sighting.position(); }

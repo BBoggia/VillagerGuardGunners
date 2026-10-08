@@ -8,6 +8,34 @@ has the pool ID `<namespace>:<path>`. For example,
 `data/example/natural_guard_loadouts/village/guards.json` is selected in Fzzy
 Config as `example:village/guards`.
 
+## Spawn eggs and existing configurations
+
+New configurations allow structure and spawn-egg origins to receive automatic
+loadouts. When updating an existing server, add **Spawn Egg** to **Eligible Spawn
+Sources** (`naturalLoadouts.enabledSpawnSources`) if it is absent. Existing guards
+are not re-equipped; test with a new guard after changing the server setting.
+
+This enables the normal loadout rules, rather than guaranteeing a gun from every
+egg. With the default settings, the guard must start with a crossbow, pass the
+world difficulty's upgrade chance, and remain below the nearby automatic-gunner
+limit. Missing or excluded datapack guns also prevent issuance.
+`/vgg inspect` reports the selection and issuance
+result for a guard.
+
+## Peaceful difficulty
+
+**Natural Loadouts → Peaceful Difficulty** controls gun loadouts for new guards
+on Peaceful, including guards created with enabled spawn eggs. It starts with
+the Easy defaults: a **35% chance**, **one nearby automatic gunner**, and the
+**Easy pistol pool**. The settings are independent of Easy; changing one
+difficulty does not change the other. Set Peaceful's chance or nearby cap to
+zero to disable its automatic loadouts.
+
+Existing configurations receive this new section when updated. Their master
+switches and spawn-source choices still apply, and existing guards keep their
+equipment. Village Defense Buildings and Village Watchtowers use a separate
+population policy, which creates no guards on Peaceful.
+
 ## File formats
 
 The bundled pools remain on format 1:
@@ -321,7 +349,7 @@ statistic.
 
 | Difficulty | Chance after eligibility | Nearby cap | Built-in weapon mix |
 | --- | ---: | ---: | --- |
-| Peaceful | 0% | 0 | Disabled; no pool is selected |
+| Peaceful | 35% | 1 | Easy pistol pool: Glock 40%, M1911 30%, P320 30% |
 | Easy | 35% | 1 | Pistols only: Glock 40%, M1911 30%, P320 30% |
 | Normal | 50% | 2 | Pistols 62.5%, SMGs 37.5% |
 | Hard | 65% | 2 | Pistol 30%, SMGs 50%, rifles 20% |

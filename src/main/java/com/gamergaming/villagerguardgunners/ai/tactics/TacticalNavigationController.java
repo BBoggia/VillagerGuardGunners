@@ -28,10 +28,9 @@ public final class TacticalNavigationController {
     private BlockPos destination;
     private String status = "IDLE";
     private long nextValidation;
-    private long lastProgress;
+    private final com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress routeProgress =
+            new com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteProgress();
     private long retryAt;
-    private int lastNode;
-    private double bestRemaining;
     private int pathAttempts;
     private boolean laneChange;
     private long nextTerrainCheck;
@@ -83,9 +82,9 @@ public final class TacticalNavigationController {
         }
         if (path != null) {
             if (laneChange && now - laneStartedAt >= MAX_LANE_TICKS) { fail(now, "LANE_TIMEOUT"); return; }
-            if (guard.getNavigation().getPath() != path) { fail(now, "ROUTE_REPLACED"); return; }
+            if (!ownsPath()) { cancel(); status = "ROUTE_REPLACED"; retryAt = now + 20; return; }
             guard.getNavigation().setSpeedModifier(speed);
-            if (guard.position().distanceToSqr(Vec3.atBottomCenterOf(destination)) < 1) {
+            if (com.gamergaming.villagerguardgunners.ai.navigation.GuardRouteArrival.at(guard, destination, 1, 1)) {
                 boolean retainPosition = laneChange;
                 Vec3 arrived = planner.standingPosition(destination);
                 cancel(); status = "ARRIVED"; retryAt = now + 10;
@@ -94,11 +93,10 @@ public final class TacticalNavigationController {
                 fail(now, "STOPPED_SHORT");
             } else {
                 int node = path.getNextNodeIndex();
-                double remaining = remainingDistance(path, node, guard.position());
-                if (node > lastNode || remaining < bestRemaining - .25) {
-                    lastNode = node; bestRemaining = remaining; lastProgress = now;
+                if (routeProgress.stalled(guard, path, now, Math.max(20,
+                        com.gamergaming.villagerguardgunners.init.ModConfigs.GUARD_GUNNERS.performance.repositionProgressCheckTicks.get() * 2))) {
+                    fail(now, "NO_PROGRESS"); return;
                 }
-                if (now - lastProgress >= Math.max(20, com.gamergaming.villagerguardgunners.init.ModConfigs.GUARD_GUNNERS.performance.repositionProgressCheckTicks.get() * 2)) { fail(now, "NO_PROGRESS"); return; }
                 if (now >= nextValidation) {
                     nextValidation = now + 10;
                     if (!planner.safeRoute(path, node, tactics.tracker().observations(), bounds,
@@ -125,7 +123,7 @@ public final class TacticalNavigationController {
         status = plan.reason();
         destination = plan.destination();
         if (plan.path() == null) {
-            rememberFailure(destination, now);
+            if (!plan.reason().equals("WAITING_FOR_TERRAIN_OR_BUDGET")) rememberFailure(destination, now);
             retryAt = now + 20;
             return;
         }
@@ -145,9 +143,7 @@ public final class TacticalNavigationController {
             laneOrdersRevision = GuardRoleResolver.effectiveRevision(guard); laneCommand = command; laneStartedAt = now;
         }
         status = "MOVING";
-        lastNode = path.getNextNodeIndex();
-        bestRemaining = remainingDistance(path, lastNode, guard.position());
-        lastProgress = now;
+        routeProgress.start(guard, path, now);
         nextValidation = now + 10;
     }
 
@@ -187,12 +183,15 @@ public final class TacticalNavigationController {
                 && GuardRoleResolver.effectiveRevision(guard) == laneOrdersRevision
                 && readiness.permitsOffensiveMovement();
     }
-    public boolean ownsPath() { return path != null && guard.getNavigation().getPath() == path; }
-    public void invalidateForWorldChange() { fail(guard.level().getGameTime(), "WORLD_CHANGED"); }
+    public boolean ownsPath() { return routeProgress.owns(guard, path); }
+    public void invalidateForWorldChange() {
+        cancel(); status = "WORLD_CHANGED"; retryAt = guard.level().getGameTime() + 20;
+    }
     public void cancel() {
         if (path != null) FiringPositionReservations.release(guard);
-        if (path != null && guard.getNavigation().getPath() == path) guard.getNavigation().stop();
+        if (ownsPath()) guard.getNavigation().stop();
         if (path != null) status = "CANCELLED";
+        routeProgress.clear();
         path = null;
         laneChange = false; laneTarget = null; laneWeapon = null; laneCommand = null;
     }

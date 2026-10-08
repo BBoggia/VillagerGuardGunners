@@ -105,6 +105,12 @@ public final class VillageCoverageRuntime {
             village.pendingTerrain = null;
             village.footprint = record.footprint();
         }
+        if (village.terrain != null && !village.queuedChanges.isEmpty()) {
+            // Merge bursts before spending another survey slice or rebuilding seed metadata.
+            village.pendingTerrain = CoverageTerrain.repair(level, record, village.terrain);
+            village.pendingRevision = record.revision();
+            village.queuedChanges.clear();
+        }
         if (village.pendingTerrain == null && (village.terrain == null || now >= village.rebuildAt || village.recordRevision != record.revision())) {
             village.pendingTerrain = new CoverageTerrain(level, record);
             village.pendingRevision = record.revision();
@@ -115,21 +121,22 @@ public final class VillageCoverageRuntime {
                 dimension.lastTerrainUnits += pending.advance(TERRAIN_UNITS_PER_TICK / REVIEWS_PER_TICK);
             }
             if (pending.complete()) {
-                boolean unchanged = village.layout != null && pending.sameNavigation(village.terrain);
+                boolean unchanged = !village.repairing && village.layout != null && pending.sameNavigation(village.terrain);
                 if (unchanged) village.unchangedRefreshes++;
                 if (!unchanged) {
-                    invalidate(dimension, village);
                     village.publication++;
                 }
                 village.terrain = pending;
                 village.pendingTerrain = null;
                 village.recordRevision = village.pendingRevision;
                 village.rebuildAt = village.recordRevision == record.revision() ? now + 600 : now;
-                if (!unchanged) publish(village, level);
+                if (!unchanged) { publish(village, level); village.reviewAt = 0; }
+                if (village.repairing) village.policy.terrainRepaired();
+                village.repairing = false;
             }
         }
         // A complete active publication remains usable while the replacement is surveyed.
-        if (village.layout != null && now >= village.reviewAt) {
+        if (village.layout != null && !village.repairing && now >= village.reviewAt) {
             review(level, dimension, village, now);
             village.reviewAt = now + 20;
         }
@@ -156,9 +163,14 @@ public final class VillageCoverageRuntime {
             DestinationState state = !loaded ? DestinationState.UNLOADED
                     : site.component() != null && terrain.walkable(site.position()) ? DestinationState.READY : DestinationState.BLOCKED;
             UUID id = UUID.nameUUIDFromBytes((area.id() + ":" + site.position()).getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            destinations.add(new Destination(id, area.id(), site.position(), state, site.component(), village.publication));
+            Destination old = village.destinations.stream().filter(d -> d.id().equals(id)).findFirst().orElse(null);
+            long revision = old != null && old.state() == state && Objects.equals(old.component(), site.component())
+                    && old.position().equals(site.position()) && !village.changedDestinations.contains(id)
+                    ? old.terrainRevision() : village.publication;
+            destinations.add(new Destination(id, area.id(), site.position(), state, site.component(), revision));
         }
         village.destinations = List.copyOf(destinations);
+        village.changedDestinations.clear();
     }
     private static void review(ServerLevel level, Dimension dimension, Village village, long now) {
         List<Candidate> candidates = new ArrayList<>();
@@ -238,12 +250,23 @@ public final class VillageCoverageRuntime {
         Dimension d = LEVELS.get((ServerLevel) guard.level());
         return d == null ? null : d.paths.remove(guard.getUUID());
     }
+    /** Optional cache reuse after the caller acquires its own bounded search slot. */
+    public static List<BlockPos> knownRoute(Guard guard, BlockPos target, int workLimit) {
+        if (!(guard.level() instanceof ServerLevel level) || !enabled()) return List.of();
+        Dimension d = LEVELS.get(level);
+        UUID id = d == null ? null : d.guards.get(guard.getUUID());
+        Village v = id == null ? null : d.villages.get(id);
+        if (v == null || v.terrain == null || v.repairing || !v.terrain.usable()) return List.of();
+        List<BlockPos> route = v.terrain.path(guard.blockPosition(), target, workLimit);
+        for (int i = 1; i < route.size(); i++) if (!v.terrain.safeTransition(route.get(i - 1), route.get(i))) return List.of();
+        return route;
+    }
     public static boolean safe(Guard guard, BlockPos p) {
         Dimension d = LEVELS.get((ServerLevel) guard.level());
         UUID id = d == null ? null : d.guards.get(guard.getUUID());
         Village v = id == null ? null : d.villages.get(id);
         try { return v != null && v.terrain != null && v.terrain.usable() && v.terrain.walkable(p)
-                && com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard, net.minecraft.world.phys.Vec3.atBottomCenterOf(p)); }
+                && com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard, net.minecraft.world.phys.Vec3.atBottomCenterOf(p), true); }
         catch (RuntimeException exception) { return false; }
     }
     public static boolean safeTransition(Guard guard, BlockPos from, BlockPos to) {
@@ -321,13 +344,34 @@ public final class VillageCoverageRuntime {
         if ((event instanceof ChunkEvent.Load || event instanceof ChunkEvent.Unload)
                 && event.getLevel() instanceof ServerLevel level) dirty(level, event.getChunk().getPos().toLong());
     }
-    private static void dirty(ServerLevel level, long chunk) {
+    public static void dirty(ServerLevel level, long chunk) {
         if (!level.getServer().isSameThread()) { level.getServer().execute(() -> dirty(level, chunk)); return; }
         Dimension d = LEVELS.get(level);
         if (d != null) for (Village v : d.villages.values()) {
             if ((v.terrain != null && v.terrain.chunks().contains(chunk))
                     || (v.pendingTerrain != null && v.pendingTerrain.chunks().contains(chunk))) {
-                invalidate(d, v); v.terrain = null; v.pendingTerrain = null;
+                if (v.terrain == null) { v.pendingTerrain = null; continue; }
+                if (!v.queuedChanges.add(chunk)) continue;
+                v.terrain.invalidateChunk(chunk);
+                v.repairing = true;
+                for (Destination destination : v.destinations)
+                    if (v.terrain.affected(destination.position())) v.changedDestinations.add(destination.id());
+                for (Lease lease : d.book.forVillage(v.id)) {
+                    if (lease.kind() != Kind.COVERAGE) continue;
+                    boolean affected = v.changedDestinations.contains(lease.destinationId());
+                    var entity = level.getEntity(lease.guardId());
+                    if (entity instanceof Guard guard) {
+                        var path = guard.getNavigation().getPath();
+                        if (path != null) for (int i = path.getNextNodeIndex(); i < path.getNodeCount(); i++)
+                            affected |= v.terrain.affected(path.getNodePos(i));
+                    }
+                    Route queued = d.paths.get(lease.guardId());
+                    if (queued != null) affected |= queued.positions().stream().anyMatch(v.terrain::affected);
+                    if (affected) {
+                        v.policy.interrupt(lease, level.getGameTime());
+                        d.requests.remove(lease.guardId()); d.paths.remove(lease.guardId());
+                    }
+                }
             }
         }
     }
@@ -335,7 +379,7 @@ public final class VillageCoverageRuntime {
         for (Lease lease : d.book.forVillage(v.id)) if (lease.kind() == Kind.COVERAGE) {
             d.book.release(lease); d.requests.remove(lease.guardId()); d.paths.remove(lease.guardId());
         }
-        v.layout = null; v.plan = null; v.destinations = List.of();
+        v.layout = null; v.plan = null; v.destinations = List.of(); v.repairing = false; v.changedDestinations.clear(); v.queuedChanges.clear();
     }
     public static void onEntityLeave(EntityLeaveLevelEvent event) {
         if (event.getLevel() instanceof ServerLevel level && event.getEntity() instanceof Guard guard) remove(level, guard.getUUID());
@@ -361,7 +405,7 @@ public final class VillageCoverageRuntime {
         Village v = d == null ? null : d.villages.get(village);
         return new Snapshot(v == null ? 0 : v.guards.size(), v == null ? null : v.plan,
                 v == null ? "inactive" : level.getGameTime() < v.retryAt ? "observation_error" : v.terrain == null || !v.terrain.complete() ? "surveying"
-                : v.pendingTerrain != null ? "refreshing" : v.terrain.limited() ? "terrain_limit" : v.layout == null ? "unresolved" : v.layout.status().name(),
+                : v.repairing ? "repairing" : v.pendingTerrain != null ? "refreshing" : v.terrain.limited() ? "terrain_limit" : v.layout == null ? "unresolved" : v.layout.status().name(),
                 v == null ? VillageDefenseState.PEACE : v.readiness,
                 d == null ? 0 : d.lastTerrainUnits, d == null ? 0 : d.lastPaths, d == null ? 0 : d.rejections);
     }
@@ -388,6 +432,9 @@ public final class VillageCoverageRuntime {
         final Set<UUID> guards = new LinkedHashSet<>();
         final Set<BlockPos> threats = new LinkedHashSet<>();
         CoverageTerrain terrain, pendingTerrain;
+        boolean repairing;
+        final Set<UUID> changedDestinations = new HashSet<>();
+        final Set<Long> queuedChanges = new HashSet<>();
         VillageFootprint footprint;
         VillageCoverageLayout layout;
         List<Destination> destinations = List.of();

@@ -477,6 +477,10 @@ public final class TacticalRouteGameTests {
                 hiddenHazard[0] = path.getNodePos(Math.min(path.getNodeCount() - 1, path.getNextNodeIndex() + 4)).below();
                 // Simulate a mod's direct chunk edit: no native terrain notification.
                 h.getLevel().getChunkAt(hiddenHazard[0]).setBlockState(hiddenHazard[0], Blocks.MAGMA_BLOCK.defaultBlockState(), false);
+                // Hold this owned route until its periodic validation. Earlier cancellation
+                // probes can leave the guard only one step outside withdrawal distance.
+                guard.getNavigation().setSpeedModifier(0);
+                guard.setDeltaMovement(Vec3.ZERO);
                 stage[0] = 5;
             } else if (stage[0] == 5 && !runtime.hasActiveRequest()) {
                 h.assertTrue(armory.getInventory().getStackInSlot(0).getCount() == 60, "Unsafe route consumed armory stock");

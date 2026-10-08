@@ -334,7 +334,9 @@ tasks.register('generateIsolatedGameTestArena') {
     File villageArena = generatedGameTestArenaDirectory.get().file(
             'data/villagerguardgunners_village_baseline/structures/'
                     + 'villagerguardgunners/gametest_arena.nbt').asFile
-    outputs.files arena, villageBuildingArena, integrationArena, combatArena, villageArena
+    File navigationArena = generatedGameTestArenaDirectory.get().file(
+            'data/villagerguardgunners_navigation/structures/villagerguardgunners/gametest_arena.nbt').asFile
+    outputs.files arena, villageBuildingArena, integrationArena, combatArena, villageArena, navigationArena
     doLast {
         byte[] encodedArena = Base64.decoder.decode(
                 'H4sIAAAAAAAC/2WPzU4DMQyEB7Y/2VQV3JB4gj4DZ86IE9eVd+sWl2y8SixV8Aa8NYkK7KGW5jC2xprPAy0WWb64AVC1K3qsauE4mphwRp0Wqz7o8JF9MTceTezNYXlSiQaXNATqAztsDhIpdNnIGNtRIg+JDvZEkhwWkUbGw7wdte8GjcWa1vukGnA333mc7NPhVva4n7cnOWY6O6yM0pHtKlDKNpPmP6b/abC89LoArScKbMa/RP416cSpEhcMTVL4yUQj/F7PsYua7B2l5EuFuKpTvm+eyeiNU64hbL/xA1qm2jdgAQAA')
@@ -348,6 +350,8 @@ tasks.register('generateIsolatedGameTestArena') {
         combatArena.bytes = encodedArena
         villageArena.parentFile.mkdirs()
         villageArena.bytes = encodedArena
+        navigationArena.parentFile.mkdirs()
+        navigationArena.bytes = encodedArena
     }
 }
 
@@ -380,7 +384,7 @@ minecraft {
         configureEach {
             workingDirectory project.file(
                     anyPerformanceGameTestEnabled.get() ? 'run-performance' : 'run')
-            property 'forge.enabledGameTestNamespaces', "${mod_id},minecraft"
+            property 'forge.enabledGameTestNamespaces', "${mod_id},minecraft,${mod_id}_navigation"
             property 'forge.logging.console.level', 'info'
 
             mods {
@@ -408,6 +412,12 @@ minecraft {
                             : villageBuildingPerformanceEnabled.get()
                                     ? 'run-village-building-performance'
                                     : 'run-gametest')
+            if (providers.gradleProperty('navigationRefinementTests').orNull == 'true') {
+                if (guardIntelligenceTestsEnabled || anyPerformanceGameTestEnabled.get() || villageIntegrationProbesEnabled.get()) {
+                    throw new GradleException('Navigation fixtures must run separately from other focused modes.')
+                }
+                property 'forge.enabledGameTestNamespaces', "${mod_id}_navigation"
+            }
             if (guardIntelligenceTestsEnabled) {
                 if (anyPerformanceGameTestEnabled.get() || villageIntegrationProbesEnabled.get()) {
                     throw new GradleException('Guard intelligence fixtures must run separately from integration/performance modes.')
@@ -554,6 +564,7 @@ tasks.named('processResources', ProcessResources).configure {
             forge_version          : forge_version,
             forge_version_range    : forge_version_range,
             loader_version_range   : loader_version_range,
+            tacz_version_range     : tacz_version_range,
             mod_id                 : mod_id,
             mod_name               : mod_name,
             mod_license            : mod_license,
@@ -651,6 +662,7 @@ tasks.register('verifyReleaseArtifact') {
                     'com/gamergaming/villagerguardgunners/quartermaster/service/ServiceJournal.class',
                     'data/villagerguardgunners/quartermaster_loadouts/rifleman.json',
                     'assets/villagerguardgunners/textures/entity/villager/profession/quartermaster.png',
+                    'assets/villagerguardgunners/textures/entity/zombie_villager/profession/quartermaster.png',
                     'com/gamergaming/villagerguardgunners/medical/MedicRuntime.class',
                     'com/gamergaming/villagerguardgunners/medical/MedicMovementGoal.class',
                     'data/villagerguardgunners/guard_roles/medic.json',
@@ -991,7 +1003,7 @@ tasks.register('verifyReleaseArtifact') {
                     forge          : forge_version_range,
                     minecraft      : minecraft_version_range,
                     guardvillagers : "[1.20.1-${guard_villager_version}]",
-                    tacz           : "[${tacz_version}]",
+                    tacz           : tacz_version_range,
                     fzzy_config    : fzzy_config_version_range,
                     kotlinforforge : kotlin_for_forge_version_range
             ]

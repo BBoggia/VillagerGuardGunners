@@ -15,6 +15,7 @@ public final class ProbeScope implements AutoCloseable {
     public final List<SpawnRequest> spawns = new ArrayList<>();
     public int poiReads;
     public int missingChunkRequests;
+    public int cachedChunkLookups;
     public String firstMissingChunkTrace;
     public BiPredicate<StructureStart, ResourceLocation> defer = (start, template) -> false;
     private final ProbeScope previous = ACTIVE.get();
@@ -40,6 +41,11 @@ public final class ProbeScope implements AutoCloseable {
 
     public static void poiRead() {
         if (ACTIVE.get() != null) ACTIVE.get().poiReads++;
+    }
+
+    public static void cachedChunkLookup() {
+        ProbeScope scope = ACTIVE.get();
+        if (scope != null) scope.cachedChunkLookups++;
     }
 
     public static void missingChunkRequest() {

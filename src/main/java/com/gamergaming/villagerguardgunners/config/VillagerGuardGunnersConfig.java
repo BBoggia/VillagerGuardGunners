@@ -49,7 +49,7 @@ import net.minecraft.resources.ResourceLocation;
 @Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)
 @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners")
 public final class VillagerGuardGunnersConfig extends Config {
-    public static final int CONFIG_VERSION = 23;
+    public static final int CONFIG_VERSION = 24;
 
     @Comment("Enable gun combat, natural gun loadouts, command movement, squad patrols, village discovery, initial guard staffing, automatic defense duties, and Village Armory resupply. Medical treatment, Quartermaster service, and building generation have separate switches.")
     public ValidatedBoolean enabled = new ValidatedBoolean(true);
@@ -202,8 +202,8 @@ public final class VillagerGuardGunnersConfig extends Config {
         }
         if (previousVersion < 7) {
             // Version 7 introduces natural guard loadouts. Older files have no
-            // intentional values for this section, so initialize conservative,
-            // structure-only defaults without changing existing guard behavior.
+            // intentional values for this section, so initialize the current
+            // defaults. Files with existing loadout settings retain their values.
             naturalLoadouts.restoreVersionSevenDefaults();
         }
         if (previousVersion < 8) {
@@ -265,6 +265,11 @@ public final class VillagerGuardGunnersConfig extends Config {
         if (previousVersion < 23) {
             quartermasterTrades.suppliesEnabled.accept(true);
             quartermasterTrades.gunSalesEnabled.accept(false);
+        }
+        if (previousVersion < 24) {
+            // Peaceful previously had no configurable loadout settings. Add its
+            // Easy-equivalent defaults without resetting other difficulty or source choices.
+            naturalLoadouts.peaceful.restore();
         }
     }
 
@@ -420,7 +425,7 @@ public final class VillagerGuardGunnersConfig extends Config {
         @Comment("Allow eligible newly spawned guards to replace their initial weapon with a datapack-defined TaCZ loadout.")
         public ValidatedBoolean enabled = new ValidatedBoolean(true);
 
-        @Comment("Choose which initial spawn origins can receive automatic loadouts. Only structure spawning is enabled by default.")
+        @Comment("Choose which initial spawn origins can receive automatic loadouts. Structure and spawn-egg spawning are enabled by default. Saved source choices are preserved when updating.")
         public ValidatedSet<NaturalGuardSpawnSource> enabledSpawnSources = new ValidatedSet<>(
                 NaturalGuardLoadoutDefaults.SPAWN_RULES.enabledSources(),
                 new ValidatedEnum<>(NaturalGuardSpawnSource.STRUCTURE));
@@ -438,6 +443,10 @@ public final class VillagerGuardGunnersConfig extends Config {
         @Comment("Allow datapack pools to issue weapons TaCZ identifies as explosive. All native blast safety remains active.")
         public ValidatedBoolean allowExplosiveWeapons = new ValidatedBoolean(
                 NaturalGuardLoadoutDefaults.SPAWN_RULES.allowExplosiveWeapons());
+
+        @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.naturalLoadouts.peaceful")
+        public NaturalDifficultySettings peaceful = new NaturalDifficultySettings(
+                NaturalGuardLoadoutDefaults.settingsFor(NaturalGuardDifficulty.PEACEFUL));
 
         @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.naturalLoadouts.easy")
         public NaturalDifficultySettings easy = new NaturalDifficultySettings(
@@ -461,8 +470,7 @@ public final class VillagerGuardGunnersConfig extends Config {
 
         public NaturalGuardDifficultySettings settingsFor(NaturalGuardDifficulty difficulty) {
             return switch (difficulty) {
-                case PEACEFUL -> NaturalGuardLoadoutDefaults.settingsFor(
-                        NaturalGuardDifficulty.PEACEFUL);
+                case PEACEFUL -> peaceful.settings();
                 case EASY -> easy.settings();
                 case NORMAL -> normal.settings();
                 case HARD -> hard.settings();

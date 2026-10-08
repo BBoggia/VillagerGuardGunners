@@ -33,7 +33,10 @@ medic guards can treat injured allies. Optional packs add regional defense build
   Quartermaster station and let an adult unemployed villager claim it. Guards
   you enroll can visit during work hours to restock supplies or maintain a
   selected equipment loadout. Existing gear stays protected unless you allow
-  replacement, and linked Armories provide additional ammo.
+  replacement, and linked Armories provide additional ammo. Open the Quartermaster
+  overview to check shortages, review deliveries, or manage several guards at once.
+  Quartermasters sell supplies through villager trades; optional gun sales start
+  disabled. Deposit purchases into storage for guards to use them.
 - **Medic guards and casualty recovery.** Give a guard medical supplies and
   enable Medic Duty to treat nearby injured allies. Medical Retreat lets
   wounded guards seek help. With optional downed guards enabled, one dose
@@ -47,8 +50,9 @@ medic guards can treat injured allies. Optional packs add regional defense build
   newly generated villages; deaths don't trigger replacement guards.
 - **Natural gun loadouts.** Newly generated guards can receive guns and matching
   ammo based on difficulty. Server settings and datapacks control the available
-  loadouts, their chances, and nearby automatic-gunner limits. Guard counts and
-  automatic gun loadouts have separate settings.
+  loadouts, their chances, and nearby automatic-gunner limits. Spawn eggs are
+  enabled in new configurations, and Peaceful has its own difficulty settings.
+  Guard counts and automatic gun loadouts have separate settings.
 - **Village Watchtowers and Defense Buildings.** Standalone Village Watchtowers
   can generate with guard squads and stocked Armories. You can also enable Barracks,
   Village Armories, Sentry Posts, integrated Watchtowers, and Training Yards in
@@ -139,7 +143,7 @@ village, squad, medical, and supply systems.
 - **Forge:** 47.4.10 or newer 47.x
 - **Java:** 17
 - **Guard Villagers:** 1.20.1-1.6.19
-- **Timeless and Classics Zero (TaCZ):** 1.1.8-hotfix
+- **Timeless and Classics Zero (TaCZ):** 1.1.8 or newer for Minecraft 1.20.1
 - **Fzzy Config:** 0.7.6 for Minecraft 1.20.1
 - **Kotlin for Forge:** 4.12.0
 

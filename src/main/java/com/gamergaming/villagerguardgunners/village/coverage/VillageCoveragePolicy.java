@@ -350,6 +350,9 @@ public final class VillageCoveragePolicy {
         return true;
     }
 
+    /** Completed terrain repair permits reevaluating old navigation failures without ending valid leases. */
+    public void terrainRepaired() { failures.clear(); }
+
     /** Unload/disable disposes only coverage work owned by this policy. */
     public void clear() {
         ownLeases().forEach(reservations::release);

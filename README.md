@@ -45,21 +45,21 @@ orders, join squads, restock from Village Armories, and protect their allies.
 
 ## Requirements
 
-Villager Guard Gunners 1.7 targets this dependency combination:
+The current build has these requirements:
 
 | Component | Version |
 | --- | --- |
 | Minecraft | 1.20.1 |
 | Forge | 47.4.10 or newer 47.x release |
 | Guard Villagers | 1.20.1-1.6.19 |
-| Timeless and Classics Zero | 1.1.8-hotfix |
+| Timeless and Classics Zero (TaCZ) | 1.1.8 or newer for Minecraft 1.20.1 |
 | Fzzy Config | 0.7.6+1.20.1 |
 | Kotlin for Forge | 4.12.0 |
 | Java | 17 |
 
 Install Guard Villagers, TaCZ, Fzzy Config, Kotlin for Forge, and Villager Guard
-Gunners on both the client and server. The current build supports the version
-combination listed above.
+Gunners on both the client and server. Newer TaCZ versions are allowed to load;
+future API changes can still require an add-on update.
 
 See [Quartermaster service](docs/quartermaster-service.md) for automatic
 equipment stocking and station setup.
@@ -279,7 +279,7 @@ These diagnostics do not issue equipment, locate structures, or load chunks.
 
 ## Documentation
 
-- [Version 1.7 release notes](docs/releases/1.7.md)
+- [Version 1.8.1 release notes](docs/releases/1.8.1.md)
 - [Current development changelog](CHANGELOG.md)
 - [CurseForge description](docs/curseforge-description.md)
 - [Configuration](docs/configuration.md)

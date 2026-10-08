@@ -34,7 +34,7 @@ side="BOTH"
 [[dependencies.${mod_id}]]
 modId="tacz"
 mandatory=true
-versionRange="[1.1.8-hotfix]"
+versionRange="${tacz_version_range}"
 ordering="AFTER"
 side="BOTH"
 

@@ -139,7 +139,7 @@ village, squad, medical, and supply systems.
 - **Forge:** 47.4.10 or newer 47.x
 - **Java:** 17
 - **Guard Villagers:** 1.20.1-1.6.19
-- **Timeless and Classics Zero (TaCZ):** 1.1.8-hotfix
+- **Timeless and Classics Zero (TaCZ):** 1.1.8 or newer
 - **Fzzy Config:** 0.7.6 for Minecraft 1.20.1
 - **Kotlin for Forge:** 4.12.0
 

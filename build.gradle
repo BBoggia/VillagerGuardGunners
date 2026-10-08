@@ -544,6 +544,7 @@ tasks.named('processResources', ProcessResources).configure {
             forge_version          : forge_version,
             forge_version_range    : forge_version_range,
             loader_version_range   : loader_version_range,
+            tacz_version_range     : tacz_version_range,
             mod_id                 : mod_id,
             mod_name               : mod_name,
             mod_license            : mod_license,
@@ -960,7 +961,7 @@ tasks.register('verifyReleaseArtifact') {
                     forge          : forge_version_range,
                     minecraft      : minecraft_version_range,
                     guardvillagers : "[1.20.1-${guard_villager_version}]",
-                    tacz           : "[${tacz_version}]",
+                    tacz           : tacz_version_range,
                     fzzy_config    : fzzy_config_version_range,
                     kotlinforforge : kotlin_for_forge_version_range
             ]

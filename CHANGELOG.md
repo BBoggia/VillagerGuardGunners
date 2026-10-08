@@ -6,6 +6,15 @@ in local development notes.
 
 ## Unreleased
 
+## 1.8.1 - 2026-10-07
+
+### Compatibility
+
+- Allow TaCZ 1.1.8 and newer releases for Minecraft 1.20.1, including
+  1.1.8-hotfix2, without requiring an exact TaCZ version.
+
+## 1.8 - 2026-09-16
+
 ### Added
 
 - Server operators can configure guards’ aim error and choose eye-level or

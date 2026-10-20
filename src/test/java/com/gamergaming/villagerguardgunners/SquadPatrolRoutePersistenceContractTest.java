@@ -52,7 +52,7 @@ final class SquadPatrolRoutePersistenceContractTest {
                 + "SquadRegistrySavedData.java");
         String commands = read("src/main/java/com/gamergaming/villagerguardgunners/command/"
                 + "SquadRegistryCommands.java");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(commands.contains("Commands.literal(\"routes\")")),

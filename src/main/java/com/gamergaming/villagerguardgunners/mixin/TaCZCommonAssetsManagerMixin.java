@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.mixin;
 
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSync;
 import com.tacz.guns.resource.CommonAssetsManager;
-import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

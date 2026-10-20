@@ -11,8 +11,8 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedMapped;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber.WidgetType;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /** Cross-field edit validation without making file/sync loading depend on field order. */
 public final class RelatedIntSetting extends ValidatedMapped<Integer, Integer> {

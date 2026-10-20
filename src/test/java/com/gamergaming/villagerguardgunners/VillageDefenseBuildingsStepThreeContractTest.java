@@ -78,7 +78,7 @@ final class VillageDefenseBuildingsStepThreeContractTest {
         String config = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/config/"
                         + "VillagerGuardGunnersConfig.java");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries() + read("build.gradle") + read("gradle/neoforge-resources.gradle");
 
         assertAll(
                 () -> assertTrue(bootstrap.contains(
@@ -91,7 +91,7 @@ final class VillageDefenseBuildingsStepThreeContractTest {
                 () -> assertTrue(config.contains("integratedWatchtowers")),
                 () -> assertTrue(build.contains("generateVillageBuildingTemplates")),
                 () -> assertTrue(build.contains(
-                        "data/villagerguardgunners/village_buildings/${building}/${biome}.json")),
+                        "data/villagerguardgunners/village_buildings/barracks/plains.json")),
                 () -> assertTrue(build.contains("VillageBuildingDefinitions.class")));
     }
 

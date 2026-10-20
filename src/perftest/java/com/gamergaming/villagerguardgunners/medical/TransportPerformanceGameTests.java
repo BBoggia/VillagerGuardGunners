@@ -22,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder("villagerguardgunners_village_buildings_performance")
 @PrefixGameTestTemplate(false)

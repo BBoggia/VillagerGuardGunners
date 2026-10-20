@@ -11,12 +11,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.living.*;
 import net.minecraftforge.gametest.*;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -37,9 +37,9 @@ public final class CasualtyGameTests {
         MedicalTreatment.Result treat(){GuardMedicalAccess.get(guard).readyAt(0);return MedicalTreatment.fromHand(player,guard,InteractionHand.MAIN_HAND);}
         @Override public void close(){MedicRuntime.cancel(guard,MedicState.Status.INTERRUPTED);guard.discard();ModConfigs.GUARD_GUNNERS.medical.downed.accept(old);}
     }
-    private static <T extends net.minecraftforge.eventbus.api.Event> void listen(Class<T> type,Consumer<T> listener,Runnable action) {
-        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.NORMAL,false,type,listener);
-        try{action.run();}finally{MinecraftForge.EVENT_BUS.unregister(listener);}
+    private static <T extends net.neoforged.bus.api.Event> void listen(Class<T> type,Consumer<T> listener,Runnable action) {
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.NORMAL,false,type,listener);
+        try{action.run();}finally{NeoForge.EVENT_BUS.unregister(listener);}
     }
     @GameTest(templateNamespace="minecraft",template=ARENA)
     public static void defaultOffKeepsOrdinaryDeath(GameTestHelper h){try(var f=new Fixture(h)){ModConfigs.GUARD_GUNNERS.medical.downed.accept(false);int[] deaths={0};listen(LivingDeathEvent.class,e->{if(e.getEntity()==f.guard)deaths[0]++;},()->f.guard.hurt(h.getLevel().damageSources().generic(),1000));h.assertTrue(deaths[0]==1&&!f.guard.isAlive()&&!GuardLifeRuntime.casualty(f.guard),"Default-off intercepted death");h.succeed();}}

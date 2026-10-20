@@ -93,17 +93,17 @@ final class VillageWatchtowerStepFourteenContractTest {
     @Test
     void builtInLootIsDeclaredAmmoOnlyAndArtifactGateIncludesIt() throws IOException {
         JsonObject loot = JsonParser.parseString(read(
-                "src/main/resources/data/villagerguardgunners/loot_tables/chests/"
+                "src/main/resources/data/villagerguardgunners/loot_table/chests/"
                         + "watchtower_armory.json")).getAsJsonObject();
         String serialized = loot.toString();
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries() + read("gradle/neoforge-resources.gradle");
 
         assertAll(
                 () -> assertTrue(serialized.contains("tacz:ammo")),
                 () -> assertTrue(serialized.contains("AmmoId")),
                 () -> assertFalse(serialized.contains("tacz:modern_kinetic_gun")),
                 () -> assertTrue(build.contains(
-                        "data/villagerguardgunners/loot_tables/chests/watchtower_armory.json")),
+                        "data/villagerguardgunners/loot_table/chests/watchtower_armory.json")),
                 () -> assertTrue(build.contains("startsWith('armory:')")));
     }
 

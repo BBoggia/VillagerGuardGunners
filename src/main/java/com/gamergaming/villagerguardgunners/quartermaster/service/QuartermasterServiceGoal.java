@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Temporary MOVE owner below combat/orders and existing armory trips, above idle coverage. */
 public final class QuartermasterServiceGoal extends Goal {

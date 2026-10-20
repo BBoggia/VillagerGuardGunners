@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Resolves and atomically issues one selected natural guard loadout. */
 public final class NaturalGuardLoadoutIssuance {
@@ -352,7 +352,7 @@ public final class NaturalGuardLoadoutIssuance {
             return first.isEmpty() && second.isEmpty();
         }
         return first.getCount() == second.getCount()
-                && ItemStack.isSameItemSameTags(first, second);
+                && ItemStack.isSameItemSameComponents(first, second);
     }
 
     public enum IssuanceStatus {

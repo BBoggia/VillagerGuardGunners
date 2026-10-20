@@ -30,7 +30,7 @@ final class SidearmTransactionContractTest {
                         "guard.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY)")),
                 () -> assertTrue(transactions.contains("storage.commitActivation(")),
                 () -> assertTrue(transactions.contains("storage.commitReturn(")),
-                () -> assertTrue(transactions.contains("ItemStack.isSameItemSameTags")),
+                () -> assertTrue(transactions.contains("ItemStack.isSameItemSameComponents")),
                 () -> assertTrue(transactions.contains(
                         "SidearmTransitionResult.activated()")),
                 () -> assertTrue(transactions.contains(

@@ -8,9 +8,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 /** Registers the bounded world-generation types owned by the add-on. */
 public final class ModStructures {
@@ -27,16 +27,16 @@ public final class ModStructures {
                     Registries.STRUCTURE_POOL_ELEMENT,
                     VillagerGuardGunners.MODID);
 
-    public static final RegistryObject<StructureType<VillageWatchtowerStructure>>
+    public static final DeferredHolder<StructureType<?>, StructureType<VillageWatchtowerStructure>>
             WATCHTOWER = STRUCTURE_TYPES.register(
                     "watchtower",
                     () -> () -> VillageWatchtowerStructure.CODEC);
-    public static final RegistryObject<StructurePieceType> WATCHTOWER_PIECE =
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> WATCHTOWER_PIECE =
             STRUCTURE_PIECE_TYPES.register(
                     "watchtower",
                     () -> (StructurePieceType.StructureTemplateType)
                             VillageWatchtowerPiece::new);
-    public static final RegistryObject<StructurePoolElementType<VillageBuildingPoolElement>>
+    public static final DeferredHolder<StructurePoolElementType<?>, StructurePoolElementType<VillageBuildingPoolElement>>
             VILLAGE_BUILDING_POOL_ELEMENT = POOL_ELEMENT_TYPES.register(
                     "village_building",
                     () -> () -> VillageBuildingPoolElement.CODEC);

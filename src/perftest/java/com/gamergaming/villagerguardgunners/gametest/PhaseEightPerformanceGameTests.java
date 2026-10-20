@@ -62,14 +62,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Opt-in, separately sourced development-only scalability scenarios. Run with
@@ -450,7 +450,7 @@ public final class PhaseEightPerformanceGameTests {
             helper.fail("Could not configure the Phase 8 JFR recording: " + exception.getMessage());
             return;
         }
-        MinecraftForge.EVENT_BUS.register(shotRecorder);
+        NeoForge.EVENT_BUS.register(shotRecorder);
         shotRecorderRegistered[0] = true;
         boolean[] scenarioCleanedUp = {false};
         Runnable cleanupScenario = () -> {
@@ -459,7 +459,7 @@ public final class PhaseEightPerformanceGameTests {
             }
             scenarioCleanedUp[0] = true;
             if (shotRecorderRegistered[0]) {
-                MinecraftForge.EVENT_BUS.unregister(shotRecorder);
+                NeoForge.EVENT_BUS.unregister(shotRecorder);
                 shotRecorderRegistered[0] = false;
             }
             try {
@@ -544,7 +544,7 @@ public final class PhaseEightPerformanceGameTests {
                 completed[0] = true;
                 shotRecorder.copyCountsTo(acceptedShotEventsAtEnd);
                 if (shotRecorderRegistered[0]) {
-                    MinecraftForge.EVENT_BUS.unregister(shotRecorder);
+                    NeoForge.EVENT_BUS.unregister(shotRecorder);
                     shotRecorderRegistered[0] = false;
                 }
                 ArmoryEvidence armoryEvidence = captureArmoryEvidence(

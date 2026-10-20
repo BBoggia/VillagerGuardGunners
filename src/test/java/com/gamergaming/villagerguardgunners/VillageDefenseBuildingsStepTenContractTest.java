@@ -61,7 +61,7 @@ final class VillageDefenseBuildingsStepTenContractTest {
                 + "worldgen/village/VillageBuildingGarrisonPolicy.java");
         String lifecycle = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "worldgen/village/VillageBuildingGarrisonLifecycle.java");
-        String build = (read("build.gradle") + read("gradle/village-building-templates.gradle"));
+        String build = (PackagedArtifact.entries() + read("gradle/village-building-templates.gradle"));
         String gameTests = read("src/gametest/java/com/gamergaming/"
                 + "villagerguardgunners/worldgen/village/"
                 + "VillageBuildingPoolGameTestAccess.java");

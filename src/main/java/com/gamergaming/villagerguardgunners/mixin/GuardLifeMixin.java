@@ -8,7 +8,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.*;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @Mixin(Guard.class)
 public abstract class GuardLifeMixin implements GuardLifeAccess, com.gamergaming.villagerguardgunners.api.GuardTransportAccess {
@@ -28,7 +28,7 @@ public abstract class GuardLifeMixin implements GuardLifeAccess, com.gamergaming
     @Override public int villagerGuardGunners$getLifeVisual() { return ((Guard)(Object)this).getEntityData().get(VGG_LIFE); }
     @Override public void villagerGuardGunners$setLifeVisual(int state) { ((Guard)(Object)this).getEntityData().set(VGG_LIFE, state); }
     @Inject(method = "defineSynchedData", at = @At("TAIL"))
-    private void vgg$defineLife(CallbackInfo ci) { var data = ((Guard)(Object)this).getEntityData(); data.define(VGG_LIFE, 0); data.define(VGG_COT, java.util.Optional.empty()); data.define(VGG_CARE, 0); }
+    private void vgg$defineLife(SynchedEntityData.Builder data, CallbackInfo ci) { data.define(VGG_LIFE, 0); data.define(VGG_COT, java.util.Optional.empty()); data.define(VGG_CARE, 0); }
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void vgg$readLife(CompoundTag tag, CallbackInfo ci) { vgg$life.load(tag); vgg$transport.load(tag); vgg$cot.load(tag); GuardLifeRuntime.synchronize((Guard)(Object)this); }
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))

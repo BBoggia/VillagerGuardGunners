@@ -27,7 +27,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Lightweight guard decision layer for TaCZ guns.
@@ -95,7 +95,7 @@ public final class GuardGunCombatGoal extends Goal {
         return config.enabled.get() && (running || tactics.hasContinuation());
     }
     public String movementOwner() {
-        return guard.goalSelector.getRunningGoals()
+        return guard.goalSelector.getAvailableGoals().stream().filter(net.minecraft.world.entity.ai.goal.WrappedGoal::isRunning)
                 .filter(goal -> goal.getFlags().contains(Goal.Flag.MOVE))
                 .map(goal -> goal.getGoal().getClass().getSimpleName())
                 .collect(java.util.stream.Collectors.joining(", "));
@@ -103,7 +103,7 @@ public final class GuardGunCombatGoal extends Goal {
     public String lastInterruption() { return lastInterruption; }
 
     /** Entity removal/unload cannot leave native trigger callbacks or route references alive. */
-    public static void onEntityLeave(net.minecraftforge.event.entity.EntityLeaveLevelEvent event) {
+    public static void onEntityLeave(net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent event) {
         if (event.getLevel().isClientSide() || !(event.getEntity() instanceof Guard guard)) return;
         com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.forget(guard);
         for (var wrapped : guard.goalSelector.getAvailableGoals()) {

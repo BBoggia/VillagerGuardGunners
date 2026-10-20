@@ -74,7 +74,7 @@ final class VillageRegistrySavedDataTest {
         var reverse = new VillageRegistrySavedData(DIM);
         reverse.observe(identity(64), footprint(64, 31));
         reverse.observe(identity(0), footprint(0, 31));
-        assertEquals(first.save(new CompoundTag()), reverse.save(new CompoundTag()));
+        assertEquals(first.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())), reverse.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
         first.observe(identity(0), footprint(0, 40));
         assertEquals(2, first.get(identity(0).id()).revision());
         assertNotEquals(identity(0).id(), new VillageIdentity(id("minecraft:the_nether"), PLAINS, 0).id());
@@ -103,7 +103,7 @@ final class VillageRegistrySavedDataTest {
         UUID guard = UUID.randomUUID(), building = UUID.randomUUID();
         assertTrue(data.affiliateGuard(guard, identity(0).id()));
         assertTrue(data.associateBuilding(building, identity(0).id()));
-        var loaded = VillageRegistrySavedData.load(data.save(new CompoundTag()), DIM);
+        var loaded = VillageRegistrySavedData.load(data.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())), DIM);
         assertEquals(identity(0).id(), loaded.guardVillage(guard));
         assertEquals(identity(0).id(), loaded.buildingVillage(building));
         loaded.setDirty(false);
@@ -124,7 +124,7 @@ final class VillageRegistrySavedDataTest {
         assertTrue(data.observeHomes(lowSection, List.of()));
         assertEquals(Set.of(high), data.get(identity(0).id()).homes());
         assertFalse(data.observeHomes(lowSection, List.of(high)));
-        var loaded = VillageRegistrySavedData.load(data.save(new CompoundTag()), DIM);
+        var loaded = VillageRegistrySavedData.load(data.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())), DIM);
         assertEquals(Set.of(high), loaded.get(identity(0).id()).homes());
     }
     @Test void shrinkingFootprintRemovesOldIndexCellsAndOutlyingHomes() {
@@ -137,7 +137,7 @@ final class VillageRegistrySavedDataTest {
         assertTrue(data.get(identity(0).id()).homes().isEmpty());
     }
     @Test void futureOrMalformedRootIsPreservedAndAllMutationsFailClosed() {
-        var tag = sample().save(new CompoundTag());
+        var tag = sample().save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         tag.putInt("Version", 200);
         tag.putString("FutureField", "must survive");
         var loaded = VillageRegistrySavedData.load(tag, DIM);
@@ -145,7 +145,7 @@ final class VillageRegistrySavedDataTest {
         assertFalse(loaded.observe(identity(64), footprint(64, 31)));
         assertFalse(loaded.affiliateGuard(UUID.randomUUID(), identity(0).id()));
         assertFalse(loaded.at(BlockPos.ZERO).complete());
-        assertEquals(tag, loaded.save(new CompoundTag()));
+        assertEquals(tag, loaded.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
         assertFalse(loaded.isDirty());
     }
     static Stream<Consumer<CompoundTag>> corruptions() {
@@ -172,12 +172,12 @@ final class VillageRegistrySavedDataTest {
     }
     @ParameterizedTest @MethodSource("corruptions")
     void strictDecodingNeverPublishesAPartialRegistry(Consumer<CompoundTag> corrupt) {
-        CompoundTag tag = sample().save(new CompoundTag());
+        CompoundTag tag = sample().save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         corrupt.accept(tag);
         var loaded = VillageRegistrySavedData.load(tag, DIM);
         assertFalse(loaded.enabled());
         assertEquals(0, loaded.size());
-        assertEquals(tag, loaded.save(new CompoundTag()));
+        assertEquals(tag, loaded.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
     }
     @Test void indexAndCursorPagingWorkWithTenThousandHistoricalVillages() {
         var data = new VillageRegistrySavedData(DIM);
@@ -204,7 +204,7 @@ final class VillageRegistrySavedDataTest {
                 VillageBuildingType.ARMORY, DIM, new BlockPos(3, 64, 3));
         data.claimAnchor(building);
         assertEquals(List.of(building), data.identitiesInChunk(new ChunkPos(0, 0), 8));
-        var loaded = VillageBuildingSavedData.load(data.save(new CompoundTag()));
+        var loaded = VillageBuildingSavedData.load(data.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
         assertEquals(List.of(building), loaded.identitiesInChunk(new ChunkPos(0, 0), 8));
         assertTrue(loaded.identitiesInChunk(new ChunkPos(1, 0), 8).isEmpty());
     }

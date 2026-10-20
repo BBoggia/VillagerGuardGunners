@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.armory;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBindingCodec;
@@ -46,7 +47,7 @@ public final class ArmoryLockInteractions {
         }
 
         SquadLedgerBindingCodec.DecodeResult decoded =
-                SquadLedgerBindingCodec.readFrom(ledger.getTag());
+                SquadLedgerBindingCodec.readFrom(ItemCustomData.read(ledger));
         if (decoded.status() == SquadLedgerBindingCodec.DecodeStatus.BLANK) {
             return InteractionResult.BLANK_LEDGER;
         }

@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.api;
 
 import com.gamergaming.villagerguardgunners.medical.GuardLifeState;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 public interface GuardLifeAccess {
     com.gamergaming.villagerguardgunners.medical.CotRestState villagerGuardGunners$getCotRest();

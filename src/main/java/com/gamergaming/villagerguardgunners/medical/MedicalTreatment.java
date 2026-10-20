@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.medical;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.api.GuardMedicalAccess;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.init.ModItems;
@@ -14,9 +15,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 import tallestegg.guardvillagers.GuardVillagers;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Synchronous one-dose treatment with the same cancellable boundary used by LivingEntity.heal. */
 public final class MedicalTreatment {
@@ -143,8 +144,8 @@ public final class MedicalTreatment {
     private static boolean knownClientSupply(ItemStack stack) {
         if (stack.is(ModItems.BANDAGE.get())) return true;
         if (!stack.is(net.minecraft.world.item.Items.POTION)
-                || (stack.hasTag() && stack.getTag().contains("CustomPotionEffects"))) return false;
-        var potion = net.minecraft.world.item.alchemy.PotionUtils.getPotion(stack);
+                || !stack.getOrDefault(net.minecraft.core.component.DataComponents.POTION_CONTENTS, net.minecraft.world.item.alchemy.PotionContents.EMPTY).customEffects().isEmpty()) return false;
+        var potion = stack.getOrDefault(net.minecraft.core.component.DataComponents.POTION_CONTENTS, net.minecraft.world.item.alchemy.PotionContents.EMPTY).potion().orElse(null);
         return potion == net.minecraft.world.item.alchemy.Potions.HEALING
                 || potion == net.minecraft.world.item.alchemy.Potions.STRONG_HEALING;
     }

@@ -55,7 +55,7 @@ final class SquadPatrolRouteEditorContractTest {
 
     @Test
     void releaseAndLocalizationContainTheEditorSurface() throws IOException {
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
         String language = read(
                 "src/main/resources/assets/villagerguardgunners/lang/en_us.json");
 

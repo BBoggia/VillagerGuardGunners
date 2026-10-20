@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.quartermaster.service;
 
 import java.util.function.BooleanSupplier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 /** Revocable transport view; normal native inventory behavior is preserved while the owner is available. */
 public record ServiceInventoryView(IItemHandler delegate, BooleanSupplier available) implements IItemHandler {

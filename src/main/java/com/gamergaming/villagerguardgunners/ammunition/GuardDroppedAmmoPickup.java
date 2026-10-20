@@ -10,7 +10,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Bounded, item-driven pickup for physical TaCZ ammunition. Eligible dropped

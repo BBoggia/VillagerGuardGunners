@@ -18,7 +18,7 @@ import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
 import tallestegg.guardvillagers.configuration.GuardConfig;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder(VillagerGuardGunners.MODID)
 @PrefixGameTestTemplate(false)
@@ -258,9 +258,9 @@ public final class MedicalIntegrationGameTests {
         try {
             guard.setHealth(2); guard.hurt(helper.getLevel().damageSources().generic(), 100);
             var gun = com.tacz.guns.api.item.builder.GunItemBuilder.create().setId(ResourceLocation.parse("tacz:m16a4")).build();
-            helper.assertTrue(net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new com.tacz.guns.api.event.common.GunFireEvent(guard, gun, net.minecraftforge.fml.LogicalSide.SERVER)), "Queued native round not canceled");
-            helper.assertTrue(net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new com.tacz.guns.api.event.common.GunReloadEvent(guard, gun, net.minecraftforge.fml.LogicalSide.SERVER)), "Native reload not canceled");
-            helper.assertTrue(net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new com.tacz.guns.api.event.common.GunMeleeEvent(guard, gun, net.minecraftforge.fml.LogicalSide.SERVER)), "Native melee not canceled");
+            helper.assertTrue(net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new com.tacz.guns.api.event.common.GunFireEvent(guard, gun, net.neoforged.fml.LogicalSide.SERVER)), "Queued native round not canceled");
+            helper.assertTrue(net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new com.tacz.guns.api.event.common.GunReloadEvent(guard, gun, net.neoforged.fml.LogicalSide.SERVER)), "Native reload not canceled");
+            helper.assertTrue(net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new com.tacz.guns.api.event.common.GunMeleeEvent(guard, gun, net.neoforged.fml.LogicalSide.SERVER)), "Native melee not canceled");
         } finally { guard.discard(); config.downed.accept(old); }
         helper.succeed();
     }

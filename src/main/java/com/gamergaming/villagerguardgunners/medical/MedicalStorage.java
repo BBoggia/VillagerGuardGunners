@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.medical;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,8 +9,8 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Three slots plus an opaque recovery payload. Unknown/removed profiles never delete stored items. */
 public final class MedicalStorage {
@@ -49,7 +50,7 @@ public final class MedicalStorage {
         else {
             CompoundTag data = new CompoundTag();
             data.putInt("Version", 1); data.putUUID("DropId", dropId); data.putLong("ReadyAt", readyAt);
-            data.putBoolean("Released", released); data.put("Inventory", items.serializeNBT()); root.put(KEY, data);
+            data.putBoolean("Released", released); data.put("Inventory", items.serializeNBT(guard.registryAccess())); root.put(KEY, data);
         }
         return root;
     }
@@ -68,18 +69,18 @@ public final class MedicalStorage {
         if (entries.size() != ((net.minecraft.nbt.ListTag) inventory.get("Items")).size()) return;
         var seen = new HashSet<Integer>();
         for (Tag value : entries) {
-            var entry = (CompoundTag) value; int slot = entry.getInt("Slot"); ItemStack stack = ItemStack.of(entry);
+            var entry = (CompoundTag) value; int slot = entry.getInt("Slot"); ItemStack stack = ItemStack.parseOptional(guard.registryAccess(), entry);
             if (!entry.contains("Slot", Tag.TAG_INT) || slot < 0 || slot >= SLOTS || !seen.add(slot)
                     || stack.isEmpty() || stack.getCount() > Math.min(64, stack.getMaxStackSize())
                     || !stack.getItem().canFitInsideContainerItems()) return;
-            var encoded = stack.save(new CompoundTag()); encoded.putInt("Slot", slot);
+            var encoded = (CompoundTag) stack.save(guard.registryAccess()); encoded.putInt("Slot", slot);
             if (!encoded.equals(entry)) return;
         }
-        items.deserializeNBT(inventory); readyAt = data.getLong("ReadyAt"); dropId = data.getUUID("DropId");
+        items.deserializeNBT(guard.registryAccess(), inventory); readyAt = data.getLong("ReadyAt"); dropId = data.getUUID("DropId");
         released = data.getBoolean("Released"); preserved = null;
     }
     public ItemStack packed() {
-        var stack = new ItemStack(ModItems.MEDICAL_POUCH.get()); stack.setTag(save()); return stack;
+        var stack = new ItemStack(ModItems.MEDICAL_POUCH.get()); ItemCustomData.set(stack, save()); return stack;
     }
     public void release() {
         if (released || guard.level() == null || guard.level().isClientSide) return;
@@ -95,9 +96,9 @@ public final class MedicalStorage {
         readyAt = cooldown;
     }
     public boolean restore(ItemStack packed) {
-        if (!empty() || !packed.is(ModItems.MEDICAL_POUCH.get()) || !packed.hasTag() || !packed.getTag().contains(KEY)) return false;
+        if (!empty() || !packed.is(ModItems.MEDICAL_POUCH.get()) || !!ItemCustomData.read(packed).isEmpty() || !ItemCustomData.read(packed).contains(KEY)) return false;
         long cooldown = readyAt;
-        load(packed.getTag()); dropId = UUID.randomUUID(); released = false;
+        load(ItemCustomData.read(packed)); dropId = UUID.randomUUID(); released = false;
         readyAt = Math.max(cooldown, readyAt); return true;
     }
     public void invalidateTransport() { transportGeneration++; }

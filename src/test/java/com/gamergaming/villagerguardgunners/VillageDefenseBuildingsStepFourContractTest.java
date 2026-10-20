@@ -74,12 +74,12 @@ final class VillageDefenseBuildingsStepFourContractTest {
                 () -> assertFalse(lifecycle.contains("TickTask")),
                 () -> assertFalse(villageSources.contains("addRegionTicket")),
                 () -> assertFalse(villageSources.contains("setChunkForced")),
-                () -> assertTrue(recovery.contains("onServerTick(TickEvent.ServerTickEvent event)")));
+                () -> assertTrue(recovery.contains("onServerTick(ServerTickEvent.Pre event)")));
     }
 
     @Test
     void releaseArtifactAndDocumentationRetainBuildingPersistence() throws IOException {
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
         assertAll(
                 () -> assertTrue(build.contains("VillageBuildingAnchorMarker.class")),
                 () -> assertTrue(build.contains("VillageBuildingSavedData.class")),

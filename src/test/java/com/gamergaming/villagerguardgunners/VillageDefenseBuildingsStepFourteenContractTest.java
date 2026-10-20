@@ -14,9 +14,10 @@ final class VillageDefenseBuildingsStepFourteenContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void manualHandoffAndPublicPackagingRetainTheReleaseBoundary()
+    void retainedForgeManualHandoffAndPublicPackagingRetainTheReleaseBoundary()
             throws IOException {
-        String build = read("build.gradle");
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
         String guide = read(
                 "docs/village-defense-buildings-manual-validation.md");
         String matrix = read(

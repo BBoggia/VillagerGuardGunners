@@ -176,7 +176,7 @@ final class VillageDefenseDutyLayoutTest {
         assertEquals(VillageDefenseDutySavedData.ClaimStatus.ALREADY_CLAIMED,
                 source.claimBuilding(barracks, Rotation.CLOCKWISE_90));
 
-        CompoundTag encoded = source.save(new CompoundTag());
+        CompoundTag encoded = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         VillageDefenseDutySavedData loaded = VillageDefenseDutySavedData.loadForLevel(
                 encoded, DIMENSION, WORLD_SEED);
         List<VillageDefenseDutySlot> limited = loaded.slotsForBuildings(
@@ -244,7 +244,7 @@ final class VillageDefenseDutyLayoutTest {
         VillageBuildingIdentity identity = identity(
                 VillageBuildingType.SENTRY_POST, ANCHOR);
         source.claimBuilding(identity, Rotation.NONE);
-        CompoundTag valid = source.save(new CompoundTag());
+        CompoundTag valid = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
 
         CompoundTag future = valid.copy();
         future.putInt("Version", VillageDefenseDutySavedData.DATA_VERSION + 1);
@@ -265,7 +265,7 @@ final class VillageDefenseDutyLayoutTest {
 
         assertAll(
                 () -> assertFalse(futureData.enabled()),
-                () -> assertEquals(future, futureData.save(new CompoundTag())),
+                () -> assertEquals(future, futureData.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))),
                 () -> assertFalse(duplicateData.enabled()),
                 () -> assertFalse(wrongIdData.enabled()),
                 () -> assertNull(futureData.layout(identity.buildingId())),

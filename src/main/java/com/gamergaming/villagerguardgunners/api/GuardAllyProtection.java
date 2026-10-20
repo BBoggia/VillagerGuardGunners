@@ -17,8 +17,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraftforge.registries.ForgeRegistries;
-import tallestegg.guardvillagers.entities.Guard;
+import net.minecraft.core.registries.BuiltInRegistries;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Central, server-authoritative ally classification used by every guard-gun
@@ -111,7 +111,7 @@ public final class GuardAllyProtection {
 
         VillagerGuardGunnersConfig.AllySettings settings =
                 ModConfigs.GUARD_GUNNERS.safety.allies;
-        ResourceLocation entityTypeId = ForgeRegistries.ENTITY_TYPES.getKey(living.getType());
+        ResourceLocation entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(living.getType());
         if (entityTypeId != null && settings.excludedEntities.get().contains(entityTypeId)) {
             return ProtectionReason.EXPLICIT_EXCLUSION;
         }

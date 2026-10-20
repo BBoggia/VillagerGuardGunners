@@ -87,11 +87,8 @@ public final class VillageDefenseDutySavedData extends SavedData {
     public static VillageDefenseDutySavedData get(ServerLevel level) {
         Objects.requireNonNull(level, "level");
         ResourceLocation dimension = level.dimension().location();
-        VillageDefenseDutySavedData data = level.getDataStorage().computeIfAbsent(
-                encoded -> loadForLevel(encoded, dimension, level.getSeed()),
-                () -> new VillageDefenseDutySavedData(
-                        true, dimension, level.getSeed(), Map.of(), null, null),
-                DATA_NAME);
+        VillageDefenseDutySavedData data = level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new VillageDefenseDutySavedData(
+                        true, dimension, level.getSeed(), Map.of(), null, null), (encoded, registries) -> loadForLevel(encoded, dimension, level.getSeed())), DATA_NAME);
         data.reportDisabledStateOnce();
         return data;
     }
@@ -314,7 +311,7 @@ public final class VillageDefenseDutySavedData extends SavedData {
     }
 
     @Override
-    public synchronized CompoundTag save(CompoundTag output) {
+    public synchronized CompoundTag save(CompoundTag output, net.minecraft.core.HolderLookup.Provider registries) {
         if (!enabled) {
             return unreadableRoot == null ? new CompoundTag() : unreadableRoot.copy();
         }

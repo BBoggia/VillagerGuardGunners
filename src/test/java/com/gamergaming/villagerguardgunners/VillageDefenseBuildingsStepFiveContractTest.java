@@ -100,7 +100,7 @@ final class VillageDefenseBuildingsStepFiveContractTest {
 
     @Test
     void buildPipelineGeneratesAndPackagesTheCompleteMatrix() throws IOException {
-        String build = read("build.gradle") + read("gradle/village-building-templates.gradle");
+        String build = read("build.gradle") + read("gradle/neoforge-resources.gradle") + read("gradle/village-building-templates.gradle");
         String poolIds = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/worldgen/village/"
                         + "VillageBuildingPools.java");

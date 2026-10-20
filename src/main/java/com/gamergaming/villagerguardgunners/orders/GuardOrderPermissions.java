@@ -4,7 +4,7 @@ import java.util.UUID;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import tallestegg.guardvillagers.configuration.GuardConfig;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Shared authorization for changing a guard's persistent behavior orders. */
 public final class GuardOrderPermissions {
@@ -26,7 +26,7 @@ public final class GuardOrderPermissions {
         UUID ownerId = guard.getOwnerId();
         return player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)
                 || guard.getPlayerReputation(player)
-                        >= GuardConfig.reputationRequirement
+                        >= GuardConfig.COMMON.reputationRequirement.get()
                 || (ownerId != null && ownerId.equals(player.getUUID()));
     }
 }

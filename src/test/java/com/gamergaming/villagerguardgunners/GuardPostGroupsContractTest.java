@@ -25,7 +25,7 @@ final class GuardPostGroupsContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/GuardPostGroupFormat.java");
         String main = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/VillagerGuardGunners.java");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(main.contains("GuardPostGroups::registerReloadListener")),

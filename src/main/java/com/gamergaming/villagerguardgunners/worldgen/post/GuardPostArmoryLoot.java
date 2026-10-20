@@ -59,8 +59,8 @@ public final class GuardPostArmoryLoot {
             GuardPostArmoryIdentity identity) {
         try {
             LootTable table = level.getServer()
-                    .getLootData()
-                    .getLootTable(identity.lootTableId());
+                    .reloadableRegistries()
+                    .getLootTable(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, identity.lootTableId()));
             LootParams parameters = new LootParams.Builder(level)
                     .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(position))
                     .create(LootContextParamSets.CHEST);
@@ -88,7 +88,7 @@ public final class GuardPostArmoryLoot {
     private static boolean hasBoundedDefinition(LootTable table, LootContext context) {
         LootTableAccessor tableAccess = (LootTableAccessor) table;
         List<LootPool> pools = tableAccess.villagerGuardGunners$getPools();
-        int components = tableAccess.villagerGuardGunners$getFunctions().length;
+        int components = tableAccess.villagerGuardGunners$getFunctions().size();
         int rolls = 0;
         if (pools.size() > MAXIMUM_LOOT_STACKS
                 || components > MAXIMUM_DEFINITION_COMPONENTS) {
@@ -107,11 +107,11 @@ public final class GuardPostArmoryLoot {
             rolls += poolRolls;
 
             LootPoolAccessor poolAccess = (LootPoolAccessor) pool;
-            LootPoolEntryContainer[] entries = poolAccess.villagerGuardGunners$getEntries();
-            components += entries.length
-                    + poolAccess.villagerGuardGunners$getConditions().length
-                    + poolAccess.villagerGuardGunners$getFunctions().length;
-            if (entries.length > MAXIMUM_LOOT_STACKS
+            List<LootPoolEntryContainer> entries = poolAccess.villagerGuardGunners$getEntries();
+            components += entries.size()
+                    + poolAccess.villagerGuardGunners$getConditions().size()
+                    + poolAccess.villagerGuardGunners$getFunctions().size();
+            if (entries.size() > MAXIMUM_LOOT_STACKS
                     || components > MAXIMUM_DEFINITION_COMPONENTS) {
                 return false;
             }
@@ -121,10 +121,10 @@ public final class GuardPostArmoryLoot {
                 }
                 components += ((LootPoolEntryAccessor) entry)
                         .villagerGuardGunners$getConditions()
-                        .length;
+                        .size();
                 components += ((LootPoolSingletonAccessor) (LootPoolSingletonContainer) entry)
                         .villagerGuardGunners$getFunctions()
-                        .length;
+                        .size();
                 if (components > MAXIMUM_DEFINITION_COMPONENTS) {
                     return false;
                 }

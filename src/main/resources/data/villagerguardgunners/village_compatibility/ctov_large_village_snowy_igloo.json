@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "ctov": "[3.4.14]"
+    "ctov": "[3.6.3]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -38,6 +38,14 @@
       {
         "kind": "decoration",
         "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/snowy_igloo/deco/archeology_tent": [
+      {
+        "kind": "decoration",
+        "sha256": "429f5c293238ebec62ecd66dea151a62a3a09421f7690e8010d117585c6f2c4c",
         "beds": [],
         "entrances": []
       }
@@ -82,6 +90,20 @@
         "entrances": []
       }
     ],
+    "ctov:village/snowy_igloo/deco/climatologist": [
+      {
+        "kind": "decoration",
+        "sha256": "2cbe1c4552c8aad6e17f10b09300219bda463c679a0b68615201b65fe1707bd6",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
     "ctov:village/snowy_igloo/deco/copper_golem": [
       {
         "kind": "decoration",
@@ -93,7 +115,7 @@
     "ctov:village/snowy_igloo/deco/garbage_heaps": [
       {
         "kind": "decoration",
-        "sha256": "29fda9a06959f2fb02b5a28b9735529791b1384c1499a46b9eda1b7264a90642",
+        "sha256": "c73ca16e1c2e410c5a9283483b6fb99bc40d14df036a4ef226a448f8fd84634f",
         "beds": [],
         "entrances": []
       }
@@ -1240,6 +1262,41 @@
         ]
       }
     ],
+    "ctov:village/snowy_igloo/jobsite/tavern": [
+      {
+        "kind": "residence",
+        "sha256": "1da7cdae4afa932eb44dacbdcb48e2a496aed2da2fa9a59b3db6fd1197b9008a",
+        "beds": [
+          [
+            2,
+            6,
+            3
+          ],
+          [
+            2,
+            6,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            1
+          ],
+          [
+            6,
+            6,
+            4
+          ],
+          [
+            6,
+            6,
+            8
+          ]
+        ]
+      }
+    ],
     "ctov:village/snowy_igloo/jobsite/vault": [
       {
         "kind": "service",
@@ -1360,26 +1417,26 @@
         ]
       }
     ],
-    "ctov:village/snowy_igloo/roads/bent_1": [
+    "ctov:village/snowy_igloo/roads/corner_1": [
       {
         "kind": "road",
-        "sha256": "71611b617a2e6e54288b411bc3d45e1143ad96d6b85a36d13477a92547c4e8f2",
+        "sha256": "4b9808e26166805ecd00c993986fc4e67a359d7a20bf232c37c605d51b45db29",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/snowy_igloo/roads/bent_2": [
+    "ctov:village/snowy_igloo/roads/corner_2": [
       {
         "kind": "road",
-        "sha256": "2d6ada5eeb1abf38def68d9e2752d446be59eb137160fb20580bac7e25ab7bc2",
+        "sha256": "5a52c5d87fbcbcd606e5e52cafa9d0e87353b3aef4aa833225e68f925ae070a3",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/snowy_igloo/roads/inter": [
+    "ctov:village/snowy_igloo/roads/crossroad": [
       {
         "kind": "road",
-        "sha256": "374983d1bb3c68237a4b25da84379659321a30ed36e6b43ed2ccb73fffb4b003",
+        "sha256": "1c39fa6393c1521805acef76171764f3a27fe665ca1ad5b4ef614fa7bd06ce2b",
         "beds": [],
         "entrances": []
       }
@@ -1387,7 +1444,7 @@
     "ctov:village/snowy_igloo/roads/respawn_obelisk": [
       {
         "kind": "road",
-        "sha256": "6da84884dfab26827321d5b8f8582c0f5c322a57b8a31e3b2af1c1b0d82f60e9",
+        "sha256": "8e60ddea01ca158ad4c9e2ed03a64229c8f834f9fdec18c282a5cd93ef29bc4f",
         "beds": [],
         "entrances": []
       }
@@ -1395,7 +1452,7 @@
     "ctov:village/snowy_igloo/roads/straight": [
       {
         "kind": "road",
-        "sha256": "19a288fb6918d91bff177d570b6ffae645f6868d19fdfeb4605d33df4391f395",
+        "sha256": "d5471585f72bd6f564a87abeda8b8704aec65c40b64d3881929bc77bee095ee4",
         "beds": [],
         "entrances": []
       }
@@ -1403,7 +1460,7 @@
     "ctov:village/snowy_igloo/roads/t_1": [
       {
         "kind": "road",
-        "sha256": "fd0aa123cd9e0998d3b95e0d45b07d3b9f0b7a34b13336b66f5c4b059947d901",
+        "sha256": "f5c1fc3e1c4d30ce79940f467b6c9d9d0a0f5998c982f763533263a9247722b3",
         "beds": [],
         "entrances": []
       }
@@ -1411,7 +1468,7 @@
     "ctov:village/snowy_igloo/roads/t_2": [
       {
         "kind": "road",
-        "sha256": "804d2c70b5ab1b8ff0352939cdf8aa471bfde05cb28c8735589afde25a8088c2",
+        "sha256": "54f668f1d7552c71f03dce1af4eb3c9c2e59ff357363258e8e8f1615a6b9c3b1",
         "beds": [],
         "entrances": []
       }
@@ -1419,7 +1476,7 @@
     "ctov:village/snowy_igloo/roads/t_3": [
       {
         "kind": "road",
-        "sha256": "8d8a30d9796c64887d857f6e9e349ca1e8035fc2c8dbc8a377156874d4bb33dd",
+        "sha256": "3d3c75307fa18bf25a0c28137f2f5ad739e0b9baf0f9465e70f42ba53c0d3aed",
         "beds": [],
         "entrances": []
       }
@@ -1427,7 +1484,7 @@
     "ctov:village/snowy_igloo/roads/terminator": [
       {
         "kind": "road",
-        "sha256": "8ed11fe1d6b9ab679c6fa18719255d84166d979610b67d0de430e828ff143aef",
+        "sha256": "f09ddf54be471ae0e7372835977a40a69f4b4f8ce165e7263ceb075c531bcbb7",
         "beds": [],
         "entrances": []
       }
@@ -1443,7 +1500,7 @@
     "minecraft:village/common/animals/cat_black": [
       {
         "kind": "decoration",
-        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "sha256": "ce1c642a4a009ecf94fd2f0c93dfe7ea9cbc1b266ada6916fa2edbd82fde178e",
         "beds": [],
         "entrances": []
       }
@@ -1451,7 +1508,7 @@
     "minecraft:village/common/animals/cat_british": [
       {
         "kind": "decoration",
-        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "sha256": "256c5bac85a6ac921257a8d7c39cb480cb0e23d2ad166ce803f473b430c428a7",
         "beds": [],
         "entrances": []
       }
@@ -1459,7 +1516,7 @@
     "minecraft:village/common/animals/cat_calico": [
       {
         "kind": "decoration",
-        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "sha256": "bf9ea82c019d9e83ac2c47108b689737a1b7a73bd1b11c9ed48744b7db90a273",
         "beds": [],
         "entrances": []
       }
@@ -1467,7 +1524,7 @@
     "minecraft:village/common/animals/cat_jellie": [
       {
         "kind": "decoration",
-        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "sha256": "31ae6850c9c75d0626f3b8fc14027b3bc1906ab0d14201101a67250835aec847",
         "beds": [],
         "entrances": []
       }
@@ -1475,7 +1532,7 @@
     "minecraft:village/common/animals/cat_persian": [
       {
         "kind": "decoration",
-        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "sha256": "be7ee0101982cfc5374215e566d7282280ef5122cd351874310cd911e58c5271",
         "beds": [],
         "entrances": []
       }
@@ -1483,7 +1540,7 @@
     "minecraft:village/common/animals/cat_ragdoll": [
       {
         "kind": "decoration",
-        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "sha256": "14d14c7039371b4f08a0360eb6b5611029fb6d577a3e532f53c70d1b7a4779bd",
         "beds": [],
         "entrances": []
       }
@@ -1491,7 +1548,7 @@
     "minecraft:village/common/animals/cat_red": [
       {
         "kind": "decoration",
-        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "sha256": "d9523300a7a0cf0611562771490f3a11429d1f72dec987a88dea6538da8aed00",
         "beds": [],
         "entrances": []
       }
@@ -1499,7 +1556,7 @@
     "minecraft:village/common/animals/cat_siamese": [
       {
         "kind": "decoration",
-        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "sha256": "30ca3860e4c19669f380c5b5e01adb91112be60698c4cebd3cd94e3e391f0e9b",
         "beds": [],
         "entrances": []
       }
@@ -1507,7 +1564,7 @@
     "minecraft:village/common/animals/cat_tabby": [
       {
         "kind": "decoration",
-        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "sha256": "5a9800b43db9ebc3a0811e03d43ab7183110c32f76e727bee2bd24e387161880",
         "beds": [],
         "entrances": []
       }
@@ -1515,7 +1572,7 @@
     "minecraft:village/common/animals/cat_white": [
       {
         "kind": "decoration",
-        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "sha256": "81f96e424ee2856a15a9d6e235af3a3ca7a39b839bdbfbedf44162d29fb3cbf2",
         "beds": [],
         "entrances": []
       }
@@ -1523,7 +1580,7 @@
     "minecraft:village/common/iron_golem": [
       {
         "kind": "decoration",
-        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "sha256": "4e0c8c2fb1a5d7aa45e4918003cca74991f02ffa21284f341468d28d8db402fa",
         "beds": [],
         "entrances": []
       }
@@ -1531,7 +1588,7 @@
     "minecraft:village/snowy/villagers/baby": [
       {
         "kind": "service",
-        "sha256": "8f8c806a53b773a519a61a163de3e4fe8b33d33a1d107a11f679edbf2e275df9",
+        "sha256": "f658cbde896e832ff463ade1986aaa46392144857e4bdaa9d66926eb65f5e22f",
         "beds": [],
         "entrances": []
       }
@@ -1539,7 +1596,7 @@
     "minecraft:village/snowy/villagers/nitwit": [
       {
         "kind": "service",
-        "sha256": "3b5a3102600a5b25de6c406ab0c207a0f2f18fa69f0088b1db993c389fdcc64f",
+        "sha256": "cbc027548b06292979fce65dbdca3e6466a940a0009f83351c58afe956f0999a",
         "beds": [],
         "entrances": []
       }
@@ -1547,7 +1604,7 @@
     "minecraft:village/snowy/villagers/unemployed": [
       {
         "kind": "service",
-        "sha256": "fdd25fcf000e94242a1312bd742b6a2c821e77cfd42edcb2292104c77394b7f0",
+        "sha256": "1fb33cdd42343034840f7aa13abc43bc84ab9b7f4650fe7a577bcf0636c06254",
         "beds": [],
         "entrances": []
       }

@@ -70,7 +70,7 @@ final class SquadRegistrySavedDataTest {
                         CREATOR,
                         40L)
                 .orElseThrow();
-        CompoundTag saved = original.save(new CompoundTag());
+        CompoundTag saved = original.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
 
         SquadRegistrySavedData restored = SquadRegistrySavedData.load(saved);
 
@@ -91,7 +91,7 @@ final class SquadRegistrySavedDataTest {
     void corruptEntriesAreSkippedAndUnsupportedRegistryIsPreservedOpaque() {
         SquadRegistrySavedData original = new SquadRegistrySavedData();
         original.register(FIRST_SQUAD, "Alpha", CREATOR, 10L).orElseThrow();
-        CompoundTag saved = original.save(new CompoundTag());
+        CompoundTag saved = original.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         ListTag entries = saved.getList("Entries", net.minecraft.nbt.Tag.TAG_COMPOUND);
 
         CompoundTag futureEntry = entries.getCompound(0).copy();
@@ -127,20 +127,20 @@ final class SquadRegistrySavedDataTest {
                 () -> assertFalse(unsupported.isDirty()),
                 () -> assertEquals(
                         futureRegistry,
-                        unsupported.save(new CompoundTag())));
+                        unsupported.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))));
     }
 
     @Test
     void legacyRegistryMigratesWithoutInventingRoutes() {
         SquadRegistrySavedData current = new SquadRegistrySavedData();
         current.register(FIRST_SQUAD, "Alpha", CREATOR, 10L).orElseThrow();
-        CompoundTag legacy = current.save(new CompoundTag());
+        CompoundTag legacy = current.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         legacy.putInt("Version", SquadRegistrySavedData.LEGACY_DATA_VERSION);
         legacy.remove("Routes");
         legacy.remove("RouteRevision");
 
         SquadRegistrySavedData migrated = SquadRegistrySavedData.load(legacy);
-        CompoundTag rewritten = migrated.save(new CompoundTag());
+        CompoundTag rewritten = migrated.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
 
         assertAll(
                 () -> assertTrue(migrated.enabled()),
@@ -165,12 +165,12 @@ final class SquadRegistrySavedDataTest {
                 ResourceLocation.fromNamespaceAndPath("minecraft", "overworld"),
                 java.util.List.of(new BlockPos(10, 64, 10)),
                 20L);
-        CompoundTag versionTwo = current.save(new CompoundTag());
+        CompoundTag versionTwo = current.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         versionTwo.putInt("Version", SquadRegistrySavedData.ROUTES_DATA_VERSION);
         versionTwo.remove("RouteRevision");
 
         SquadRegistrySavedData migrated = SquadRegistrySavedData.load(versionTwo);
-        CompoundTag rewritten = migrated.save(new CompoundTag());
+        CompoundTag rewritten = migrated.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
 
         assertAll(
                 () -> assertTrue(migrated.enabled()),

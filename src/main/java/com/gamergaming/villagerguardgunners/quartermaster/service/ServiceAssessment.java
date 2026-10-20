@@ -16,7 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Captures copies once on the server thread. Reports contain no live references or item NBT. */
 public final class ServiceAssessment {
@@ -143,7 +143,7 @@ public final class ServiceAssessment {
             for(var entry:catalog.stacks.entrySet()) {
                 String key=entry.getKey(); ItemStack stack=entry.getValue(); var fact=catalog.facts.get(key);
                 if(fact.kind()==ServiceNeeds.Kind.MEDICAL && matches(stack,medicineIds,false)) medicines.add(key);
-                if(read && stack.getCount()==1 && !EnchantmentHelper.hasBindingCurse(stack)
+                if(read && stack.getCount()==1 && !EnchantmentHelper.has(stack, net.minecraft.world.item.enchantment.EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)
                         && station.inventory().isItemValid(27,stack.copy()))returnable.add(key);
                 List<Integer> limits=new ArrayList<>();
                 for(int target=0;target<12;target++) {
@@ -195,7 +195,7 @@ public final class ServiceAssessment {
         ServiceNeeds.Stack stack(ItemStack live) {
             if(live.isEmpty())return ServiceNeeds.Stack.empty();
             ItemStack copy=live.copy(); int count=copy.getCount(); copy.setCount(1);
-            for(var entry:stacks.entrySet())if(ItemStack.isSameItemSameTags(entry.getValue(),copy))return new ServiceNeeds.Stack(entry.getKey(),count);
+            for(var entry:stacks.entrySet())if(ItemStack.isSameItemSameComponents(entry.getValue(),copy))return new ServiceNeeds.Stack(entry.getKey(),count);
             String key="v"+stacks.size(); stacks.put(key,copy);
             String item=BuiltInRegistries.ITEM.getKey(copy.getItem()).toString(), gun=null,ammo=null;
             var kind=ServiceNeeds.Kind.OTHER; boolean known=true, physicalReserve=true;

@@ -15,7 +15,7 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
  * Places one compact watchtower after bounded dry-ground and slope checks.
  */
 public final class VillageWatchtowerStructure extends Structure {
-    public static final Codec<VillageWatchtowerStructure> CODEC =
+    public static final com.mojang.serialization.MapCodec<VillageWatchtowerStructure> CODEC =
             simpleCodec(VillageWatchtowerStructure::new);
 
     public VillageWatchtowerStructure(StructureSettings settings) {

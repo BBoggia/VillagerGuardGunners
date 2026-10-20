@@ -7,7 +7,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Bounded last-seen metadata, never an equipment/policy authority or a queued edit. */
 public final class ServiceRoster extends SavedData {
@@ -18,7 +18,7 @@ public final class ServiceRoster extends SavedData {
     private final Map<UUID, Entry> entries = new LinkedHashMap<>();
     private CompoundTag preserved;
     public static ServiceRoster get(ServerLevel level) {
-        return level.getServer().overworld().getDataStorage().computeIfAbsent(ServiceRoster::load, ServiceRoster::new, KEY);
+        return level.getServer().overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(ServiceRoster::new, (tag, registries) -> ServiceRoster.load(tag)), KEY);
     }
     public boolean readable() { return preserved == null; }
     public boolean full() { return entries.size() >= CAPACITY; }
@@ -64,7 +64,7 @@ public final class ServiceRoster extends SavedData {
         } catch (IllegalArgumentException failure) { roster.entries.clear(); roster.preserved = tag.copy(); }
         return roster;
     }
-    @Override public CompoundTag save(CompoundTag tag) {
+    @Override public CompoundTag save(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         if (preserved != null) return preserved.copy();
         tag.putInt("Version", 1); var list = new ListTag();
         for (var entry : entries.values()) {

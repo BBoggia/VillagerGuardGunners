@@ -8,14 +8,14 @@ import com.tacz.guns.api.event.common.GunFireEvent;
 import com.tacz.guns.util.block.ProjectileExplosion;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraftforge.event.level.ExplosionEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Final server-side backstops for shots that reach a protected entity. */
-@Mod.EventBusSubscriber(modid = VillagerGuardGunners.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@net.neoforged.fml.common.EventBusSubscriber(modid = VillagerGuardGunners.MODID, bus = net.neoforged.fml.common.EventBusSubscriber.Bus.GAME)
 public final class GuardFriendlyFireEvents {
     private GuardFriendlyFireEvents() {
     }

@@ -20,7 +20,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraftforge.gametest.*;
 import net.minecraftforge.registries.ForgeRegistries;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder(VillagerGuardGunners.MODID + "_village_buildings_performance")
 @PrefixGameTestTemplate(false)

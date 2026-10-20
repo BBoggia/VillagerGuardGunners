@@ -1,0 +1,57 @@
+package com.gamergaming.villagerguardgunners;
+
+import static org.junit.jupiter.api.Assertions.*;
+import com.google.gson.JsonParser;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.zip.ZipFile;
+import org.junit.jupiter.api.Test;
+
+/** Active port gates, separate from the retained Forge performance/release reference. */
+final class NeoForgeBuildContractTest {
+    private static String read(String path) throws Exception {
+        return Files.readString(Path.of(System.getProperty("villagerguardgunners.projectDir"), path));
+    }
+
+    @Test void ordinaryBuildAndCiRunAllTestsAndCurrentResourceValidation() throws Exception {
+        String build = read("build.gradle"), workflow = read(".github/workflows/ci.yml");
+        assertTrue(build.contains("tasks.named('check')"));
+        assertTrue(build.contains("dependsOn tasks.named('checkNeoForgeFoundation'), tasks.named('verifyNeoForgeCompanionPacks')"));
+        assertFalse(build.contains("tasks.named('test') { exclude"));
+        assertTrue(workflow.contains("./gradlew --no-daemon build stageCoreQaMods stageMultiplayerQaMods"));
+        assertTrue(workflow.contains("build/neoforge/reports/tests/test/**"));
+        assertFalse(build.contains("apply from: 'gradle/legacy-forge.gradle'"));
+        assertTrue(read("docs/neoforge-development.md").contains("not a stable release"));
+    }
+
+    @Test void packagedMetadataMixinsAndClassesAreCompleteAndDoNotContainTestMods() throws Exception {
+        try (var jar = new ZipFile(System.getProperty("villagerguardgunners.artifact"))) {
+            String metadata = new String(jar.getInputStream(jar.getEntry("META-INF/neoforge.mods.toml")).readAllBytes(), StandardCharsets.UTF_8);
+            assertFalse(metadata.contains("${"));
+            assertEquals(6, metadata.split("\\[\\[dependencies\\.villagerguardgunners]]", -1).length - 1);
+            assertNull(jar.getEntry("META-INF/mods.toml"));
+            var mixins = JsonParser.parseString(new String(jar.getInputStream(jar.getEntry("mixins.villagerguardgunners.json")).readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();
+            assertTrue(mixins.get("required").getAsBoolean());
+            assertEquals(1, mixins.getAsJsonObject("injectors").get("defaultRequire").getAsInt());
+            String root = mixins.get("package").getAsString().replace('.', '/') + "/";
+            for (String side : new String[]{"mixins", "client"}) for (var mixin : mixins.getAsJsonArray(side))
+                assertNotNull(jar.getEntry(root + mixin.getAsString().replace('.', '/') + ".class"), mixin.toString());
+            for (String fix : new String[]{"GuardFollowPacketMixin", "GuardPatrolPacketMixin", "CasualtyDamageMixin"})
+                assertTrue(mixins.getAsJsonArray("mixins").toString().contains('"' + fix + '"'));
+            assertFalse(jar.stream().anyMatch(e -> e.getName().contains("/qa/") || e.getName().contains("/gametest/")
+                    || e.getName().contains("/bootstrap/") || e.getName().contains("/integration/") || e.getName().contains("/perftest/")));
+        }
+    }
+
+    @Test void installedRegressionRunnersBindEvidenceToUnchangedPackagedJars() throws Exception {
+        String core = read("tools/run_neoforge_core_qa.py"), multiplayer = read("tools/run_neoforge_multiplayer_qa.py");
+        assertTrue(core.contains("'jarHashesUnchanged': before == hashes()"));
+        assertTrue(core.contains("'sha256': before"));
+        assertTrue(multiplayer.contains("jarHashesUnchanged"));
+        assertTrue(multiplayer.contains("server-result.json"));
+        assertTrue(multiplayer.contains("127.0.0.1"));
+        assertFalse(core.contains("gradlew runServer"));
+        assertFalse(multiplayer.contains("gradlew runClient"));
+    }
+}

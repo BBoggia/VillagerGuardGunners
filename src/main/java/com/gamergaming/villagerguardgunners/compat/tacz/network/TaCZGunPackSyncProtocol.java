@@ -28,7 +28,7 @@ public final class TaCZGunPackSyncProtocol {
             Map<DataType, Map<ResourceLocation, String>> cache) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         try {
-            ServerMessageSyncGunPack.encode(new ServerMessageSyncGunPack(cache), buffer);
+            ServerMessageSyncGunPack.STREAM_CODEC.encode(buffer, new ServerMessageSyncGunPack(cache));
             int length = buffer.readableBytes();
             if (length > MAXIMUM_TRANSFER_BYTES) {
                 throw new IllegalArgumentException("TaCZ common-data cache exceeds the chunked-sync bound");
@@ -47,7 +47,7 @@ public final class TaCZGunPackSyncProtocol {
         }
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(encoded));
         try {
-            ServerMessageSyncGunPack message = ServerMessageSyncGunPack.decode(buffer);
+            ServerMessageSyncGunPack message = ServerMessageSyncGunPack.STREAM_CODEC.decode(buffer);
             if (buffer.isReadable()) {
                 throw new IllegalArgumentException("TaCZ common-data payload contains trailing bytes");
             }

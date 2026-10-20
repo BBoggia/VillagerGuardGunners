@@ -1,6 +1,6 @@
 # Natural-loadout example datapack
 
-This directory is a complete Minecraft 1.20.1 server datapack. Copy the
+This directory is a complete Minecraft 1.21.1 server datapack for the NeoForge port. Copy the
 directory into a world's `datapacks` directory, or zip its contents so
 `pack.mcmeta` is at the root of the archive. It adds four pools and one role but does not
 replace the mod's built-in pools or alter configuration by itself.

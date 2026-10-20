@@ -5,7 +5,7 @@ import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
 import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Constant-time role lookup and explicit-order precedence for live guard behavior. */
 public final class GuardRoleResolver {

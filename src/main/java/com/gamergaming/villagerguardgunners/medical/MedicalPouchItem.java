@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 public final class MedicalPouchItem extends Item {
     public MedicalPouchItem(Properties properties) { super(properties); }
     @Override public boolean canFitInsideContainerItems() { return false; }
-    @Override public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flags) {
+    @Override public void appendHoverText(ItemStack stack, net.minecraft.world.item.Item.TooltipContext level, List<Component> lines, TooltipFlag flags) {
         lines.add(Component.translatable("item.villagerguardgunners.medical_pouch.tooltip").withStyle(ChatFormatting.GRAY));
     }
 }

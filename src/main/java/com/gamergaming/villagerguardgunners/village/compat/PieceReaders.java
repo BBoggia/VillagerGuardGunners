@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 
 /** Optional code is resolved only after an exact version gate. Vanilla includes legacy subclasses. */
 public final class PieceReaders {

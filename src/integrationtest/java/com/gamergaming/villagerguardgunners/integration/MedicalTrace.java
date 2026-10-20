@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingConversionEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingConversionEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Not a downed-state implementation: a scoped experiment at the death boundary. */
 public final class MedicalTrace implements AutoCloseable {
@@ -29,7 +29,7 @@ public final class MedicalTrace implements AutoCloseable {
         this.guard = guard;
         if (ACTIVE.get() != null) throw new IllegalStateException("Medical probe scopes cannot nest");
         ACTIVE.set(this);
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     public static boolean intercept(Guard guard, DamageSource source) {
@@ -85,7 +85,7 @@ public final class MedicalTrace implements AutoCloseable {
 
     @Override
     public void close() {
-        MinecraftForge.EVENT_BUS.unregister(this);
+        NeoForge.EVENT_BUS.unregister(this);
         ACTIVE.remove();
     }
 }

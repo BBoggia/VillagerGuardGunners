@@ -13,16 +13,16 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+
+import net.minecraft.core.registries.BuiltInRegistries;
 
 /** Server entry and native trading. Browsing neither claims a POI nor marks a villager as trading. */
 public final class QuartermasterManagement {
     public static Component text(String key,Object... args) {return Component.translatable("gui.villagerguardgunners.management."+key,args);}
     public static boolean profession(Villager v) {
         return v.isAlive()&&!v.isRemoved()&&!v.isBaby()
-                &&v.getVillagerData().getProfession()==ForgeRegistries.VILLAGER_PROFESSIONS.getValue(QuartermasterProfession.ID);
+                &&v.getVillagerData().getProfession()==BuiltInRegistries.VILLAGER_PROFESSION.get(QuartermasterProfession.ID);
     }
     public static QuartermasterBlockEntity station(Villager v) {
         if(!(v.level() instanceof ServerLevel level)||!profession(v))return null;
@@ -61,7 +61,7 @@ public final class QuartermasterManagement {
     public static boolean open(ServerPlayer player,QuartermasterBlockEntity station,Villager npc) {
         var session=new ManagementSession(player,station,npc);
         if(!session.valid(player))return false;
-        NetworkHooks.openScreen(player,new SimpleMenuProvider((id,inventory,viewer)->new QuartermasterManagementMenu(id,inventory,session),text("title")),
+        player.openMenu(new SimpleMenuProvider((id,inventory,viewer)->new QuartermasterManagementMenu(id,inventory,session),text("title")),
                 data->data.writeUUID(session.id()));
         return player.containerMenu instanceof QuartermasterManagementMenu;
     }

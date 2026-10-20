@@ -8,16 +8,16 @@ import com.mojang.logging.LogUtils;
 import com.tacz.guns.client.resource.ClientIndexManager;
 import com.tacz.guns.resource.CommonAssetsManager;
 import com.tacz.guns.resource.network.CommonNetworkCache;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 
 /** Client-only atomic publication for a completed chunked TaCZ cache. */
-@Mod.EventBusSubscriber(
+@net.neoforged.fml.common.EventBusSubscriber(
         modid = VillagerGuardGunners.MODID,
-        bus = Mod.EventBusSubscriber.Bus.FORGE,
+        bus = net.neoforged.fml.common.EventBusSubscriber.Bus.GAME,
         value = Dist.CLIENT)
 public final class TaCZGunPackSyncClient {
     private static final Logger LOGGER = LogUtils.getLogger();

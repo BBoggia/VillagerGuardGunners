@@ -92,7 +92,7 @@ final class SquadCommandAiIntegrationContractTest {
 
     @Test
     void releaseArtifactRequiresEveryStepFourRuntimeClass() throws IOException {
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(build.contains(

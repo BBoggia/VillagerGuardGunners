@@ -88,7 +88,7 @@ final class SquadPatrolRouteExecutionContractTest {
         String commands = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/command/"
                         + "GuardGunnerCommands.java");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(commands.contains("capturePatrolDiagnostics()")),

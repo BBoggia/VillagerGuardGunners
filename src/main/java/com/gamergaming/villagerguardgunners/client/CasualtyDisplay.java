@@ -2,14 +2,14 @@ package com.gamergaming.villagerguardgunners.client;
 
 import com.gamergaming.villagerguardgunners.api.GuardLifeAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderNameTagEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import tallestegg.guardvillagers.common.entities.Guard;
 
-@Mod.EventBusSubscriber(modid = "villagerguardgunners", value = Dist.CLIENT)
+@net.neoforged.fml.common.EventBusSubscriber(modid = "villagerguardgunners", value = Dist.CLIENT)
 public final class CasualtyDisplay {
     @SubscribeEvent
     public static void name(RenderNameTagEvent event) {
@@ -17,7 +17,7 @@ public final class CasualtyDisplay {
         int state = ((GuardLifeAccess)guard).villagerGuardGunners$getLifeVisual();
         if (state == 0 && com.gamergaming.villagerguardgunners.medical.TransportRuntime.busy(guard)) {
             event.setContent(guard.getDisplayName().copy().append(" — ").append(Component.translatable("entity.villagerguardgunners.life.carrier")));
-            event.setResult(Event.Result.ALLOW); return;
+            event.setCanRender(net.neoforged.neoforge.common.util.TriState.TRUE); return;
         }
         if (state < 1 || state > 3) return;
         String key = switch (state) { case 1 -> "downed"; case 2 -> "stabilized"; default -> "recovering"; };
@@ -30,6 +30,6 @@ public final class CasualtyDisplay {
         event.setContent(guard.getDisplayName().copy().append(" — ").append(Component.translatable("entity.villagerguardgunners.life." + key)));
         if (care >= 1000 && care < 4000 && net.minecraft.client.Minecraft.getInstance().crosshairPickEntity == guard)
             event.setContent(event.getContent().copy().append(" (" + care % 1000 + "%)"));
-        event.setResult(Event.Result.ALLOW);
+        event.setCanRender(net.neoforged.neoforge.common.util.TriState.TRUE);
     }
 }

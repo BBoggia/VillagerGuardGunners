@@ -9,7 +9,7 @@ import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.LivingEntity;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Fail-closed live adapter for the pure automatic-duty precedence contract. */
 public final class GuardAutomaticDutyLiveGate {

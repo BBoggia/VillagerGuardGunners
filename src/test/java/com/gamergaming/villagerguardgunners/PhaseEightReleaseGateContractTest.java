@@ -35,8 +35,9 @@ final class PhaseEightReleaseGateContractTest {
     }
 
     @Test
-    void buildSeparatesCorrectnessAndPerformanceSuites() throws IOException {
-        String build = read("build.gradle");
+    void retainedForgeBuildSeparatesCorrectnessAndPerformanceSuites() throws IOException {
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
         String compactBuild = build.replaceAll("\\s+", " ");
 
         assertAll(
@@ -112,8 +113,9 @@ final class PhaseEightReleaseGateContractTest {
     }
 
     @Test
-    void releaseCandidateEvidenceBindsTheArtifactAndPerformanceMatrix() throws IOException {
-        String build = read("build.gradle");
+    void retainedForgeReleaseCandidateEvidenceBindsTheArtifactAndPerformanceMatrix() throws IOException {
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
         String evidenceTask = build.substring(
                 build.indexOf("tasks.register('assembleReleaseCandidateEvidence')"));
 
@@ -146,8 +148,9 @@ final class PhaseEightReleaseGateContractTest {
     }
 
     @Test
-    void releaseArtifactGateRejectsDevelopmentAndLegacySurface() throws IOException {
-        String build = read("build.gradle");
+    void retainedForgeReleaseArtifactGateRejectsDevelopmentAndLegacySurface() throws IOException {
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
         String gate = build.substring(build.indexOf("tasks.register('verifyReleaseArtifact')"));
 
         assertAll(
@@ -243,14 +246,15 @@ final class PhaseEightReleaseGateContractTest {
                 () -> assertTrue(checklistText.contains("SIDEARM-CONFIG-01")),
                 () -> assertTrue(checklistText.contains("SIDEARM-RECOVERY-01")),
                 () -> assertTrue(buildContainsRequiredSidearmCases()),
-                () -> assertTrue(workflowText.contains("java-version: 17")),
+                () -> assertTrue(workflowText.contains("java-version: 21")),
                 () -> assertTrue(workflowText.contains(
-                        "./gradlew --no-daemon clean check --warning-mode all")),
+                        "./gradlew --no-daemon build")),
                 () -> assertTrue(workflowText.contains("actions/upload-artifact@v4")));
     }
 
     private static boolean buildContainsRequiredSidearmCases() throws IOException {
-        String build = read("build.gradle");
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
         return build.contains("requiredSidearmCases")
                 && build.contains("requiredSidearmCases.any");
     }

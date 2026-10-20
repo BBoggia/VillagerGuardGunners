@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Constructor-only snapshot consumption; player bullets and later damage properties stay native. */
 @Mixin(value = EntityKineticBullet.class, remap = false)
@@ -16,6 +16,17 @@ public abstract class TaCZGuardProjectileMixin {
 
     @Shadow private <T> T modifyProperty(String name, Class<T> type, T value) {
         throw new AssertionError();
+    }
+
+    @Redirect(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;"
+            + "Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;"
+            + "Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;"
+            + "Lnet/minecraft/resources/ResourceLocation;ZLcom/tacz/guns/resource/pojo/data/gun/GunData;"
+            + "Lcom/tacz/guns/resource/pojo/data/gun/BulletData;)V", at = @At(value = "INVOKE",
+            target = "Lcom/tacz/guns/entity/EntityKineticBullet;modifyProperty(Lcom/tacz/guns/api/GunProperty;Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object;"))
+    private <T> T villagerGuardGunners$useApprovedTypedProperty(EntityKineticBullet bullet,
+            com.tacz.guns.api.GunProperty<?> property, Class<T> type, T value) {
+        return villagerGuardGunners$useApprovedProperty(bullet, property.name(), type, value);
     }
 
     @Redirect(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;"

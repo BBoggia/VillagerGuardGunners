@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "ctov": "[3.4.14]"
+    "ctov": "[3.6.3]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -10,554 +10,12 @@
     "ctov:medium/village_taiga_fortified"
   ],
   "templates": {
-    "ctov:village/common/chicken": [
+    "ctov:village/taiga_fortified/deco/archeology_tent": [
       {
         "kind": "decoration",
-        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "sha256": "e957b47a6ef75ceb992eca7b34a0235924a06fb6e77228e32ab76617f32a6e2d",
         "beds": [],
         "entrances": []
-      }
-    ],
-    "ctov:village/common/cow": [
-      {
-        "kind": "decoration",
-        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/common/pig": [
-      {
-        "kind": "decoration",
-        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/common/sheep": [
-      {
-        "kind": "decoration",
-        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/common/villager/jungle": [
-      {
-        "kind": "decoration",
-        "sha256": "516b5da6a3c6c3e335ea6bedd33586fea7a039a1fa17fa584870d452b09a2aed",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/lamp_1": [
-      {
-        "kind": "decoration",
-        "sha256": "062c13fe7d15d43071a76cf4dfb3839f1a89371c9bc6cebcf056295a90ea6917",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/lamp_2": [
-      {
-        "kind": "decoration",
-        "sha256": "353fd6d35866b1d39652efa1b7649a20b385f7a77de767c09ed030d5d5ca28db",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/melon_1": [
-      {
-        "kind": "decoration",
-        "sha256": "edc524344d8e5fa7612a71c508d5d20f5735addc3e99c23216301d60493cdde6",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/melon_2": [
-      {
-        "kind": "decoration",
-        "sha256": "1ea1d52ee5e5d19ff3fe49027e3b1d656344fed83c71a717d25ed7c9358b9c9d",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/shed": [
-      {
-        "kind": "decoration",
-        "sha256": "7ba6e93a777735d95c6edd8db70361960027d45c1a62d65c315b2fa76f85b7bd",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/stall_1": [
-      {
-        "kind": "decoration",
-        "sha256": "bfb15aa9be9ffe33c4ab99a1a42fd4e8343f1e46ffbaf3710ac760b3f76bab6c",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/stall_2": [
-      {
-        "kind": "decoration",
-        "sha256": "5d8453afc4cc8e9f7076044f23a231352d5402175aaf1369130d4e6cd1432341",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/statue_1": [
-      {
-        "kind": "decoration",
-        "sha256": "92e24a06b37dbbd6863f8e4202b54f2a472e642fcd96c17b2e04f95060733891",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/statue_2": [
-      {
-        "kind": "decoration",
-        "sha256": "3562b28acc0572cf841c5bcf27a3ccdbab445285e38a1b878561758e3296482b",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/deco/well": [
-      {
-        "kind": "decoration",
-        "sha256": "27225df0b0b888eba3c351afcb2bef69382128a2bd407db9fed71b6f1c2b9e35",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "ctov:village/jungle/house/big_1": [
-      {
-        "kind": "residence",
-        "sha256": "bc6fb2772f261e0990e60e1c041ee97b388d78e8cab59435e42813a8b03b6aef",
-        "beds": [
-          [
-            8,
-            5,
-            2
-          ],
-          [
-            8,
-            5,
-            4
-          ],
-          [
-            8,
-            5,
-            10
-          ],
-          [
-            8,
-            5,
-            12
-          ]
-        ],
-        "entrances": [
-          [
-            4,
-            5,
-            7
-          ],
-          [
-            6,
-            1,
-            7
-          ],
-          [
-            10,
-            0,
-            7
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/house/med_1": [
-      {
-        "kind": "residence",
-        "sha256": "e8fb019f2f4dfe634bc11c5ab803b3437317fd8e5dbe171c1f7a09ba84e70e6a",
-        "beds": [
-          [
-            7,
-            1,
-            2
-          ],
-          [
-            8,
-            1,
-            2
-          ]
-        ],
-        "entrances": [
-          [
-            3,
-            1,
-            5
-          ],
-          [
-            5,
-            0,
-            0
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/house/med_2": [
-      {
-        "kind": "residence",
-        "sha256": "1a57efe0dfc367f0459351a60018bb6209e2adf0b512daa6fe4d38aa790ae5a9",
-        "beds": [
-          [
-            8,
-            5,
-            3
-          ],
-          [
-            8,
-            5,
-            5
-          ]
-        ],
-        "entrances": [
-          [
-            5,
-            0,
-            0
-          ],
-          [
-            5,
-            1,
-            2
-          ],
-          [
-            5,
-            5,
-            2
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/house/small_1": [
-      {
-        "kind": "residence",
-        "sha256": "2f18d58a3eb08b9e900039ce970b3bf577bfd7119ca720ff3b16ff915c7bae65",
-        "beds": [
-          [
-            4,
-            1,
-            2
-          ]
-        ],
-        "entrances": [
-          [
-            3,
-            0,
-            6
-          ],
-          [
-            3,
-            1,
-            5
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/house/small_2": [
-      {
-        "kind": "residence",
-        "sha256": "de251961b43edba6b857297c8cbce26c44f0118a0ca52c9118676ebeb4354da7",
-        "beds": [
-          [
-            2,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ]
-        ],
-        "entrances": [
-          [
-            4,
-            0,
-            7
-          ],
-          [
-            4,
-            1,
-            6
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/house/small_3": [
-      {
-        "kind": "residence",
-        "sha256": "8151633872d131525d5a207cad787c07419e9976e31524bfac7404f263a6700f",
-        "beds": [
-          [
-            5,
-            1,
-            2
-          ],
-          [
-            6,
-            1,
-            2
-          ]
-        ],
-        "entrances": [
-          [
-            4,
-            0,
-            8
-          ],
-          [
-            4,
-            1,
-            7
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/house/small_4": [
-      {
-        "kind": "residence",
-        "sha256": "b45e654952cbb57c0508b7cfbab996064306ec7c04618758b7658175588dcdaf",
-        "beds": [
-          [
-            5,
-            1,
-            2
-          ]
-        ],
-        "entrances": [
-          [
-            3,
-            0,
-            7
-          ],
-          [
-            3,
-            1,
-            6
-          ],
-          [
-            4,
-            1,
-            6
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/house/small_5": [
-      {
-        "kind": "residence",
-        "sha256": "e576ffc7f1896b108b8af5d5616e2e59564b6b8ed7bc94afee0dc17d0f03389e",
-        "beds": [
-          [
-            2,
-            1,
-            2
-          ]
-        ],
-        "entrances": [
-          [
-            3,
-            0,
-            7
-          ],
-          [
-            3,
-            1,
-            6
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/butcher": [
-      {
-        "kind": "service",
-        "sha256": "e4533560e086dd87cedd1db485c163fea82822110d477ee9bc1e24b162aa7ea4",
-        "beds": [],
-        "entrances": [
-          [
-            5,
-            2,
-            8
-          ],
-          [
-            6,
-            1,
-            11
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/cartography": [
-      {
-        "kind": "service",
-        "sha256": "67c31d2552fde2367f52f025856d04b373abed04a359acc324bb1e3690e3f174",
-        "beds": [],
-        "entrances": [
-          [
-            9,
-            1,
-            14
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/chemist": [
-      {
-        "kind": "service",
-        "sha256": "f2e44e2cc2194e2d1bc1f6c3f7ac7ac605add6a306edc2163d4bdef814f11052",
-        "beds": [],
-        "entrances": [
-          [
-            5,
-            1,
-            3
-          ],
-          [
-            6,
-            0,
-            4
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/farm": [
-      {
-        "kind": "service",
-        "sha256": "1a45b6b77d0249ea2ac297f941cd3e305a12458e2c2115fd7bf4b5c5f4fd9ef3",
-        "beds": [],
-        "entrances": [
-          [
-            5,
-            2,
-            12
-          ],
-          [
-            9,
-            1,
-            15
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/fishing_hut": [
-      {
-        "kind": "service",
-        "sha256": "8e68705b0114ce7f38f01af41142727ed72b047b6b072f83910f8c5712984fb7",
-        "beds": [],
-        "entrances": [
-          [
-            5,
-            3,
-            10
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/leather": [
-      {
-        "kind": "service",
-        "sha256": "23789fc2fef1edc759a6424ebac0839c967b11a2186a4731166f80ba171d6d6e",
-        "beds": [],
-        "entrances": [
-          [
-            5,
-            2,
-            8
-          ],
-          [
-            6,
-            1,
-            11
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/library": [
-      {
-        "kind": "service",
-        "sha256": "20e04e1f715e6babfb61396a5ea38ecf29628309364849b6dedf126b5988293d",
-        "beds": [],
-        "entrances": [
-          [
-            4,
-            0,
-            8
-          ],
-          [
-            4,
-            1,
-            7
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/mason": [
-      {
-        "kind": "service",
-        "sha256": "f2944783a5ae7242084a56a186ffcea0f2eb11dc538a640b6a8953581a22545c",
-        "beds": [],
-        "entrances": [
-          [
-            3,
-            1,
-            7
-          ],
-          [
-            8,
-            0,
-            8
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/shepherd": [
-      {
-        "kind": "service",
-        "sha256": "1abfac02890507454fd3f1a0c964f259bd4e4165ab5e6644dee1c777215aff32",
-        "beds": [],
-        "entrances": [
-          [
-            5,
-            2,
-            8
-          ],
-          [
-            6,
-            1,
-            11
-          ]
-        ]
-      }
-    ],
-    "ctov:village/jungle/jobsite/smith": [
-      {
-        "kind": "service",
-        "sha256": "87022e41d48822c2d4501254453a5a4062e5afc506e80973599b7f2b24d92565",
-        "beds": [],
-        "entrances": [
-          [
-            5,
-            0,
-            10
-          ],
-          [
-            5,
-            1,
-            3
-          ]
-        ]
       }
     ],
     "ctov:village/taiga_fortified/deco/bard_house": [
@@ -600,6 +58,20 @@
         "entrances": []
       }
     ],
+    "ctov:village/taiga_fortified/deco/climatologist": [
+      {
+        "kind": "decoration",
+        "sha256": "e49f5262bbb19aae230bbc6a432319b33889ad7c92691adf50b0d5a35726a2a1",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
     "ctov:village/taiga_fortified/deco/copper_golem": [
       {
         "kind": "decoration",
@@ -627,7 +99,7 @@
     "ctov:village/taiga_fortified/deco/garbage_heaps": [
       {
         "kind": "decoration",
-        "sha256": "38d10150fc24435c641657507c6f9ef9ebc7698651b1c82f46f2cb76b1cae533",
+        "sha256": "0705f5551583da3b0a2104e44c4cb8d3d6b7a06000f2e5f3f3e592bdcd0e2528",
         "beds": [],
         "entrances": []
       }
@@ -1850,6 +1322,41 @@
         ]
       }
     ],
+    "ctov:village/taiga_fortified/jobsite/tavern": [
+      {
+        "kind": "residence",
+        "sha256": "4aacb30672d7b6e26b004c209ea970f298d60648a28cabb07e7b38364d8550c4",
+        "beds": [
+          [
+            5,
+            6,
+            4
+          ],
+          [
+            7,
+            6,
+            4
+          ],
+          [
+            7,
+            6,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            7,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
     "ctov:village/taiga_fortified/jobsite/vault": [
       {
         "kind": "service",
@@ -1970,26 +1477,26 @@
         ]
       }
     ],
-    "ctov:village/taiga_fortified/roads/bent_1": [
+    "ctov:village/taiga_fortified/roads/corner_1": [
       {
         "kind": "road",
-        "sha256": "23d9b280663f9809274dfa790635a5087bfbe44e3ac58380f7849814e0202cce",
+        "sha256": "7fa22d73227da211c7baa8bee5155d3a91b2b6f01dd8b3663a5070928b39331d",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/taiga_fortified/roads/bent_2": [
+    "ctov:village/taiga_fortified/roads/corner_2": [
       {
         "kind": "road",
-        "sha256": "c852e527ce2b0325804be961a9b296961678a39e94c1cc90ebe88f33df02ca2a",
+        "sha256": "dc92049cc14355deedac82eda0898ea7dff9543efc11e4dc1b530805ff1bef63",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/taiga_fortified/roads/inter": [
+    "ctov:village/taiga_fortified/roads/crossroad": [
       {
         "kind": "road",
-        "sha256": "c684ea7dadf17b4ee7ec0cd6383ed7be8b5aa7d5ff4e6f6b989c6b73eb8c05e7",
+        "sha256": "f312543c670c79cdd79c37f85c019ce36f8830915fa2b7b2ff72c3734f721347",
         "beds": [],
         "entrances": []
       }
@@ -1997,7 +1504,7 @@
     "ctov:village/taiga_fortified/roads/respawn_obelisk": [
       {
         "kind": "road",
-        "sha256": "57236f728230de2b559a08e9b284fd83ab34e201a7d827cdebd958adc9333fa6",
+        "sha256": "36cbc8a58d30b97f46f537f9bb1d2a0ec50c919eff5a7b2d235e50bb60edcd02",
         "beds": [],
         "entrances": []
       }
@@ -2005,7 +1512,7 @@
     "ctov:village/taiga_fortified/roads/straight": [
       {
         "kind": "road",
-        "sha256": "13118231f9a1c554d64e4a58179bc5ba27da331fddb3586467c8048d3b14193b",
+        "sha256": "53b7c16b179ac1fe7e80125ef250b5e4545fbdd245fb21a67c775942150fcb95",
         "beds": [],
         "entrances": []
       }
@@ -2013,7 +1520,7 @@
     "ctov:village/taiga_fortified/roads/t_1": [
       {
         "kind": "road",
-        "sha256": "0af745ae4d5bb8d5f62921309239a937423ae5ce27457f3c3b3e339b5976e88e",
+        "sha256": "0fd835444b92b7eefb3eeedeab5cc7e6ca2042db00358d4585b8aa079474cc10",
         "beds": [],
         "entrances": []
       }
@@ -2021,7 +1528,7 @@
     "ctov:village/taiga_fortified/roads/t_2": [
       {
         "kind": "road",
-        "sha256": "fd4c887b42f83f511b0fae8593513d13ac4872cccd9ef8427ea80ab8736cb37f",
+        "sha256": "8a2302c6dd19456dc7fb0c9ad69d15104e7564b70d3f996bd6dc00266fb90614",
         "beds": [],
         "entrances": []
       }
@@ -2029,7 +1536,7 @@
     "ctov:village/taiga_fortified/roads/t_3": [
       {
         "kind": "road",
-        "sha256": "33a7ec32805e03fa24217ebfa76b9fd1be6a62f6d5b6879a33c821ed3cea4db2",
+        "sha256": "25ae25f04085027c65c8044340a1f509398aa02e82bd3f83b484226c6bb65708",
         "beds": [],
         "entrances": []
       }
@@ -2037,7 +1544,7 @@
     "ctov:village/taiga_fortified/roads/terminator": [
       {
         "kind": "road",
-        "sha256": "bee797acc12e4f904c93a7e565f37d96b5f86df6b5582e31dcabb39f01d9f554",
+        "sha256": "fd0a9dc1ed2f7dc04e9698e6dafc3b70281ad7355d8d28a5d3a7448cde6a1666",
         "beds": [],
         "entrances": []
       }
@@ -2053,7 +1560,7 @@
     "minecraft:village/common/animals/cat_black": [
       {
         "kind": "decoration",
-        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "sha256": "ce1c642a4a009ecf94fd2f0c93dfe7ea9cbc1b266ada6916fa2edbd82fde178e",
         "beds": [],
         "entrances": []
       }
@@ -2061,7 +1568,7 @@
     "minecraft:village/common/animals/cat_british": [
       {
         "kind": "decoration",
-        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "sha256": "256c5bac85a6ac921257a8d7c39cb480cb0e23d2ad166ce803f473b430c428a7",
         "beds": [],
         "entrances": []
       }
@@ -2069,7 +1576,7 @@
     "minecraft:village/common/animals/cat_calico": [
       {
         "kind": "decoration",
-        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "sha256": "bf9ea82c019d9e83ac2c47108b689737a1b7a73bd1b11c9ed48744b7db90a273",
         "beds": [],
         "entrances": []
       }
@@ -2077,7 +1584,7 @@
     "minecraft:village/common/animals/cat_jellie": [
       {
         "kind": "decoration",
-        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "sha256": "31ae6850c9c75d0626f3b8fc14027b3bc1906ab0d14201101a67250835aec847",
         "beds": [],
         "entrances": []
       }
@@ -2085,7 +1592,7 @@
     "minecraft:village/common/animals/cat_persian": [
       {
         "kind": "decoration",
-        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "sha256": "be7ee0101982cfc5374215e566d7282280ef5122cd351874310cd911e58c5271",
         "beds": [],
         "entrances": []
       }
@@ -2093,7 +1600,7 @@
     "minecraft:village/common/animals/cat_ragdoll": [
       {
         "kind": "decoration",
-        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "sha256": "14d14c7039371b4f08a0360eb6b5611029fb6d577a3e532f53c70d1b7a4779bd",
         "beds": [],
         "entrances": []
       }
@@ -2101,7 +1608,7 @@
     "minecraft:village/common/animals/cat_red": [
       {
         "kind": "decoration",
-        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "sha256": "d9523300a7a0cf0611562771490f3a11429d1f72dec987a88dea6538da8aed00",
         "beds": [],
         "entrances": []
       }
@@ -2109,7 +1616,7 @@
     "minecraft:village/common/animals/cat_siamese": [
       {
         "kind": "decoration",
-        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "sha256": "30ca3860e4c19669f380c5b5e01adb91112be60698c4cebd3cd94e3e391f0e9b",
         "beds": [],
         "entrances": []
       }
@@ -2117,7 +1624,7 @@
     "minecraft:village/common/animals/cat_tabby": [
       {
         "kind": "decoration",
-        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "sha256": "5a9800b43db9ebc3a0811e03d43ab7183110c32f76e727bee2bd24e387161880",
         "beds": [],
         "entrances": []
       }
@@ -2125,7 +1632,7 @@
     "minecraft:village/common/animals/cat_white": [
       {
         "kind": "decoration",
-        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "sha256": "81f96e424ee2856a15a9d6e235af3a3ca7a39b839bdbfbedf44162d29fb3cbf2",
         "beds": [],
         "entrances": []
       }
@@ -2133,7 +1640,7 @@
     "minecraft:village/common/iron_golem": [
       {
         "kind": "decoration",
-        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "sha256": "4e0c8c2fb1a5d7aa45e4918003cca74991f02ffa21284f341468d28d8db402fa",
         "beds": [],
         "entrances": []
       }
@@ -2141,7 +1648,7 @@
     "minecraft:village/taiga/villagers/baby": [
       {
         "kind": "service",
-        "sha256": "b370cbf5b332e322571a911cd74e05bbbfc8f6c18cfcd4f996b999a215b3493a",
+        "sha256": "071bad58fb289b9b3d361e55aa1504c290ac34569a97ff00e730dea6685c4c8f",
         "beds": [],
         "entrances": []
       }
@@ -2149,7 +1656,7 @@
     "minecraft:village/taiga/villagers/nitwit": [
       {
         "kind": "service",
-        "sha256": "db96c95a62fda81b9366cf61086dfc78655c875b418b7e64ec00bbeb701e64c9",
+        "sha256": "a5a7e442e9c35389e2ee3ea02a35ef49622b52c44ac518aaf16e584dde88acd2",
         "beds": [],
         "entrances": []
       }
@@ -2157,7 +1664,7 @@
     "minecraft:village/taiga/villagers/unemployed": [
       {
         "kind": "service",
-        "sha256": "275183d9e98a8094e1ce3afadefb43ab84058ac8c2edc5cd923aa5117f73b855",
+        "sha256": "6dcc371a6906cb511809401a1b30ec9a3bbcac0f287cad1d2eba480854b68654",
         "beds": [],
         "entrances": []
       }

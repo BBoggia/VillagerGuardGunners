@@ -58,7 +58,7 @@ final class VillagePopulationTest {
         var data=new VillagePopulationSavedData(DIM);assertTrue(data.freeze(plan));
         for(int i=0;i<64;i++)assertTrue(data.consume(ID.id(),source.id(),i,plan.slot(source.id(),i)));
         assertFalse(data.consume(ID.id(),source.id(),64,UUID.randomUUID()));
-        var loaded=VillagePopulationSavedData.load(data.save(new CompoundTag()),DIM);
+        var loaded=VillagePopulationSavedData.load(data.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())),DIM);
         assertEquals(64,loaded.spent(ID.id()));
         assertEquals(plan,loaded.plan(ID.id()));
         for(int i=0;i<64;i++)assertFalse(loaded.consume(ID.id(),source.id(),i,UUID.randomUUID()));
@@ -91,7 +91,7 @@ final class VillagePopulationTest {
         old.putInt("Version", 1);
         old.getList("Sources", net.minecraft.nbt.Tag.TAG_COMPOUND).forEach(tag -> ((CompoundTag) tag).remove("Residence"));
         var file = directory.resolve("village_" + ID.id() + ".dat");
-        net.minecraft.nbt.NbtIo.writeCompressed(old, file.toFile());
+        net.minecraft.nbt.NbtIo.writeCompressed(old, file);
         byte[] original = java.nio.file.Files.readAllBytes(file);
         var migrated = VillagePopulationCodec.decode(old, DIM);
         assertEquals(plan, migrated);
@@ -144,7 +144,7 @@ final class VillagePopulationTest {
         assertTrue(data.consume(ID.id(), source.id(), 0, guard));
         assertFalse(data.consume(ID.id(), source.id(), 0, UUID.randomUUID()));
         data.confirmedDeath(guard); data.confirmedDeath(guard);
-        var loaded = VillagePopulationSavedData.load(data.save(new CompoundTag()), DIM);
+        var loaded = VillagePopulationSavedData.load(data.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())), DIM);
         assertTrue(loaded.enabled()); assertEquals(0, loaded.living(ID.id())); assertEquals(1, loaded.spent(ID.id()));
         assertFalse(loaded.observe(guard, ID.id()));
         assertEquals(guard, loaded.credit(plan.slot(source.id(), 0)).guard());
@@ -160,9 +160,9 @@ final class VillagePopulationTest {
     @Test void codecRoundTripsAndPreservesUnrecognizedSavedData() {
         var plan = sample(); assertEquals(plan, VillagePopulationCodec.decode(VillagePopulationCodec.encode(plan), DIM));
         var data = new VillagePopulationSavedData(DIM); data.freeze(plan);
-        CompoundTag tag = data.save(new CompoundTag()); tag.putInt("Version", 2);
+        CompoundTag tag = data.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())); tag.putInt("Version", 2);
         var future = VillagePopulationSavedData.load(tag, DIM);
-        assertFalse(future.enabled()); assertEquals(tag, future.save(new CompoundTag())); assertFalse(future.freeze(plan));
+        assertFalse(future.enabled()); assertEquals(tag, future.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))); assertFalse(future.freeze(plan));
         tag.putInt("Version", 1); tag.putString("Dimension", "minecraft:the_nether");
         assertFalse(VillagePopulationSavedData.load(tag, DIM).enabled());
         var bad = VillagePopulationCodec.encode(plan); bad.putInt("Target", 0);

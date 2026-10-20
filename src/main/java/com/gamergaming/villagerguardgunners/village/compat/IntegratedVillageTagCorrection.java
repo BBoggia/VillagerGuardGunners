@@ -5,7 +5,7 @@ import java.util.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagLoader;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 
 /** Correct only the verified broken resource before TagLoader resolves required references. */
 public final class IntegratedVillageTagCorrection {
@@ -21,7 +21,7 @@ public final class IntegratedVillageTagCorrection {
     }
     public static void correct(ResourceManager resources, Map<ResourceLocation, List<TagLoader.EntryWithSource>> tags, boolean missingExists) {
         var mods = ModList.get();
-        var mod = mods == null ? Optional.<net.minecraftforge.fml.ModContainer>empty() : mods.getModContainerById("integrated_villages");
+        var mod = mods == null ? Optional.<net.neoforged.fml.ModContainer>empty() : mods.getModContainerById("integrated_villages");
         if (mod.isEmpty()) { status = Map.of("state", "optional_mod_absent"); return; }
         String version = mod.get().getModInfo().getVersion().toString();
         String forge = mods.getModContainerById("forge").map(m -> m.getModInfo().getVersion().toString()).orElse("");

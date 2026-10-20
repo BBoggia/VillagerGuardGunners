@@ -26,7 +26,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.gametest.*;
 import net.minecraftforge.registries.ForgeRegistries;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder(VillagerGuardGunners.MODID)
 @PrefixGameTestTemplate(false)
@@ -178,7 +178,7 @@ public final class QuartermasterServiceGameTests {
     @GameTest(templateNamespace = "minecraft", template = TEMPLATE)
     public static void failedSourceMutationRollsBackAndQuarantines(GameTestHelper h) {
         try (var f = fixture(h)) { ItemStack stock = gun("ak47"); f.station.inventory().setStackInSlot(0, stock.copy()); var base = plan(f);
-        var faulty = new net.minecraftforge.items.ItemStackHandler(27) {
+        var faulty = new net.neoforged.neoforge.items.ItemStackHandler(27) {
             boolean fail = true;
             @Override public ItemStack getStackInSlot(int slot) { return f.station.inventory().getStackInSlot(slot); }
             @Override public void setStackInSlot(int slot, ItemStack stack) {

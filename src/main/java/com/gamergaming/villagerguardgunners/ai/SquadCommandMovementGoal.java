@@ -9,7 +9,7 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Owns only positional command movement while a guard is outside combat. */
 public final class SquadCommandMovementGoal extends Goal {

@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(LootPoolEntryContainer.class)
 public interface LootPoolEntryAccessor {
     @Accessor("conditions")
-    LootItemCondition[] villagerGuardGunners$getConditions();
+    java.util.List<LootItemCondition> villagerGuardGunners$getConditions();
 }

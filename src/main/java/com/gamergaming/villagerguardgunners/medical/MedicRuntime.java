@@ -7,13 +7,13 @@ import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Loaded-only triage with exclusive, transient treatment leases. No chunk requests or item snapshots persist. */
 public final class MedicRuntime {
@@ -57,8 +57,8 @@ public final class MedicRuntime {
         state.retreats.remove(guard.getUUID()); state.retreats.values().removeIf(value -> value.medic() == guard);
     }
     private static void removeCell(State state, long cell, UUID id) { var ids = state.cells.get(cell); if (ids != null) { ids.remove(id); if (ids.isEmpty()) state.cells.remove(cell); } }
-    public static void damaged(LivingDamageEvent event) {
-        if (!event.isCanceled() && event.getAmount() > 0 && event.getEntity() instanceof Guard guard && guard.level() instanceof ServerLevel) {
+    public static void damaged(LivingDamageEvent.Post event) {
+        if (event.getNewDamage() > 0 && event.getEntity() instanceof Guard guard && guard.level() instanceof ServerLevel) {
             GuardMedicAccess.get(guard).damageRevision++; repair(guard); if (state(guard).guards.containsKey(guard.getUUID())) state(guard).injured.add(guard.getUUID()); cancel(guard, MedicState.Status.INTERRUPTED);
         }
     }
@@ -194,8 +194,8 @@ public final class MedicRuntime {
         if (destination == null) { state.retreats.remove(guard.getUUID()); medical.status = MedicState.Status.NO_SAFE_DESTINATION; }
         else { state.retreats.putIfAbsent(guard.getUUID(), new Retreat(destination, guard.level().getGameTime() + 240)); medical.status = MedicState.Status.RETREAT; }
     }
-    public static void tick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.getServer().getTickCount() % 10 != 0) return;
+    public static void tick(ServerTickEvent.Post event) {
+        if (event.getServer().getTickCount() % 10 != 0) return;
         for (var level : event.getServer().getAllLevels()) {
             var state = LEVELS.get(level); if (state == null) continue;
             for (var lease : List.copyOf(state.patients.values())) if (!valid(lease)) cancel(lease.medic, MedicState.Status.INTERRUPTED);

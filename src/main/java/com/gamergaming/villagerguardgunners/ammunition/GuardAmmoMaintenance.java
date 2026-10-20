@@ -6,7 +6,7 @@ import com.tacz.guns.api.item.IAmmo;
 import com.tacz.guns.api.item.IAmmoBox;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Event-driven maintenance for the guard's small dedicated ammunition
@@ -80,7 +80,7 @@ public final class GuardAmmoMaintenance {
                 ItemStack extracted = handler.extractItem(slot, original.getCount(), false);
                 if (extracted.isEmpty()
                         || extracted.getCount() != original.getCount()
-                        || !ItemStack.isSameItemSameTags(original, extracted)) {
+                        || !ItemStack.isSameItemSameComponents(original, extracted)) {
                     handler.setStackInSlot(slot, original);
                     continue;
                 }
@@ -89,7 +89,7 @@ public final class GuardAmmoMaintenance {
                 // spawnAtLocation returns an entity even if Forge cancels
                 // its world insertion. Drop capture is a valid handoff too.
                 if (droppedBox == null
-                        || (!droppedBox.isAddedToWorld()
+                        || (!(droppedBox.level().getEntity(droppedBox.getId()) == droppedBox)
                                 && (guard.captureDrops() == null
                                         || !guard.captureDrops().contains(droppedBox)))) {
                     handler.setStackInSlot(slot, original);

@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.api;
 
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Mixin-backed persistent access to one guard's immutable orders. */
 public interface GuardOrdersAccess {

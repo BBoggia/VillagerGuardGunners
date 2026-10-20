@@ -8,9 +8,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.*;
 import net.minecraft.server.packs.resources.*;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.event.*;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.neoforge.event.*;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.fml.ModList;
 
 /** Stage complete profiles during reload; publish once server tags have been bound. */
 public final class SettlementDefinitions extends SimplePreparableReloadListener<SettlementDefinitions.Prepared> {
@@ -47,7 +47,7 @@ public final class SettlementDefinitions extends SimplePreparableReloadListener<
         java.util.function.Function<String, PieceMeaning.ResourceEvidence> resolve = id -> evidence.computeIfAbsent(id, template -> {
             if (evidence.size() >= 16_384) throw new IllegalArgumentException("Too many template resources");
             var name = ResourceLocation.parse(template);
-            var resource = manager.getResource(ResourceLocation.parse(name.getNamespace() + ":structures/" + name.getPath() + ".nbt"));
+            var resource = manager.getResource(ResourceLocation.parse(name.getNamespace() + ":structure/" + name.getPath() + ".nbt"));
             if (resource.isEmpty()) return new PieceMeaning.ResourceEvidence("missing", "");
             try (var input = resource.get().open()) {
                 byte[] bytes = input.readNBytes(2_097_153);

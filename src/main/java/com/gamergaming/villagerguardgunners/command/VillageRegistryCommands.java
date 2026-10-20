@@ -12,7 +12,7 @@ import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ChunkPos;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Read-only, permission-level-2 diagnostics inherited from the /vgg root. */
 final class VillageRegistryCommands {

@@ -183,7 +183,7 @@ final class VillageBuildingAnchorTest {
         assertEquals(
                 VillageBuildingSavedData.ClaimResult.CLAIMED,
                 source.claimAnchor(borderIdentity, pending));
-        CompoundTag encoded = source.save(new CompoundTag());
+        CompoundTag encoded = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         VillageBuildingSavedData loaded = VillageBuildingSavedData.loadForLevel(
                 encoded, DIMENSION, 42L);
         VillageBuildingRecord loadedRecord = loaded.get(borderIdentity.buildingId());
@@ -265,7 +265,7 @@ final class VillageBuildingAnchorTest {
         VillageBuildingSavedData source = new VillageBuildingSavedData();
         VillageBuildingIdentity identity = identity();
         source.claimAnchor(identity);
-        CompoundTag legacy = source.save(new CompoundTag());
+        CompoundTag legacy = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         legacy.putInt("Version", VillageBuildingSavedData.LEGACY_DATA_VERSION);
 
         VillageBuildingSavedData migrated = VillageBuildingSavedData.loadForLevel(
@@ -278,7 +278,7 @@ final class VillageBuildingAnchorTest {
                         .pendingActivation().isEmpty()),
                 () -> assertEquals(
                         VillageBuildingSavedData.DATA_VERSION,
-                        migrated.save(new CompoundTag()).getInt("Version")));
+                        migrated.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())).getInt("Version")));
     }
 
     @Test
@@ -401,7 +401,7 @@ final class VillageBuildingAnchorTest {
         source.claimAnchor(identity);
         source.claimAction(identity.buildingId(), VillageBuildingAction.ARMORY);
         source.claimAction(identity.buildingId(), VillageBuildingAction.INITIAL_STOCK);
-        CompoundTag encoded = source.save(new CompoundTag());
+        CompoundTag encoded = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
 
         VillageBuildingSavedData loaded = VillageBuildingSavedData.load(encoded);
         VillageBuildingSavedData levelValidated = VillageBuildingSavedData.loadForLevel(
@@ -434,16 +434,16 @@ final class VillageBuildingAnchorTest {
                 () -> assertEquals(source.get(identity.buildingId()),
                         loaded.get(identity.buildingId())),
                 () -> assertFalse(disabledFuture.enabled()),
-                () -> assertEquals(future, disabledFuture.save(new CompoundTag())),
+                () -> assertEquals(future, disabledFuture.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))),
                 () -> assertEquals(
                         VillageBuildingSavedData.ClaimResult.DISABLED,
                         disabledFuture.claimAnchor(identity)),
                 () -> assertFalse(disabledWrongList.enabled()),
                 () -> assertEquals(wrongListType,
-                        disabledWrongList.save(new CompoundTag())),
+                        disabledWrongList.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))),
                 () -> assertFalse(disabledDuplicate.enabled()),
                 () -> assertEquals(duplicated,
-                        disabledDuplicate.save(new CompoundTag())));
+                        disabledDuplicate.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))));
     }
 
     private static VillageBuildingIdentity identity() {

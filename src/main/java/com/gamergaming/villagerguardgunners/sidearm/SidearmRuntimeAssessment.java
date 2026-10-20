@@ -11,7 +11,7 @@ import com.tacz.guns.resource.pojo.data.gun.GunData;
 import java.util.Set;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** On-demand compatibility and ammunition check for one stored sidearm. */
 public final class SidearmRuntimeAssessment {

@@ -3,7 +3,7 @@ package com.gamergaming.villagerguardgunners.ai.navigation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Proximity is arrival only on the actual floor and across a clear final approach. */
 public final class GuardRouteArrival {

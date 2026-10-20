@@ -6,7 +6,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Server-thread-only, value-only leases. Worlds are weak keys; each world retains at most 128. */
 public final class FiringPositionReservations {

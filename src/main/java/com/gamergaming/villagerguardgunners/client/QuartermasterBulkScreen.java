@@ -72,7 +72,7 @@ public final class QuartermasterBulkScreen extends AbstractContainerScreen<Quart
         apply.setTooltip(Tooltip.create(text("apply_help")));
     }
     @Override protected void containerTick(){super.containerTick();update();}
-    @Override public void render(GuiGraphics g,int x,int y,float partial){renderBackground(g);super.render(g,x,y,partial);renderTooltip(g,x,y);}
+    @Override public void render(GuiGraphics g,int x,int y,float partial){super.render(g,x,y,partial);renderTooltip(g,x,y);}
     @Override protected void renderBg(GuiGraphics g,float partial,int x,int y) {
         g.fill(leftPos,topPos,leftPos+imageWidth,topPos+imageHeight,0xff373737);
         g.fill(leftPos+1,topPos+1,leftPos+imageWidth-1,topPos+imageHeight-1,0xffeeeeee);

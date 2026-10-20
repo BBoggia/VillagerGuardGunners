@@ -8,11 +8,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.*;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.*;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.gametest.*;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 import java.util.function.Consumer;
 
 @GameTestHolder(VillagerGuardGunners.MODID)
@@ -27,7 +27,7 @@ public final class MedicAiGameTests {
     private static MedicRuntime.Lease prepare(GameTestHelper h,Fixture f){h.assertTrue(MedicRuntime.reserve(f.medic,f.patient),"Reservation rejected");var lease=MedicRuntime.lease(f.medic);MedicRuntime.treat(lease);h.assertTrue(lease.preparedAt>=0,"Channel did not start");return lease;}
     private static void finish(MedicRuntime.Lease lease){lease.preparedAt-=40;MedicRuntime.treat(lease);}
     private static int doses(Fixture f){return GuardMedicalAccess.get(f.medic).inventory().getStackInSlot(0).getCount();}
-    private static void listener(Consumer<LivingHealEvent> listener,Runnable run){MinecraftForge.EVENT_BUS.addListener(listener);try{run.run();}finally{MinecraftForge.EVENT_BUS.unregister(listener);}}
+    private static void listener(Consumer<LivingHealEvent> listener,Runnable run){NeoForge.EVENT_BUS.addListener(listener);try{run.run();}finally{NeoForge.EVENT_BUS.unregister(listener);}}
     @GameTest(templateNamespace="minecraft",template=TEMPLATE,setupTicks=50)
     public static void channelWaitsAndConsumesOneDose(GameTestHelper h){try(var f=fixture(h)){var lease=prepare(h,f);MedicRuntime.treat(lease);h.assertTrue(f.patient.getHealth()==8&&doses(f)==3,"Early treatment");finish(lease);h.assertTrue(f.patient.getHealth()==12&&doses(f)==2&&MedicRuntime.lease(f.medic)==null,"Dose or lease incorrect");h.succeed();}}
     @GameTest(templateNamespace="minecraft",template=TEMPLATE,setupTicks=50)

@@ -3,7 +3,7 @@ package com.gamergaming.villagerguardgunners.spawn;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import java.util.Objects;
 import javax.annotation.Nullable;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** On-demand natural-loadout state used by explicit administrator diagnostics. */
 public final class NaturalGuardLoadoutDiagnostics {

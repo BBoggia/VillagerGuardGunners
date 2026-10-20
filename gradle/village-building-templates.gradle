@@ -433,7 +433,7 @@ ext.generateVillageBuildingResources = { Map root, File outputDirectory ->
 
             File template = new File(
                     outputDirectory,
-                    "data/villagerguardgunners/structures/${job.templatePath}.nbt")
+                    "data/villagerguardgunners/structure/${job.templatePath}.nbt")
             template.parentFile.mkdirs()
             template.withOutputStream { fileStream ->
                 new java.util.zip.GZIPOutputStream(fileStream).withCloseable { gzipStream ->

@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.squad;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.init.ModItems;
@@ -18,7 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** One-shot, bounded dispatch of temporary commands to loaded squad members. */
 public final class SquadCommandDispatcher {
@@ -48,7 +49,7 @@ public final class SquadCommandDispatcher {
         ServerLevel level = (ServerLevel) player.level();
         MinecraftServer server = level.getServer();
         SquadLedgerBindingCodec.DecodeResult decoded =
-                SquadLedgerBindingCodec.readFrom(ledger.getTag());
+                SquadLedgerBindingCodec.readFrom(ItemCustomData.read(ledger));
         if (decoded.status() == SquadLedgerBindingCodec.DecodeStatus.BLANK) {
             return DispatchResult.failed(DispatchStatus.BLANK_LEDGER, type);
         }

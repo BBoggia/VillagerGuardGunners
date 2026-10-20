@@ -38,7 +38,7 @@ final class GuardAmmoSharingContractTest {
                 () -> assertTrue(sharing.contains("GuardWeaponAmmunition.assessDonorReserve(")),
                 () -> assertTrue(sharing.contains("reserve.shareableUnits()")),
                 () -> assertTrue(sharing.contains("ammunitionTemplate")),
-                () -> assertTrue(sharing.contains("ItemStack.isSameItemSameTags")),
+                () -> assertTrue(sharing.contains("ItemStack.isSameItemSameComponents")),
                 () -> assertTrue(sharing.contains("instanceof IAmmo")),
                 () -> assertTrue(sharing.contains("instanceof IAmmoBox")),
                 () -> assertTrue(sharing.contains("AmmoCompatibility.assess(recipientGun, candidate)")),

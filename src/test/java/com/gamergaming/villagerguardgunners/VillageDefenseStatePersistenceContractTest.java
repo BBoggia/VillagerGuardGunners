@@ -54,7 +54,7 @@ final class VillageDefenseStatePersistenceContractTest {
                 () -> assertFalse(savedData.contains("getEntities")),
                 () -> assertFalse(savedData.contains("getChunk(")),
                 () -> assertTrue(ticker.contains("NEXT_REVIEWS")),
-                () -> assertTrue(ticker.contains("TickEvent.Phase.END")),
+                () -> assertTrue(ticker.contains("ServerTickEvent.Post")),
                 () -> assertTrue(ticker.contains("onServerStarted(")),
                 () -> assertTrue(ticker.contains("onServerStopping(")),
                 () -> assertFalse(ticker.contains("getEntities")),

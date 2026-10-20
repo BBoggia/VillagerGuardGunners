@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.api;
 
 import com.gamergaming.villagerguardgunners.quartermaster.service.GuardServiceState;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 public interface GuardEquipmentServiceAccess {
     GuardServiceState villagerGuardGunners$getEquipmentService();

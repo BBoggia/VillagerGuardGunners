@@ -8,13 +8,13 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Same pose on both upstream skins; the original entity retains its normal selectable hitbox. */
 @Mixin(LivingEntityRenderer.class)
 public abstract class CasualtyRendererMixin {
     @Inject(method = "setupRotations", at = @At("HEAD"), cancellable = true)
-    private void vgg$cotPose(LivingEntity entity, PoseStack pose, float age, float yaw, float partialTick, CallbackInfo ci) {
+    private void vgg$cotPose(LivingEntity entity, PoseStack pose, float age, float yaw, float partialTick, float scale, CallbackInfo ci) {
         if (!(entity instanceof Guard guard) || !guard.isAlive()) return;
         var head = ((GuardLifeAccess) guard).villagerGuardGunners$getCotVisual();
         if (head.isEmpty() || !guard.level().hasChunkAt(head.get())) return;
@@ -29,7 +29,7 @@ public abstract class CasualtyRendererMixin {
         ci.cancel();
     }
     @Inject(method = "setupRotations", at = @At("TAIL"))
-    private void vgg$casualtyPose(LivingEntity entity, PoseStack pose, float age, float yaw, float partialTick, CallbackInfo ci) {
+    private void vgg$casualtyPose(LivingEntity entity, PoseStack pose, float age, float yaw, float partialTick, float scale, CallbackInfo ci) {
         if (entity instanceof Guard guard && ((GuardLifeAccess)guard).villagerGuardGunners$getLifeVisual() != 0 && guard.isAlive()
                 && ((GuardLifeAccess)guard).villagerGuardGunners$getCotVisual().isEmpty()) {
             pose.translate(0, .3, 0); pose.mulPose(Axis.ZP.rotationDegrees(90));

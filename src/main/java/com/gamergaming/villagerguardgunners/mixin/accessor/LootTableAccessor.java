@@ -14,5 +14,5 @@ public interface LootTableAccessor {
     List<LootPool> villagerGuardGunners$getPools();
 
     @Accessor("functions")
-    LootItemFunction[] villagerGuardGunners$getFunctions();
+    java.util.List<LootItemFunction> villagerGuardGunners$getFunctions();
 }

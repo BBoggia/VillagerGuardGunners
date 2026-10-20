@@ -32,7 +32,7 @@ final class SquadCommandLedgerRegistrationContractTest {
                         "event.accept(SQUAD_COMMAND_LEDGER.get())")),
                 () -> assertTrue(item.contains("public boolean isFoil(ItemStack stack)")),
                 () -> assertTrue(item.contains(
-                        "SquadLedgerBindingCodec.readFrom(stack.getTag())")),
+                        "SquadLedgerBindingCodec.readFrom(ItemCustomData.read(stack))")),
                 () -> assertFalse(item.contains("getEntitiesOfClass(")),
                 () -> assertFalse(item.contains("Packet")),
                 () -> assertFalse(item.contains("tick(")));
@@ -41,7 +41,7 @@ final class SquadCommandLedgerRegistrationContractTest {
     @Test
     void ledgerHasRecipeModelAndCompleteEnglishFeedback() throws IOException {
         String recipe = read(
-                "src/main/resources/data/villagerguardgunners/recipes/"
+                "src/main/resources/data/villagerguardgunners/recipe/"
                         + "squad_command_ledger.json");
         String model = read(
                 "src/main/resources/assets/villagerguardgunners/models/item/"
@@ -69,13 +69,13 @@ final class SquadCommandLedgerRegistrationContractTest {
 
     @Test
     void releaseArtifactRequiresTheCompleteSquadLedgerSurface() throws IOException {
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(build.contains(
                         "assets/villagerguardgunners/models/item/squad_command_ledger.json")),
                 () -> assertTrue(build.contains(
-                        "data/villagerguardgunners/recipes/squad_command_ledger.json")),
+                        "data/villagerguardgunners/recipe/squad_command_ledger.json")),
                 () -> assertTrue(build.contains(
                         "com/gamergaming/villagerguardgunners/api/GuardSquadAccess.class")),
                 () -> assertTrue(build.contains(

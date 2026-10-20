@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "ctov": "[3.4.14]"
+    "ctov": "[3.6.3]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -42,6 +42,14 @@
         "entrances": []
       }
     ],
+    "ctov:village/desert/deco/archeology_tent": [
+      {
+        "kind": "decoration",
+        "sha256": "6ea5005f3e490a732bec38e00e9fa45089e9f2eccd87e595dfa0f10ec045b22a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
     "ctov:village/desert/deco/bard_house": [
       {
         "kind": "decoration",
@@ -74,10 +82,24 @@
         "entrances": []
       }
     ],
+    "ctov:village/desert/deco/climatologist": [
+      {
+        "kind": "decoration",
+        "sha256": "cc30d37c47387a02b8d3ed48d14631e41a9643a4ea0e718a0c36b168884a6b6b",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
     "ctov:village/desert/deco/copper_golem": [
       {
         "kind": "decoration",
-        "sha256": "5392f34eab4d9ced1c5d9389be679f14401160fad6139c5996c70fa5270e1ed2",
+        "sha256": "7153f6baedde85fec0059a6dc84ddd2fde9e0cca3c716d0fde1c15ce9be2d4af",
         "beds": [],
         "entrances": []
       }
@@ -85,7 +107,7 @@
     "ctov:village/desert/deco/garbage_heaps": [
       {
         "kind": "decoration",
-        "sha256": "69a04bb88862eab201273e4d6395b786e465a34b3ab7848c1a240f4fd9e7f6fd",
+        "sha256": "badc9e5e36a06fa88fceb07072219cdee5187d58a27444b35a05aaa79079cb2e",
         "beds": [],
         "entrances": []
       }
@@ -157,7 +179,7 @@
     "ctov:village/desert/deco/obelisk": [
       {
         "kind": "decoration",
-        "sha256": "70bae7dae0627fc8bc5dfc1d78539ea9fda6421bc71d07b953f41fcabc0c7938",
+        "sha256": "bda01f189c43d5c9b31bea8a5074e891f42994b5152707a40c8821f56be39d08",
         "beds": [],
         "entrances": []
       }
@@ -221,7 +243,7 @@
     "ctov:village/desert/house/big_1": [
       {
         "kind": "residence",
-        "sha256": "ec611e5ec418554ca765f2a7a055f3de59a77d015dba752d7bec990e47300bfa",
+        "sha256": "09797af08684e038ff4a760e392d8b64476f49f9b166f68b00f08ce462f2e438",
         "beds": [
           [
             1,
@@ -266,7 +288,7 @@
     "ctov:village/desert/house/big_2": [
       {
         "kind": "residence",
-        "sha256": "004dd6837eb31c59df5413fa79ad485eb6c86731cac0f35e7a6d9070c83c09f6",
+        "sha256": "16c1eeb99b13feb451723611fcf930c670cfba35856b126466230d47573db972",
         "beds": [
           [
             1,
@@ -296,7 +318,7 @@
     "ctov:village/desert/house/med_1": [
       {
         "kind": "residence",
-        "sha256": "ec2d934020cc2174d25981f102f20fa4da01140d15257f15794eb5dd8045687d",
+        "sha256": "71dc179ce7eac9d31d7fa17f0d28142c90a6a7a791efd219b9082fd089732d98",
         "beds": [
           [
             7,
@@ -321,7 +343,7 @@
     "ctov:village/desert/house/med_2": [
       {
         "kind": "residence",
-        "sha256": "cc430c0d85f0a5fc3fa237066c402454d5a415264c0d53c2c03ff6a7f50610c4",
+        "sha256": "973d6d64c1717c3bd34ddf029c170d80eca7d4ef6e7d23a4c7fe4cc6745ce35b",
         "beds": [
           [
             10,
@@ -351,7 +373,7 @@
     "ctov:village/desert/house/med_3": [
       {
         "kind": "residence",
-        "sha256": "069fe7cd26eb5a8ace3de3cc2048d62afcee4a86fdd310c4fcca1ed6d98a9709",
+        "sha256": "1580789acff0670bca18b7c9481360c26cf3031b96c4a0d21a1e1971e653744e",
         "beds": [
           [
             6,
@@ -381,7 +403,7 @@
     "ctov:village/desert/house/small_1": [
       {
         "kind": "residence",
-        "sha256": "35bbea21981a7dd123755990fb19ddb095ba1e691ffe8449ee51ba2496c99da6",
+        "sha256": "08a970ac2bc33c5474d39d462960d09bfdbc6e69cf5b43558449daa86e5d9ca9",
         "beds": [
           [
             1,
@@ -406,7 +428,7 @@
     "ctov:village/desert/house/small_2": [
       {
         "kind": "residence",
-        "sha256": "711589dfce87cee44aeeb6ca0b3292b896743ff3fd8d6d6295cc666c87e6bbf7",
+        "sha256": "cba476318f841e4938b827ace73e5b230221473bf0d12c1b528ac2391af47886",
         "beds": [
           [
             6,
@@ -431,7 +453,7 @@
     "ctov:village/desert/house/small_3": [
       {
         "kind": "residence",
-        "sha256": "7ff68343a3d624432ccd90ebc285c3f3c33ef9812cf9d9ff5c83209c0e9c335c",
+        "sha256": "336e014cf972b1cce23af84b277d433d701d38401b16338b95eaf37b81b24915",
         "beds": [
           [
             5,
@@ -466,7 +488,7 @@
     "ctov:village/desert/house/small_4": [
       {
         "kind": "residence",
-        "sha256": "26b7e6410452abf5cc604ff80b3c232b88a1ff222feccf93fbdfe5ed35592a63",
+        "sha256": "975b835d85e2cc55836da832a5afb23cbddb9e636bbc3b735b570d983973ed4f",
         "beds": [
           [
             6,
@@ -496,7 +518,7 @@
     "ctov:village/desert/house/small_5": [
       {
         "kind": "residence",
-        "sha256": "5b977ec48c5892c1e7239a55f6da7cdfffe7ae4bef726a175df5e4928db9c473",
+        "sha256": "d0f8741f2ca5f4c82724fe22c3ac743e81b5a35885aeb7d1990781f3aee08739",
         "beds": [
           [
             4,
@@ -533,6 +555,20 @@
             3,
             1,
             0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/animal_pen": [
+      {
+        "kind": "service",
+        "sha256": "2d9cf6dc4217362f3592b2ff30829a3680c9069f693cbff5222ca53420b159a5",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
           ]
         ]
       }
@@ -608,7 +644,7 @@
     "ctov:village/desert/jobsite/bakery": [
       {
         "kind": "service",
-        "sha256": "d2ea7229cd5423331b15e657d2d3b0a4d279e89503b117eb7025f8f252caf75c",
+        "sha256": "814761c376c8479f043350712d95e8ec9a59fbfae7576eeadb8afd71fe417816",
         "beds": [],
         "entrances": [
           [
@@ -703,18 +739,13 @@
     "ctov:village/desert/jobsite/chemist": [
       {
         "kind": "service",
-        "sha256": "85d80521a59eb1821a9bcdd91e36353d37956f1be488e296bb7aa5c49b806893",
+        "sha256": "f8cf4e94ba0db364004660c005b811fc8f21df73f454205e658e53f0d200da8e",
         "beds": [],
         "entrances": [
           [
-            6,
-            0,
-            0
-          ],
-          [
-            8,
+            4,
             1,
-            1
+            0
           ]
         ]
       }
@@ -755,7 +786,7 @@
     "ctov:village/desert/jobsite/engineer": [
       {
         "kind": "service",
-        "sha256": "f6b8dc2cae7417965579d5a65ec0ecb5ed763c9d32edebce1800fca1e675ea6e",
+        "sha256": "9d1d41d38814d6457bba37e043f9a36832b8f11778941469fcbbdfceaad7fa10",
         "beds": [],
         "entrances": [
           [
@@ -798,18 +829,13 @@
     "ctov:village/desert/jobsite/farm": [
       {
         "kind": "service",
-        "sha256": "e8a59743a5843c4d619f46760cf00046c6a604f54e300393ed64e6032098f943",
+        "sha256": "e497bd9518540f22091167de8c15b185312a7f4687d04231800cb158728f7958",
         "beds": [],
         "entrances": [
           [
-            2,
-            2,
-            8
-          ],
-          [
-            12,
+            4,
             1,
-            6
+            0
           ]
         ]
       }
@@ -817,18 +843,13 @@
     "ctov:village/desert/jobsite/fd_farm": [
       {
         "kind": "service",
-        "sha256": "3e6dd00ff53017aabed7938a82925ebc581d19fb26bcb554b1900f6c52f93793",
+        "sha256": "46fe86e766b2181adb574dea5863003db3e8c858ab24c7b4893eaa38645b8c54",
         "beds": [],
         "entrances": [
           [
+            4,
             2,
-            3,
-            8
-          ],
-          [
-            12,
-            2,
-            6
+            0
           ]
         ]
       }
@@ -836,7 +857,7 @@
     "ctov:village/desert/jobsite/fishing_oasis": [
       {
         "kind": "service",
-        "sha256": "0472a27c5b40ffd42b157cd2359b2dddf30c65ca04cc18b30f918da954a8d34e",
+        "sha256": "68cd2535659fe585cedfdfd7639d0dabef8bbd87d3f40a118d83d88766623151",
         "beds": [],
         "entrances": [
           [
@@ -847,6 +868,20 @@
           [
             7,
             3,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/fletcher": [
+      {
+        "kind": "service",
+        "sha256": "187885c46a058ea6d77b301d46c47570ad42be00158dea5592c54b4787933002",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
             0
           ]
         ]
@@ -930,7 +965,7 @@
     "ctov:village/desert/jobsite/hunter": [
       {
         "kind": "service",
-        "sha256": "f8cfa69eb109b9c5e205064537fe3d3f9cc98707e74884594ee7810b93dcbab4",
+        "sha256": "4ae1df8d7ebf1901a4bf9fe1475e703f6feb37a22bd851d243feee8e7e4ffce1",
         "beds": [],
         "entrances": [
           [
@@ -973,7 +1008,7 @@
     "ctov:village/desert/jobsite/imengineer": [
       {
         "kind": "service",
-        "sha256": "7ac47b15a1320324c63d95b340fba5e4bcd577d1a745d882cec7a7a9e1a44a42",
+        "sha256": "08509078b18468422df3e8f387bf6b7e71457bcacd8dff821d412270e37b9802",
         "beds": [],
         "entrances": [
           [
@@ -1049,7 +1084,21 @@
     "ctov:village/desert/jobsite/library": [
       {
         "kind": "service",
-        "sha256": "dfbd0f9e6871db8d21ba291b126da5f24d05c2f58dc7c545806394126680a03b",
+        "sha256": "c14bf48981ee709f7faa38f9b9b7a77752a2fe5c11a3f136a10fa66baa2050e5",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "daaec4ed1571ebec674a14377a12d42a3333f4722e61bd8d6b5f1877743c1205",
         "beds": [],
         "entrances": [
           [
@@ -1058,23 +1107,9 @@
             0
           ],
           [
-            6,
+            4,
             1,
-            4
-          ]
-        ]
-      }
-    ],
-    "ctov:village/desert/jobsite/mason": [
-      {
-        "kind": "service",
-        "sha256": "4aa98eeddbe05cc5ade365cda090603dfb2dfff2436ffd5035de51c97a8dbfba",
-        "beds": [],
-        "entrances": [
-          [
-            13,
-            0,
-            2
+            1
           ]
         ]
       }
@@ -1101,18 +1136,18 @@
     "ctov:village/desert/jobsite/observatory": [
       {
         "kind": "service",
-        "sha256": "35b0663957dea6b01209663479222638d19024d77088f3cb5355169d0c4083f9",
+        "sha256": "fff930edd176fa6e44bb68572e118994ce0888f70ff0955a3a513c1daf13bbde",
         "beds": [],
         "entrances": [
           [
             3,
-            1,
-            1
+            2,
+            0
           ],
           [
             3,
-            1,
-            5
+            2,
+            4
           ]
         ]
       }
@@ -1134,7 +1169,7 @@
     "ctov:village/desert/jobsite/oceanographer": [
       {
         "kind": "service",
-        "sha256": "6f4a60ab93fda5d002bd1790fe939519ab9144c892d6a3d71acc88916d572a15",
+        "sha256": "1eb5a36c0a73c156a7b7db351cca3ffb3b897c986016ebd093acf904c8346fb9",
         "beds": [],
         "entrances": [
           [
@@ -1259,7 +1294,7 @@
     "ctov:village/desert/jobsite/restaurant": [
       {
         "kind": "service",
-        "sha256": "5045ee0bae7c7730fd8e880f9f9dcb8482ce2a3a2e69040c3280854d8375b3c8",
+        "sha256": "0d90e2d4afa0df2d0748d9cc52eab7f5d74b85150ae65f2071795ac541b11e1f",
         "beds": [],
         "entrances": [
           [
@@ -1360,18 +1395,18 @@
     "ctov:village/desert/jobsite/smith": [
       {
         "kind": "service",
-        "sha256": "ef8ccfa6118b54b8d6cd797fcd86fcd68486efa8f0889e5d425da19436e39f06",
+        "sha256": "c71ff85240ef142b98dbbfbc2ec1b17cbd765904a293a1c16d698f9d1928454c",
         "beds": [],
         "entrances": [
           [
-            4,
-            0,
-            0
+            2,
+            3,
+            4
           ],
           [
             4,
-            1,
-            4
+            2,
+            0
           ]
         ]
       }
@@ -1391,6 +1426,66 @@
             4,
             1,
             3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/desert/jobsite/tavern": [
+      {
+        "kind": "residence",
+        "sha256": "7a25e81a687a2c88c251286b6cb22718935243f5850a13299fe7c631404fd971",
+        "beds": [
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            2,
+            5,
+            10
+          ],
+          [
+            4,
+            5,
+            4
+          ],
+          [
+            9,
+            5,
+            4
+          ],
+          [
+            9,
+            5,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            5,
+            5,
+            7
+          ],
+          [
+            6,
+            5,
+            6
           ]
         ]
       }
@@ -1505,26 +1600,26 @@
         ]
       }
     ],
-    "ctov:village/desert/roads/bent_1": [
+    "ctov:village/desert/roads/corner_1": [
       {
         "kind": "road",
-        "sha256": "1cddf216de711dca1f613280a861e7128975854a9ce0df918cd793cf9abaa33e",
+        "sha256": "c9f6a850fe129a2474bb9fd9b7abb6798f9491217771f378e6e8c6b5308c788a",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/desert/roads/bent_2": [
+    "ctov:village/desert/roads/corner_2": [
       {
         "kind": "road",
-        "sha256": "7c7496e08db682556eb71e478af8b44c6e64a600f7cce06ff9c2d95173714fd2",
+        "sha256": "67caf345f55041e23c50e7caa1436bb92895e44236111f2de89e020654479d18",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/desert/roads/inter": [
+    "ctov:village/desert/roads/crossroad": [
       {
         "kind": "road",
-        "sha256": "1c992aac79e725e88d77078c898f565534134a5eee69c69a3e520b971ec89a02",
+        "sha256": "5ee7032b2914ef3497f0ba5a3e44b8dc197c78faca3f2b6abf5c6be4ff547eac",
         "beds": [],
         "entrances": []
       }
@@ -1532,7 +1627,7 @@
     "ctov:village/desert/roads/respawn_obelisk": [
       {
         "kind": "road",
-        "sha256": "339e99b681cd166e51c9bc1f60ba1bc324e8dcece857e2770bee4b3585630741",
+        "sha256": "8e2ea841adf4e51ab146678eb48fe325d29dee3c0a86513a02ce7f18d3e22e02",
         "beds": [],
         "entrances": []
       }
@@ -1540,7 +1635,7 @@
     "ctov:village/desert/roads/straight": [
       {
         "kind": "road",
-        "sha256": "62a1528b93a741c95fa4e80044b4962570c71efa0f3698647d6b75ffbfc4f770",
+        "sha256": "3f6b846d6b964e0ea6d6913976239b937ea8c0854ecc14bb5f96209d213befa2",
         "beds": [],
         "entrances": []
       }
@@ -1548,7 +1643,7 @@
     "ctov:village/desert/roads/t_1": [
       {
         "kind": "road",
-        "sha256": "75c01b1e5415ff1aba2ef7c285b07d5305941011f2491261b8272a218de33c6e",
+        "sha256": "dca64d9c4a500af0896454f5b601af72733db3a84ff0bc7195d99741afc753cf",
         "beds": [],
         "entrances": []
       }
@@ -1556,7 +1651,7 @@
     "ctov:village/desert/roads/t_2": [
       {
         "kind": "road",
-        "sha256": "5d9e55629dc49b02341d6f914d00b25623cd4b7c880cff0a72467ba08b802b9c",
+        "sha256": "119ca52be106f3e25dd083e0f8278149b2bf362bb9176781b56ce6dcc3fb0cda",
         "beds": [],
         "entrances": []
       }
@@ -1564,7 +1659,7 @@
     "ctov:village/desert/roads/t_3": [
       {
         "kind": "road",
-        "sha256": "0d71aaac89548159de202575e6d8143dd2161816ebe9ede5572cb31a924a66f8",
+        "sha256": "1c2272c9a3b14406330617413e57d8e03277261f6aa14c3cca718308ed4e75c5",
         "beds": [],
         "entrances": []
       }
@@ -1572,7 +1667,7 @@
     "ctov:village/desert/roads/terminator": [
       {
         "kind": "road",
-        "sha256": "f182d73fce2fad808b916682917d6080acfff2b76e35e5105a0b3f1ee9eb62ff",
+        "sha256": "e567ddaa26b21307a2d84ad7e54f147e5b3b97383b70c797c564dbecd954b5f7",
         "beds": [],
         "entrances": []
       }
@@ -1580,7 +1675,7 @@
     "ctov:village/desert/town_center": [
       {
         "kind": "gathering",
-        "sha256": "99e4f9f684c776b0553c308c147d0788b0219e248ff0cdff6f4da54f42df74ea",
+        "sha256": "c16c174d1172d445821387876d10993fa0c028f3044a7c9f227f12cacf4b92f0",
         "beds": [],
         "entrances": [
           [
@@ -1604,7 +1699,7 @@
     "minecraft:village/common/animals/cat_black": [
       {
         "kind": "decoration",
-        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "sha256": "ce1c642a4a009ecf94fd2f0c93dfe7ea9cbc1b266ada6916fa2edbd82fde178e",
         "beds": [],
         "entrances": []
       }
@@ -1612,7 +1707,7 @@
     "minecraft:village/common/animals/cat_british": [
       {
         "kind": "decoration",
-        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "sha256": "256c5bac85a6ac921257a8d7c39cb480cb0e23d2ad166ce803f473b430c428a7",
         "beds": [],
         "entrances": []
       }
@@ -1620,7 +1715,7 @@
     "minecraft:village/common/animals/cat_calico": [
       {
         "kind": "decoration",
-        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "sha256": "bf9ea82c019d9e83ac2c47108b689737a1b7a73bd1b11c9ed48744b7db90a273",
         "beds": [],
         "entrances": []
       }
@@ -1628,7 +1723,7 @@
     "minecraft:village/common/animals/cat_jellie": [
       {
         "kind": "decoration",
-        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "sha256": "31ae6850c9c75d0626f3b8fc14027b3bc1906ab0d14201101a67250835aec847",
         "beds": [],
         "entrances": []
       }
@@ -1636,7 +1731,7 @@
     "minecraft:village/common/animals/cat_persian": [
       {
         "kind": "decoration",
-        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "sha256": "be7ee0101982cfc5374215e566d7282280ef5122cd351874310cd911e58c5271",
         "beds": [],
         "entrances": []
       }
@@ -1644,7 +1739,7 @@
     "minecraft:village/common/animals/cat_ragdoll": [
       {
         "kind": "decoration",
-        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "sha256": "14d14c7039371b4f08a0360eb6b5611029fb6d577a3e532f53c70d1b7a4779bd",
         "beds": [],
         "entrances": []
       }
@@ -1652,7 +1747,7 @@
     "minecraft:village/common/animals/cat_red": [
       {
         "kind": "decoration",
-        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "sha256": "d9523300a7a0cf0611562771490f3a11429d1f72dec987a88dea6538da8aed00",
         "beds": [],
         "entrances": []
       }
@@ -1660,7 +1755,7 @@
     "minecraft:village/common/animals/cat_siamese": [
       {
         "kind": "decoration",
-        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "sha256": "30ca3860e4c19669f380c5b5e01adb91112be60698c4cebd3cd94e3e391f0e9b",
         "beds": [],
         "entrances": []
       }
@@ -1668,7 +1763,7 @@
     "minecraft:village/common/animals/cat_tabby": [
       {
         "kind": "decoration",
-        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "sha256": "5a9800b43db9ebc3a0811e03d43ab7183110c32f76e727bee2bd24e387161880",
         "beds": [],
         "entrances": []
       }
@@ -1676,7 +1771,7 @@
     "minecraft:village/common/animals/cat_white": [
       {
         "kind": "decoration",
-        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "sha256": "81f96e424ee2856a15a9d6e235af3a3ca7a39b839bdbfbedf44162d29fb3cbf2",
         "beds": [],
         "entrances": []
       }
@@ -1684,7 +1779,7 @@
     "minecraft:village/common/iron_golem": [
       {
         "kind": "decoration",
-        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "sha256": "4e0c8c2fb1a5d7aa45e4918003cca74991f02ffa21284f341468d28d8db402fa",
         "beds": [],
         "entrances": []
       }
@@ -1692,7 +1787,7 @@
     "minecraft:village/desert/camel_spawn": [
       {
         "kind": "decoration",
-        "sha256": "b86c6a72779416021fd563f428cf292fc482a6846249a9954b867f3e9576729b",
+        "sha256": "bd44a868e22f90212ebaee100713b2c5435fcbeda98a7bff8536fa20014ec95b",
         "beds": [],
         "entrances": []
       }
@@ -1700,7 +1795,7 @@
     "minecraft:village/desert/villagers/baby": [
       {
         "kind": "service",
-        "sha256": "51498c4f5b07357eb709b52c2fb37a5a3f7ff1295749d9505fc235fdcdf55977",
+        "sha256": "2dadd00da8300565daf2bd929630d6b86c18a93359384012c8d820a25d7cd43a",
         "beds": [],
         "entrances": []
       }
@@ -1708,7 +1803,7 @@
     "minecraft:village/desert/villagers/nitwit": [
       {
         "kind": "service",
-        "sha256": "ba69be4e86e254ffcde34330bdc2382ffe5123371607ab679270d45c79e62ffe",
+        "sha256": "6252ceca78d5df5076f3f3a7dc8980d325edd12cfbfd0616b47f3408206b3b0a",
         "beds": [],
         "entrances": []
       }
@@ -1716,7 +1811,7 @@
     "minecraft:village/desert/villagers/unemployed": [
       {
         "kind": "service",
-        "sha256": "e88bf4fff7041107588b4cee6123adf907c3999674be7086cbcafbfc07482f1f",
+        "sha256": "3d31e152bf63ceabd98c604ace96a8133389ba6f4e9fe3b0f1a135913142a5ac",
         "beds": [],
         "entrances": []
       }

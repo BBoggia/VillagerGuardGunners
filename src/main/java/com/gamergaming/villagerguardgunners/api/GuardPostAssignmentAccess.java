@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.api;
 
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignment;
 import javax.annotation.Nullable;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Mixin-backed handoff for one generated guard's bounded post integration. */
 public interface GuardPostAssignmentAccess {

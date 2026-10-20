@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.api;
 
 import java.util.function.BooleanSupplier;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Server-owned state consulted by TaCZ's cancellable per-round fire event. */
 public interface GuardBurstSafetyAccess {

@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder("villagerguardgunners")
 @PrefixGameTestTemplate(false)
@@ -286,7 +286,7 @@ public final class TacticalIntentGameTests {
         entity.setNoGravity(true); entity.setInvulnerable(true); ACTORS.add(entity); return entity;
     }
     private static net.minecraft.world.item.ItemStack gun(String id, int ammo) {
-        return GunItemBuilder.create().setId(new ResourceLocation("tacz", id))
+        return GunItemBuilder.create().setId(ResourceLocation.fromNamespaceAndPath("tacz", id))
                 .setFireMode(FireMode.SEMI).setAmmoCount(ammo).setAmmoInBarrel(ammo > 0).build();
     }
     private static GuardGunCombatGoal goal(Guard guard) {

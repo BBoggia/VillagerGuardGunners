@@ -100,7 +100,7 @@ public final class VillageWatchtowerPiece extends TemplateStructurePiece {
                 .setRotation(rotation)
                 .setRotationPivot(ROTATION_PIVOT)
                 .setIgnoreEntities(true)
-                .setKeepLiquids(false)
+                .setLiquidSettings(net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings.IGNORE_WATERLOGGING)
                 .addProcessor(new BlockIgnoreProcessor(List.of(
                         Blocks.STRUCTURE_BLOCK,
                         Blocks.STRUCTURE_VOID)));

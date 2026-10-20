@@ -9,7 +9,10 @@ public final class ManagementProtocol {
     public static final int PAGE_SIZE=20, MAX_PAGE=63, MAX_PACKET=96;
     public static final int NO_OPERATOR=0, READY=1, BUSY=2, UNSAFE=3, EMPTY_HAND=4;
     public static boolean view(int id){return id==SUPPLIES||id==GUARDS||id==NEEDS||id==SERVICE;}
-    public record Action(int menu, UUID session, int sequence, int action, int page,int selection,int generation) {
+    public record Action(int menu, UUID session, int sequence, int action, int page,int selection,int generation) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<Action> TYPE = new Type<>(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "management_action"));
+        @Override public Type<Action> type() { return TYPE; }
+
         public Action(int menu,UUID session,int sequence,int action,int page){this(menu,session,sequence,action,page,-1,0);}
         public Action {
             if(menu<1||menu>100||session==null||sequence<1||action<0||action>FORGET||page<0||page>MAX_PAGE||selection< -1||selection>1279||generation<0)
@@ -21,7 +24,10 @@ public final class ManagementProtocol {
         public void encode(FriendlyByteBuf b) {b.writeVarInt(menu);b.writeUUID(session);b.writeVarInt(sequence);b.writeVarInt(action);b.writeVarInt(page);b.writeVarInt(selection);b.writeVarInt(generation);}
     }
     public record Summary(int menu, UUID session, int revision, int tab, int page, int pages,
-            boolean stock, boolean manage, int tradeStatus, int occupied, int freeReturns, int links) {
+            boolean stock, boolean manage, int tradeStatus, int occupied, int freeReturns, int links) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<Summary> TYPE = new Type<>(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "management_summary"));
+        @Override public Type<Summary> type() { return TYPE; }
+
         public Summary {
             if(menu<1||menu>100||session==null||revision<1||!view(tab)||page<0||page>MAX_PAGE||pages<1||pages>MAX_PAGE+1||page>=pages
                     ||tradeStatus<NO_OPERATOR||tradeStatus>EMPTY_HAND||occupied< -1||occupied>27

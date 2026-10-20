@@ -13,7 +13,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.inventory.MerchantContainer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.trading.*;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 /** Ordinary merchant offers with saved identities and no connection to station inventories. */
 public final class QuartermasterTrades {
@@ -24,7 +24,7 @@ public final class QuartermasterTrades {
     private static void unavailable(ResourceLocation id,String reason) {
         if(WARNED.add(id))LogUtils.getLogger().warn("Quartermaster trade {} omitted: {}",id,reason);
     }
-    public static ItemStack stack(TradeDefinition.Stack spec) {
+    public static ItemStack stack(TradeDefinition.Stack spec, net.minecraft.core.HolderLookup.Provider registries) {
         ItemStack stack;
         switch(spec.type()) {
             case AMMO -> {
@@ -33,23 +33,26 @@ public final class QuartermasterTrades {
             }
             case GUN -> {
                 if(TimelessAPI.getCommonGunIndex(spec.id()).isEmpty())return ItemStack.EMPTY;
-                stack=GunItemBuilder.create().setId(spec.id()).setCount(1).setAmmoCount(0).setAmmoInBarrel(false).build();
+                stack=GunItemBuilder.create().setId(spec.id()).setCount(1).setAmmoCount(0).setAmmoInBarrel(false).build(registries);
             }
             default -> {
-                if(!ForgeRegistries.ITEMS.containsKey(spec.id()))return ItemStack.EMPTY;
-                var item=ForgeRegistries.ITEMS.getValue(spec.id());
+                if(!BuiltInRegistries.ITEM.containsKey(spec.id()))return ItemStack.EMPTY;
+                var item=BuiltInRegistries.ITEM.get(spec.id());
                 if(item==null||item==Items.AIR||item instanceof IGun||item instanceof IAmmo)return ItemStack.EMPTY;
                 stack=new ItemStack(item,spec.count());
             }
         }
         return stack.isEmpty()||stack.getCount()>stack.getMaxStackSize()?ItemStack.EMPTY:stack;
     }
-    private static MerchantOffer create(ResourceLocation id,TradeDefinition definition) {
+    private static ItemCost cost(ItemStack stack) {
+        return new ItemCost(stack.getItemHolder(), stack.getCount(), net.minecraft.core.component.DataComponentPredicate.allOf(stack.getComponents()));
+    }
+    private static MerchantOffer create(ResourceLocation id,TradeDefinition definition, net.minecraft.core.HolderLookup.Provider registries) {
         if(!definition.enabled()||!enabled(definition.output().type()==TradeDefinition.Kind.GUN))return null;
         try {
-            var a=stack(definition.inputs().get(0));var b=definition.inputs().size()==2?stack(definition.inputs().get(1)):ItemStack.EMPTY;var output=stack(definition.output());
+            var a=stack(definition.inputs().get(0), registries);var b=definition.inputs().size()==2?stack(definition.inputs().get(1), registries):ItemStack.EMPTY;var output=stack(definition.output(), registries);
             if(a.isEmpty()||output.isEmpty()||definition.inputs().size()==2&&b.isEmpty()){unavailable(id,"missing item/gun/ammo definition, untyped TaCZ item, or invalid stack size");return null;}
-            var offer=new MerchantOffer(a,b,output,definition.maxUses(),definition.xp(),definition.multiplier());
+            var offer=new MerchantOffer(cost(a), b.isEmpty() ? Optional.empty() : Optional.of(cost(b)),output,definition.maxUses(),definition.xp(),definition.multiplier());
             var tag=new CompoundTag();tag.putInt("Version",1);tag.putString("Id",id.toString());tag.putInt("Inputs",definition.inputs().size());
             ((TradeOfferAccess)offer).villagerGuardGunners$setTradeIdentity(tag);return offer;
         } catch(RuntimeException ex){unavailable(id,ex.toString());return null;}
@@ -57,7 +60,7 @@ public final class QuartermasterTrades {
     /** Once per profession level, including old already-leveled villagers. Existing offers are never cleared. */
     public static void populate(Villager villager,MerchantOffers offers) {
         if(villager.level().isClientSide||offers==null||!TradeDefinitions.ready()||(!enabled(false)&&!enabled(true))
-                ||villager.getVillagerData().getProfession()!=ForgeRegistries.VILLAGER_PROFESSIONS.getValue(QuartermasterProfession.ID))return;
+                ||villager.getVillagerData().getProfession()!=BuiltInRegistries.VILLAGER_PROFESSION.get(QuartermasterProfession.ID))return;
         var data=villager.getPersistentData();int mask=0;
         if(data.contains(LEVELS)) {
             if(!(data.get(LEVELS) instanceof CompoundTag stored)||stored.size()!=2||!stored.contains("Version",Tag.TAG_INT)||stored.getInt("Version")!=1
@@ -73,7 +76,7 @@ public final class QuartermasterTrades {
             for(var entry:TradeDefinitions.snapshot().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
                 if(!entry.getValue().enabled()||entry.getValue().level()!=unlocked||existing.contains(entry.getKey()))continue;
                 if(offers.size()>=256){unavailable(entry.getKey(),"villager already has 256 offers");continue;}
-                var offer=create(entry.getKey(),entry.getValue());if(offer!=null){offers.add(offer);existing.add(entry.getKey());}
+                var offer=create(entry.getKey(),entry.getValue(), villager.registryAccess());if(offer!=null){offers.add(offer);existing.add(entry.getKey());}
             }
             mask|=bit;
         }

@@ -9,8 +9,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.items.IItemHandler;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.items.IItemHandler;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Administrative inspection and empty-owner acknowledgement; never replays or deletes stock. */
 public final class ServiceCommands {

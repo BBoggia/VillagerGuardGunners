@@ -13,7 +13,7 @@ import java.util.UUID;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Recipient-driven emergency sharing for loose physical TaCZ ammunition.
@@ -234,7 +234,7 @@ public final class GuardAmmoSharing {
         if (candidate.isEmpty()
                 || !(candidate.getItem() instanceof IAmmo)
                 || candidate.getItem() instanceof IAmmoBox
-                || !ItemStack.isSameItemSameTags(candidate, ammunitionTemplate)
+                || !ItemStack.isSameItemSameComponents(candidate, ammunitionTemplate)
                 || !AmmoCompatibility.assess(recipientGun, candidate).isCompatible()) {
             return 0;
         }

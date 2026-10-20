@@ -70,7 +70,7 @@ final class AmmunitionModelContractTest {
                 () -> assertTrue(transactions.contains("TransactionStatus.ROLLED_BACK")),
                 () -> assertTrue(transactions.contains("PlanStatus.ROLLBACK_FAILED")),
                 () -> assertTrue(transactions.contains("snapshot.stacks().size()")),
-                () -> assertTrue(transactions.contains("ItemStack.isSameItemSameTags")));
+                () -> assertTrue(transactions.contains("ItemStack.isSameItemSameComponents")));
     }
 
     @Test

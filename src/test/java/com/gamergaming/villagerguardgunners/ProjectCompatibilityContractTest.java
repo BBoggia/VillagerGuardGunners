@@ -33,53 +33,45 @@ final class ProjectCompatibilityContractTest {
         }
 
         modsToml = Files.readString(
-                projectDirectory.resolve("src/main/resources/META-INF/mods.toml"), StandardCharsets.UTF_8);
+                projectDirectory.resolve("src/main/resources/META-INF/neoforge.mods.toml"), StandardCharsets.UTF_8);
         gradleProperties.forEach((key, value) ->
                 modsToml = modsToml.replace("${" + key + "}", value.toString()));
     }
 
     @Test
-    void targetsTheReviewedMinecraftAndForgeVersions() {
+    void targetsTheReviewedMinecraftAndNeoForgeVersions() {
         assertAll(
-                () -> assertEquals("1.20.1", property("minecraft_version")),
-                () -> assertEquals("47.4.10", property("forge_version")),
-                () -> assertEquals("[1.20.1]", property("minecraft_version_range")),
-                () -> assertEquals("[47.4.10,48)", property("forge_version_range")),
-                () -> assertEquals("official", property("mapping_channel")),
-                () -> assertEquals("1.20.1", property("mapping_version")));
+                () -> assertEquals("1.21.1", property("minecraft_version")),
+                () -> assertEquals("21.1.233", property("neo_version")),
+                () -> assertEquals("[1.21.1]", property("minecraft_version_range")),
+                () -> assertEquals("[21.1.233]", property("neo_version_range")));
     }
 
     @Test
     void targetsTheReviewedCompatibilityModVersions() {
         assertAll(
-                () -> assertEquals("1.6.19", property("guard_villager_version")),
-                () -> assertEquals("1.1.8-hotfix", property("tacz_version")),
-                () -> assertEquals("0.7.6+1.20.1", property("fzzy_config_version")),
-                () -> assertEquals("4.12.0", property("kotlin_for_forge_version")));
+                () -> assertEquals("2.4.12", property("guard_villager_version")),
+                () -> assertEquals("1.1.8-hotfix-r7", property("tacz_version")),
+                () -> assertEquals("0.7.7+1.21+neoforge", property("fzzy_config_version")),
+                () -> assertEquals("5.12.0", property("kotlin_for_forge_version")));
     }
 
     @Test
     void declaresGuardVillagersAndTaczAsRequiredRuntimeDependencies() {
         assertAll(
-                () -> assertDependency("guardvillagers", "[1.20.1-1.6.19]"),
+                () -> assertDependency("guardvillagers", "[2.4.12]"),
                 () -> assertDependency("tacz", property("tacz_version_range")),
                 () -> assertDependency("fzzy_config", property("fzzy_config_version_range")),
                 () -> assertDependency("kotlinforforge", property("kotlin_for_forge_version_range")));
     }
 
     @Test
-    void acceptsTacz118AndNewerWithoutAnUpperBound() throws InvalidVersionSpecificationException {
-        assertEquals("[1.1.8,)", property("tacz_version_range"));
+    void unofficialPortRequiresTheReviewedTaczBuild() throws InvalidVersionSpecificationException {
+        assertEquals("[1.1.8-hotfix-r7]", property("tacz_version_range"));
         VersionRange range = VersionRange.createFromVersionSpec(property("tacz_version_range"));
-        for (String version : new String[] {"1.1.8", "1.1.8-release", "1.1.8-hotfix",
-                "1.1.8-hotfix2", "1.1.9", "1.2.0", "2.0.0"}) {
-            assertTrue(range.containsVersion(new DefaultArtifactVersion(version)),
-                    () -> "TaCZ " + version + " should be allowed by the loader");
-        }
-        for (String version : new String[] {"1.0.0", "1.1.7", "1.1.7-hotfix2", "1.1.8-beta"}) {
-            assertFalse(range.containsVersion(new DefaultArtifactVersion(version)),
-                    () -> "TaCZ " + version + " is below the minimum release");
-        }
+        assertTrue(range.containsVersion(new DefaultArtifactVersion("1.1.8-hotfix-r7")));
+        for (String version : new String[]{"1.1.8", "1.1.8-hotfix", "1.1.8-hotfix-r6", "1.1.8-hotfix-r8", "1.1.9"})
+            assertFalse(range.containsVersion(new DefaultArtifactVersion(version)), version);
     }
 
     private static String property(String key) {
@@ -96,7 +88,7 @@ final class ProjectCompatibilityContractTest {
                 : modsToml.substring(dependencyStart);
 
         assertAll(
-                () -> assertTrue(dependencyBlock.contains("mandatory=true"),
+                () -> assertTrue(dependencyBlock.contains("type=\"required\""),
                         () -> modId + " must remain mandatory"),
                 () -> assertTrue(dependencyBlock.contains("versionRange=\"" + versionRange + "\""),
                         () -> modId + " must use the reviewed version range " + versionRange),

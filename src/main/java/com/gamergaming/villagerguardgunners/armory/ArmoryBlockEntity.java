@@ -32,10 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 /** Unticked, fixed-size ammunition storage with an optional squad restriction. */
 public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider {
@@ -76,8 +73,6 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
         }
     };
     private final List<ItemStack> pendingRejectedStacks = new ArrayList<>();
-    private LazyOptional<IItemHandler> inventoryCapability =
-            LazyOptional.of(() -> automationView);
     @Nullable
     private ArmorySquadLock squadLock;
     private DecodeStatus lockStatus = DecodeStatus.BLANK;
@@ -310,11 +305,11 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         if (equipmentServiceReceipt != null) equipmentServiceReceipt.save(tag);
         else tag.merge(pendingServiceReceipt);
-        tag.put(INVENTORY_TAG, inventory.serializeNBT());
+        tag.put(INVENTORY_TAG, inventory.serializeNBT(registries));
         writePersistentLock(tag);
         GuardPostArmoryIdentityCodec.writePreservingUnreadable(
                 tag,
@@ -330,17 +325,17 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         equipmentServiceReceipt = null; pendingServiceReceipt = new CompoundTag(); loadedServiceOwner = true;
         String receiptKey = com.gamergaming.villagerguardgunners.quartermaster.service.ServiceReceipt.KEY;
         if (tag.contains(receiptKey)) pendingServiceReceipt.put(receiptKey, tag.get(receiptKey).copy());
         pendingRejectedStacks.clear();
         if (tag.contains(INVENTORY_TAG, CompoundTag.TAG_COMPOUND)) {
-            pendingRejectedStacks.addAll(inventory.loadSafely(
+            pendingRejectedStacks.addAll(inventory.loadSafely(registries,
                     tag.getCompound(INVENTORY_TAG)));
         } else {
-            pendingRejectedStacks.addAll(inventory.loadSafely(new CompoundTag()));
+            pendingRejectedStacks.addAll(inventory.loadSafely(registries, new CompoundTag()));
         }
         lastComparatorOutput = inventory.comparatorOutput();
         applyDecodedLock(tag);
@@ -361,9 +356,6 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     public void onLoad() {
         super.onLoad();
         com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime.loaded(this);
-        if (!inventoryCapability.isPresent()) {
-            inventoryCapability = LazyOptional.of(() -> automationView);
-        }
         if (level != null && !level.isClientSide && !pendingRejectedStacks.isEmpty()) {
             for (ItemStack stack : List.copyOf(pendingRejectedStacks)) {
                 Containers.dropItemStack(
@@ -404,30 +396,12 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
         super.setRemoved();
     }
 
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        inventoryCapability.invalidate();
+    public IItemHandler automationHandler() {
+        return isRemoved() ? null : automationView;
     }
 
     @Override
-    public void reviveCaps() {
-        super.reviveCaps();
-        inventoryCapability = LazyOptional.of(() -> automationView);
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(
-            Capability<T> capability,
-            @Nullable Direction side) {
-        if (capability == ForgeCapabilities.ITEM_HANDLER) {
-            return inventoryCapability.cast();
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(net.minecraft.core.HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         ArmorySquadLockCodec.writeTo(tag, squadLock);
         if (lockStatus == DecodeStatus.CORRUPT) {
@@ -441,7 +415,7 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         applyDecodedLock(tag);
     }
 
@@ -454,10 +428,10 @@ public final class ArmoryBlockEntity extends BlockEntity implements MenuProvider
     @Override
     public void onDataPacket(
             Connection connection,
-            ClientboundBlockEntityDataPacket packet) {
+            ClientboundBlockEntityDataPacket packet, net.minecraft.core.HolderLookup.Provider registries) {
         CompoundTag tag = packet.getTag();
         if (tag != null) {
-            handleUpdateTag(tag);
+            handleUpdateTag(tag, registries);
         }
     }
 

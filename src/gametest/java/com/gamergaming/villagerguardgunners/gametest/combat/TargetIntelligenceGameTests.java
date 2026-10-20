@@ -21,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder("villagerguardgunners")
 @PrefixGameTestTemplate(false)
@@ -77,16 +77,16 @@ public final class TargetIntelligenceGameTests {
         var field = TacticalNavigationController.class.getDeclaredField("engagementAnchor");
         field.setAccessible(true); Vec3 original = (Vec3) field.get(nav);
         h.assertTrue(original != null, "Patrol engagement did not capture an origin");
-        java.util.function.Consumer<net.minecraftforge.event.entity.living.LivingChangeTargetEvent> veto = event -> {
+        java.util.function.Consumer<net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent> veto = event -> {
             if (event.getEntity() == guard) event.setCanceled(true);
         };
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(veto);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(veto);
         try {
             goal.tick();
             h.assertTrue(guard.getTarget() == old && goal.targetRankingStatus().equals("TARGET_CHANGE_REJECTED"),
                     "Fixture did not reject a higher-priority target proposal");
             h.assertTrue(original.equals(field.get(nav)), "Rejected proposal discarded combat navigation state");
-        } finally { net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(veto); }
+        } finally { net.neoforged.neoforge.common.NeoForge.EVENT_BUS.unregister(veto); }
         guard.setPos(guard.position().add(-8, 0, 0)); guard.setTarget(urgent); goal.tick();
         h.assertTrue(original.equals(field.get(nav)), "Accepted target replacement moved the patrol origin");
         goal.stop(); h.succeed();

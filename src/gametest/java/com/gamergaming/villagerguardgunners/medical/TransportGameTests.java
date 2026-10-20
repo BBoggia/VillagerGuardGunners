@@ -17,12 +17,12 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder("villagerguardgunners")
 @PrefixGameTestTemplate(false)
@@ -88,7 +88,7 @@ public final class TransportGameTests {
         var restored=EntityType.loadEntityRecursive(saved,h.getLevel(),e->e);try{var patient=(Guard)restored.getFirstPassenger();h.assertTrue(patient!=null&&GuardTransportAccess.get(patient).present(),"Restart lost recovery hint");TransportRuntime.tickGuard(patient);
             h.assertTrue(!patient.isPassenger()&&!GuardTransportAccess.get(patient).present()&&patient.getUUID().equals(f.patient.getUUID())&&patient.getMainHandItem().is(Items.IRON_SWORD),"Restart failed to safely release original passenger");patient.discard();}finally{restored.discard();}}h.succeed();}
     @GameTest(templateNamespace="minecraft",template=ARENA)
-    public static void dimensionTravelIsCanceledDuringPhysicalCarry(GameTestHelper h){try(var f=new Fixture(h)){f.carry();var event=new EntityTravelToDimensionEvent(f.carrier,net.minecraft.world.level.Level.NETHER);MinecraftForge.EVENT_BUS.post(event);h.assertTrue(event.isCanceled()&&!f.patient.isPassenger()&&!TransportRuntime.busy(f.carrier),"Carry crossed dimensions or retained relationship");}h.succeed();}
+    public static void dimensionTravelIsCanceledDuringPhysicalCarry(GameTestHelper h){try(var f=new Fixture(h)){f.carry();var event=new EntityTravelToDimensionEvent(f.carrier,net.minecraft.world.level.Level.NETHER);NeoForge.EVENT_BUS.post(event);h.assertTrue(event.isCanceled()&&!f.patient.isPassenger()&&!TransportRuntime.busy(f.carrier),"Carry crossed dimensions or retained relationship");}h.succeed();}
     @GameTest(templateNamespace="minecraft",template=ARENA)
     public static void occupiedCotAndPlayerOrdersKeepCareInPlace(GameTestHelper h){try(var f=new Fixture(h)){Guard occupant=f.actor(f.cot);occupant.setPos(Vec3.atBottomCenterOf(f.cot).add(-.5,.5,0));h.getLevel().addFreshEntity(occupant);try{h.assertTrue(!TransportRuntime.tryStart(f.carrier,f.patient),"Occupied cot was reserved");}finally{occupant.discard();}f.patient.setFollowing(true);h.assertTrue(!TransportRuntime.tryStart(f.carrier,f.patient),"Patient's follow order was ignored");f.patient.setFollowing(false);f.carrier.setFollowing(true);h.assertTrue(!TransportRuntime.tryStart(f.carrier,f.patient),"Carrier's follow order was ignored");}h.succeed();}
     @GameTest(templateNamespace="minecraft",template=ARENA)
@@ -112,13 +112,13 @@ public final class TransportGameTests {
         f.carry();((RecoveryCotBlockEntity)h.getLevel().getBlockEntity(f.cot)).onChunkUnloaded();
         h.assertTrue(!f.patient.isPassenger()&&!TransportRuntime.busy(f.carrier)&&f.patient.isAlive(),"Cot unload stranded passenger");
         TransportRuntime.cotLoaded((RecoveryCotBlockEntity)h.getLevel().getBlockEntity(f.cot));GuardMedicAccess.get(f.carrier).nextTransportAttempt=0;f.carry();
-        TransportRuntime.left(new net.minecraftforge.event.entity.EntityLeaveLevelEvent(f.carrier,h.getLevel()));
+        TransportRuntime.left(new net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent(f.carrier,h.getLevel()));
         h.assertTrue(!f.patient.isPassenger()&&!TransportRuntime.busy(f.patient)&&f.patient.getMainHandItem().is(Items.IRON_SWORD),"Carrier leave lost passenger/items");
     }h.succeed();}
     @GameTest(templateNamespace="minecraft",template=ARENA)
     public static void canceledMountDoesNotKeepARecoveryHintOrCopyPatient(GameTestHelper h){try(var f=new Fixture(h)){
-        var lease=f.reserve();java.util.function.Consumer<net.minecraftforge.event.entity.EntityMountEvent> listener=e->{if(e.getEntityMounting()==f.patient&&e.isMounting())e.setCanceled(true);};
-        MinecraftForge.EVENT_BUS.addListener(listener);try{h.assertTrue(!TransportRuntime.pickup(lease),"Canceled mount succeeded");}finally{MinecraftForge.EVENT_BUS.unregister(listener);}
+        var lease=f.reserve();java.util.function.Consumer<net.neoforged.neoforge.event.entity.EntityMountEvent> listener=e->{if(e.getEntityMounting()==f.patient&&e.isMounting())e.setCanceled(true);};
+        NeoForge.EVENT_BUS.addListener(listener);try{h.assertTrue(!TransportRuntime.pickup(lease),"Canceled mount succeeded");}finally{NeoForge.EVENT_BUS.unregister(listener);}
         TransportRuntime.cancel(f.carrier);h.assertTrue(!f.patient.isPassenger()&&!GuardTransportAccess.get(f.patient).present()&&f.patient.isAlive(),"Canceled pickup left an orphan marker");
     }h.succeed();}
     @GameTest(templateNamespace="minecraft",template=ARENA)
@@ -130,8 +130,8 @@ public final class TransportGameTests {
     }h.succeed();}
     @GameTest(templateNamespace="minecraft",template=ARENA,timeoutTicks=80,batch="transport_dismount_cancel")
     public static void canceledDismountRetainsOwnershipUntilRetry(GameTestHelper h){var f=new Fixture(h);f.carry();
-        java.util.function.Consumer<net.minecraftforge.event.entity.EntityMountEvent> listener=e->{if(e.getEntityMounting()==f.patient&&e.isDismounting())e.setCanceled(true);};
-        MinecraftForge.EVENT_BUS.addListener(listener);try{TransportRuntime.cancel(f.carrier);h.assertTrue(f.patient.isPassenger()&&TransportRuntime.busy(f.carrier)&&GuardTransportAccess.get(f.patient).present()&&TransportRuntime.awaitingRelease(f.carrier),"Canceled dismount abandoned passenger ownership");}finally{MinecraftForge.EVENT_BUS.unregister(listener);}
+        java.util.function.Consumer<net.neoforged.neoforge.event.entity.EntityMountEvent> listener=e->{if(e.getEntityMounting()==f.patient&&e.isDismounting())e.setCanceled(true);};
+        NeoForge.EVENT_BUS.addListener(listener);try{TransportRuntime.cancel(f.carrier);h.assertTrue(f.patient.isPassenger()&&TransportRuntime.busy(f.carrier)&&GuardTransportAccess.get(f.patient).present()&&TransportRuntime.awaitingRelease(f.carrier),"Canceled dismount abandoned passenger ownership");}finally{NeoForge.EVENT_BUS.unregister(listener);}
         h.runAfterDelay(70,f::close);h.runAfterDelay(25,()->{try{TransportRuntime.tickGuard(f.carrier);h.assertTrue(!f.patient.isPassenger()&&!TransportRuntime.busy(f.carrier)&&!GuardTransportAccess.get(f.patient).present(),"Dismount retry did not release safely");}finally{f.close();}h.succeed();});
     }
     @GameTest(templateNamespace="minecraft",template=ARENA,batch="transport_live",timeoutTicks=360)

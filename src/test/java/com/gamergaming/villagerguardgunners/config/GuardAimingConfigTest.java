@@ -6,10 +6,7 @@ import com.gamergaming.villagerguardgunners.combat.aim.GuardAimSettings;
 import com.google.gson.JsonParser;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import me.fzzyhmstrs.fzzy_config.api.FileType;
 import me.fzzyhmstrs.fzzy_config.entry.EntryValidator.ValidationType;
-import me.fzzyhmstrs.fzzy_config.impl.ConfigApiImpl;
 import org.junit.jupiter.api.Test;
 
 final class GuardAimingConfigTest {
@@ -67,38 +64,8 @@ final class GuardAimingConfigTest {
         assertEquals(6, config.combat.aiming.resolve(true).errorDegrees());
     }
 
-    @Test void oldTomlLoadsWithDefaultsAndNewControlsRoundTrip() {
-        var config = new VillagerGuardGunnersConfig();
-        // Actual Fzzy TOML deserialization, not a hand-written parser or merely update().
-        ConfigApiImpl.INSTANCE.deserializeConfig$fzzy_config(config, """
-                version = 21
-                enabled = false
-                [combat]
-                requiredVisibleTicks = 9
-                aimToleranceDegrees = 4.0
-                maximumEngagementRange = 48.0
-                [armoryResupply]
-                enabled = false
-                """, new ArrayList<String>(), (byte) 0, FileType.TOML);
-        assertFalse(config.enabled.get());
-        assertEquals(9, config.combat.requiredVisibleTicks.get());
-        assertEquals(48, config.combat.maximumEngagementRange.get());
-        assertFalse(config.armoryResupply.enabled.get());
-        assertEquals(GuardAimSettings.DEFAULT, config.combat.aiming.resolve(true));
-        config.combat.aiming.overridePlayers.accept(true);
-        config.combat.aiming.playerErrorDegrees.accept(3.5);
-        var encoded = ConfigApiImpl.INSTANCE.serializeConfig$fzzy_config(
-                config, new ArrayList<String>(), (byte) 0, FileType.TOML);
-        assertFalse(encoded.isError(), encoded.toString());
-        String serialized = encoded.get();
-        var reloaded = new VillagerGuardGunnersConfig();
-        var decoded = ConfigApiImpl.INSTANCE.deserializeConfig$fzzy_config(reloaded, serialized,
-                new ArrayList<String>(), (byte) 0, FileType.TOML);
-        assertFalse(decoded.isError(), decoded.toString());
-        assertEquals(new GuardAimSettings(3.5, GuardAimPoint.CENTER_MASS), reloaded.combat.aiming.resolve(true));
-        assertFalse(reloaded.enabled.get());
-        assertEquals(48, reloaded.combat.maximumEngagementRange.get());
-    }
+    // Full TOML round-trip coverage lives in the installed ConfigPersistenceAcceptance suite.
+    // Fzzy 0.7.7 initializes Minecraft item registries when reading restart annotations.
 
     @Test void activeControlsAndEnumsHaveAccurateTranslations() throws Exception {
         var json = JsonParser.parseString(Files.readString(Path.of(

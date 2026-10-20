@@ -32,8 +32,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Registers explicit, zero-idle-cost administrator diagnostics. */
 public final class GuardGunnerCommands {

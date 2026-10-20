@@ -23,7 +23,7 @@ for p in paths:
    if n.endswith('.json') and parts[2:4]==['worldgen','template_pool']:pools.setdefault(ns+':'+('/'.join(parts[4:])[:-5]),[]).append({'jar':str(p),'value':json.loads(z.read(n))})
    if n.endswith('.json') and parts[2:4]==['worldgen','structure']:structures.setdefault(ns+':'+('/'.join(parts[4:])[:-5]),[]).append({'jar':str(p),'value':json.loads(z.read(n))})
    if n.endswith('.json') and parts[2:5]==['tags','worldgen','structure']:tags.setdefault(ns+':'+('/'.join(parts[5:])[:-5]),[]).append({'jar':str(p),'value':json.loads(z.read(n))})
-   if not(n.endswith('.nbt') and parts[2]=='structures' and (ns!='minecraft' or parts[3]=='village')):continue
+   if not(n.endswith('.nbt') and parts[2] in ('structure', 'structures') and (ns!='minecraft' or parts[3]=='village')):continue
    raw=z.read(n);s=io.BytesIO(gzip.decompress(raw) if raw.startswith(b'\x1f\x8b') else raw);assert s.read(1)==b'\x0a';read_payload(s,8);d=plain_nbt((10,read_payload(s,10)))
    palettes=d.get('palettes',[d.get('palette',[])])
    bed_sets=[];doors=[];blocks=collections.Counter();jigsaws=[];connectors=[];invalid=0

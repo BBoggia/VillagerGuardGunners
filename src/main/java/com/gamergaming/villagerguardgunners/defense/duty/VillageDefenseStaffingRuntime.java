@@ -32,13 +32,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Transient loaded-guard staffing index. It uses no entity scans, chunk loads,
@@ -207,9 +207,8 @@ public final class VillageDefenseStaffingRuntime {
         }
     }
 
-    public static synchronized void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END
-                || !VillageDefenseRuntimePolicy.automaticDutiesEnabled()) {
+    public static synchronized void onServerTick(ServerTickEvent.Post event) {
+        if (!VillageDefenseRuntimePolicy.automaticDutiesEnabled()) {
             return;
         }
         ServerRuntime serverRuntime = SERVERS.get(event.getServer());

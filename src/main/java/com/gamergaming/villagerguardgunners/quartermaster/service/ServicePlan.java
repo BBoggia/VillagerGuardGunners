@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Transient reservation; reload, unload or changed ownership invalidates it without moving items. */
 public record ServicePlan(UUID operation, Guard guard, QuartermasterBlockEntity station, UUID placement,

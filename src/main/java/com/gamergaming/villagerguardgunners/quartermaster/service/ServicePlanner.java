@@ -5,7 +5,7 @@ import com.gamergaming.villagerguardgunners.quartermaster.QuartermasterBlockEnti
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Uses the same needs/allocation rules as previews, issuing only their first physical transfer. */
 public final class ServicePlanner {

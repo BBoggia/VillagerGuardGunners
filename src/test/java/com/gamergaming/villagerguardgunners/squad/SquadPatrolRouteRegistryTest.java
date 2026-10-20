@@ -45,7 +45,7 @@ final class SquadPatrolRouteRegistryTest {
         SquadRegistrySavedData.RouteUpdateResult revised =
                 registry.replacePatrolRoute(SQUAD, OVERWORLD, ready, 22L);
         SquadRegistrySavedData restored = SquadRegistrySavedData.load(
-                registry.save(new CompoundTag()));
+                registry.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
 
         assertAll(
                 () -> assertEquals(
@@ -76,7 +76,7 @@ final class SquadPatrolRouteRegistryTest {
                 OVERWORLD,
                 List.of(new BlockPos(10, 64, 10)),
                 20L);
-        CompoundTag malformed = registry.save(new CompoundTag());
+        CompoundTag malformed = registry.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         ListTag routes = malformed.getList("Routes", Tag.TAG_COMPOUND);
         routes.getCompound(0).putUUID("SquadId", MISSING);
 
@@ -86,7 +86,7 @@ final class SquadPatrolRouteRegistryTest {
                 () -> assertFalse(disabled.enabled()),
                 () -> assertEquals(0, disabled.size()),
                 () -> assertEquals(0, disabled.patrolRouteCount()),
-                () -> assertEquals(malformed, disabled.save(new CompoundTag())),
+                () -> assertEquals(malformed, disabled.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))),
                 () -> assertEquals(
                         SquadRegistrySavedData.RouteUpdateStatus.DISABLED,
                         disabled.replacePatrolRoute(
@@ -133,7 +133,7 @@ final class SquadPatrolRouteRegistryTest {
                 SQUAD, OVERWORLD, List.of(new BlockPos(10, 64, 10)), 20L);
         registry.replacePatrolRoute(SQUAD, OVERWORLD, List.of(), 21L);
         SquadRegistrySavedData restored = SquadRegistrySavedData.load(
-                registry.save(new CompoundTag()));
+                registry.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
 
         SquadRegistrySavedData.RouteUpdateResult recreated =
                 restored.replacePatrolRoute(

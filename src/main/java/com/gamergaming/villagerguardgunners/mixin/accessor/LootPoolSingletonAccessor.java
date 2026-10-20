@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(LootPoolSingletonContainer.class)
 public interface LootPoolSingletonAccessor {
     @Accessor("functions")
-    LootItemFunction[] villagerGuardGunners$getFunctions();
+    java.util.List<LootItemFunction> villagerGuardGunners$getFunctions();
 }

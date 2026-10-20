@@ -335,7 +335,7 @@ final class NativeCombatSourceContractTest {
     void customProjectileAndWeaponRebalanceAreGone() throws IOException {
         String config = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/config/VillagerGuardGunnersConfig.java");
-        String metadata = read("src/main/resources/META-INF/mods.toml");
+        String metadata = read("src/main/resources/META-INF/neoforge.mods.toml");
 
         assertAll(
                 () -> assertFalse(Files.exists(projectDirectory.resolve(

@@ -122,7 +122,7 @@ public final class NaturalGuardLoadoutCompatibilityAnalyzer {
                     .setAmmoCount(gunData.getAmmoAmount())
                     .setAmmoInBarrel(true)
                     .setHeatData(gunData.hasHeatData())
-                    .build();
+                    .build(context == null ? null : context.registryAccess());
         } catch (RuntimeException exception) {
             return Analysis.failed(
                     CompatibilityStatus.GUN_BUILD_FAILED,

@@ -31,11 +31,11 @@ final class GuardInventoryCompatibilityContractTest {
 
         assertAll(
                 () -> assertTrue(screen.contains("GuardConfig.CLIENT.guardInventoryNumbers.get()")),
-                () -> assertTrue(screen.contains("EMPTY_HEART_TEXTURE_X = 16")),
-                () -> assertTrue(screen.contains("FULL_HEART_TEXTURE_X = 34")),
-                () -> assertTrue(screen.contains("HALF_HEART_TEXTURE_X = 43")),
-                () -> assertTrue(screen.contains("textures/gui/icons.png")),
-                () -> assertTrue(screen.contains("armorPoint < armor ? 34")),
+                () -> assertTrue(screen.contains("hud/heart/container")),
+                () -> assertTrue(screen.contains("hud/heart/full")),
+                () -> assertTrue(screen.contains("hud/heart/half")),
+                () -> assertTrue(screen.contains("graphics.blitSprite(sprite")),
+                () -> assertTrue(screen.contains("hud/armor_full")),
                 () -> assertTrue(screen.contains("int buttonY = this.topPos + 1")),
                 () -> assertTrue(screen.contains("GuardAmmoSummary.capture(")),
                 () -> assertTrue(screen.contains("GuardAmmoAccess.getTaCZInventoryHandler")),
@@ -63,7 +63,7 @@ final class GuardInventoryCompatibilityContractTest {
                         "GuardSidearmAccess.getConfiguredSidearmInventory(guard)")),
                 () -> assertTrue(container.contains("replaceConfiguredSidearm(")),
                 () -> assertFalse(container.contains(
-                        "import net.minecraftforge.items.IItemHandlerModifiable;")),
+                        "import net.neoforged.neoforge.items.IItemHandlerModifiable;")),
                 () -> assertTrue(container.contains(
                         "SidearmRuntimeAssessment.assessEligibility(guard, stack)")),
                 () -> assertTrue(container.contains(

@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "ctov": "[3.4.14]"
+    "ctov": "[3.6.3]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -42,10 +42,18 @@
         "entrances": []
       }
     ],
+    "ctov:village/mushroom/deco/archeology_tent": [
+      {
+        "kind": "decoration",
+        "sha256": "85d7f3285361681e03dadf88bd79837a570d3def17f6f625389f63c7d8500000",
+        "beds": [],
+        "entrances": []
+      }
+    ],
     "ctov:village/mushroom/deco/bard_house": [
       {
         "kind": "decoration",
-        "sha256": "283afd8025e879710d19f9178c54bbebca5cf19dbe35809ee6aef8c0043f2891",
+        "sha256": "3762261a6bea034717af8719d151373663d9913cc8ae773d25789cf141ff6083",
         "beds": [],
         "entrances": []
       }
@@ -56,6 +64,20 @@
         "sha256": "0f82af8da65b572bab7ba077016e0e153acaf4057f7b915f60aae053a46ec433",
         "beds": [],
         "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/deco/climatologist": [
+      {
+        "kind": "decoration",
+        "sha256": "073f8d376133a500814afd6334ee1e233924c45d2544b93a70eb18ba8b4237da",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            1
+          ]
+        ]
       }
     ],
     "ctov:village/mushroom/deco/copper_golem": [
@@ -69,7 +91,7 @@
     "ctov:village/mushroom/deco/garbage_heaps": [
       {
         "kind": "decoration",
-        "sha256": "27b2b7858d13bd047ad6216ad1f8ba8d599d26653e4b2e423ba7c8389c336f2c",
+        "sha256": "4869ca6a88db65187b8a2bbaca3a07b7cbb00c5555d233ac184fb26b4fc700be",
         "beds": [],
         "entrances": []
       }
@@ -643,7 +665,7 @@
     "ctov:village/mushroom/jobsite/forager": [
       {
         "kind": "service",
-        "sha256": "5eb16e4f854dd88876b57da6d232dd6e947f1f46ec2b5861d19fcf5866cc190d",
+        "sha256": "0989878319185a556b15626115bad51596047a0275d64bffd499f73c44d9a022",
         "beds": [],
         "entrances": [
           [
@@ -1087,7 +1109,7 @@
     "ctov:village/mushroom/jobsite/sanctuary": [
       {
         "kind": "residence",
-        "sha256": "0562421c42e6c42c91e9a9f794b1015236dc397eda2bc537645b41dfb6cc499a",
+        "sha256": "1dc4c5d5d24a70ca012de90ad426ddaa6502e41f3dc9bee78c674733348685f5",
         "beds": [
           [
             9,
@@ -1186,6 +1208,46 @@
             3,
             1,
             1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/tavern": [
+      {
+        "kind": "residence",
+        "sha256": "b93f18549116ff589a37c1d082436ab2a761484c60b7c59a5c77639de95b8e9f",
+        "beds": [
+          [
+            4,
+            5,
+            6
+          ],
+          [
+            4,
+            5,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            1
+          ],
+          [
+            7,
+            5,
+            5
+          ],
+          [
+            7,
+            5,
+            9
           ]
         ]
       }
@@ -1305,26 +1367,26 @@
         ]
       }
     ],
-    "ctov:village/mushroom/roads/bent_1": [
+    "ctov:village/mushroom/roads/corner_1": [
       {
         "kind": "road",
-        "sha256": "790e33605a22762838973b1e7be03b17aa2a78aabeaf418f5b2563d238760d9b",
+        "sha256": "4d3a989b8c07b2547588e9925eabc3b064d051a6c4d97e7dfcb75380a254b861",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/mushroom/roads/bent_2": [
+    "ctov:village/mushroom/roads/corner_2": [
       {
         "kind": "road",
-        "sha256": "78a450ece68191674b87cadfd1fa824d9c04fd9c785c8c3e8d205d3db85c76a1",
+        "sha256": "fa6b473c9fcc688b8698cc6adca06e3a79697d1095e7387c98c2a10455bd56f9",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/mushroom/roads/inter": [
+    "ctov:village/mushroom/roads/crossroad": [
       {
         "kind": "road",
-        "sha256": "5375bd0f1a583d0ba7eb0a676efe20c56946114424bf2767678419bb5f1361a6",
+        "sha256": "4b33834ad3f56624e9343c43e3937038e19a91ae31975a8d1e9cbb47fac0777b",
         "beds": [],
         "entrances": []
       }
@@ -1332,7 +1394,7 @@
     "ctov:village/mushroom/roads/respawn_obelisk": [
       {
         "kind": "road",
-        "sha256": "3dd558d383196a22b6661fbad96b2c7c529a24554be1540abd23f994151a5502",
+        "sha256": "4c7e4fa1e2c4f9d947636ff0cdf017b23df36900a8c58328008d29c53e92dbb6",
         "beds": [],
         "entrances": []
       }
@@ -1340,7 +1402,7 @@
     "ctov:village/mushroom/roads/straight": [
       {
         "kind": "road",
-        "sha256": "056bf1c4bccc914ac7aabfd784d801aba1e27ee8533cd8db09e24b80e03a8956",
+        "sha256": "6f2b1948b9df7d77e22f88d3578b7bb6988bce17fea115a2564ee7d04ef5f313",
         "beds": [],
         "entrances": []
       }
@@ -1348,7 +1410,7 @@
     "ctov:village/mushroom/roads/t_1": [
       {
         "kind": "road",
-        "sha256": "6afe2a06912d9d97b298b3b0cacb273f0a1b8f8b4effeca13dca7e3fbe3a0dea",
+        "sha256": "03dbd9baee787c74e0c593593e7063e1e1baed739b0894341e63e7e592d5d0b9",
         "beds": [],
         "entrances": []
       }
@@ -1356,7 +1418,7 @@
     "ctov:village/mushroom/roads/t_2": [
       {
         "kind": "road",
-        "sha256": "16b40131cf85eae5ea80747030d65a01fa18a9b3b054d49b62003edc806e7b50",
+        "sha256": "f19830a30055a29cdc889352bb5b4da4c2ac8a3094a6aba4234873faa14ea1c1",
         "beds": [],
         "entrances": []
       }
@@ -1364,7 +1426,7 @@
     "ctov:village/mushroom/roads/t_3": [
       {
         "kind": "road",
-        "sha256": "5352e402e54a8c027fbdcc1641cd66fc0b6d478000fe596d4e798c121c2d2ff5",
+        "sha256": "e7750ac9f36b8a0c180ce8051b07aab5ee9789b8ab691b44af219ba86024b411",
         "beds": [],
         "entrances": []
       }
@@ -1372,7 +1434,7 @@
     "ctov:village/mushroom/roads/terminator": [
       {
         "kind": "road",
-        "sha256": "dd03dae1a902fd9b4396b186428d421c9a61cc04a07503c4009cc4cc9899311d",
+        "sha256": "948bd7037652c9e301f0aff7e096021ed0723b49f125eb59165bfd32f41c5037",
         "beds": [],
         "entrances": []
       }
@@ -1394,7 +1456,7 @@
     "minecraft:village/plains/villagers/baby": [
       {
         "kind": "service",
-        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "sha256": "53c1e3594bd22fd05fa5f939b6a235f77076963f7bb5c6dc5eb413b237564afd",
         "beds": [],
         "entrances": []
       }
@@ -1402,7 +1464,7 @@
     "minecraft:village/plains/villagers/nitwit": [
       {
         "kind": "service",
-        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "sha256": "4c7d496e0a4b22d93211626dd01742a93aa7a922c6498f42476bb958e1902e56",
         "beds": [],
         "entrances": []
       }
@@ -1410,7 +1472,7 @@
     "minecraft:village/plains/villagers/unemployed": [
       {
         "kind": "service",
-        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "sha256": "66b346caffa98caec6425b3f5529f3bc1802121f4c7d651320111fb186e5ffd1",
         "beds": [],
         "entrances": []
       }

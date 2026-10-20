@@ -6,6 +6,52 @@ in local development notes.
 
 ## Unreleased
 
+## 1.9-neoforge-alpha.1 - 2026-10-20
+
+### Added
+
+- Initial Minecraft 1.21.1 NeoForge alpha with TaCZ gun combat, configurable
+  accuracy, sidearms, Guard Orders, squads, patrols, Village Armories,
+  Quartermaster services and trades, medical care, and Village Defense Buildings.
+  Requires Java 21 and the unofficial TaCZ NeoForge port.
+
+### Fixed
+
+- On NeoForge, follow and patrol requests now require the correct open guard
+  inventory, nearby access, current command permission, and any configured
+  Hero of the Village requirement. Direct packets cannot take ownership of
+  another player's guard or start a remote patrol.
+- Fully absorbed damage no longer interrupts medical care or shortens a downed
+  guard's remaining time on NeoForge. Partial absorption consumes the extra
+  hearts normally and only the remaining damage affects the guard.
+- Guard inventory follow and patrol buttons use the current Guard Villagers
+  icons on NeoForge. Patrol starts and stops on the first click, including
+  after reopening the inventory.
+- Village Armory access text no longer overlaps ammo slots. Long squad names
+  are shortened to fit, with the full name available on hover.
+
+### Compatibility
+
+- Minecraft 1.21.1 NeoForge builds use `tags/entity_type` for
+  ally and engagement tags. Custom packs targeting this version must use the
+  same directory. The Minecraft 1.20.1 Forge version retains `tags/entity_types`.
+- Orders Ledger and Squad Command Ledger recipes now use the Minecraft 1.21.1
+  recipe format in NeoForge builds.
+- Village Armory, Quartermaster station, bandage, and Recovery Cot recipes,
+  block drops, and station/Armory axe mining use Minecraft 1.21.1 resource
+  directories in NeoForge builds.
+
+- NeoForge builds include Village Defense Building and standalone
+  Watchtower templates in Minecraft 1.21.1 resource directories. Generated
+  Armory loot preserves TaCZ ammo IDs through item components.
+- The combined village-building companion datapack and provider/family
+  alternatives now have separate Minecraft 1.21.1 builds (data pack format 48).
+  Entries for absent village providers remain inactive.
+- Village discovery reads Minecraft 1.21.1 structure resources. Detailed native
+  profiles are updated for vanilla villages, CTOV 3.6.3, MMV 2.2.0, Tidal Towns
+  2.0, and Sky Villages 1.0.6. Other provider versions retain fallback behavior
+  where available rather than using unverified template details.
+
 ## 1.9 - 2026-10-08
 
 ### Added

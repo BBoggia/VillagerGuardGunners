@@ -46,7 +46,7 @@ final class VillageDefenseBuildingsStepTwelveContractTest {
                 + "VillagerGuardGunners.java");
         String integration = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "worldgen/village/VillageBuildingPoolIntegration.java");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
         String guide = read("docs/village-defense-buildings.md");
         String readme = read("README.md");
 

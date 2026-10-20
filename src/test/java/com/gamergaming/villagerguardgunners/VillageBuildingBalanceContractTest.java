@@ -114,7 +114,7 @@ final class VillageBuildingBalanceContractTest {
     @Test
     void armoryRewardAndNaturalGunnerCapsRemainBounded() throws IOException {
         JsonArray pools = json(
-                "src/main/resources/data/villagerguardgunners/loot_tables/chests/"
+                "src/main/resources/data/villagerguardgunners/loot_table/chests/"
                         + "village_armory.json")
                 .getAsJsonArray("pools");
         int totalRounds = 0;

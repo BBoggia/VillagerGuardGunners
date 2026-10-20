@@ -27,7 +27,10 @@ public final class OverviewProtocol {
     }
     public record Page(int menu,UUID session,int revision,int generation,int view,int page,int pages,long observedAt,
             boolean refreshing,boolean truncated,boolean restricted,boolean stock,boolean manage,int inspected,int unavailable,
-            int stationStatus,List<Row> rows) {
+            int stationStatus,List<Row> rows) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<Page> TYPE = new Type<>(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "overview_page"));
+        @Override public Type<Page> type() { return TYPE; }
+
         public Page {
             rows=List.copyOf(rows);
             if(menu<1||menu>100||session==null||revision<1||generation<0||!ManagementProtocol.view(view)||page<0||page>ManagementProtocol.MAX_PAGE

@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder("villagerguardgunners")
 @PrefixGameTestTemplate(false)
@@ -159,7 +159,7 @@ public final class TacticalRouteGameTests {
         enemy.setNoAi(true); enemy.setInvulnerable(true); ACTORS.add(enemy);
         guard.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND,
                 com.tacz.guns.api.item.builder.GunItemBuilder.create()
-                        .setId(new net.minecraft.resources.ResourceLocation("tacz", "glock_17"))
+                        .setId(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("tacz", "glock_17"))
                         .setFireMode(com.tacz.guns.api.item.gun.FireMode.SEMI)
                         .setAmmoCount(17).setAmmoInBarrel(true).build());
         var held = com.gamergaming.villagerguardgunners.orders.GuardOrders.DEFAULT.withMovement(

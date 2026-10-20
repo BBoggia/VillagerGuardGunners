@@ -13,7 +13,7 @@ import com.gamergaming.villagerguardgunners.squad.SquadCommandType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Owns one screened route; failures back off without surrendering combat ownership. */
 public final class TacticalNavigationController {

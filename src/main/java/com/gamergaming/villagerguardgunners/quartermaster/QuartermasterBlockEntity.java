@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.quartermaster;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import com.gamergaming.villagerguardgunners.menu.QuartermasterMenu;
@@ -22,11 +23,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 /** Unticked storage. Menu access and external transport have independent policies. */
 public final class QuartermasterBlockEntity extends BlockEntity implements MenuProvider {
@@ -48,7 +46,7 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
     public boolean serviceReadable() { return readable() && preservedService == null && !released; }
     public int guardAccess() { return guardAccess; }
     public java.util.List<BlockPos> linkedArmories() { return java.util.List.copyOf(linkedArmories); }
-    public boolean mayService(tallestegg.guardvillagers.entities.Guard guard) {
+    public boolean mayService(tallestegg.guardvillagers.common.entities.Guard guard) {
         if (!readable() || preservedService != null || released || isRemoved() || guardAccess == 0 || guard.level() != level) return false;
         if (guardAccess == 3) return true;
         if (guardAccess == 1) return owner != null && owner.equals(guard.getOwnerId());
@@ -81,7 +79,7 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
         super.onLoad();
         com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime.loaded(this);
     }
-    @Override public void setRemoved() {
+    @Override public void setRemoved() { invalidateTransport();
         com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime.removed(this);
         super.setRemoved();
     }
@@ -98,7 +96,6 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
         @Override protected void onContentsChanged(int slot) { setChanged(); }
     };
     private long capabilityGeneration;
-    private LazyOptional<IItemHandler> capability = LazyOptional.of(Transport::new);
 
     public QuartermasterBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.QUARTERMASTER.get(), pos, state);
@@ -162,7 +159,7 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
                 for (var hand : net.minecraft.world.InteractionHand.values()) {
                     ItemStack ledger = player.getItemInHand(hand);
                     if (!ledger.is(ModItems.SQUAD_COMMAND_LEDGER.get()) || ledger.getCount() != 1) continue;
-                    var binding = SquadLedgerBindingCodec.readFrom(ledger.getTag());
+                    var binding = SquadLedgerBindingCodec.readFrom(ItemCustomData.read(ledger));
                     if (binding.isValid() && registry.find(binding.binding().squadId()).isPresent()) {
                         squad = binding.binding().squadId();
                         break;
@@ -185,8 +182,8 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
         return canInteract(player) ? new QuartermasterMenu(id, inv, this) : null;
     }
 
-    @Override protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    @Override protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         saveService(tag);
         if (preserved != null) { tag.put(DATA_TAG, preserved.copy()); return; }
         CompoundTag data = new CompoundTag();
@@ -197,13 +194,13 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
         if (squad != null) data.putUUID("Squad", squad);
         data.putInt("Access", access);
         data.putBoolean("Automation", automation);
-        data.put("Inventory", inventory.serializeNBT());
+        data.put("Inventory", inventory.serializeNBT(registries));
         tag.put(DATA_TAG, data);
     }
 
-    @Override public void load(CompoundTag tag) {
+    @Override public void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         try {
-            super.load(tag);
+            super.loadAdditional(tag, registries);
             owner = null; squad = null; access = PRIVATE; automation = false; released = false;
             stationId = UUID.randomUUID(); dropId = UUID.randomUUID();
             inventory.setSize(SLOTS);
@@ -231,15 +228,15 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
             for (Tag entry : list) {
                 CompoundTag item = (CompoundTag) entry;
                 int slot = item.getInt("Slot");
-                ItemStack stack = ItemStack.of(item);
+                ItemStack stack = ItemStack.parseOptional(registries, item);
                 if (!item.contains("Slot", Tag.TAG_INT) || slot < 0 || slot >= SLOTS || !used.add(slot)
                         || stack.isEmpty() || stack.getCount() > Math.min(64, stack.getMaxStackSize())
                         || !stack.getItem().canFitInsideContainerItems()) return;
-                CompoundTag roundTrip = stack.save(new CompoundTag());
+                CompoundTag roundTrip = (CompoundTag) stack.save(registries);
                 roundTrip.putInt("Slot", slot);
                 if (!roundTrip.equals(item)) return;
             }
-            inventory.deserializeNBT(items);
+            inventory.deserializeNBT(registries, items);
             owner = data.hasUUID("Owner") ? data.getUUID("Owner") : null;
             squad = data.hasUUID("Squad") ? data.getUUID("Squad") : null;
             stationId = data.getUUID("StationId");
@@ -256,12 +253,12 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
     public ItemStack packedStack() {
         ItemStack packed = new ItemStack(ModItems.QUARTERMASTER.get());
         CompoundTag data = new CompoundTag();
-        saveAdditional(data);
+        saveAdditional(data, level.registryAccess());
         // Packing retains just our storage payload; coordinates and capabilities are not portable.
         CompoundTag blockData = new CompoundTag();
         blockData.put(DATA_TAG, data.get(DATA_TAG).copy());
         saveService(blockData);
-        packed.getOrCreateTag().put("BlockEntityTag", blockData);
+        net.minecraft.world.item.BlockItem.setBlockEntityData(packed, ModBlockEntities.QUARTERMASTER.get(), blockData);
         return packed;
     }
 
@@ -269,15 +266,14 @@ public final class QuartermasterBlockEntity extends BlockEntity implements MenuP
         if (released || !(level instanceof ServerLevel server)) return;
         QuartermasterRecovery.get(server).enqueue(dropId, worldPosition, packedStack());
         released = true;
-        invalidateCaps();
+        invalidateTransport();
     }
 
-    @Override public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER && !isRemoved()) return capability.cast();
-        return super.getCapability(cap, side);
+    public IItemHandler automationHandler() { return isRemoved() ? null : new Transport(); }
+    private void invalidateTransport() {
+        capabilityGeneration++;
+        if (level != null) level.invalidateCapabilities(worldPosition);
     }
-    @Override public void invalidateCaps() { super.invalidateCaps(); capabilityGeneration++; capability.invalidate(); }
-    @Override public void reviveCaps() { super.reviveCaps(); capability = LazyOptional.of(Transport::new); }
 
     private final class Transport implements IItemHandler {
         private final long generation = capabilityGeneration;

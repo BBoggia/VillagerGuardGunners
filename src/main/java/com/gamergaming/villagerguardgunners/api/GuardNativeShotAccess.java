@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.api;
 
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Entity-owned controller reference; never stored in a global entity map or NBT. */
 public interface GuardNativeShotAccess {

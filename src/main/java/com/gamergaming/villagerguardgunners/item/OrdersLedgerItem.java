@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.item;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplate;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplate.DecodeResult;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderText;
@@ -26,7 +27,7 @@ public final class OrdersLedgerItem extends Item {
     public boolean isFoil(ItemStack stack) {
         // Keep this render-time check allocation-free. The full strict decode is
         // performed only when the tooltip is requested or the ledger is used.
-        CompoundTag itemTag = stack.getTag();
+        CompoundTag itemTag = ItemCustomData.read(stack);
         return (itemTag != null
                         && itemTag.contains(
                                 GuardOrderTemplate.TEMPLATE_TAG,
@@ -37,12 +38,12 @@ public final class OrdersLedgerItem extends Item {
     @Override
     public void appendHoverText(
             ItemStack stack,
-            @Nullable Level level,
+            net.minecraft.world.item.Item.TooltipContext level,
             List<Component> tooltip,
             TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
 
-        DecodeResult decoded = GuardOrderTemplate.readFrom(stack.getTag());
+        DecodeResult decoded = GuardOrderTemplate.readFrom(ItemCustomData.read(stack));
         switch (decoded.status()) {
             case BLANK -> tooltip.add(Component.translatable(
                             "item.villagerguardgunners.orders_ledger.tooltip.blank")

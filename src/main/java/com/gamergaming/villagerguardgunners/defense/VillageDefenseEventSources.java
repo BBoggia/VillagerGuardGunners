@@ -10,11 +10,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Allocation-light Forge event adapters for network defense-state signals. */
 public final class VillageDefenseEventSources {
@@ -27,7 +27,7 @@ public final class VillageDefenseEventSources {
                 || !(guard.level() instanceof ServerLevel level)) {
             return;
         }
-        LivingEntity target = event.getNewTarget();
+        LivingEntity target = event.getNewAboutToBeSetTarget();
         if (target == null
                 || !target.isAlive()
                 || target.isSpectator()
@@ -41,10 +41,9 @@ public final class VillageDefenseEventSources {
                 VillageDefenseEventSource.GUARD_TARGET);
     }
 
-    public static void onDefendedEntityDamaged(LivingDamageEvent event) {
+    public static void onDefendedEntityDamaged(LivingDamageEvent.Post event) {
         LivingEntity victim = event.getEntity();
-        if (event.isCanceled()
-                || event.getAmount() <= 0.0F
+        if (!(event.getNewDamage() > 0)
                 || !(victim.level() instanceof ServerLevel level)
                 || !isDefendedEntity(victim)
                 || !hasExternalLivingAttacker(event.getSource(), victim)) {
@@ -78,7 +77,7 @@ public final class VillageDefenseEventSources {
         }
         VillagerGuardGunnersConfig.AllySettings settings =
                 ModConfigs.GUARD_GUNNERS.safety.allies;
-        ResourceLocation entityTypeId = ForgeRegistries.ENTITY_TYPES.getKey(
+        ResourceLocation entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(
                 entity.getType());
         if (entityTypeId != null
                 && settings.excludedEntities.get().contains(entityTypeId)) {

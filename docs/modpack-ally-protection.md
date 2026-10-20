@@ -12,7 +12,7 @@ The preferred static integration is the entity-type tag:
 `#villagerguardgunners:guard_allies`
 
 For example, place this at
-`data/villagerguardgunners/tags/entity_types/guard_allies.json` in a datapack:
+`data/villagerguardgunners/tags/entity_type/guard_allies.json` in a datapack:
 
 ```json
 {
@@ -23,6 +23,8 @@ For example, place this at
   ]
 }
 ```
+
+This is the Minecraft 1.21.1 path. Minecraft 1.20.1 packs use `entity_types`.
 
 Using `replace: false` lets several mods and datapacks contribute safely. The
 add-on includes the vanilla snow golem as a conservative defender default but
@@ -43,7 +45,7 @@ The synchronized Fzzy Config section `safety.allies` provides:
 
 Exclusions are evaluated before additions, tags, villagers, iron golems,
 ownership, alliances, and compatibility providers. They cannot disable
-protection for another Guard Villagers guard or the shooter's owner. This
+protection for another guard or the shooter's owner. This
 retains the two non-bypassable safety relationships while allowing packs to
 handle unusual hostile villager subclasses or faction-dependent NPC types.
 
@@ -51,7 +53,7 @@ handle unusual hostile villager subclasses or faction-dependent NPC types.
 
 For a living candidate, the resolver uses this deterministic order:
 
-1. The shooter itself, every Guard Villagers guard, and the shooter's owner.
+1. The shooter itself, every guard, and the shooter's owner.
 2. `safety.allies.excludedEntities` (unprotected result).
 3. `safety.allies.additionalProtectedEntities`.
 4. `#villagerguardgunners:guard_allies`.

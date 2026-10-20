@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.squad;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public final class SquadPatrolRouteEditor {
         }
         ServerLevel level = (ServerLevel) player.level();
         SquadLedgerBindingCodec.DecodeResult decoded =
-                SquadLedgerBindingCodec.readFrom(ledger.getTag());
+                SquadLedgerBindingCodec.readFrom(ItemCustomData.read(ledger));
         if (decoded.status() == SquadLedgerBindingCodec.DecodeStatus.BLANK) {
             return EditResult.failed(EditStatus.BLANK_LEDGER);
         }

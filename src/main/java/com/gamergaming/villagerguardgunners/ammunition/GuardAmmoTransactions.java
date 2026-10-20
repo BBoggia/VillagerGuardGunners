@@ -3,7 +3,7 @@ package com.gamergaming.villagerguardgunners.ammunition;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 /**
  * Simulate-before-commit item movement for bounded ammunition inventories.
@@ -123,7 +123,7 @@ public final class GuardAmmoTransactions {
             if (originalSourceStack.isEmpty()
                     || simulatedExtraction.getCount() > maximumItems
                     || simulatedExtraction.getCount() > originalSourceStack.getCount()
-                    || !ItemStack.isSameItemSameTags(originalSourceStack, simulatedExtraction)) {
+                    || !ItemStack.isSameItemSameComponents(originalSourceStack, simulatedExtraction)) {
                 return TransferResult.invalid();
             }
 
@@ -148,7 +148,7 @@ public final class GuardAmmoTransactions {
             ItemStack extracted = source.extractItem(sourceSlot, accepted, false);
             if (extracted.isEmpty()
                     || extracted.getCount() != accepted
-                    || !ItemStack.isSameItemSameTags(simulatedExtraction, extracted)
+                    || !ItemStack.isSameItemSameComponents(simulatedExtraction, extracted)
                     || !sourceSnapshot.matchesAfterExtraction(
                             source,
                             sourceSlot,
@@ -248,7 +248,7 @@ public final class GuardAmmoTransactions {
             return true;
         }
         return remainder.getCount() <= offered.getCount()
-                && ItemStack.isSameItemSameTags(offered, remainder);
+                && ItemStack.isSameItemSameComponents(offered, remainder);
     }
 
     private static ItemStack copyOrEmpty(ItemStack stack) {
@@ -373,7 +373,7 @@ public final class GuardAmmoTransactions {
                 for (int slot = 0; slot < stacks.size(); slot++) {
                     ItemStack expected = stacks.get(slot).copy();
                     if (slot == sourceSlot) {
-                        if (!ItemStack.isSameItemSameTags(expected, extracted)
+                        if (!ItemStack.isSameItemSameComponents(expected, extracted)
                                 || extracted.getCount() > expected.getCount()) {
                             return false;
                         }
@@ -405,20 +405,20 @@ public final class GuardAmmoTransactions {
                         if (after.isEmpty()) {
                             continue;
                         }
-                        if (!ItemStack.isSameItemSameTags(inserted, after)) {
+                        if (!ItemStack.isSameItemSameComponents(inserted, after)) {
                             return false;
                         }
                         observedIncrease = Math.addExact(observedIncrease, after.getCount());
                         continue;
                     }
-                    if (!ItemStack.isSameItemSameTags(before, inserted)) {
+                    if (!ItemStack.isSameItemSameComponents(before, inserted)) {
                         if (!stacksMatch(before, after)) {
                             return false;
                         }
                         continue;
                     }
                     if (after.isEmpty()
-                            || !ItemStack.isSameItemSameTags(before, after)
+                            || !ItemStack.isSameItemSameComponents(before, after)
                             || after.getCount() < before.getCount()) {
                         return false;
                     }
@@ -461,7 +461,7 @@ public final class GuardAmmoTransactions {
                 return first.isEmpty() && second.isEmpty();
             }
             return first.getCount() == second.getCount()
-                    && ItemStack.isSameItemSameTags(first, second);
+                    && ItemStack.isSameItemSameComponents(first, second);
         }
     }
 }

@@ -71,7 +71,7 @@ final class VillageWatchtowerStepFifteenContractTest {
     void modpackPrecedenceAndNoRetrofitBoundaryAreDocumented() throws IOException {
         String documentation = read("docs/village-watchtowers.md");
         String readme = read("README.md");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(documentation.contains(

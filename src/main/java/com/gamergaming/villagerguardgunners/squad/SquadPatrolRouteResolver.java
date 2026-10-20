@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Fail-closed lookup with a fixed maximum of 64 waypoint chunk checks. */
 public final class SquadPatrolRouteResolver {

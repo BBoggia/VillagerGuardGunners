@@ -16,10 +16,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.gametest.*;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder("villagerguardgunners")
 @PrefixGameTestTemplate(false)
@@ -41,7 +41,7 @@ public final class CotCareGameTests {
                 PlayerTreatmentRuntime.cancel(f.patient);
             }
         };
-        MinecraftForge.EVENT_BUS.addListener(listener);
+        NeoForge.EVENT_BUS.addListener(listener);
         h.runAtTickTime(60, () -> {
             try {
                 h.assertTrue(callback[0] && GuardLifeRuntime.casualty(f.patient)
@@ -50,7 +50,7 @@ public final class CotCareGameTests {
                         "Canceled completion spent a dose, revived the patient, or retained its claim");
                 h.succeed();
             } finally {
-                MinecraftForge.EVENT_BUS.unregister(listener);
+                NeoForge.EVENT_BUS.unregister(listener);
                 PlayerTreatmentRuntime.cancel(f.patient); f.close(); player.discard();
             }
         });

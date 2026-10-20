@@ -6,8 +6,8 @@ import java.util.*;
 import net.minecraft.resources.*;
 import net.minecraft.server.packs.resources.*;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.server.*;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.server.*;
 
 /** Publishes complete validated generations; optional native IDs are resolved later. */
 public final class TradeDefinitions extends SimplePreparableReloadListener<TradeDefinitions.Prepared> {

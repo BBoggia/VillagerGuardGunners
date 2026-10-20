@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.quartermaster.service;
 
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 /** Bounded volatile notifications of successful transfers, never persistence or recovery authority. */
 public final class ServiceHistory {

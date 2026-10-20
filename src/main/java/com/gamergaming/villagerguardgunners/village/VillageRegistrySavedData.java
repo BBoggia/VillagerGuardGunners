@@ -41,8 +41,7 @@ public final class VillageRegistrySavedData extends SavedData {
 
     public static VillageRegistrySavedData get(ServerLevel level) {
         ResourceLocation dimension = level.dimension().location();
-        return level.getDataStorage().computeIfAbsent(tag -> load(tag, dimension),
-                () -> new VillageRegistrySavedData(dimension), DATA_NAME);
+        return level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new VillageRegistrySavedData(dimension), (tag, registries) -> load(tag, dimension)), DATA_NAME);
     }
 
     public static VillageRegistrySavedData load(CompoundTag tag, ResourceLocation expectedDimension) {
@@ -227,7 +226,7 @@ public final class VillageRegistrySavedData extends SavedData {
     private static long cell(int x, int z) { return ChunkPos.asLong(x, z); }
 
     @Override
-    public CompoundTag save(CompoundTag out) {
+    public CompoundTag save(CompoundTag out, net.minecraft.core.HolderLookup.Provider registries) {
         if (!enabled()) return preserved.copy();
         out.putInt("Version", VERSION);
         out.putString("Dimension", dimension.toString());

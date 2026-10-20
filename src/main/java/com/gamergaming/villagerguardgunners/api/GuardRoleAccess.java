@@ -3,7 +3,7 @@ package com.gamergaming.villagerguardgunners.api;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
 import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Mixin-backed persistent access to one guard's optional datapack role. */
 public interface GuardRoleAccess {

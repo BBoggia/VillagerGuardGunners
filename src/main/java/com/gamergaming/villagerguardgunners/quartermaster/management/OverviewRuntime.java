@@ -8,9 +8,9 @@ import com.gamergaming.villagerguardgunners.quartermaster.service.*;
 import java.util.*;
 import net.minecraft.server.level.*;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 import static com.gamergaming.villagerguardgunners.quartermaster.management.OverviewProtocol.*;
 
 /** Shared permission-equivalent jobs, round-robin, at most sixteen native guard captures per dimension/tick. */
@@ -102,8 +102,8 @@ public final class OverviewRuntime {
     static void cancelEstimate(ServerLevel level,BulkSession session) {
         var state=STATES.get(level);if(state!=null)state.estimates.remove(session);
     }
-    public static void tick(TickEvent.ServerTickEvent event) {
-        if(event.phase==TickEvent.Phase.END)for(var level:event.getServer().getAllLevels())advance(level);
+    public static void tick(ServerTickEvent.Post event) {
+        for(var level:event.getServer().getAllLevels())advance(level);
     }
     public static void advance(ServerLevel level) {
         var state=STATES.get(level);if(state==null)return;state.work=0;
@@ -162,10 +162,10 @@ public final class OverviewRuntime {
         List<Row> stock=new ArrayList<>(),roster=new ArrayList<>(),history=new ArrayList<>(),needs=new ArrayList<>();
         for(var s:job.survey.stock()) {
             String id=s.variant().gunId()!=null?s.variant().gunId():s.variant().ammoId()!=null?s.variant().ammoId():s.item().getHoverName().getString();
-            var item=s.item();String detail=(item.hasCustomHoverName()&&(s.variant().gunId()!=null||s.variant().ammoId()!=null)?item.getHoverName().getString()+"; ":"")+s.variant().itemId()+"; reserved: "+s.reserved();
+            var item=s.item();String detail=(item.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)&&(s.variant().gunId()!=null||s.variant().ammoId()!=null)?item.getHoverName().getString()+"; ":"")+s.variant().itemId()+"; reserved: "+s.reserved();
             if(item.isDamageableItem())detail+="; durability: "+(item.getMaxDamage()-item.getDamageValue())+"/"+item.getMaxDamage();
-            var enchants=net.minecraft.world.item.enchantment.EnchantmentHelper.getEnchantments(item);
-            for(var e:enchants.entrySet())detail+="; "+net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.getKey(e.getKey())+" "+e.getValue();
+            var enchants=net.minecraft.world.item.enchantment.EnchantmentHelper.getEnchantmentsForCrafting(item);
+            for(var e:enchants.entrySet())detail+="; "+e.getKey().unwrapKey().map(k -> k.location().toString()).orElse("unknown")+" "+e.getIntValue();
             stock.add(new Row(STOCK_ROW,null,clean(id,96),clean(detail,MAX_TEXT),"",s.count(),s.count()-s.reserved(),s.reserved(),0,-1));
         }
         int inspected=0,unavailable=0;

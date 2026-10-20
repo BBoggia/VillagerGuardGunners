@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "ctov": "[3.4.14]"
+    "ctov": "[3.6.3]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -42,6 +42,14 @@
         "entrances": []
       }
     ],
+    "ctov:village/savanna_na/deco/archeology_tent": [
+      {
+        "kind": "decoration",
+        "sha256": "335c50172ea0b2cade186caf09f7428539f10b04c9cbe63057a8d586b755569f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
     "ctov:village/savanna_na/deco/bard_house": [
       {
         "kind": "decoration",
@@ -58,6 +66,14 @@
         "entrances": []
       }
     ],
+    "ctov:village/savanna_na/deco/climatologist": [
+      {
+        "kind": "decoration",
+        "sha256": "bef846c952a949d25dd182ea36048c30e4eb6509af98164ec50dcd25a8a07bb5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
     "ctov:village/savanna_na/deco/copper_golem": [
       {
         "kind": "decoration",
@@ -69,7 +85,7 @@
     "ctov:village/savanna_na/deco/garbage_heaps": [
       {
         "kind": "decoration",
-        "sha256": "7fbeb2b3a2f0138c7dd02994463c371b0821d161f1a9e6e65c502ea678a131f5",
+        "sha256": "0fc75bf8d2c891c2f9ecce5479afe6b3a341b670abbc23bcb8e00cd736237eed",
         "beds": [],
         "entrances": []
       }
@@ -1146,6 +1162,61 @@
         ]
       }
     ],
+    "ctov:village/savanna_na/jobsite/tavern": [
+      {
+        "kind": "residence",
+        "sha256": "e435f168fc31602fc4be73ca2aac3c32669e22fe7fa9410fcda1d450b3925c0a",
+        "beds": [
+          [
+            3,
+            6,
+            4
+          ],
+          [
+            3,
+            6,
+            8
+          ],
+          [
+            8,
+            6,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            5,
+            6,
+            3
+          ],
+          [
+            5,
+            6,
+            7
+          ],
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            7,
+            6,
+            6
+          ]
+        ]
+      }
+    ],
     "ctov:village/savanna_na/jobsite/vault": [
       {
         "kind": "service",
@@ -1235,26 +1306,26 @@
         ]
       }
     ],
-    "ctov:village/savanna_na/roads/bent_1": [
+    "ctov:village/savanna_na/roads/corner_1": [
       {
         "kind": "road",
-        "sha256": "04f51ad9d8ccfa439435fffe0082648026d5a4be5ba5586cba512cf40763d597",
+        "sha256": "62691f77eac712127c64060597ed063bec5ee840fc01a153d8daaec87936fbc4",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/savanna_na/roads/bent_2": [
+    "ctov:village/savanna_na/roads/corner_2": [
       {
         "kind": "road",
-        "sha256": "f68f67671550b31ba3842206f899efeb1ab0fe0541aded7ddcc1687b78751e5e",
+        "sha256": "9df1189f8c2c5fa145f35dd515449bcc528693a9d5ccee6defa23df02cc300c0",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/savanna_na/roads/inter": [
+    "ctov:village/savanna_na/roads/crossroad": [
       {
         "kind": "road",
-        "sha256": "9f53c5b60526107111568b9476017aaa735bef03032a3b744329aee77ac2cddc",
+        "sha256": "d29f550027cf0cf4c86ac29af1787f8524bce4b9860c5071d9fd4da90bbe3c69",
         "beds": [],
         "entrances": []
       }
@@ -1262,7 +1333,7 @@
     "ctov:village/savanna_na/roads/respawn_obelisk": [
       {
         "kind": "road",
-        "sha256": "4d8d23a3e7f6dd5dc3c00e8500bec34ea7f569f037d5ac1388045e7af6959776",
+        "sha256": "81f0546b9b893991abef6395968a727ba672d423c278749f2ed75bc046edba0f",
         "beds": [],
         "entrances": []
       }
@@ -1270,7 +1341,7 @@
     "ctov:village/savanna_na/roads/straight": [
       {
         "kind": "road",
-        "sha256": "26a73eec9d8b7227a99c3d884c6daf80ef7b893cc486b4788995f5ffe34ee946",
+        "sha256": "59740e809bc3f1c2779f5810455c67e19cdb7b101b27280a536d24e76d072ded",
         "beds": [],
         "entrances": []
       }
@@ -1278,7 +1349,7 @@
     "ctov:village/savanna_na/roads/t_1": [
       {
         "kind": "road",
-        "sha256": "79d5737b585c18c57d9880f67342fa84eccfdf6eb8e8e420f5999dfe2fdb8868",
+        "sha256": "21f4a33831c07599b5ee541c695efc4db09cc105bf55f1799037ada910980bc1",
         "beds": [],
         "entrances": []
       }
@@ -1286,7 +1357,7 @@
     "ctov:village/savanna_na/roads/t_2": [
       {
         "kind": "road",
-        "sha256": "a8f9be9fa5bb2212d812fac18dd882a67cbdbd625f8a7dd7422f61004a3341a5",
+        "sha256": "c5354fce468f7246e774cd99dc961d60670dec8d808cabddbb4a1a6b18ddf655",
         "beds": [],
         "entrances": []
       }
@@ -1294,7 +1365,7 @@
     "ctov:village/savanna_na/roads/t_3": [
       {
         "kind": "road",
-        "sha256": "15e40c3f2da5f38f93d76d1fb7dfa8f8a61602ef1a924ab7ac7ecd348d6af62a",
+        "sha256": "249ff413d8b08c29ae21ab650333aaab71871eb786263ef876eced1d33089790",
         "beds": [],
         "entrances": []
       }
@@ -1302,7 +1373,7 @@
     "ctov:village/savanna_na/roads/terminator": [
       {
         "kind": "road",
-        "sha256": "51a66654ffc077fb1494f8c1cf3162ca91f61fba4a8b86f915f7a8607a8dc8e8",
+        "sha256": "c9d44e0ef7e4800b1247825c3651f0de7d2cee30278bf5fdcf0c299b3595f480",
         "beds": [],
         "entrances": []
       }
@@ -1318,7 +1389,7 @@
     "minecraft:village/common/animals/cat_black": [
       {
         "kind": "decoration",
-        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "sha256": "ce1c642a4a009ecf94fd2f0c93dfe7ea9cbc1b266ada6916fa2edbd82fde178e",
         "beds": [],
         "entrances": []
       }
@@ -1326,7 +1397,7 @@
     "minecraft:village/common/animals/cat_british": [
       {
         "kind": "decoration",
-        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "sha256": "256c5bac85a6ac921257a8d7c39cb480cb0e23d2ad166ce803f473b430c428a7",
         "beds": [],
         "entrances": []
       }
@@ -1334,7 +1405,7 @@
     "minecraft:village/common/animals/cat_calico": [
       {
         "kind": "decoration",
-        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "sha256": "bf9ea82c019d9e83ac2c47108b689737a1b7a73bd1b11c9ed48744b7db90a273",
         "beds": [],
         "entrances": []
       }
@@ -1342,7 +1413,7 @@
     "minecraft:village/common/animals/cat_jellie": [
       {
         "kind": "decoration",
-        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "sha256": "31ae6850c9c75d0626f3b8fc14027b3bc1906ab0d14201101a67250835aec847",
         "beds": [],
         "entrances": []
       }
@@ -1350,7 +1421,7 @@
     "minecraft:village/common/animals/cat_persian": [
       {
         "kind": "decoration",
-        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "sha256": "be7ee0101982cfc5374215e566d7282280ef5122cd351874310cd911e58c5271",
         "beds": [],
         "entrances": []
       }
@@ -1358,7 +1429,7 @@
     "minecraft:village/common/animals/cat_ragdoll": [
       {
         "kind": "decoration",
-        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "sha256": "14d14c7039371b4f08a0360eb6b5611029fb6d577a3e532f53c70d1b7a4779bd",
         "beds": [],
         "entrances": []
       }
@@ -1366,7 +1437,7 @@
     "minecraft:village/common/animals/cat_red": [
       {
         "kind": "decoration",
-        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "sha256": "d9523300a7a0cf0611562771490f3a11429d1f72dec987a88dea6538da8aed00",
         "beds": [],
         "entrances": []
       }
@@ -1374,7 +1445,7 @@
     "minecraft:village/common/animals/cat_siamese": [
       {
         "kind": "decoration",
-        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "sha256": "30ca3860e4c19669f380c5b5e01adb91112be60698c4cebd3cd94e3e391f0e9b",
         "beds": [],
         "entrances": []
       }
@@ -1382,7 +1453,7 @@
     "minecraft:village/common/animals/cat_tabby": [
       {
         "kind": "decoration",
-        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "sha256": "5a9800b43db9ebc3a0811e03d43ab7183110c32f76e727bee2bd24e387161880",
         "beds": [],
         "entrances": []
       }
@@ -1390,7 +1461,7 @@
     "minecraft:village/common/animals/cat_white": [
       {
         "kind": "decoration",
-        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "sha256": "81f96e424ee2856a15a9d6e235af3a3ca7a39b839bdbfbedf44162d29fb3cbf2",
         "beds": [],
         "entrances": []
       }
@@ -1398,7 +1469,7 @@
     "minecraft:village/common/iron_golem": [
       {
         "kind": "decoration",
-        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "sha256": "4e0c8c2fb1a5d7aa45e4918003cca74991f02ffa21284f341468d28d8db402fa",
         "beds": [],
         "entrances": []
       }
@@ -1406,13 +1477,7 @@
     "minecraft:village/savanna/savanna_lamp_post_01": [
       {
         "kind": "decoration",
-        "sha256": "192e89547b090fa920248643beabbf687233a0d1f2cf414abb139d681307a56e",
-        "beds": [],
-        "entrances": []
-      },
-      {
-        "kind": "decoration",
-        "sha256": "8633fc02071974285257be9143d0ccc5bc72287bd6b3ea95fd9d73bbc57fda3b",
+        "sha256": "13ed37abb3ec86ccbcbbae00ddd7c894f2e9182e62b1eb3618c83a810d6721f8",
         "beds": [],
         "entrances": []
       }
@@ -1420,7 +1485,7 @@
     "minecraft:village/savanna/villagers/baby": [
       {
         "kind": "service",
-        "sha256": "e6b4e5812c97932882341d3dc14ea238683bda3d7d5abde6af4a09342f875aa7",
+        "sha256": "41261f51b67496056ff978b01bdb2f36cfd8dcbb58351c98549440f343089015",
         "beds": [],
         "entrances": []
       }
@@ -1428,7 +1493,7 @@
     "minecraft:village/savanna/villagers/nitwit": [
       {
         "kind": "service",
-        "sha256": "edf9116c61f7cbea96c1d4961b03b192514a9f1952526dce3a1dc28bcd0ae9ca",
+        "sha256": "bff45d66b72e2f85144748394ef2fb2e5f7867865073c2f77fc9ac08ec267824",
         "beds": [],
         "entrances": []
       }
@@ -1436,7 +1501,7 @@
     "minecraft:village/savanna/villagers/unemployed": [
       {
         "kind": "service",
-        "sha256": "0e3fe85cafe8a083a764991c95e30d7f6210586a6fdf09049eda89f3b00ec651",
+        "sha256": "c91d2b38fd1c0a3d927247fa3a407a01b51d62cd637277d2c31ea66355a5b9a3",
         "beds": [],
         "entrances": []
       }

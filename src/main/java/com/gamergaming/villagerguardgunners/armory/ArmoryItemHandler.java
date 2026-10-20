@@ -9,7 +9,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 /** Fixed-size ammunition storage used by an armory and exposed to automation. */
 public final class ArmoryItemHandler extends ItemStackHandler {
@@ -42,7 +42,7 @@ public final class ArmoryItemHandler extends ItemStackHandler {
      * returned so the block entity can eject them instead of silently deleting
      * ordinary data. Entries beyond the corruption-safety limit are ignored.
      */
-    public List<ItemStack> loadSafely(CompoundTag inventoryTag) {
+    public List<ItemStack> loadSafely(net.minecraft.core.HolderLookup.Provider registries, CompoundTag inventoryTag) {
         suppressChangeNotifications = true;
         try {
             clearInternal();
@@ -55,7 +55,7 @@ public final class ArmoryItemHandler extends ItemStackHandler {
             int inspected = Math.min(items.size(), MAX_SERIALIZED_ENTRIES);
             for (int index = 0; index < inspected; index++) {
                 CompoundTag encoded = items.getCompound(index);
-                ItemStack stack = ItemStack.of(encoded);
+                ItemStack stack = ItemStack.parseOptional(registries, encoded);
                 if (stack.isEmpty()) {
                     continue;
                 }

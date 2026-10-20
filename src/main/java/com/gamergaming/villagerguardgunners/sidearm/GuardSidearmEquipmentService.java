@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.sidearm;
 
 import com.gamergaming.villagerguardgunners.quartermaster.service.ServiceTransactions;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Trusted single-slot write, including exact rollback of an old configured item. */
 public final class GuardSidearmEquipmentService {

@@ -57,7 +57,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Runtime-only assertions that require Minecraft registries and applied mixins. */
 public final class VillageBuildingPoolGameTestAccess {
@@ -74,7 +74,7 @@ public final class VillageBuildingPoolGameTestAccess {
         var area = new com.gamergaming.villagerguardgunners.defense.duty.LoadedDutyTestArea(level, anchor);
         Guard[] accepted = new Guard[1];
         List<Integer> spawnTicks = new ArrayList<>();
-        java.util.function.Consumer<net.minecraftforge.event.entity.EntityJoinLevelEvent> rejectFirstSpawns = event -> {
+        java.util.function.Consumer<net.neoforged.neoforge.event.entity.EntityJoinLevelEvent> rejectFirstSpawns = event -> {
             if (event.getLevel() == level && event.getEntity() instanceof Guard guard
                     && guard.blockPosition().distManhattan(
                             anchor) <= 4) {
@@ -92,9 +92,9 @@ public final class VillageBuildingPoolGameTestAccess {
                 }
             }
         };
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(rejectFirstSpawns);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(rejectFirstSpawns);
         Runnable restore = () -> {
-            net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(rejectFirstSpawns);
+            net.neoforged.neoforge.common.NeoForge.EVENT_BUS.unregister(rejectFirstSpawns);
             if (accepted[0] != null) accepted[0].discard();
             area.close();
             settings.enabled.accept(originalEnabled);

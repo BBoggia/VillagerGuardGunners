@@ -7,11 +7,11 @@ import java.util.function.Supplier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Bounded server-owned manual revival channels. Supplies stay in their original slot until completion. */
 public final class PlayerTreatmentRuntime {
@@ -81,8 +81,7 @@ public final class PlayerTreatmentRuntime {
         int kind = care.mode() == CasualtyCarePolicy.Mode.COT ? 1 : care.mode() == CasualtyCarePolicy.Mode.FIELD ? 2 : 3;
         return kind * 1000 + Math.max(0, Math.min(100, (int)(elapsed * 100 / care.channelTicks()))) / 5 * 5;
     }
-    public static void tick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+    public static void tick(ServerTickEvent.Post event) {
         for (var channel : List.copyOf(PLAYERS.values())) {
             if (!registered(channel) || channel.patient.level().getServer() != event.getServer()) continue;
             if (!valid(channel)) { cancel(channel.patient); continue; }
@@ -96,8 +95,8 @@ public final class PlayerTreatmentRuntime {
             MedicalTreatment.report(channel.player, result);
         }
     }
-    public static void damaged(LivingDamageEvent event) {
-        if (event.isCanceled() || event.getAmount() <= 0) return;
+    public static void damaged(LivingDamageEvent.Post event) {
+        if (!(event.getNewDamage() > 0)) return;
         if (event.getEntity() instanceof Guard guard) cancel(guard);
         var channel = PLAYERS.get(event.getEntity().getUUID()); if (channel != null) cancel(channel.patient);
     }

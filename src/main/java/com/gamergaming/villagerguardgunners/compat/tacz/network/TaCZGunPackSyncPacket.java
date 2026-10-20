@@ -12,7 +12,10 @@ public record TaCZGunPackSyncPacket(
         int chunkCount,
         int totalBytes,
         long checksum,
-        byte[] data) {
+        byte[] data) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<TaCZGunPackSyncPacket> TYPE = new Type<>(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "tacz_gun_pack_sync"));
+        @Override public Type<TaCZGunPackSyncPacket> type() { return TYPE; }
+
     public TaCZGunPackSyncPacket {
         if (schemaVersion != TaCZGunPackSyncProtocol.CURRENT_SCHEMA_VERSION) {
             throw new IllegalArgumentException("Unsupported TaCZ sync schema");

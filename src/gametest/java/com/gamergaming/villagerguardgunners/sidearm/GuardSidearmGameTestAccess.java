@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.sidearm;
 
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Development-only fixture access to complete private sidearm state. */
 public final class GuardSidearmGameTestAccess {

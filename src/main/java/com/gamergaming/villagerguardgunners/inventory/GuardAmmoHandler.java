@@ -9,7 +9,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public final class GuardAmmoHandler extends ItemStackHandler {
     public static final int SLOT_COUNT = 3;
@@ -43,14 +43,14 @@ public final class GuardAmmoHandler extends ItemStackHandler {
         return remainder;
     }
 
-    public List<ItemStack> loadSafely(CompoundTag inventoryTag) {
+    public List<ItemStack> loadSafely(net.minecraft.core.HolderLookup.Provider registries, CompoundTag inventoryTag) {
         clear();
         List<ItemStack> rejected = new ArrayList<>();
         ListTag serializedItems = inventoryTag.getList("Items", Tag.TAG_COMPOUND);
 
         for (int index = 0; index < serializedItems.size(); index++) {
             CompoundTag serializedStack = serializedItems.getCompound(index);
-            ItemStack stack = ItemStack.of(serializedStack);
+            ItemStack stack = ItemStack.parseOptional(registries, serializedStack);
             if (stack.isEmpty()) {
                 continue;
             }
@@ -71,10 +71,10 @@ public final class GuardAmmoHandler extends ItemStackHandler {
         return rejected;
     }
 
-    public List<ItemStack> importLegacyStacks(List<CompoundTag> serializedStacks) {
+    public List<ItemStack> importLegacyStacks(net.minecraft.core.HolderLookup.Provider registries, List<CompoundTag> serializedStacks) {
         List<ItemStack> rejected = new ArrayList<>();
         for (CompoundTag serializedStack : serializedStacks) {
-            ItemStack stack = ItemStack.of(serializedStack);
+            ItemStack stack = ItemStack.parseOptional(registries, serializedStack);
             if (stack.isEmpty()) {
                 continue;
             }
@@ -93,7 +93,7 @@ public final class GuardAmmoHandler extends ItemStackHandler {
      * unmatched quantity is still imported so mixed-format saves do not lose
      * ammunition that exists only in the legacy inventory.
      */
-    public List<ItemStack> importLegacyStacksDeduplicated(
+    public List<ItemStack> importLegacyStacksDeduplicated(net.minecraft.core.HolderLookup.Provider registries,
             List<CompoundTag> serializedStacks,
             List<ItemStack> alreadyRestoredOverflow) {
         List<ItemStack> unmatchedRestored = new ArrayList<>();
@@ -106,7 +106,7 @@ public final class GuardAmmoHandler extends ItemStackHandler {
 
         List<ItemStack> rejected = new ArrayList<>();
         for (CompoundTag serializedStack : serializedStacks) {
-            ItemStack legacyStack = ItemStack.of(serializedStack);
+            ItemStack legacyStack = ItemStack.parseOptional(registries, serializedStack);
             if (legacyStack.isEmpty()) {
                 continue;
             }
@@ -127,7 +127,7 @@ public final class GuardAmmoHandler extends ItemStackHandler {
             if (legacyStack.isEmpty()) {
                 return;
             }
-            if (!restored.isEmpty() && ItemStack.isSameItemSameTags(legacyStack, restored)) {
+            if (!restored.isEmpty() && ItemStack.isSameItemSameComponents(legacyStack, restored)) {
                 int duplicateCount = Math.min(legacyStack.getCount(), restored.getCount());
                 legacyStack.shrink(duplicateCount);
                 restored.shrink(duplicateCount);

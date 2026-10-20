@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.api;
 
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
 import javax.annotation.Nullable;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Mixin-backed persistent access to a generated guard's optional post provenance. */
 public interface GuardPostAccess {

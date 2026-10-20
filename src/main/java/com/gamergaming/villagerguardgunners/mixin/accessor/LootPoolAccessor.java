@@ -11,11 +11,11 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(LootPool.class)
 public interface LootPoolAccessor {
     @Accessor("entries")
-    LootPoolEntryContainer[] villagerGuardGunners$getEntries();
+    java.util.List<LootPoolEntryContainer> villagerGuardGunners$getEntries();
 
     @Accessor("conditions")
-    LootItemCondition[] villagerGuardGunners$getConditions();
+    java.util.List<LootItemCondition> villagerGuardGunners$getConditions();
 
     @Accessor("functions")
-    LootItemFunction[] villagerGuardGunners$getFunctions();
+    java.util.List<LootItemFunction> villagerGuardGunners$getFunctions();
 }

@@ -7,39 +7,39 @@ import com.gamergaming.villagerguardgunners.item.SquadCommandLedgerItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.BlockItem;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 /** Registers the add-on's deliberately small player-facing item surface. */
 public final class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(
-            ForgeRegistries.ITEMS,
+            BuiltInRegistries.ITEM,
             VillagerGuardGunners.MODID);
 
-    public static final RegistryObject<Item> ORDERS_LEDGER = ITEMS.register(
+    public static final DeferredHolder<Item, Item> ORDERS_LEDGER = ITEMS.register(
             "orders_ledger",
             () -> new OrdersLedgerItem(new Item.Properties().stacksTo(1)));
 
-    public static final RegistryObject<Item> SQUAD_COMMAND_LEDGER = ITEMS.register(
+    public static final DeferredHolder<Item, Item> SQUAD_COMMAND_LEDGER = ITEMS.register(
             "squad_command_ledger",
             () -> new SquadCommandLedgerItem(new Item.Properties().stacksTo(1)));
 
-    public static final RegistryObject<Item> ARMORY = ITEMS.register(
+    public static final DeferredHolder<Item, Item> ARMORY = ITEMS.register(
             "armory",
             () -> new BlockItem(ModBlocks.ARMORY.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> QUARTERMASTER = ITEMS.register(
+    public static final DeferredHolder<Item, Item> QUARTERMASTER = ITEMS.register(
             "quartermaster", () -> new QuartermasterItem(ModBlocks.QUARTERMASTER.get(),
                     new Item.Properties().stacksTo(1).fireResistant()));
 
-    public static final RegistryObject<Item> RECOVERY_COT = ITEMS.register("recovery_cot", () ->
+    public static final DeferredHolder<Item, Item> RECOVERY_COT = ITEMS.register("recovery_cot", () ->
             new BlockItem(ModBlocks.RECOVERY_COT.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> BANDAGE = ITEMS.register("bandage", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> MEDICAL_POUCH = ITEMS.register("medical_pouch", () ->
+    public static final DeferredHolder<Item, Item> BANDAGE = ITEMS.register("bandage", () -> new Item(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> MEDICAL_POUCH = ITEMS.register("medical_pouch", () ->
             new com.gamergaming.villagerguardgunners.medical.MedicalPouchItem(new Item.Properties().stacksTo(1).fireResistant()));
 
     public static void register(IEventBus eventBus) {

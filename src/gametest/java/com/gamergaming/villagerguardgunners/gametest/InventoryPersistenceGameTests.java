@@ -23,12 +23,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComparatorBlock;
 import net.minecraft.world.level.block.entity.ComparatorBlockEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Exercises item ownership and menu persistence with the actual Forge handlers. */
 @GameTestHolder(VillagerGuardGunners.MODID)
@@ -147,14 +147,14 @@ public final class InventoryPersistenceGameTests {
                 event.setCanceled(true);
             }
         };
-        MinecraftForge.EVENT_BUS.addListener(cancelDrop);
+        NeoForge.EVENT_BUS.addListener(cancelDrop);
         try {
             helper.assertTrue(GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard) == 0
                             && canceled[0] == 1
                             && ItemStack.matches(original, inventory.getStackInSlot(0)),
                     "A canceled spawn consumed or changed the empty box");
         } finally {
-            MinecraftForge.EVENT_BUS.unregister(cancelDrop);
+            NeoForge.EVENT_BUS.unregister(cancelDrop);
         }
         helper.succeed();
     }
@@ -184,14 +184,14 @@ public final class InventoryPersistenceGameTests {
                 spawned.add(item);
             }
         };
-        MinecraftForge.EVENT_BUS.addListener(observe);
+        NeoForge.EVENT_BUS.addListener(observe);
         try {
             helper.assertTrue(GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard) == 1
                             && inventory.getStackInSlot(0).isEmpty()
                             && spawned.size() == 1 && spawned.get(0).isAddedToWorld(),
                     "A successful spawn did not transfer the box into the world");
         } finally {
-            MinecraftForge.EVENT_BUS.unregister(observe);
+            NeoForge.EVENT_BUS.unregister(observe);
             spawned.forEach(ItemEntity::discard);
         }
         helper.succeed();

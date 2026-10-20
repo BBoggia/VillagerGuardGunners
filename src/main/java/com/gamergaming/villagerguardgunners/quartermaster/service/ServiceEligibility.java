@@ -9,8 +9,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraftforge.registries.ForgeRegistries;
-import tallestegg.guardvillagers.entities.Guard;
+import net.minecraft.core.registries.BuiltInRegistries;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 public final class ServiceEligibility {
     public static ServiceStatus guard(Guard guard) { return guard(guard,true); }
@@ -53,7 +53,7 @@ public final class ServiceEligibility {
         if (!claimedStation(level, station.getBlockPos())) return ServiceStatus.OPERATOR_UNAVAILABLE;
         if (station.operator == null || !(level.getEntity(station.operator) instanceof Villager villager)
                 || !villager.isAlive() || villager.isRemoved() || villager.isBaby() || villager.isNoAi() || villager.isTrading() || villager.isSleeping()
-                || villager.getVillagerData().getProfession() != ForgeRegistries.VILLAGER_PROFESSIONS.getValue(QuartermasterProfession.ID)
+                || villager.getVillagerData().getProfession() != BuiltInRegistries.VILLAGER_PROFESSION.get(QuartermasterProfession.ID)
                 || villager.distanceToSqr(station.getBlockPos().getX() + .5, station.getBlockPos().getY() + .5, station.getBlockPos().getZ() + .5) > 16
                 || villager.getBrain().isActive(Activity.PANIC) || villager.getBrain().isActive(Activity.RAID)
                 || villager.getBrain().getMemory(MemoryModuleType.JOB_SITE).filter(site -> site.dimension().equals(level.dimension()) && site.pos().equals(station.getBlockPos())).isEmpty()) return ServiceStatus.OPERATOR_UNAVAILABLE;
@@ -64,7 +64,7 @@ public final class ServiceEligibility {
         var cached = ((com.gamergaming.villagerguardgunners.mixin.accessor.VillagePoiStorageAccessor) level.getPoiManager())
                 .villagerGuardGunners$cachedSection(net.minecraft.core.SectionPos.of(pos).asLong());
         if (cached == null || cached.isEmpty() || !(cached.get() instanceof net.minecraft.world.entity.ai.village.poi.PoiSection section)) return false;
-        var type = ForgeRegistries.POI_TYPES.getValue(QuartermasterProfession.ID);
+        var type = BuiltInRegistries.POINT_OF_INTEREST_TYPE.get(QuartermasterProfession.ID);
         if (type == null) return false;
         return section.getRecords(holder -> holder.value() == type,
                 net.minecraft.world.entity.ai.village.poi.PoiManager.Occupancy.IS_OCCUPIED)

@@ -1,5 +1,7 @@
 # Village Defense Buildings datapack example
 
+This example targets Minecraft 1.21.1 on the NeoForge port (data pack format 48).
+
 Place this directory in a world's `datapacks` folder and supply the structure
 template referenced by the example definition at:
 

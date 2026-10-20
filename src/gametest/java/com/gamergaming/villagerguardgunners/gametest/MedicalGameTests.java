@@ -23,15 +23,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder(VillagerGuardGunners.MODID)
 @PrefixGameTestTemplate(false)
@@ -56,8 +56,8 @@ public final class MedicalGameTests {
         h.assertTrue(actual == expected, "Expected " + expected + ", got " + actual);
     }
     private static void healListener(Consumer<LivingHealEvent> listener, Runnable action) {
-        MinecraftForge.EVENT_BUS.addListener(listener);
-        try { action.run(); } finally { MinecraftForge.EVENT_BUS.unregister(listener); }
+        NeoForge.EVENT_BUS.addListener(listener);
+        try { action.run(); } finally { NeoForge.EVENT_BUS.unregister(listener); }
     }
     @GameTest(templateNamespace = "minecraft", template = TEMPLATE)
     public static void oneBandageHealsOnceAndCooldownPreventsRepeat(GameTestHelper h) {
@@ -204,9 +204,9 @@ public final class MedicalGameTests {
         var f = fixture(h); supply(f, 17); var queue = new MedicalRecovery(); UUID id = UUID.randomUUID();
         queue.enqueue(id, f.guard.blockPosition(), f.pouch.packed());
         Consumer<EntityJoinLevelEvent> cancel = e -> { if (e.getEntity().getUUID().equals(id)) e.setCanceled(true); };
-        MinecraftForge.EVENT_BUS.addListener(cancel);
+        NeoForge.EVENT_BUS.addListener(cancel);
         try { queue.retry(h.getLevel()); h.assertTrue(queue.pendingCount() == 1 && h.getLevel().getEntity(id) == null, "Canceled spawn removed saved supplies"); }
-        finally { MinecraftForge.EVENT_BUS.unregister(cancel); }
+        finally { NeoForge.EVENT_BUS.unregister(cancel); }
         var restored = MedicalRecovery.load(queue.save(new CompoundTag())); restored.retry(h.getLevel());
         h.assertTrue(restored.pendingCount() == 0 && h.getLevel().getEntity(id) instanceof ItemEntity, "Recovery did not retry");
         var item = (ItemEntity) h.getLevel().getEntity(id); var contents = new MedicalStorage(f.guard); contents.load(item.getItem().getTag());

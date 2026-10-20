@@ -9,7 +9,7 @@ import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandRuntime;
 import com.gamergaming.villagerguardgunners.squad.SquadPatrolRouteResolver;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 public final class MedicEligibility {
     public static boolean enabled() { return ModConfigs.GUARD_GUNNERS.medical.enabled.get() && ModConfigs.GUARD_GUNNERS.medical.medicAi.get(); }

@@ -26,10 +26,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+
 
 /** Physical, automation-friendly ammunition storage. */
 public final class ArmoryBlock extends BaseEntityBlock {
+    @Override protected com.mojang.serialization.MapCodec<ArmoryBlock> codec() { return simpleCodec(ArmoryBlock::new); }
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public ArmoryBlock(Properties properties) {
@@ -67,7 +68,7 @@ public final class ArmoryBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(
+    public net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack usedItem,
             BlockState state,
             Level level,
             BlockPos position,
@@ -76,7 +77,7 @@ public final class ArmoryBlock extends BaseEntityBlock {
             BlockHitResult hit) {
         BlockEntity blockEntity = level.getBlockEntity(position);
         if (!(blockEntity instanceof ArmoryBlockEntity armory)) {
-            return InteractionResult.PASS;
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         ItemStack held = player.getItemInHand(hand);
         if (player.isSecondaryUseActive()
@@ -86,12 +87,12 @@ public final class ArmoryBlock extends BaseEntityBlock {
                         ArmoryLockInteractions.interact(player, held, armory);
                 ArmoryLockInteractions.report(player, armory, result);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            NetworkHooks.openScreen(serverPlayer, armory, position);
+            serverPlayer.openMenu(armory, position);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override

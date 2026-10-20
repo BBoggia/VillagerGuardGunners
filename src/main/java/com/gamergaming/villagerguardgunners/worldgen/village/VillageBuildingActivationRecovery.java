@@ -12,9 +12,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraftforge.event.level.ChunkEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
 /** Chunk-load-driven resumption for durable, unfinished building actions. */
 public final class VillageBuildingActivationRecovery {
@@ -22,10 +22,7 @@ public final class VillageBuildingActivationRecovery {
             new WeakHashMap<>();
     private static final Map<MinecraftServer, Set<DiagnosticKey>> REPORTED = new WeakHashMap<>();
 
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.START) {
-            return;
-        }
+    public static void onServerTick(ServerTickEvent.Pre event) {
         MinecraftServer server = event.getServer();
         VillageBuildingActivationQueue queue = SCHEDULED.get(server);
         if (queue != null) {

@@ -32,8 +32,8 @@ import net.minecraft.world.level.block.Rotation;
  * integration and bounded anchor handling.
  */
 public final class VillageBuildingPoolElement extends SinglePoolElement {
-    private static final Codec<VillageBuildingPoolElement> RAW_CODEC =
-            RecordCodecBuilder.create(instance -> instance.group(
+    private static final com.mojang.serialization.MapCodec<VillageBuildingPoolElement> RAW_CODEC =
+            RecordCodecBuilder.mapCodec(instance -> instance.group(
                     ResourceLocation.CODEC.fieldOf("entry_id")
                             .forGetter(VillageBuildingPoolElement::entryId),
                     VillageBuildingType.CODEC.optionalFieldOf("building_type")
@@ -47,7 +47,7 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
                     Codec.BOOL.optionalFieldOf("terrain_safety", false)
                             .forGetter(VillageBuildingPoolElement::terrainSafety))
                     .apply(instance, VillageBuildingPoolElement::new));
-    public static final Codec<VillageBuildingPoolElement> CODEC = RAW_CODEC.flatXmap(
+    public static final com.mojang.serialization.MapCodec<VillageBuildingPoolElement> CODEC = RAW_CODEC.flatXmap(
             element -> element.legacyTypeFallback
                     && !element.entryId.equals(
                             VillageBuildingPools.PLAINS_INTEGRATION_PROBE_ID)
@@ -91,7 +91,7 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
             double selectionChance,
             boolean terrainSafety,
             boolean legacyTypeFallback) {
-        super(template, processors, projection);
+        super(template, processors, projection, java.util.Optional.empty());
         this.entryId = Objects.requireNonNull(entryId, "entryId");
         this.buildingType = Objects.requireNonNull(buildingType, "buildingType");
         this.legacyTypeFallback = legacyTypeFallback;
@@ -155,13 +155,14 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
     protected StructurePlaceSettings getSettings(
             Rotation rotation,
             BoundingBox bounds,
+            net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings liquidSettings,
             boolean keepJigsaws) {
         // SinglePoolElement normally treats jigsaw templates as already having
         // their final shapes. These authored buildings contain fences, iron
         // bars, stairs, doors, and other blocks whose state depends on their
         // generated neighbors, so let StructureTemplate run Minecraft's
         // standard bounded shape reconciliation after placement.
-        return super.getSettings(rotation, bounds, keepJigsaws)
+        return super.getSettings(rotation, bounds, liquidSettings, keepJigsaws)
                 .setKnownShape(false);
     }
 
@@ -176,6 +177,7 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
             Rotation rotation,
             BoundingBox bounds,
             RandomSource random,
+            net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings liquidSettings,
             boolean keepJigsaws) {
         if (!VillageBuildingAnchorMarker.validateTemplateMarkers(
                 getDataMarkers(templateManager, position, rotation, false),
@@ -192,12 +194,13 @@ public final class VillageBuildingPoolElement extends SinglePoolElement {
                 rotation,
                 bounds,
                 random,
+                liquidSettings,
                 keepJigsaws);
         if (!placed) {
             return false;
         }
 
-        StructurePlaceSettings markerSettings = getSettings(rotation, bounds, keepJigsaws);
+        StructurePlaceSettings markerSettings = getSettings(rotation, bounds, liquidSettings, keepJigsaws);
         markerSettings.getProcessors().removeIf(
                 processor -> processor == BlockIgnoreProcessor.STRUCTURE_BLOCK);
         for (StructureTemplate.StructureBlockInfo marker : StructureTemplate.processBlockInfos(

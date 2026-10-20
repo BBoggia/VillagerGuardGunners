@@ -24,8 +24,7 @@ public final class VillagePopulationSavedData extends SavedData {
     private CompoundTag preserved;
     public VillagePopulationSavedData(ResourceLocation dimension) { this.dimension = dimension; }
     public static VillagePopulationSavedData get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(tag -> load(tag, level.dimension().location()),
-                () -> new VillagePopulationSavedData(level.dimension().location()), DATA_NAME);
+        return level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new VillagePopulationSavedData(level.dimension().location()), (tag, registries) -> load(tag, level.dimension().location())), DATA_NAME);
     }
     public boolean enabled() { return preserved == null; }
     /** Validate before the runtime seals any durable journal files. */
@@ -72,7 +71,7 @@ public final class VillagePopulationSavedData extends SavedData {
         credits.put(slot, new Credit(village, source, ordinal, guard));
         spent.merge(village, 1, Integer::sum); setDirty(); return true;
     }
-    @Override public CompoundTag save(CompoundTag out) {
+    @Override public CompoundTag save(CompoundTag out, net.minecraft.core.HolderLookup.Provider registries) {
         if (preserved != null) return preserved.copy();
         out.putInt("Version", 1); out.putString("Dimension", dimension.toString());
         ListTag p = new ListTag(); plans.values().stream().sorted(java.util.Comparator.comparing(v -> v.identity().id()))

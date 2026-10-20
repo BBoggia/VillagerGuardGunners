@@ -9,7 +9,7 @@
           "name": "tacz:ammo",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
+              "function": "minecraft:set_custom_data",
               "tag": "{AmmoId:\"tacz:9mm\"}"
             },
             {
@@ -28,7 +28,7 @@
           "name": "tacz:ammo",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
+              "function": "minecraft:set_custom_data",
               "tag": "{AmmoId:\"tacz:45acp\"}"
             },
             {
@@ -47,7 +47,7 @@
           "name": "tacz:ammo",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
+              "function": "minecraft:set_custom_data",
               "tag": "{AmmoId:\"tacz:762x39\"}"
             },
             {
@@ -66,7 +66,7 @@
           "name": "tacz:ammo",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
+              "function": "minecraft:set_custom_data",
               "tag": "{AmmoId:\"tacz:556x45\"}"
             },
             {
@@ -85,7 +85,7 @@
           "name": "tacz:ammo",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
+              "function": "minecraft:set_custom_data",
               "tag": "{AmmoId:\"tacz:338\"}"
             },
             {
@@ -104,7 +104,7 @@
           "name": "tacz:ammo",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
+              "function": "minecraft:set_custom_data",
               "tag": "{AmmoId:\"tacz:30_06\"}"
             },
             {
@@ -123,7 +123,7 @@
           "name": "tacz:ammo",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
+              "function": "minecraft:set_custom_data",
               "tag": "{AmmoId:\"tacz:12g\"}"
             },
             {

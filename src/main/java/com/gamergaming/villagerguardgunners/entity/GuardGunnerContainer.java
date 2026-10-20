@@ -29,10 +29,10 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import tallestegg.guardvillagers.GuardVillagers;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 public class GuardGunnerContainer extends AbstractContainerMenu {
     public static final int GUARD_SLOT_COUNT = 6;
@@ -382,7 +382,7 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
             return first.isEmpty() && second.isEmpty();
         }
         return first.getCount() == second.getCount()
-                && ItemStack.isSameItemSameTags(first, second);
+                && ItemStack.isSameItemSameComponents(first, second);
     }
 
     public Guard getGuard() {

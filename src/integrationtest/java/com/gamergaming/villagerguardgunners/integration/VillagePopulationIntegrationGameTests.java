@@ -23,13 +23,13 @@ import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pieces.*;
 import net.minecraft.world.level.levelgen.structure.pools.*;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.configuration.GuardConfig;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder(VillagerGuardGunners.MODID)
 @PrefixGameTestTemplate(false)
@@ -133,9 +133,9 @@ public final class VillagePopulationIntegrationGameTests {
     @GameTest(templateNamespace = NS, template = ARENA, batch = "population_recovery", timeoutTicks = 300)
     public static void canceledInsertionRetriesOnceAndDeathDoesNotReopenCredit(GameTestHelper helper) throws Exception {
         Fixture f = new Fixture(helper);
-        CancelJoin cancel = new CancelJoin(); MinecraftForge.EVENT_BUS.register(cancel);
+        CancelJoin cancel = new CancelJoin(); NeoForge.EVENT_BUS.register(cancel);
         Marker marker = f.ticket();
-        helper.runAfterDelay(290, () -> { MinecraftForge.EVENT_BUS.unregister(cancel); f.close(); });
+        helper.runAfterDelay(290, () -> { NeoForge.EVENT_BUS.unregister(cancel); f.close(); });
         helper.runAfterDelay(60, () -> {
             helper.assertTrue(cancel.canceled > 0 && !marker.isRemoved() && f.data.spent(f.plan.identity().id()) == 0,
                     "Canceled insertion consumed a credit or lost its request");
@@ -162,7 +162,7 @@ public final class VillagePopulationIntegrationGameTests {
             try {
                 helper.assertTrue(f.level.getEntity(f.slot) == null && VillagePopulationSavedData.get(f.level).spent(f.plan.identity().id()) == 1,
                         "Repeated ticket replaced a dead guard");
-            } finally { MinecraftForge.EVENT_BUS.unregister(cancel); f.close(); }
+            } finally { NeoForge.EVENT_BUS.unregister(cancel); f.close(); }
             helper.succeed();
         });
     }
@@ -291,7 +291,7 @@ public final class VillagePopulationIntegrationGameTests {
                     com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType.BARRACKS, f.pos);
             helper.assertTrue(VillagePopulationRuntime.bind(f.level, identity, new VillagePopulationPlacement.Binding(plan, f.source)),
                     "Could not establish managed building binding");
-            VillagePopulationRuntime.onLevelUnload(new net.minecraftforge.event.level.LevelEvent.Unload(f.level));
+            VillagePopulationRuntime.onLevelUnload(new net.neoforged.neoforge.event.level.LevelEvent.Unload(f.level));
             if (missing) java.nio.file.Files.delete(journalDirectory(f.level).resolve("building_" + identity.buildingId() + ".dat"));
             else java.nio.file.Files.writeString(journalDirectory(f.level).resolve("village_" + plan.identity().id() + ".dat"), "interrupted");
             boolean rejected = false;
@@ -351,7 +351,7 @@ public final class VillagePopulationIntegrationGameTests {
             oldRegistry = VillageRegistrySavedData.get(level); oldData = VillagePopulationSavedData.get(level);
             level.getDataStorage().set(VillageRegistrySavedData.DATA_NAME, new VillageRegistrySavedData(level.dimension().location()));
             data = new VillagePopulationSavedData(level.dimension().location()); level.getDataStorage().set(VillagePopulationSavedData.DATA_NAME, data);
-            VillagePopulationRuntime.onLevelUnload(new net.minecraftforge.event.level.LevelEvent.Unload(level));
+            VillagePopulationRuntime.onLevelUnload(new net.neoforged.neoforge.event.level.LevelEvent.Unload(level));
             ModConfigs.GUARD_GUNNERS.villagePopulation.managedGeneration.accept(true);
             for (int x = -3; x <= 3; x++) for (int z = -3; z <= 3; z++) {
                 level.setBlock(pos.offset(x, -1, z), Blocks.STONE.defaultBlockState(), 3);
@@ -375,7 +375,7 @@ public final class VillagePopulationIntegrationGameTests {
         public void close() {
             if (closed) return; closed = true;
             var live = level.getEntity(slot); if (live != null) live.discard(); guards.forEach(Guard::discard); markers.forEach(Marker::discard);
-            VillagePopulationRuntime.onLevelUnload(new net.minecraftforge.event.level.LevelEvent.Unload(level));
+            VillagePopulationRuntime.onLevelUnload(new net.neoforged.neoforge.event.level.LevelEvent.Unload(level));
             level.getDataStorage().set(VillageRegistrySavedData.DATA_NAME, oldRegistry); level.getDataStorage().set(VillagePopulationSavedData.DATA_NAME, oldData);
             ModConfigs.GUARD_GUNNERS.villagePopulation.managedGeneration.accept(oldEnabled);
             ModConfigs.GUARD_GUNNERS.villageBuildings.enabled.accept(oldBuildings);

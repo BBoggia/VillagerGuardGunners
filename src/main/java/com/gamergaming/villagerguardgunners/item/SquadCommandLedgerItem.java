@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.item;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
 import com.gamergaming.villagerguardgunners.armory.ArmoryLockInteractions;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerBinding;
@@ -46,7 +47,7 @@ public final class SquadCommandLedgerItem extends Item {
     public boolean isFoil(ItemStack stack) {
         // Match the Orders Ledger's allocation-free render path. A full strict
         // decode is reserved for tooltips and deliberate interactions.
-        CompoundTag itemTag = stack.getTag();
+        CompoundTag itemTag = ItemCustomData.read(stack);
         return (itemTag != null
                         && itemTag.contains(
                                 SquadLedgerBindingCodec.BINDING_TAG,
@@ -180,12 +181,12 @@ public final class SquadCommandLedgerItem extends Item {
     @Override
     public void appendHoverText(
             ItemStack stack,
-            @Nullable Level level,
+            net.minecraft.world.item.Item.TooltipContext level,
             List<Component> tooltip,
             TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
 
-        DecodeResult decoded = SquadLedgerBindingCodec.readFrom(stack.getTag());
+        DecodeResult decoded = SquadLedgerBindingCodec.readFrom(ItemCustomData.read(stack));
         switch (decoded.status()) {
             case BLANK -> tooltip.add(Component.translatable(
                             "item.villagerguardgunners.squad_command_ledger.tooltip.blank")
@@ -228,7 +229,7 @@ public final class SquadCommandLedgerItem extends Item {
                 .withStyle(ChatFormatting.DARK_GRAY));
 
         SquadLedgerModeCodec.DecodeResult mode =
-                SquadLedgerModeCodec.readFrom(stack.getTag());
+                SquadLedgerModeCodec.readFrom(ItemCustomData.read(stack));
         switch (mode.status()) {
             case BLANK -> appendMode(
                     tooltip,
@@ -245,7 +246,7 @@ public final class SquadCommandLedgerItem extends Item {
     }
 
     private static void cycleMode(Player player, ItemStack ledger) {
-        DecodeResult binding = SquadLedgerBindingCodec.readFrom(ledger.getTag());
+        DecodeResult binding = SquadLedgerBindingCodec.readFrom(ItemCustomData.read(ledger));
         if (!binding.isValid()) {
             player.displayClientMessage(bindingFailure(binding), true);
             player.playSound(SoundEvents.VILLAGER_NO, 0.45F, 0.8F);
@@ -253,7 +254,7 @@ public final class SquadCommandLedgerItem extends Item {
         }
 
         SquadLedgerModeCodec.DecodeResult decoded =
-                SquadLedgerModeCodec.readFrom(ledger.getTag());
+                SquadLedgerModeCodec.readFrom(ItemCustomData.read(ledger));
         if (decoded.status()
                 == SquadLedgerModeCodec.DecodeStatus.UNSUPPORTED_VERSION) {
             player.displayClientMessage(Component.translatable(
@@ -271,7 +272,7 @@ public final class SquadCommandLedgerItem extends Item {
                 == SquadLedgerModeCodec.DecodeStatus.CORRUPT
                         ? SquadLedgerModeCodec.DEFAULT_MODE
                         : current.next();
-        SquadLedgerModeCodec.writeTo(ledger.getOrCreateTag(), selected);
+        ItemCustomData.update(ledger, tag -> SquadLedgerModeCodec.writeTo(tag, selected));
         player.getInventory().setChanged();
         player.displayClientMessage(Component.translatable(
                         "message.villagerguardgunners.squad_command.mode_selected",
@@ -279,19 +280,19 @@ public final class SquadCommandLedgerItem extends Item {
                 .withStyle(decoded.status() == SquadLedgerModeCodec.DecodeStatus.CORRUPT
                         ? ChatFormatting.YELLOW
                         : ChatFormatting.GOLD), true);
-        player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 0.45F, 1.0F);
+        player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.45F, 1.0F);
     }
 
     @Nullable
     private static SquadCommandType selectedMode(Player player, ItemStack ledger) {
-        DecodeResult binding = SquadLedgerBindingCodec.readFrom(ledger.getTag());
+        DecodeResult binding = SquadLedgerBindingCodec.readFrom(ItemCustomData.read(ledger));
         if (!binding.isValid()) {
             player.displayClientMessage(bindingFailure(binding), true);
             player.playSound(SoundEvents.VILLAGER_NO, 0.45F, 0.8F);
             return null;
         }
         SquadLedgerModeCodec.DecodeResult decoded =
-                SquadLedgerModeCodec.readFrom(ledger.getTag());
+                SquadLedgerModeCodec.readFrom(ItemCustomData.read(ledger));
         if (decoded.status() == SquadLedgerModeCodec.DecodeStatus.BLANK) {
             return SquadLedgerModeCodec.DEFAULT_MODE;
         }

@@ -77,7 +77,7 @@ class ServiceAssignmentTest {
     @Test void rosterPersistsOnlyLastSeenMetadataAndCanBeForgotten() {
         var roster = new ServiceRoster(); UUID id = UUID.randomUUID(); var a = assigned();
         var entry = new ServiceRoster.Entry(id, a, a.dimension(), new BlockPos(5, 70, 5), "Guard", 123);
-        assertTrue(roster.record(entry)); var restored = ServiceRoster.load(roster.save(new CompoundTag()));
+        assertTrue(roster.record(entry)); var restored = ServiceRoster.load(roster.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
         assertEquals(entry, restored.find(id)); restored.forget(id); assertTrue(restored.entries().isEmpty());
     }
     @Test void fullRosterDoesNotEvictAnotherGuardAndAllowsUpdates() {
@@ -93,10 +93,10 @@ class ServiceAssignmentTest {
     @Test void duplicateOrFutureRosterIsPreservedRatherThanPartiallyTrusted() {
         var roster = new ServiceRoster(); var a = assigned();
         roster.record(new ServiceRoster.Entry(UUID.randomUUID(), a, a.dimension(), a.hint(), "Guard", 1));
-        var raw = roster.save(new CompoundTag()); var list = raw.getList("Entries", Tag.TAG_COMPOUND); list.add(list.get(0).copy());
+        var raw = roster.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())); var list = raw.getList("Entries", Tag.TAG_COMPOUND); list.add(list.get(0).copy());
         var restored = ServiceRoster.load(raw); assertFalse(restored.readable()); assertTrue(restored.entries().isEmpty());
-        assertEquals(raw, restored.save(new CompoundTag()));
-        raw.putInt("Version", 2); assertEquals(raw, ServiceRoster.load(raw).save(new CompoundTag()));
+        assertEquals(raw, restored.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
+        raw.putInt("Version", 2); assertEquals(raw, ServiceRoster.load(raw).save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
     }
     @Test void explicitButtonRequestPreservesAssignmentAndUsesProvidedProfilesOnly() {
         var a = assigned(); var role = ResourceLocation.parse("example:medic");

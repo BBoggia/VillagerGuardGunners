@@ -208,19 +208,19 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.level.ExplosionEvent;
-import net.minecraftforge.fml.LogicalSide;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.fml.LogicalSide;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import tallestegg.guardvillagers.GuardEntityType;
 import tallestegg.guardvillagers.configuration.GuardConfig;
-import tallestegg.guardvillagers.entities.Guard;
-import tallestegg.guardvillagers.entities.ai.goals.RaiseShieldGoal;
+import tallestegg.guardvillagers.common.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard.RaiseShieldGoal;
 
 @GameTestHolder(VillagerGuardGunners.MODID)
 @PrefixGameTestTemplate(false)
@@ -5453,7 +5453,7 @@ public final class GuardGunnerGameTests {
                             && deniedLedger.getTag() == null
                             && registry.size() == registrySizeBeforeDenial,
                     "An unauthorized ledger use changed a guard, item, or world registry");
-            helper.assertTrue(ItemStack.isSameItemSameTags(
+            helper.assertTrue(ItemStack.isSameItemSameComponents(
                             preservedWeapon,
                             first.getMainHandItem()),
                     "Squad membership management changed a guard's equipment");
@@ -5821,7 +5821,7 @@ public final class GuardGunnerGameTests {
                                     beforeCorruptDispatch,
                                     GuardSquadCommandAccess.getCommand(nearest)),
                     "A corrupt ledger changed an existing temporary command");
-            helper.assertTrue(ItemStack.isSameItemSameTags(
+            helper.assertTrue(ItemStack.isSameItemSameComponents(
                                     preservedWeapon,
                                     nearest.getMainHandItem())
                             && preservedOrders.equals(
@@ -6110,7 +6110,7 @@ public final class GuardGunnerGameTests {
             helper.assertTrue(ledger.getCount() == 1
                             && "Marksman".equals(ledger.getHoverName().getString()),
                     "Capturing orders changed the ledger count or custom name");
-            helper.assertTrue(ItemStack.isSameItemSameTags(
+            helper.assertTrue(ItemStack.isSameItemSameComponents(
                             sourceGun,
                             source.getMainHandItem())
                             && countAmmo(
@@ -6157,10 +6157,10 @@ public final class GuardGunnerGameTests {
             helper.assertTrue(
                     GuardRoleAccess.getRevision(destination) == roleRevisionBeforeApply + 1,
                     "Applying a changed template did not invalidate role state exactly once");
-            helper.assertTrue(ItemStack.isSameItemSameTags(
+            helper.assertTrue(ItemStack.isSameItemSameComponents(
                             destinationGun,
                             destination.getMainHandItem())
-                            && ItemStack.isSameItemSameTags(
+                            && ItemStack.isSameItemSameComponents(
                                     destinationHelmet,
                                     destination.getItemBySlot(EquipmentSlot.HEAD))
                             && countAmmo(
@@ -6280,7 +6280,7 @@ public final class GuardGunnerGameTests {
             helper.assertTrue(offhandApply.consumesAction()
                             && replacementOrders.equals(
                                     GuardOrdersAccess.getOrders(destination))
-                            && ItemStack.isSameItemSameTags(
+                            && ItemStack.isSameItemSameComponents(
                                     interactionLedger,
                                     player.getOffhandItem())
                             && player.getOffhandItem().getCount() == 1,
@@ -6470,7 +6470,7 @@ public final class GuardGunnerGameTests {
                     () -> GuardRulesOfEngagement.mayEngage(guard, target));
             ItemStack burstGun = gun(M16_A4, FireMode.BURST, 9, true);
             helper.assertTrue(holdFireApplied.status() == OperationStatus.APPLIED
-                            && MinecraftForge.EVENT_BUS.post(new GunFireEvent(
+                            && NeoForge.EVENT_BUS.post(new GunFireEvent(
                                     guard,
                                     burstGun,
                                     LogicalSide.SERVER)),
@@ -6518,7 +6518,7 @@ public final class GuardGunnerGameTests {
         helper.assertTrue(roleDefaults == GuardRoleResolver.effectiveOrders(guard),
                 "Unchanged live role resolution allocated a new effective-order snapshot");
         helper.assertTrue(
-                ItemStack.isSameItemSameTags(heldBefore, guard.getMainHandItem())
+                ItemStack.isSameItemSameComponents(heldBefore, guard.getMainHandItem())
                         && heldBefore.getCount() == guard.getMainHandItem().getCount()
                         && ammoBefore.equals(ammo.serializeNBT()),
                 "Assigning a behavioral role created, removed, or moved an item");
@@ -6658,19 +6658,19 @@ public final class GuardGunnerGameTests {
         ItemStack gun = gun(M16_A4, FireMode.BURST, 9, true);
 
         GuardBurstSafetyAccess.setSuppressed(guard, true);
-        helper.assertTrue(MinecraftForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
+        helper.assertTrue(NeoForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
                 "A suppressed TaCZ burst round was not canceled");
 
         GuardBurstSafetyAccess.setSuppressed(guard, false);
-        helper.assertFalse(MinecraftForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
+        helper.assertFalse(NeoForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
                 "A safe TaCZ burst round was canceled");
 
         GuardBurstSafetyAccess.setSafetyCheck(guard, () -> false);
-        helper.assertTrue(MinecraftForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
+        helper.assertTrue(NeoForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
                 "A freshly unsafe TaCZ burst corridor was not canceled");
 
         GuardBurstSafetyAccess.setSafetyCheck(guard, () -> true);
-        helper.assertFalse(MinecraftForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
+        helper.assertFalse(NeoForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
                 "A freshly validated TaCZ burst corridor was canceled");
         EngagementMode previousMode = ModConfigs.GUARD_GUNNERS.engagement.mode.get();
         try {
@@ -6679,22 +6679,22 @@ public final class GuardGunnerGameTests {
                     () -> GuardRulesOfEngagement.mayEngage(guard, target));
             ModConfigs.GUARD_GUNNERS.engagement.mode.accept(EngagementMode.HOLD_FIRE);
             helper.assertTrue(
-                    MinecraftForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
+                    NeoForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
                     "A live HOLD_FIRE change did not cancel the next native burst round");
             ModConfigs.GUARD_GUNNERS.engagement.mode.accept(EngagementMode.GUARD_TARGETS);
             helper.assertFalse(
-                    MinecraftForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
+                    NeoForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
                     "Restoring Guard Villagers targeting did not reopen the burst validator");
 
             GuardOrdersAccess.setOrders(
                     guard,
                     GuardOrders.DEFAULT.withEngagement(EngagementOrder.HOLD_FIRE));
             helper.assertTrue(
-                    MinecraftForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
+                    NeoForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
                     "A live per-guard HOLD_FIRE order did not cancel the next native burst round");
             GuardOrdersAccess.setOrders(guard, GuardOrders.DEFAULT);
             helper.assertFalse(
-                    MinecraftForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
+                    NeoForge.EVENT_BUS.post(new GunFireEvent(guard, gun, LogicalSide.SERVER)),
                     "Clearing a per-guard HOLD_FIRE order did not reopen the burst validator");
         } finally {
             ModConfigs.GUARD_GUNNERS.engagement.mode.accept(previousMode);
@@ -7379,7 +7379,7 @@ public final class GuardGunnerGameTests {
                     "The test player unexpectedly retained guard pickup authorization");
             helper.assertTrue(menu.quickMoveStack(player, 5).isEmpty(),
                     "Shift-click bypassed the guard slot's pickup authorization");
-            helper.assertTrue(ItemStack.isSameItemSameTags(equipment, guard.guardInventory.getItem(5)),
+            helper.assertTrue(ItemStack.isSameItemSameComponents(equipment, guard.guardInventory.getItem(5)),
                     "Unauthorized shift-click changed the guard's equipment");
             helper.assertFalse(menu.clickMenuButton(player, OrderField.ENGAGEMENT.buttonId()),
                     "An unauthorized player changed a guard order through a raw menu request");
@@ -7646,7 +7646,7 @@ public final class GuardGunnerGameTests {
         // Corrupt the ID only after building a real gun to exercise metadata recovery.
         ItemStack stack = gun(GLOCK_17, FireMode.SEMI, 4, true);
         ((IGun) stack.getItem()).setGunId(stack,
-                new ResourceLocation("villagerguardgunners_gametest", "missing_gun"));
+                ResourceLocation.fromNamespaceAndPath("villagerguardgunners_gametest", "missing_gun"));
         guard.setItemSlot(EquipmentSlot.MAINHAND, stack);
         guard.setTarget(target);
         GuardGunCombatGoal goal = new GuardGunCombatGoal(guard);
@@ -7863,7 +7863,7 @@ public final class GuardGunnerGameTests {
                 System.currentTimeMillis() - 10_000L;
         class ReloadCancellation {
             int requests;
-            @net.minecraftforge.eventbus.api.SubscribeEvent
+            @net.neoforged.bus.api.SubscribeEvent
             public void cancel(com.tacz.guns.api.event.common.GunReloadEvent event) {
                 if (event.getEntity() == guard) {
                     requests++;
@@ -7872,7 +7872,7 @@ public final class GuardGunnerGameTests {
             }
         }
         ReloadCancellation cancellation = new ReloadCancellation();
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(cancellation);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.register(cancellation);
         try {
             controller.tick(target, false, () -> true);
             helper.assertTrue(cancellation.requests == 1, "Native reload cancellation was not exercised: requests=" + cancellation.requests
@@ -7887,7 +7887,7 @@ public final class GuardGunnerGameTests {
             helper.assertTrue(cancellation.requests == 1, "Temporary refusal bypassed its short retry");
             helper.succeed();
         } finally {
-            net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(cancellation);
+            net.neoforged.neoforge.common.NeoForge.EVENT_BUS.unregister(cancellation);
             controller.stopAiming();
         }
     }
@@ -8438,9 +8438,9 @@ public final class GuardGunnerGameTests {
         EntityHurtByGunEvent.Pre protectedHit = gunHit(bullet, villager, null);
         EntityHurtByGunEvent.Pre hostileHit = gunHit(bullet, hostile, shooter);
 
-        helper.assertTrue(MinecraftForge.EVENT_BUS.post(protectedHit),
+        helper.assertTrue(NeoForge.EVENT_BUS.post(protectedHit),
                 "A protected direct gun hit was not canceled");
-        helper.assertFalse(MinecraftForge.EVENT_BUS.post(hostileHit),
+        helper.assertFalse(NeoForge.EVENT_BUS.post(hostileHit),
                 "A hostile direct gun hit was incorrectly canceled");
         helper.succeed();
     }
@@ -8474,7 +8474,7 @@ public final class GuardGunnerGameTests {
         try {
             ModConfigs.GUARD_GUNNERS.safety.preserveBlocksFromGuardExplosions.accept(true);
             explosion.getToBlow().add(affectedBlock);
-            MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Detonate(helper.getLevel(), explosion, affected));
+            NeoForge.EVENT_BUS.post(new ExplosionEvent.Detonate(helper.getLevel(), explosion, affected));
 
             helper.assertTrue(affected.size() == 1 && affected.get(0) == hostile,
                     "The TaCZ explosion backstop did not preserve exactly the hostile entity");
@@ -8483,7 +8483,7 @@ public final class GuardGunnerGameTests {
 
             ModConfigs.GUARD_GUNNERS.safety.preserveBlocksFromGuardExplosions.accept(false);
             explosion.getToBlow().add(affectedBlock);
-            MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Detonate(
+            NeoForge.EVENT_BUS.post(new ExplosionEvent.Detonate(
                     helper.getLevel(), explosion, new ArrayList<>()));
             helper.assertTrue(explosion.getToBlow().contains(affectedBlock),
                     "A guard-owned TaCZ explosion lost blocks while preservation was disabled");
@@ -8505,7 +8505,7 @@ public final class GuardGunnerGameTests {
                     true,
                     Explosion.BlockInteraction.DESTROY);
             playerExplosion.getToBlow().add(affectedBlock);
-            MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Detonate(
+            NeoForge.EVENT_BUS.post(new ExplosionEvent.Detonate(
                     helper.getLevel(), playerExplosion, new ArrayList<>()));
             helper.assertTrue(playerExplosion.getToBlow().contains(affectedBlock),
                     "Guard terrain preservation incorrectly changed a player-owned TaCZ explosion");
@@ -8536,7 +8536,7 @@ public final class GuardGunnerGameTests {
             helper.assertTrue(
                     sidedCapability != null
                             && sidedCapability.getSlots() == 9
-                            && !(sidedCapability instanceof net.minecraftforge.items.IItemHandlerModifiable)
+                            && !(sidedCapability instanceof net.neoforged.neoforge.items.IItemHandlerModifiable)
                             && (firstCapability == null || firstCapability == sidedCapability),
                     "The armory did not expose the same non-modifiable bounded item handler on "
                             + direction.getName());
@@ -9687,7 +9687,7 @@ public final class GuardGunnerGameTests {
             return first.isEmpty() && second.isEmpty();
         }
         return first.getCount() == second.getCount()
-                && ItemStack.isSameItemSameTags(first, second);
+                && ItemStack.isSameItemSameComponents(first, second);
     }
 
     private static void prepareConversionInventory(Guard guard, int storedCount, int overflowCount) {

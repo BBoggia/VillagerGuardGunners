@@ -10,8 +10,8 @@ import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 public final class EquipmentProfiles extends SimplePreparableReloadListener<EquipmentProfiles.Prepared> {
     private static final EquipmentProfiles INSTANCE = new EquipmentProfiles();

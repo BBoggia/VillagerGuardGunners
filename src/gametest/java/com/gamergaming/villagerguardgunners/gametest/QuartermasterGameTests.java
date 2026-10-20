@@ -32,11 +32,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -221,7 +221,7 @@ public final class QuartermasterGameTests {
             if (event.getEntity().getUUID().equals(id)) { canceled[0]++; event.setCanceled(true); }
         };
         var recovery = QuartermasterRecovery.get(h.getLevel()); int initial = recovery.pendingCount();
-        MinecraftForge.EVENT_BUS.addListener(listener);
+        NeoForge.EVENT_BUS.addListener(listener);
         try {
             h.getLevel().setBlock(s.getBlockPos(), Blocks.AIR.defaultBlockState(), 3);
             s.releaseContents();
@@ -230,7 +230,7 @@ public final class QuartermasterGameTests {
             var loaded = QuartermasterRecovery.load(recovery.save(new CompoundTag()));
             loaded.retry(h.getLevel());
             h.assertTrue(canceled[0] == 2, "Saved outbox lost canceled drop");
-        } finally { MinecraftForge.EVENT_BUS.unregister(listener); }
+        } finally { NeoForge.EVENT_BUS.unregister(listener); }
         recovery.retry(h.getLevel());
         h.assertTrue(h.getLevel().getEntity(id) instanceof ItemEntity, "Canceled drop did not recover");
         equal(h, ((ItemEntity) h.getLevel().getEntity(id)).getItem(), expected, "Recovery changed packed contents");

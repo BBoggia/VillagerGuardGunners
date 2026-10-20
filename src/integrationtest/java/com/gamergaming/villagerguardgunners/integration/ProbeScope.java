@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Test-only scopes; redirects always restore context, including exceptional exits. */
 public final class ProbeScope implements AutoCloseable {

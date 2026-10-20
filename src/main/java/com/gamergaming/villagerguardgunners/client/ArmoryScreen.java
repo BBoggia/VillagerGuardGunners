@@ -25,9 +25,11 @@ public final class ArmoryScreen extends AbstractContainerScreen<ArmoryMenu> {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
+        if (isHovering(8, 73, imageWidth - 16, 9, mouseX, mouseY)) {
+            graphics.renderTooltip(font, accessLabel(), mouseX, mouseY);
+        }
     }
 
     @Override
@@ -52,32 +54,32 @@ public final class ArmoryScreen extends AbstractContainerScreen<ArmoryMenu> {
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawString(font, title, titleLabelX, titleLabelY, 0x404040, false);
-        graphics.drawString(
-                font,
-                playerInventoryTitle,
-                inventoryLabelX,
-                inventoryLabelY,
-                0x404040,
-                false);
+        DecodeStatus status = menu.getArmory().getLockStatus();
+        int color = status == DecodeStatus.BLANK ? 0x557755
+                : status == DecodeStatus.VALID ? 0x8A5A18 : 0xAA3333;
+        String label = accessLabel().getString();
+        int availableWidth = imageWidth - 16;
+        if (font.width(label) > availableWidth) {
+            label = font.plainSubstrByWidth(label, availableWidth - font.width("…")) + "…";
+        }
+        // The dispenser's last slot row ends at y=69. Use the inventory heading
+        // area for access information, leaving all item slots unobstructed.
+        graphics.drawString(font, label, 8, 73, color, false);
+    }
 
+    private Component accessLabel() {
         DecodeStatus status = menu.getArmory().getLockStatus();
         ArmorySquadLock lock = menu.getArmory().getSquadLock();
-        Component lockText;
-        int color;
         if (status == DecodeStatus.BLANK) {
-            lockText = Component.translatable(
+            return Component.translatable(
                     "container.villagerguardgunners.armory.public");
-            color = 0x557755;
         } else if (status == DecodeStatus.VALID && lock != null) {
-            lockText = Component.translatable(
+            return Component.translatable(
                     "container.villagerguardgunners.armory.squad",
                     lock.displayName());
-            color = 0x8A5A18;
         } else {
-            lockText = Component.translatable(
+            return Component.translatable(
                     "container.villagerguardgunners.armory.invalid_lock");
-            color = 0xAA3333;
         }
-        graphics.drawString(font, lockText, 8, 64, color, false);
     }
 }

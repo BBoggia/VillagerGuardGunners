@@ -16,13 +16,13 @@ import com.gamergaming.villagerguardgunners.village.coverage.VillageCoverageRese
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.level.ChunkEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Server-thread, loaded-resident index and bounded world-work scheduler. */
 public final class VillageCoverageRuntime {
@@ -55,8 +55,7 @@ public final class VillageCoverageRuntime {
         if (previous != null && !previous.equals(id)) removeFromVillage(dimension, previous, guard.getUUID());
         village.guards.add(guard.getUUID());
     }
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+    public static void onServerTick(ServerTickEvent.Post event) {
         for (ServerLevel level : event.getServer().getAllLevels()) tick(level);
     }
     public static void tick(ServerLevel level) {
@@ -316,8 +315,8 @@ public final class VillageCoverageRuntime {
             if (v != null) { v.watchUntil = level.getGameTime() + ModConfigs.GUARD_GUNNERS.villageDefense.watchDurationTicks.get(); v.reviewAt = 0; }
         }
     }
-    public static void onDamage(net.minecraftforge.event.entity.living.LivingDamageEvent event) {
-        if (event.getAmount() <= 0 || !(event.getEntity().level() instanceof ServerLevel level)
+    public static void onDamage(net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post event) {
+        if (!(event.getNewDamage() > 0) || !(event.getEntity().level() instanceof ServerLevel level)
                 || !(event.getEntity() instanceof Guard || event.getEntity() instanceof net.minecraft.world.entity.npc.Villager)) return;
         Dimension d = LEVELS.get(level);
         if (d == null || !enabled()) return;

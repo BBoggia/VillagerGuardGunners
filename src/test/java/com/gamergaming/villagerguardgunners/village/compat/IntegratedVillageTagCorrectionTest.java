@@ -15,7 +15,7 @@ class IntegratedVillageTagCorrectionTest {
         assertFalse(IntegratedVillageTagCorrection.verified(version, "47.4.10", "changed", false));
         assertFalse(IntegratedVillageTagCorrection.verified(version, "47.4.10", hash, true));
     }
-    @Test void missingAdditionStillBreaksTagAfterForgeRemovalButScopedCorrectionPreservesContributions() {
+    @Test void scopedCorrectionPreservesContributionsAndDoesNotHideUnresolvedNeoForgeRemovals() {
         var vanilla = ResourceLocation.parse("minecraft:village_plains");
         var clockwork = ResourceLocation.parse("integrated_villages:clockwork_village");
         var contributed = ResourceLocation.parse("test:contributed_village");
@@ -33,6 +33,11 @@ class IntegratedVillageTagCorrectionTest {
         var loader = new TagLoader<String>(id -> Set.of(vanilla, clockwork, contributed).contains(id) ? Optional.of(id.toString()) : Optional.empty(), "tags/worldgen/structure");
         assertFalse(loader.build(tags).containsKey(village));
         assertEquals(1, IntegratedVillageTagCorrection.removeBrokenEntry(tags, owner));
+        // NeoForge also resolves removal entries. The retained, version-gated
+        // Forge workaround must not erase another pack's broken required entry.
+        assertFalse(loader.build(tags).containsKey(village));
+        tags.get(village).removeIf(e -> e.source().equals("remove-pack"));
+        tags.get(village).add(new TagLoader.EntryWithSource(TagEntry.optionalElement(missing), "remove-pack", true));
         var built = loader.build(tags);
         assertEquals(Set.of(vanilla.toString(), clockwork.toString(), contributed.toString()), Set.copyOf(built.get(village)));
         assertEquals(built.get(village), built.get(dependent));

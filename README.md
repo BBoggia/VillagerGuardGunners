@@ -1,5 +1,16 @@
 # Villager Guard Gunners
 
+This branch contains the **Minecraft 1.21.1 NeoForge alpha**.
+Core guard gun use, combat behavior, guard commands, supply, medical workflows,
+and resource/worldgen migration have installed dedicated-server checks.
+Two connected clients also cover inventories, Quartermasters, trading,
+permissions, ledgers, reconnects, gun synchronization, and both guard models.
+The port remains experimental; wider terrain/provider testing and release
+validation are still pending. The feature descriptions below describe the 1.9
+baseline being ported. Use the `v1.9` branch for the Minecraft 1.20.1 Forge build.
+See [NeoForge development](docs/neoforge-development.md) for build commands and
+the current validation scope.
+
 Villager Guard Gunners lets you equip Guard Villagers with Timeless and
 Classics Zero (TaCZ) guns, ammo, and sidearms.
 
@@ -45,21 +56,22 @@ orders, join squads, restock from Village Armories, and protect their allies.
 
 ## Requirements
 
-The current build has these requirements:
+The NeoForge alpha requires these exact mod and loader versions:
 
 | Component | Version |
 | --- | --- |
-| Minecraft | 1.20.1 |
-| Forge | 47.4.10 or newer 47.x release |
-| Guard Villagers | 1.20.1-1.6.19 |
-| Timeless and Classics Zero (TaCZ) | 1.1.8 or newer for Minecraft 1.20.1 |
-| Fzzy Config | 0.7.6+1.20.1 |
-| Kotlin for Forge | 4.12.0 |
-| Java | 17 |
+| Minecraft | 1.21.1 |
+| NeoForge | 21.1.233 |
+| Guard Villagers | 2.4.12 |
+| Unofficial TaCZ NeoForge port | 1.1.8-hotfix-r7 |
+| Fzzy Config | 0.7.7+1.21+neoforge |
+| Kotlin for Forge | 5.12.0 |
+| Java | 21 |
 
-Install Guard Villagers, TaCZ, Fzzy Config, Kotlin for Forge, and Villager Guard
-Gunners on both the client and server. Newer TaCZ versions are allowed to load;
-future API changes can still require an add-on update.
+The initial port uses exact dependency ranges. Broader version compatibility
+requires validation. Use fresh test worlds: the unofficial TaCZ port does not
+support its 1.20.1 world data. Download the NeoForge alpha JAR for this version; keep the Forge JAR for
+Minecraft 1.20.1. See [alpha release notes](docs/releases/1.9-neoforge-alpha.1.md).
 
 See [Quartermaster service](docs/quartermaster-service.md) for automatic
 equipment stocking and station setup.
@@ -317,43 +329,24 @@ These diagnostics do not issue equipment, locate structures, or load chunks.
 
 ## Building and Testing
 
-Use JDK 17 from the repository root:
+Use JDK 21 and run `./gradlew checkNeoForgeFoundation stageBootstrapMods` to
+verify the pinned dependencies and build the isolated probe. See
+[NeoForge development](docs/neoforge-development.md) for installed-server
+validation and the distinction between foundation checks and gameplay tests.
 
-```text
-./gradlew check
-./gradlew runGameTestServer
-```
-
-`check` runs unit and source checks, builds and reobfuscates the JAR, and
-verifies the packaged artifact. GameTests provide the Forge runtime validation.
-Manual client, multiplayer, third-party gun-pack, terrain, and mod-compatibility
-checks remain in the [release checklist](docs/release-checklist.md).
-
-The complete performance matrix runs both isolated suites in one server so
-every report is bound to the same production artifact. It also includes a
-100-guard automatic-duty workload that exercises unloaded patrol checks and
-maximum-size duty-slot validation:
-
-```text
-./gradlew runGameTestServer -Pstep13Performance=true
-./gradlew verifyPhase8PerformanceReports verifyVillageBuildingPerformanceReport assembleVillageDefenseBuildingEvidence
-```
-
-The earlier `phase8Performance` and `villageBuildingPerformance` properties
-remain available when only one component workload needs investigation.
-
-The release artifact is written to
-`build/libs/villagerguardgunners-<version>.jar`.
+`./gradlew compileJava` checks the full production source against NeoForge.
+`./gradlew combatTest` runs the migrated combat and command checks. Installed
+server checks use the separate QA mod described in the development guide.
 
 ## Project Layout
 
-- `src/main` — production code and assets
-- `src/test` — JUnit and source/artifact checks
-- `src/gametest` — Forge correctness GameTests
-- `src/perftest` — opt-in scalability workloads and JFR evidence
-- `docs` — configuration, feature, compatibility, validation, and release docs
-
-Continuous integration runs `./gradlew check` for pushes and pull requests.
+- `src/main` — production code and assets being ported
+- `src/bootstrap` — isolated dependency probe; never bundled with gameplay
+- `src/coreqa` — packaged core gun and combat acceptance mod; never bundled with gameplay
+- `src/test` — JUnit and source/artifact checks; combat checks migrated to NeoForge
+- `src/gametest`, `src/integrationtest`, `src/perftest` — runtime fixtures to migrate
+- `gradle/legacy-forge.gradle` — original build and validation reference
+- `docs` — behavior, configuration, compatibility, and development documentation
 
 ## License
 

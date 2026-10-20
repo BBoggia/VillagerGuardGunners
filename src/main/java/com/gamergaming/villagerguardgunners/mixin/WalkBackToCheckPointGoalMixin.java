@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import tallestegg.guardvillagers.entities.Guard;
-import tallestegg.guardvillagers.entities.ai.goals.WalkBackToCheckPointGoal;
+import tallestegg.guardvillagers.common.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard.WalkBackToCheckPointGoal;
 
 /** Lets an explicit VGG route temporarily supersede the upstream checkpoint goal. */
 @Mixin(WalkBackToCheckPointGoal.class)

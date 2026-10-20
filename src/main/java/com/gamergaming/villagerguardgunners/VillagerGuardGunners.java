@@ -26,135 +26,144 @@ import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingPool
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingDefinitions;
 import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingActivationRecovery;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.fml.common.Mod;
+
 
 @Mod(VillagerGuardGunners.MODID)
 public class VillagerGuardGunners {
 
     public static final String MODID = "villagerguardgunners";
 
-    public VillagerGuardGunners(FMLJavaModLoadingContext context) {
-        IEventBus modEventBus = context.getModEventBus();
+    public VillagerGuardGunners(IEventBus modEventBus) {
 
         ModConfigs.init();
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::onReload);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::started);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::stopped);
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent event) -> {
+            if (event.getEntity() instanceof tallestegg.guardvillagers.common.entities.Guard guard)
+                ((com.gamergaming.villagerguardgunners.api.GuardAmmoAccess) guard).villagerGuardGunners$invalidateInventory();
+        });
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.EntityJoinLevelEvent event) -> {
+            if (event.getEntity() instanceof tallestegg.guardvillagers.common.entities.Guard guard)
+                ((com.gamergaming.villagerguardgunners.api.GuardAmmoAccess) guard).villagerGuardGunners$reviveInventory();
+        });
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::onReload);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::started);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::stopped);
         modEventBus.addListener(com.gamergaming.villagerguardgunners.medical.MedicalCapabilities::register);
         modEventBus.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterProfession::register);
-        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::damaged);
-        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::healed);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::reload);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::melee);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::left);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::travel);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::mount);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::stopping);
-        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.TransportRuntime::damaged);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::joined);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::left);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::tick);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.PlayerTreatmentRuntime::tick);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.PlayerTreatmentRuntime::logout);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.PlayerTreatmentRuntime::stopped);
-        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.PlayerTreatmentRuntime::damaged);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::stopped);
-        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.MedicRuntime::damaged);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::healed);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.EquipmentProfiles::onReload);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.EquipmentProfiles::stopped);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.ServiceJournal::stopped);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::joined);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::left);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::tick);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::stopped);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.OverviewRuntime::tick);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.OverviewRuntime::stopped);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.ServiceHistory::stopped);
-        TaCZGunPackSyncNetwork.init();
-        com.gamergaming.villagerguardgunners.quartermaster.management.ManagementNetwork.init();
-        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST,
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::healed);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::reload);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::melee);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::left);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::travel);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::mount);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::stopping);
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.TransportRuntime::damaged);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::joined);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::left);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::tick);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.PlayerTreatmentRuntime::tick);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.PlayerTreatmentRuntime::logout);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.PlayerTreatmentRuntime::stopped);
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.PlayerTreatmentRuntime::damaged);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::stopped);
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.MedicRuntime::damaged);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicRuntime::healed);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.EquipmentProfiles::onReload);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.EquipmentProfiles::stopped);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.ServiceJournal::stopped);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::joined);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::left);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::tick);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceRuntime::stopped);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.OverviewRuntime::tick);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.OverviewRuntime::stopped);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.ServiceHistory::stopped);
+        modEventBus.addListener(TaCZGunPackSyncNetwork::register);
+        modEventBus.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.ManagementNetwork::register);
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.LOWEST,
                 com.gamergaming.villagerguardgunners.quartermaster.management.QuartermasterManagement::interact);
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModMenus.register(modEventBus);
         ModStructures.register(modEventBus);
-        MinecraftForge.EVENT_BUS.addListener(GuardGunnerCommands::register);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TreatmentProfiles::onReload);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TreatmentProfiles::onStopped);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicalRecovery::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, true, com.gamergaming.villagerguardgunners.medical.MedicalRecovery::onDrops);
-        MinecraftForge.EVENT_BUS.addListener(QuartermasterRecovery::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(QuartermasterBlock::onBreak);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onEntityJoin);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onEntityLeave);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onLevelUnload);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onEntityLeave);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onBlockChange);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onDamage);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onChunkChange);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onLevelUnload);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onChunkLoad);
-        MinecraftForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onChunkUnload);
-        MinecraftForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onEntityJoin);
-        MinecraftForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onEntityLeave);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.compat.SettlementDefinitions::register);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.compat.SettlementDefinitions::tagsUpdated);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.compat.SettlementDefinitions::stopped);
-        MinecraftForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onTagsUpdated);
-        MinecraftForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onLevelUnload);
-        MinecraftForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(GuardRoles::registerReloadListener);
-        MinecraftForge.EVENT_BUS.addListener(NaturalGuardLoadoutPools::registerReloadListener);
-        MinecraftForge.EVENT_BUS.addListener(GuardPostGroups::registerReloadListener);
-        MinecraftForge.EVENT_BUS.addListener(VillageBuildingDefinitions::registerReloadListener);
-        MinecraftForge.EVENT_BUS.addListener(VillageBuildingDefinitions::onServerStopped);
-        MinecraftForge.EVENT_BUS.addListener(VillageBuildingPoolIntegration::onServerStopped);
-        MinecraftForge.EVENT_BUS.addListener(VillageBuildingActivationRecovery::onChunkLoad);
-        MinecraftForge.EVENT_BUS.addListener(VillageBuildingActivationRecovery::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(VillageBuildingActivationRecovery::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(NaturalGuardSpawnIntegration::onEntityJoin);
-        MinecraftForge.EVENT_BUS.addListener(NaturalGuardPopulationIndex::onEntityLeave);
-        MinecraftForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onEntityLeave);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal::onEntityLeave);
-        MinecraftForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onLevelUnload);
-        MinecraftForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(SquadLedgerService::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(SquadLedgerService::onPlayerLoggedOut);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onServerStarted);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStateTicker::onServerStarted);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStateTicker::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStateTicker::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onEntityJoin);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onEntityLeave);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onServerTick);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onLevelUnload);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(
+        NeoForge.EVENT_BUS.addListener(GuardGunnerCommands::register);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TreatmentProfiles::onReload);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TreatmentProfiles::onStopped);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.MedicalRecovery::onServerTick);
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.LOWEST, true, com.gamergaming.villagerguardgunners.medical.MedicalRecovery::onDrops);
+        NeoForge.EVENT_BUS.addListener(QuartermasterRecovery::onServerTick);
+        NeoForge.EVENT_BUS.addListener(QuartermasterBlock::onBreak);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onServerTick);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onEntityJoin);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onEntityLeave);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onLevelUnload);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onServerTick);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onEntityLeave);
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.level.BlockEvent.BreakEvent event) -> com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime.onBlockChange(event));
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.level.BlockEvent.EntityPlaceEvent event) -> com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime.onBlockChange(event));
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.level.BlockEvent.FluidPlaceBlockEvent event) -> com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime.onBlockChange(event));
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onDamage);
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.level.ChunkEvent.Load event) -> com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime.onChunkChange(event));
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.level.ChunkEvent.Unload event) -> com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime.onChunkChange(event));
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onLevelUnload);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onChunkLoad);
+        NeoForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onChunkUnload);
+        NeoForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onEntityJoin);
+        NeoForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onEntityLeave);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.compat.SettlementDefinitions::register);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.compat.SettlementDefinitions::tagsUpdated);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.village.compat.SettlementDefinitions::stopped);
+        NeoForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onTagsUpdated);
+        NeoForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onServerTick);
+        NeoForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onLevelUnload);
+        NeoForge.EVENT_BUS.addListener(VillageDiscoveryRuntime::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(GuardRoles::registerReloadListener);
+        NeoForge.EVENT_BUS.addListener(NaturalGuardLoadoutPools::registerReloadListener);
+        NeoForge.EVENT_BUS.addListener(GuardPostGroups::registerReloadListener);
+        NeoForge.EVENT_BUS.addListener(VillageBuildingDefinitions::registerReloadListener);
+        NeoForge.EVENT_BUS.addListener(VillageBuildingDefinitions::onServerStopped);
+        NeoForge.EVENT_BUS.addListener(VillageBuildingPoolIntegration::onServerStopped);
+        NeoForge.EVENT_BUS.addListener(VillageBuildingActivationRecovery::onChunkLoad);
+        NeoForge.EVENT_BUS.addListener(VillageBuildingActivationRecovery::onServerTick);
+        NeoForge.EVENT_BUS.addListener(VillageBuildingActivationRecovery::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(NaturalGuardSpawnIntegration::onEntityJoin);
+        NeoForge.EVENT_BUS.addListener(NaturalGuardPopulationIndex::onEntityLeave);
+        NeoForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onEntityLeave);
+        NeoForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal::onEntityLeave);
+        NeoForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onLevelUnload);
+        NeoForge.EVENT_BUS.addListener(ArmoryResupplyServerServices::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(SquadLedgerService::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(SquadLedgerService::onPlayerLoggedOut);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStateTicker::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStateTicker::onServerTick);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStateTicker::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onEntityJoin);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onEntityLeave);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onServerTick);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onLevelUnload);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseStaffingRuntime::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(
                 EventPriority.LOWEST,
                 false,
                 VillageDefenseEventSources::onGuardTargetChanged);
-        MinecraftForge.EVENT_BUS.addListener(
+        NeoForge.EVENT_BUS.addListener(
                 EventPriority.LOWEST,
                 false,
                 VillageDefenseEventSources::onDefendedEntityDamaged);
-        MinecraftForge.EVENT_BUS.addListener(
+        NeoForge.EVENT_BUS.addListener(
                 EventPriority.LOWEST,
                 false,
                 VillageDefenseEventSources::onDefendedEntityKilled);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseEventRuntime::onServerStarted);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseEventRuntime::onLevelUnload);
-        MinecraftForge.EVENT_BUS.addListener(VillageDefenseEventRuntime::onServerStopping);
-        MinecraftForge.EVENT_BUS.addListener(VillageBuildingPoolIntegration::onServerAboutToStart);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseEventRuntime::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseEventRuntime::onLevelUnload);
+        NeoForge.EVENT_BUS.addListener(VillageDefenseEventRuntime::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(VillageBuildingPoolIntegration::onServerAboutToStart);
     }
 }

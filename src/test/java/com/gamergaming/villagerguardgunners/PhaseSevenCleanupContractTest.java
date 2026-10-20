@@ -118,13 +118,13 @@ final class PhaseSevenCleanupContractTest {
     @Test
     void buildUsesOnlyThePluginsAndDependenciesStillNeededAtRuntime() throws IOException {
         String build = read("build.gradle");
-        String runtimeBuild = build.substring(0, build.indexOf("tasks.register('verifyReleaseArtifact')"));
+        String runtimeBuild = build;
         String properties = read("gradle.properties");
-        String metadata = read("src/main/resources/META-INF/mods.toml");
+        String metadata = read("src/main/resources/META-INF/neoforge.mods.toml");
 
         assertAll(
-                () -> assertTrue(build.contains("id 'net.minecraftforge.gradle' version '[6.0,6.2)'")),
-                () -> assertTrue(build.contains("classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'")),
+                () -> assertTrue(build.contains("id 'net.neoforged.moddev'")),
+                () -> assertFalse(build.contains("mixingradle")),
                 () -> assertFalse(build.contains("name: 'ForgeGradle'")),
                 () -> assertFalse(build.contains("org.parchmentmc")),
                 () -> assertFalse(build.contains("librarian")),
@@ -132,9 +132,9 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(build.contains("publishing {")),
                 () -> assertFalse(build.contains("output.resourcesDir")),
                 () -> assertFalse(runtimeBuild.contains("Implementation-Timestamp")),
-                () -> assertTrue(runtimeBuild.contains("me.fzzyhmstrs:fzzy_config")),
+                () -> assertTrue(read("gradle/neoforge-mods.json").contains("fzzy")),
                 () -> assertTrue(runtimeBuild.contains("thedarkcolour:kotlinforforge")),
-                () -> assertTrue(properties.contains("fzzy_config_version=0.7.6+1.20.1")),
+                () -> assertTrue(properties.contains("fzzy_config_version=0.7.7+1.21+neoforge")),
                 () -> assertTrue(metadata.contains("modId=\"fzzy_config\"")),
                 () -> assertTrue(metadata.contains("modId=\"kotlinforforge\"")),
                 () -> assertEquals(6, countOccurrences(metadata, "[[dependencies.${mod_id}]]")));
@@ -154,7 +154,7 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardProjectileMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\",\"QuartermasterOfferMixin\",\"QuartermasterOffersMixin\",\"QuartermasterLevelTradesMixin\",\"QuartermasterResultSlotMixin\",\"QuartermasterMerchantMenuMixin\"]")),
+                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyDamageMixin\",\"GuardFollowPacketMixin\",\"GuardPatrolPacketMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardProjectileMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\",\"QuartermasterOfferMixin\",\"QuartermasterOffersMixin\",\"QuartermasterLevelTradesMixin\",\"QuartermasterResultSlotMixin\",\"QuartermasterMerchantMenuMixin\"]")),
                 () -> assertTrue(mixins.contains(
                         "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\",\"client.CasualtyRendererMixin\",\"client.CotNameTagMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));

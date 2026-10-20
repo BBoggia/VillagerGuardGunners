@@ -11,8 +11,8 @@ import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.item.IGun;
 
 import net.minecraft.world.InteractionHand;
-import tallestegg.guardvillagers.entities.Guard;
-import tallestegg.guardvillagers.entities.ai.goals.RaiseShieldGoal;
+import tallestegg.guardvillagers.common.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard.RaiseShieldGoal;
 
 /** Prevents Guard Villagers' priority-zero shield goal from starving aimed gun use. */
 @Mixin(RaiseShieldGoal.class)

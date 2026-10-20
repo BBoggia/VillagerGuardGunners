@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import tallestegg.guardvillagers.GuardVillagers;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Explicit, server-authoritative escape hatch for a fail-closed sidearm record. */
 public final class GuardSidearmRecovery {
@@ -79,7 +79,7 @@ public final class GuardSidearmRecovery {
             return first.isEmpty() && second.isEmpty();
         }
         return first.getCount() == second.getCount()
-                && ItemStack.isSameItemSameTags(first, second);
+                && ItemStack.isSameItemSameComponents(first, second);
     }
 
     public enum RecoveryStatus {

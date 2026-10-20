@@ -5,7 +5,7 @@ import com.gamergaming.villagerguardgunners.defense.duty.GuardPatrolRouteMovemen
 import com.gamergaming.villagerguardgunners.village.coverage.live.GuardCoverageMovementController;
 import java.util.EnumSet;
 import net.minecraft.world.entity.ai.goal.Goal;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Lowest VGG movement owner for squad routes, defense posts, and village coverage. */
 public final class GuardAutomaticDutyMovementGoal extends Goal {

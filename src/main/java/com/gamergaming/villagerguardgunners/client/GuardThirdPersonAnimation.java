@@ -3,7 +3,7 @@ package com.gamergaming.villagerguardgunners.client;
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.client.animation.third.InnerThirdPersonManager;
 import net.minecraft.client.model.geom.ModelPart;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Reapplies TaCZ's native third-person pose after Guard-specific animation. */
 public final class GuardThirdPersonAnimation {

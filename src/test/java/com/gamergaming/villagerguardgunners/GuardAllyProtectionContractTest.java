@@ -43,7 +43,7 @@ final class GuardAllyProtectionContractTest {
     @Test
     void datapackAndProviderExtensionsAddNoRecurringWorldWork() throws IOException {
         Path tagPath = projectDirectory.resolve(
-                "src/main/resources/data/villagerguardgunners/tags/entity_types/guard_allies.json");
+                "src/main/resources/data/villagerguardgunners/tags/entity_type/guard_allies.json");
         String tag = Files.readString(tagPath, StandardCharsets.UTF_8);
         String resolver = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/api/GuardAllyProtection.java");
@@ -59,7 +59,7 @@ final class GuardAllyProtectionContractTest {
                 () -> assertTrue(resolver.contains("updated.remove(registered)")),
                 () -> assertFalse(resolver.contains("getEntitiesOfClass(")),
                 () -> assertFalse(resolver.contains("TickEvent")),
-                () -> assertFalse(resolver.contains("MinecraftForge.EVENT_BUS.post")),
+                () -> assertFalse(resolver.contains("NeoForge.EVENT_BUS.post")),
                 () -> assertFalse(resolver.contains("LogUtils")),
                 () -> assertFalse(resolver.contains("Logger")));
     }

@@ -3,7 +3,7 @@ package com.gamergaming.villagerguardgunners.medical;
 import com.gamergaming.villagerguardgunners.api.*;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import net.minecraft.core.BlockPos;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** One immutable timing decision per dose, shared by medic and player treatment. */
 public record CasualtyCarePolicy(Mode mode, int channelTicks, int recoveryTicks, int fieldRecoveryTicks, BlockPos cot) {

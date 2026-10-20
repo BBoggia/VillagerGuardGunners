@@ -26,9 +26,14 @@ final class VillageWatchtowerPhaseZeroContractTest {
         }
 
         String version = properties.getProperty("mod_version");
-        assertTrue(Files.isRegularFile(PROJECT_DIRECTORY.resolve("docs/releases/" + version + ".md")),
-                "The candidate needs release notes matching its version");
-        assertTrue(read("CHANGELOG.md").contains("## " + version + " - "),
+        if (version.endsWith("-dev")) {
+            assertTrue(Files.isRegularFile(PROJECT_DIRECTORY.resolve("docs/neoforge-development.md")));
+            assertTrue(read("docs/neoforge-development.md").contains("not a stable release"));
+        } else {
+            assertTrue(Files.isRegularFile(PROJECT_DIRECTORY.resolve("docs/releases/" + version + ".md")),
+                    "The release candidate needs matching release notes");
+        }
+        assertTrue(read("CHANGELOG.md").contains(version.endsWith("-dev") ? "## Unreleased" : "## " + version + " - "),
                 "The candidate needs a matching changelog section");
     }
 
@@ -37,7 +42,7 @@ final class VillageWatchtowerPhaseZeroContractTest {
         Path resources = PROJECT_DIRECTORY.resolve("src/main/resources/data/villagerguardgunners");
         Path sources = PROJECT_DIRECTORY.resolve(
                 "src/main/java/com/gamergaming/villagerguardgunners");
-        String build = read("build.gradle");
+        String build = read("build.gradle") + read("gradle/neoforge-resources.gradle");
         String structure = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/worldgen/structure/"
                         + "VillageWatchtowerStructure.java");
@@ -58,7 +63,7 @@ final class VillageWatchtowerPhaseZeroContractTest {
                 () -> assertFalse(Files.exists(resources.resolve("worldgen/template_pool"))),
                 () -> assertTrue(Files.isRegularFile(PROJECT_DIRECTORY.resolve(
                         "src/main/templates/villagerguardgunners/watchtower.json"))),
-                () -> assertFalse(Files.exists(resources.resolve("loot_tables/chests/watchtower.json"))),
+                () -> assertFalse(Files.exists(resources.resolve("loot_table/chests/watchtower.json"))),
                 () -> assertTrue(Files.isRegularFile(sources.resolve(
                         "worldgen/structure/VillageWatchtowerStructure.java"))),
                 () -> assertTrue(Files.isRegularFile(sources.resolve(

@@ -5,7 +5,7 @@ import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.squad.SquadCommand;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandType;
 import net.minecraft.world.entity.LivingEntity;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Owns transient observations and intent, independent of the navigation executor. */
 public final class GuardTacticalController {

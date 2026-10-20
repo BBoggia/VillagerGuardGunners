@@ -5,6 +5,15 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from generate_village_template_profiles import reachable, meaning, generate
 
 class TemplateProfilesTest(unittest.TestCase):
+    def test_audited_versions_replace_conditions_without_changing_resource_identity(self):
+        audit = {'structures': {'joshie:village_ocean': [{'value': {'start_pool': 'joshie:center'}}]},
+                 'templates': {}, 'pools': {}}
+        profiles, _ = generate(audit, {'joshie': {'mr_tidal_towns': '[2.0]'}})
+        profile = profiles['joshie_village_ocean']
+        self.assertEqual({'mr_tidal_towns': '[2.0]'}, profile['mods'])
+        self.assertEqual(['joshie:village_ocean'], profile['structures'])
+        self.assertEqual(['water'], profile['traversal_limits'])
+
     def test_normal_house_can_reach_zombie_residents_without_zombie_start(self):
         audit={'pools':{'normal': [{'value':{'elements':[{'location':'house'}]}}],
                         'zombie': [{'value':{'elements':[{'location':'resident'}]}}]},

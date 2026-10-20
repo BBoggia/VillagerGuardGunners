@@ -20,11 +20,12 @@ final class VillageDefenseBuildingsStepEightContractTest {
     }
 
     @Test
-    void performanceFixtureIsOptInBoundedAndArtifactBound() throws IOException {
+    void retainedForgePerformanceFixtureIsOptInBoundedAndArtifactBound() throws IOException {
         String harness = read(
                 "src/perftest/java/com/gamergaming/villagerguardgunners/worldgen/village/"
                         + "VillageDefenseBuildingsPerformanceGameTests.java");
-        String build = read("build.gradle");
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
 
         assertAll(
                 () -> assertTrue(harness.contains("CANDIDATE_VILLAGES = 100")),

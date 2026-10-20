@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "ctov": "[3.4.14]"
+    "ctov": "[3.6.3]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -10,6 +10,14 @@
     "ctov:small/village_christmas"
   ],
   "templates": {
+    "ctov:village/christmas/deco/archeology_tent": [
+      {
+        "kind": "decoration",
+        "sha256": "492546d6f786efc6aab2e2a5a452edae1fd226f7600b8d5e7ee749f87b4b9a1c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
     "ctov:village/christmas/deco/bard_house": [
       {
         "kind": "decoration",
@@ -26,10 +34,24 @@
         "entrances": []
       }
     ],
+    "ctov:village/christmas/deco/climatologist": [
+      {
+        "kind": "decoration",
+        "sha256": "f278da4c773e0785202f77c003f4000feb56d5121f3f4948a132281bd920c62e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
     "ctov:village/christmas/deco/copper_golem": [
       {
         "kind": "decoration",
-        "sha256": "020598db1f9638a025189adb6a414158edb165d2aef8347d80bd7dffe191642a",
+        "sha256": "ef5592ddfd19f81b55f34fab4fa0ac14b26f8c4c153833ee8726697fa94589f5",
         "beds": [],
         "entrances": []
       }
@@ -37,7 +59,7 @@
     "ctov:village/christmas/deco/garbage_heaps": [
       {
         "kind": "decoration",
-        "sha256": "576ccff8f01994d8751612947da2ad1a561b9ed7f984eb2db39442b5cb24ae21",
+        "sha256": "d16d8e43daa7a75127a1af2133ee899e0d695a55254ac428903f8b7d81ca1311",
         "beds": [],
         "entrances": []
       }
@@ -45,7 +67,7 @@
     "ctov:village/christmas/deco/goddess_statue": [
       {
         "kind": "decoration",
-        "sha256": "593ab2705eb3b3e2b8c77028671bc0e0c9db9ef204107fe935a0e7571ec1b8fc",
+        "sha256": "e0892be89e84e8b6d5695218b638e2d906fdbedc1c308266c4f75c985284b741",
         "beds": [],
         "entrances": []
       }
@@ -125,7 +147,7 @@
     "ctov:village/christmas/deco/vm": [
       {
         "kind": "decoration",
-        "sha256": "3fdb7e1c423686e684e78ecb4f904dc6df3cc4839e1e01494fbb9d014ce5590f",
+        "sha256": "7cd7ab59391ec1c6362a74423311140fcc86027b5e973681383aeffcca3376b6",
         "beds": [],
         "entrances": []
       }
@@ -133,7 +155,7 @@
     "ctov:village/christmas/house/big_1": [
       {
         "kind": "residence",
-        "sha256": "b2bcdb8a3ebaef067e412cb8012169d46ce7e5efaa8fd473f1cc16f13ae8d150",
+        "sha256": "cbe773c0e0f1aca896be25bb5e28a247ad4d7e6328f642cbf73a716c636988db",
         "beds": [
           [
             2,
@@ -163,7 +185,7 @@
     "ctov:village/christmas/house/big_2": [
       {
         "kind": "residence",
-        "sha256": "c78eaa0791509880839e80b5b9e8a3d34b11f51f2162ae51be3a0963974bdee2",
+        "sha256": "17975925a18b7efc7bbc895fcff0f4890d7fde97dd8d8b4440a320967499eeff",
         "beds": [
           [
             6,
@@ -198,7 +220,7 @@
     "ctov:village/christmas/house/med_1": [
       {
         "kind": "residence",
-        "sha256": "5abe7f95a50abe0f47db8cd86020a11bbae8f0ae2821ef5ee5fdeb5225f5f7dc",
+        "sha256": "297a8df11f6f344c7968f49e9ca1793eefb0734a250cac860158d6e567a4161a",
         "beds": [
           [
             8,
@@ -228,7 +250,7 @@
     "ctov:village/christmas/house/med_2": [
       {
         "kind": "residence",
-        "sha256": "e502cdc4271675af90cef29cfa8ed08b48f325ac5ec42b24fb48bc0325d1ae50",
+        "sha256": "3c38c00731eda6db2b614685072b4764e91497042743802e14ce3112699fd81d",
         "beds": [
           [
             6,
@@ -258,7 +280,7 @@
     "ctov:village/christmas/house/med_3": [
       {
         "kind": "residence",
-        "sha256": "a385fde55634a62880890451d039e22f440b2ac98bef54e9bab6ee0c7ebecce9",
+        "sha256": "4f4fdceac043bf49eabf275352f138bb6311f2f1e9612c85edfe8826c50fab69",
         "beds": [
           [
             12,
@@ -288,7 +310,7 @@
     "ctov:village/christmas/house/small_1": [
       {
         "kind": "residence",
-        "sha256": "b76c9fb6f390b2a3266de738443903143cb9adabebddbfb17de2b87aaf4caf60",
+        "sha256": "3b5c6719ee36f673e0a0218ef06d9c6790ccbb12175b900a6848e43808963a40",
         "beds": [
           [
             6,
@@ -313,7 +335,7 @@
     "ctov:village/christmas/house/small_2": [
       {
         "kind": "residence",
-        "sha256": "c8121688b4902eacad6504e9cf3eb46ff72d53f4f72a9f89d46acdc0925424e2",
+        "sha256": "7c980a650232b70274ff93bd69f7c078f593d29f070fdabc53880e84a3a1814b",
         "beds": [
           [
             4,
@@ -338,7 +360,7 @@
     "ctov:village/christmas/house/small_3": [
       {
         "kind": "residence",
-        "sha256": "fae729c1b3cfa8a209b2e946be14160506c031ad2a57d9f6d90ac8659fc4fa74",
+        "sha256": "7cfc319917b06bc663b82c82f919df9c1c6cea8e9e353ae1a557c52fc151c0d8",
         "beds": [
           [
             6,
@@ -363,7 +385,7 @@
     "ctov:village/christmas/house/small_4": [
       {
         "kind": "residence",
-        "sha256": "d3c80a195375b03a7f35492723eea665b68ac43fabe0c4700f767a195675731f",
+        "sha256": "e000ef48faaf8bcc8c10546ecb2f2f81ca49941410960a54cdbc8560fd62b637",
         "beds": [
           [
             4,
@@ -388,7 +410,7 @@
     "ctov:village/christmas/jobsite/alchemist": [
       {
         "kind": "service",
-        "sha256": "6262f230e120f7c144a1b54b3ee53962fe7a0bf9bc5c6bdc7befe1fdb89e2290",
+        "sha256": "ed651b2190981ed384c53722388093312d006b115a3a3c529a1bdd027d9492af",
         "beds": [],
         "entrances": [
           [
@@ -407,7 +429,7 @@
     "ctov:village/christmas/jobsite/aquarium": [
       {
         "kind": "service",
-        "sha256": "0aa6a3059e7e0b001e8444fe2a02c7b0496ca02fe83d8ab896207e8c2d518e91",
+        "sha256": "4592bf6bcebd58432b371a26da1c5e575abb33e541f877c006275f8909c58a45",
         "beds": [],
         "entrances": [
           [
@@ -551,18 +573,37 @@
     "ctov:village/christmas/jobsite/butcher": [
       {
         "kind": "service",
-        "sha256": "3b1d8accb8749d2f04e10177958767412b5addd5446a4f0e071737db81c80c4e",
+        "sha256": "333a703352cc77c71b3cb0eeebc019cc692c5ecf6cbbc8e1d2aebea5e8cb7270",
         "beds": [],
         "entrances": [
           [
             6,
-            0,
+            1,
             9
           ],
           [
             7,
-            1,
+            2,
             5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/christmas/jobsite/cartographer": [
+      {
+        "kind": "service",
+        "sha256": "6250735ea55390860c506554fa6a22f18c6420ae8f65bae3fb000cc88230b5b9",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            1
           ]
         ]
       }
@@ -570,17 +611,17 @@
     "ctov:village/christmas/jobsite/cartography": [
       {
         "kind": "service",
-        "sha256": "f1cbcde9257064901d3d556684cb68df75555e7bd04a67b0cdeaba0dbd122e4d",
+        "sha256": "b7b968f05d3be2fdfb7839fdf55bb3a74dd3fd5a24eb25f9524bd7e8622fc4b6",
         "beds": [],
         "entrances": [
           [
-            3,
-            0,
+            4,
+            1,
             8
           ],
           [
-            3,
-            1,
+            4,
+            2,
             7
           ]
         ]
@@ -589,18 +630,18 @@
     "ctov:village/christmas/jobsite/chemist": [
       {
         "kind": "service",
-        "sha256": "340a2903affebe0dd7803f4cd615a0c88668d08ee050d20e19a23b85cba67608",
+        "sha256": "6fad7e368e30ed82d2dc84d5d94f493aca9b3200a78f142a5b65576c7f998885",
         "beds": [],
         "entrances": [
           [
             3,
-            0,
-            8
+            1,
+            10
           ],
           [
             3,
-            1,
-            7
+            2,
+            9
           ]
         ]
       }
@@ -608,7 +649,7 @@
     "ctov:village/christmas/jobsite/chicken_coop": [
       {
         "kind": "service",
-        "sha256": "230f32bd63420a384f055241d1468db42afc86f5b7f5b872247777d08877bf00",
+        "sha256": "de3e8d49cd018aa4cc459da98e80e3519d22b55540a7de98cc0a6a80755e88dc",
         "beds": [],
         "entrances": [
           [
@@ -627,7 +668,7 @@
     "ctov:village/christmas/jobsite/computer_lab": [
       {
         "kind": "unsupported",
-        "sha256": "5e3ac2ab96e67a614bd1b5c3dd0b56e6d7964dac3b42009808ed5edc1a5c391a",
+        "sha256": "d6b48ea3678aac9d4a032201edc9abbe7087d79f46c3cb4182ca0821f79a2779",
         "beds": [],
         "entrances": []
       }
@@ -635,7 +676,7 @@
     "ctov:village/christmas/jobsite/engineer": [
       {
         "kind": "service",
-        "sha256": "e8c7036b10f23e58250c0c2b01bd57451a4ff943da8bf141a8bb3ba34a56fcec",
+        "sha256": "9840ce89469112107529997052fb402d42ca00075be01008e5c632aeda33ee47",
         "beds": [],
         "entrances": [
           [
@@ -678,23 +719,13 @@
     "ctov:village/christmas/jobsite/farm": [
       {
         "kind": "service",
-        "sha256": "77f52b8a7a10c8220f568a75a4ccb81b4dab72c959e56d87f74e3581781b4fae",
+        "sha256": "68b68e4d058c0208f0003f978d6baea495fdc46c50667e58b109e1232c3aa356",
         "beds": [],
         "entrances": [
           [
-            4,
-            1,
-            15
-          ],
-          [
-            4,
-            1,
-            16
-          ],
-          [
             5,
             1,
-            15
+            11
           ]
         ]
       }
@@ -702,23 +733,13 @@
     "ctov:village/christmas/jobsite/fd_farm": [
       {
         "kind": "service",
-        "sha256": "50d7fcde86b5952cc31c6640ea7faf856c1f339dc261fbca29a3927a0a2cc336",
+        "sha256": "f096ff5b32c7b60cd940c284b28a1256bdc5cf381f62c11c7e80db861c725afc",
         "beds": [],
         "entrances": [
           [
-            4,
-            2,
-            15
-          ],
-          [
-            4,
-            2,
-            16
-          ],
-          [
             5,
-            2,
-            15
+            1,
+            11
           ]
         ]
       }
@@ -726,7 +747,7 @@
     "ctov:village/christmas/jobsite/fishing_hut": [
       {
         "kind": "service",
-        "sha256": "06cbf1ad961b17b2924d910f8257491127b97cfa976c03bcb841451f9f05cada",
+        "sha256": "184c210dd29f3bbbaed38d819e9870617fd9bac95327c0af854ea440d4dc5cc4",
         "beds": [],
         "entrances": [
           [
@@ -759,7 +780,7 @@
     "ctov:village/christmas/jobsite/forager": [
       {
         "kind": "service",
-        "sha256": "9751fe779f177a57a75ae1de3525b3631314d02e19c094a587d3cf4d4ff3d387",
+        "sha256": "60264d63f02c73dc47ada83decd48d4787a76087b4d13a37fdcec4dfdb47b719",
         "beds": [],
         "entrances": [
           [
@@ -797,7 +818,7 @@
     "ctov:village/christmas/jobsite/gazebo": [
       {
         "kind": "service",
-        "sha256": "5af6c14995f747fe8bb84a8a0d80aef05562ad6b4c6943ba92a30dba94a250df",
+        "sha256": "4587edf49bbc60910efe7f2defa2f1a7e74d2d67ad063acbd452993d9c741c02",
         "beds": [],
         "entrances": [
           [
@@ -844,7 +865,7 @@
     "ctov:village/christmas/jobsite/hunter": [
       {
         "kind": "service",
-        "sha256": "48a944270ef30ab6de59acce56f9fa0e8e2f5ee7549d8e8b3fdbb45396b4c011",
+        "sha256": "bda940c05cfb6fc4191b5e1b6712a4974b1b2956fa58356c126f60e230cc3d00",
         "beds": [],
         "entrances": [
           [
@@ -868,7 +889,7 @@
     "ctov:village/christmas/jobsite/hunter_trainer": [
       {
         "kind": "service",
-        "sha256": "fd17ab6ae10f8df81be11ea78f4db1a4940818e35d55f922d6c1e72af083b4f5",
+        "sha256": "ade0c0991feee66eea4152078eec2ff4fc41e370aa377d1269f2663772fc3bd6",
         "beds": [],
         "entrances": [
           [
@@ -887,7 +908,7 @@
     "ctov:village/christmas/jobsite/imengineer": [
       {
         "kind": "service",
-        "sha256": "de9cc7891da66a560f6959a31c6ae7aa34c23007e65953dc0e010a4d503c5cb2",
+        "sha256": "acf81c21916b7ae2e6f153c50809e89ffc336e2f415398ccb4c26b1414831473",
         "beds": [],
         "entrances": [
           [
@@ -944,7 +965,7 @@
     "ctov:village/christmas/jobsite/krusty_krab": [
       {
         "kind": "service",
-        "sha256": "fc40725c20f01342acb4c7c67cfa2131d22d5615e406a121cf2dd0ea9d13dc9c",
+        "sha256": "98f3e65837bc8fc1e02467ba137aa7198abfa882188c40833685edc5695eeaed",
         "beds": [],
         "entrances": [
           [
@@ -963,17 +984,17 @@
     "ctov:village/christmas/jobsite/library": [
       {
         "kind": "service",
-        "sha256": "0e7212a3d1cda02508e1249684e2c7e95673ce8ab4aa048587855a7b25546f62",
+        "sha256": "8abb0042c6b704bd8fdf03dbf9026051029a26aab876f1b7ec6b16c602e64d23",
         "beds": [],
         "entrances": [
           [
             4,
-            0,
+            1,
             8
           ],
           [
             4,
-            1,
+            2,
             7
           ]
         ]
@@ -982,17 +1003,17 @@
     "ctov:village/christmas/jobsite/mason": [
       {
         "kind": "service",
-        "sha256": "791f5acfa61c137f644bdb83ae2b05b738876dbe35f64e60cb94a882bda9269e",
+        "sha256": "7ea0eedd714e8d05bde67f7dc1347a2d2411a28fec495c342b4ecd265cc46808",
         "beds": [],
         "entrances": [
           [
             3,
-            0,
+            1,
             6
           ],
           [
             3,
-            1,
+            2,
             5
           ]
         ]
@@ -1034,7 +1055,7 @@
     "ctov:village/christmas/jobsite/oceanographer": [
       {
         "kind": "service",
-        "sha256": "f1eb7b0378004d40a5cb5cca0e98995d72d7b3d30aa86b725f5e97d1c47ed0ef",
+        "sha256": "2f779137e3286a4a705f39d5caee228d603b4b0b0540623437da963a116c9f7a",
         "beds": [],
         "entrances": [
           [
@@ -1060,6 +1081,20 @@
             4,
             1,
             15
+          ]
+        ]
+      }
+    ],
+    "ctov:village/christmas/jobsite/pen": [
+      {
+        "kind": "service",
+        "sha256": "9b083150b72cb6c417d66fd944ea1b3f2e53be7a114a7b28a8f25b1e5e72a871",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
           ]
         ]
       }
@@ -1141,7 +1176,7 @@
     "ctov:village/christmas/jobsite/priest_tower": [
       {
         "kind": "unsupported",
-        "sha256": "ea8bf2ad848888a326b3283a03eefbc3a9d25e72f8425650aaafda84efe63e67",
+        "sha256": "da06c14a77e17dfdf4b5b1ac7335987f66ac21cab0f7d0f822c70f0de166c801",
         "beds": [],
         "entrances": []
       }
@@ -1149,7 +1184,7 @@
     "ctov:village/christmas/jobsite/restaurant": [
       {
         "kind": "service",
-        "sha256": "b017302f1d31d53ce3cc1725613f46ba30f1d0e964696d133e73b2c8d3792ff8",
+        "sha256": "0157ad54836dc3ad04664dc620d9f70b92908fcee38321e1c4c682fbaae1e277",
         "beds": [],
         "entrances": [
           [
@@ -1168,7 +1203,7 @@
     "ctov:village/christmas/jobsite/sanctuary": [
       {
         "kind": "residence",
-        "sha256": "321e38a73de184159b2c912835315a9e034e195e1a8fc7ad8f9026b9cb77022a",
+        "sha256": "b153a6403b8eb5fb515f40b0726bc0ab1d8c478119d474747296ed8427b2126a",
         "beds": [
           [
             3,
@@ -1236,17 +1271,17 @@
     "ctov:village/christmas/jobsite/shepherd": [
       {
         "kind": "service",
-        "sha256": "738cbe1bf960f29e133b8ff0e7a07d5fb18ffd7bdca4bf8fd16a82ff9a056c37",
+        "sha256": "55995af9260173b97c302e8219606e86b2bce7f4d6b49da6baa31cf840249792",
         "beds": [],
         "entrances": [
           [
             4,
-            0,
+            1,
             8
           ],
           [
             6,
-            1,
+            2,
             7
           ]
         ]
@@ -1255,17 +1290,17 @@
     "ctov:village/christmas/jobsite/smith": [
       {
         "kind": "service",
-        "sha256": "c4dfd69db917a853c32b7dcafc7d830afc347b31b6886e1dbca159db91c30723",
+        "sha256": "3794dd0c1bd4804ab4ce351abd832d0800d37fcae620e924be5f0604a5edf6c7",
         "beds": [],
         "entrances": [
           [
             6,
-            0,
+            1,
             8
           ],
           [
             7,
-            1,
+            2,
             5
           ]
         ]
@@ -1274,7 +1309,7 @@
     "ctov:village/christmas/jobsite/tannery": [
       {
         "kind": "service",
-        "sha256": "fbd5664bb17455ec577dcab1c1a99c018c7f07caf283d4a6098a2bd8f07ca19f",
+        "sha256": "352016f7a760bff9ea5298688cee8097e563e811d04608848f7f9a4e94553ce8",
         "beds": [],
         "entrances": [
           [
@@ -1290,10 +1325,55 @@
         ]
       }
     ],
+    "ctov:village/christmas/jobsite/tavern": [
+      {
+        "kind": "residence",
+        "sha256": "8e1a3be0458ead9bd7b02b5665c18a74e9b5b85f7089820ea4caab865261130e",
+        "beds": [
+          [
+            2,
+            7,
+            3
+          ],
+          [
+            2,
+            7,
+            5
+          ],
+          [
+            7,
+            7,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            7,
+            6
+          ],
+          [
+            5,
+            2,
+            3
+          ],
+          [
+            6,
+            2,
+            3
+          ],
+          [
+            8,
+            7,
+            6
+          ]
+        ]
+      }
+    ],
     "ctov:village/christmas/jobsite/vault": [
       {
         "kind": "service",
-        "sha256": "9d4a4101d53fccb49a5820e9364c0089f6ea4b3ed1fd225b6bcf26d6f05b55d1",
+        "sha256": "e52a108b392a1650b9b81f70d5533622ca96b61cc84a7532afb87615a0ae6325",
         "beds": [],
         "entrances": [
           [
@@ -1331,7 +1411,7 @@
     "ctov:village/christmas/jobsite/warehouse": [
       {
         "kind": "service",
-        "sha256": "fc80a0f01c6b6429461d7ef339745de7690e739ea398ef23f19ebeaff593eb31",
+        "sha256": "4300a1d28515176771f26592d262cddd63c6c67ec33492ba37309ad2a6d99789",
         "beds": [],
         "entrances": [
           [
@@ -1350,7 +1430,7 @@
     "ctov:village/christmas/jobsite/windmill": [
       {
         "kind": "service",
-        "sha256": "29a915e4ba26fbe115b49022e77805c0b5327966da434669e7d542427aa5bfa6",
+        "sha256": "c65ec0020a677a6c2096b46ab5bb29b43fa17f5fa4a5be6c33fb53fed15965b7",
         "beds": [],
         "entrances": [
           [
@@ -1369,7 +1449,7 @@
     "ctov:village/christmas/jobsite/wizard_tower": [
       {
         "kind": "residence",
-        "sha256": "5fcffc965ab1139143a3e2861b27d7b29b74e013d09416f98ba1474a47457762",
+        "sha256": "b20b39a81373805b209d7c2c38e94a5ee75c6f839dede7f9a1a82648013cfd4a",
         "beds": [
           [
             6,
@@ -1394,7 +1474,7 @@
     "ctov:village/christmas/jobsite/woodworker": [
       {
         "kind": "service",
-        "sha256": "6019785aae4d002b17a2b87e552b00d0173cf9df2a8350624a014578fd8a434d",
+        "sha256": "3ba383329da06df4b1bb770c453f8eb44bc6c3daa7c82dede23a3523fcd26663",
         "beds": [],
         "entrances": [
           [
@@ -1410,26 +1490,26 @@
         ]
       }
     ],
-    "ctov:village/christmas/roads/bent_1": [
+    "ctov:village/christmas/roads/corner_1": [
       {
         "kind": "road",
-        "sha256": "c28de53881b53ebc1fdb3d10a064104a824caa61f254523e3a00bb1c1a3fdf9a",
+        "sha256": "87a61a979982cf0214ca681b5cd258c503bef240c1ce28c4a920cfbaecaaea07",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/christmas/roads/bent_2": [
+    "ctov:village/christmas/roads/corner_2": [
       {
         "kind": "road",
-        "sha256": "fb89acd5fc2e7f1c869408c77e19cf147aeff822393526af9c4114ad79c7a2af",
+        "sha256": "e3b0f9cbe8887fb879afe344e6a70259c0e5ec89276148fd7ec9dcc0e9f3e8b2",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/christmas/roads/inter": [
+    "ctov:village/christmas/roads/crossroad": [
       {
         "kind": "road",
-        "sha256": "0944368c87489566b94a2b2b5c1aef04c7bf03abc71e47ac6ef57209f19169f6",
+        "sha256": "62caf6fdab521c994e278c96b5e2d41b2244276b477fc125f951a28c5a0a8003",
         "beds": [],
         "entrances": []
       }
@@ -1437,7 +1517,7 @@
     "ctov:village/christmas/roads/respawn_obelisk": [
       {
         "kind": "road",
-        "sha256": "01ba7c3e214b85a015eb3fac52776e7532772c9533ef34e9a256572653b242d0",
+        "sha256": "9cb98a90e07c6ba2664dfc0948d58ddb884208c8089c4c7143d9242f68bb2976",
         "beds": [],
         "entrances": []
       }
@@ -1445,7 +1525,7 @@
     "ctov:village/christmas/roads/straight": [
       {
         "kind": "road",
-        "sha256": "57bbdb623f499a77df0ae2169ac766e1eee7daf7b9ef1e7922618f2b7bba7649",
+        "sha256": "744600233186d10a0f0c296471c5e3f29e1dee8d8316febfb472d3ca1c29c55e",
         "beds": [],
         "entrances": []
       }
@@ -1453,7 +1533,7 @@
     "ctov:village/christmas/roads/t_1": [
       {
         "kind": "road",
-        "sha256": "4132920e4e2362449782cf2d47546690e8ae5a4a860f6dea00ef0986b5ce17db",
+        "sha256": "70782bcd0900a0e173b39e20920302ee45dbaa291b0dc92676b735ba6406d307",
         "beds": [],
         "entrances": []
       }
@@ -1461,7 +1541,7 @@
     "ctov:village/christmas/roads/t_2": [
       {
         "kind": "road",
-        "sha256": "e7c115ca6fb15a883827cdb5ced0a7bf2228863f310cae549fb4e35f0dbed763",
+        "sha256": "c813187f248f03975a1983f3ab3826ddf04e3a47680215967506f9d910a51787",
         "beds": [],
         "entrances": []
       }
@@ -1469,7 +1549,7 @@
     "ctov:village/christmas/roads/t_3": [
       {
         "kind": "road",
-        "sha256": "c237f0d0d88e84e7628e5cee30372cfc3fbc38dda6077d935745540f667ef0bb",
+        "sha256": "071ad52885a21af2cca94af6b6728651847544751c1d5676d0993a762e003d1e",
         "beds": [],
         "entrances": []
       }
@@ -1477,7 +1557,7 @@
     "ctov:village/christmas/roads/terminator": [
       {
         "kind": "road",
-        "sha256": "ce151bf0637052dae477b94fb6050b5f325b98a5ea9d2c2f657334ecef3a4a6e",
+        "sha256": "23ea7ad3829c968bda0a84db220818a875f58f12276841232e3220a27436afdb",
         "beds": [],
         "entrances": []
       }
@@ -1536,7 +1616,7 @@
     "minecraft:village/common/iron_golem": [
       {
         "kind": "decoration",
-        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "sha256": "4e0c8c2fb1a5d7aa45e4918003cca74991f02ffa21284f341468d28d8db402fa",
         "beds": [],
         "entrances": []
       }
@@ -1544,7 +1624,7 @@
     "minecraft:village/snowy/villagers/baby": [
       {
         "kind": "service",
-        "sha256": "8f8c806a53b773a519a61a163de3e4fe8b33d33a1d107a11f679edbf2e275df9",
+        "sha256": "f658cbde896e832ff463ade1986aaa46392144857e4bdaa9d66926eb65f5e22f",
         "beds": [],
         "entrances": []
       }
@@ -1552,7 +1632,7 @@
     "minecraft:village/snowy/villagers/nitwit": [
       {
         "kind": "service",
-        "sha256": "3b5a3102600a5b25de6c406ab0c207a0f2f18fa69f0088b1db993c389fdcc64f",
+        "sha256": "cbc027548b06292979fce65dbdca3e6466a940a0009f83351c58afe956f0999a",
         "beds": [],
         "entrances": []
       }
@@ -1560,7 +1640,7 @@
     "minecraft:village/snowy/villagers/unemployed": [
       {
         "kind": "service",
-        "sha256": "fdd25fcf000e94242a1312bd742b6a2c821e77cfd42edcb2292104c77394b7f0",
+        "sha256": "1fb33cdd42343034840f7aa13abc43bc84ab9b7f4650fe7a577bcf0636c06254",
         "beds": [],
         "entrances": []
       }

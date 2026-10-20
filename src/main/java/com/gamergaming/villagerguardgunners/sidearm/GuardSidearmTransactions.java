@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Server-authoritative, synchronous movement of complete TaCZ gun stacks.
@@ -376,7 +376,7 @@ public final class GuardSidearmTransactions {
             return first.isEmpty() && second.isEmpty();
         }
         return first.getCount() == second.getCount()
-                && ItemStack.isSameItemSameTags(first, second);
+                && ItemStack.isSameItemSameComponents(first, second);
     }
 
     public enum NaturalSidearmStatus {

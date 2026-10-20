@@ -4,7 +4,7 @@ import com.gamergaming.villagerguardgunners.ai.tactics.*;
 import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Resumes the saved local duty after combat without changing permanent orders. */
 public final class GuardDutyReturnController {

@@ -1,0 +1,45 @@
+// Player files only. Installed-runtime QA mods and third-party dependencies stay separate.
+tasks.register('prepareNeoForgeAlpha', Sync) {
+    group = 'distribution'
+    description = 'Stages the NeoForge alpha JAR, player copy, optional companion pack, and checksums.'
+    dependsOn tasks.named('check')
+    def releaseNote = layout.projectDirectory.file("docs/releases/${mod_version}.md")
+    inputs.properties([version: mod_version, minecraft: minecraft_version, neoForge: neo_version])
+    from(tasks.named('jar').flatMap { it.archiveFile })
+    from(releaseNote) { rename { 'CHANGELOG.md' } }
+    from('docs/curseforge-description.md')
+    from('docs/curseforge-upload.md')
+    from('LICENSE.txt')
+    from(layout.buildDirectory.file('distributions/companion-packs/villager-guard-gunners-village-buildings.zip')) {
+        into 'optional-datapack'
+        rename { "villager-guard-gunners-village-buildings-${minecraft_version}.zip" }
+    }
+    into layout.buildDirectory.dir("distributions/alpha/${mod_version}")
+    doFirst {
+        if (!(mod_version ==~ /.+-neoforge-alpha\.\d+/)) {
+            throw new GradleException('This packaging task accepts named NeoForge alpha versions only')
+        }
+        if (!releaseNote.asFile.isFile()) throw new GradleException('Missing release-specific player notes')
+    }
+    doLast {
+        new File(destinationDir, 'UPLOAD.txt').text = """Display name: ${mod_name} ${mod_version.replace('-neoforge-alpha.', ' NeoForge Alpha ')}
+Release type: Alpha
+Minecraft: ${minecraft_version}
+Loader: NeoForge ${neo_version}
+Java: 21
+Required on: Client and server
+Required dependencies: Guard Villagers; [UNOFFICIAL] TaCZ NeoForge Port; Fzzy Config; Kotlin for Forge
+Project description: curseforge-description.md
+File change notes: CHANGELOG.md
+Upload the gameplay JAR as the mod file. The optional ZIP belongs on the companion datapack project.
+This is an alpha test build. Broader release and performance validation remains pending.
+"""
+        def checksums = fileTree(destinationDir).files.findAll { it.name != 'SHA256SUMS.txt' }
+                .sort { destinationDir.toPath().relativize(it.toPath()).toString() }
+                .collect { file ->
+                    def digest = java.security.MessageDigest.getInstance('SHA-256').digest(file.bytes).encodeHex()
+                    "${digest}  ${destinationDir.toPath().relativize(file.toPath()).toString().replace('\\', '/')}"
+                }
+        new File(destinationDir, 'SHA256SUMS.txt').text = checksums.join('\n') + '\n'
+    }
+}

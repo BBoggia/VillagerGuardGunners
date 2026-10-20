@@ -20,6 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /** Dedicated two-block recovery furniture. It is not a villager HOME POI or a sleeping bed. */
 public final class RecoveryCotBlock extends BaseEntityBlock {
+    @Override protected com.mojang.serialization.MapCodec<RecoveryCotBlock> codec() { return simpleCodec(RecoveryCotBlock::new); }
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<BedPart> PART = BlockStateProperties.BED_PART;
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 8, 16);
@@ -40,12 +41,12 @@ public final class RecoveryCotBlock extends BaseEntityBlock {
         if (side == other && (!neighbor.is(this) || neighbor.getValue(PART) == state.getValue(PART) || neighbor.getValue(FACING) != state.getValue(FACING))) return Blocks.AIR.defaultBlockState();
         return super.updateShape(state, side, neighbor, level, pos, neighborPos);
     }
-    @Override public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    @Override public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if (!level.isClientSide && player.isCreative() && state.getValue(PART) == BedPart.FOOT) {
             BlockPos head = pos.relative(state.getValue(FACING));
             if (level.getBlockState(head).is(this)) level.setBlock(head, Blocks.AIR.defaultBlockState(), 35);
         }
-        super.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
     @Override public BlockState rotate(BlockState state, Rotation rotation) { return state.setValue(FACING, rotation.rotate(state.getValue(FACING))); }
     @Override public BlockState mirror(BlockState state, Mirror mirror) { return rotate(state, mirror.getRotation(state.getValue(FACING))); }

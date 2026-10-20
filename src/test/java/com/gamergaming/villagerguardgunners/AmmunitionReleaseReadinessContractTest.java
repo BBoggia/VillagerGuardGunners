@@ -108,9 +108,10 @@ final class AmmunitionReleaseReadinessContractTest {
     }
 
     @Test
-    void aggregateGateRequiresCorrectnessArtifactAndPerformanceEvidence()
+    void retainedForgeAggregateGateRequiresCorrectnessArtifactAndPerformanceEvidence()
             throws IOException {
-        String build = read("build.gradle");
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
         int gateStart = build.indexOf(
                 "tasks.register('verifyAmmunitionReleaseCandidate')");
         assertTrue(gateStart >= 0, "Missing aggregate ammunition release task");
@@ -128,8 +129,9 @@ final class AmmunitionReleaseReadinessContractTest {
     }
 
     @Test
-    void publicPackagingRequiresCompletedManualEvidence() throws IOException {
-        String build = read("build.gradle");
+    void retainedForgePublicPackagingRequiresCompletedManualEvidence() throws IOException {
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
         int manualGateStart = build.indexOf(
                 "tasks.register('verifyManualReleaseChecklist')");
         int packagingStart = build.indexOf(

@@ -11,8 +11,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.IEventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** TaCZ 1.1.8 per-discharge hooks, before ammo/heat and after successful projectile insertion. */
 @Mixin(value = ModernKineticGunScriptAPI.class, remap = false)
@@ -75,17 +75,18 @@ public abstract class TaCZGuardShotMixin {
     }
 
     @Redirect(method = "lambda$shootOnce$2", at = @At(value = "INVOKE",
-            target = "Lnet/minecraftforge/eventbus/api/IEventBus;post(Lnet/minecraftforge/eventbus/api/Event;)Z"))
-    private boolean villagerGuardGunners$validateRound(IEventBus bus, Event event,
+            target = "Lnet/neoforged/bus/api/IEventBus;post(Lnet/neoforged/bus/api/Event;)Lnet/neoforged/bus/api/Event;"))
+    private Event villagerGuardGunners$validateRound(IEventBus bus, Event rawEvent,
             boolean consumeAmmo, GunData gunData, int pellets, BulletData bulletData,
             IGunOperator operator, float damage, float speed, float spread, int soundDistance, boolean silence) {
+        var event = (com.tacz.guns.api.event.common.GunFireEvent) rawEvent;
         boolean allowed = true;
         if (shooter instanceof Guard guard) {
             var controller = GuardNativeShotAccess.controller(guard);
             allowed = controller != null && controller.prepareNativeRound(itemStack, gunData, bulletData, speed, spread);
             if (!allowed) event.setCanceled(true);
         }
-        boolean canceled = bus.post(event);
+        boolean canceled = bus.post(event).isCanceled();
         if (allowed && !canceled && shooter instanceof Guard guard) {
             var controller = GuardNativeShotAccess.controller(guard);
             allowed = controller != null && controller.preparedNativeRoundCurrent();
@@ -95,7 +96,7 @@ public abstract class TaCZGuardShotMixin {
         // Native callbacks return true even when their event was canceled: that
         // return value controls burst continuation, not whether a round fired.
         if (shooter instanceof Guard) villagerGuardGunners$roundRefused = canceled || !allowed;
-        return canceled || !allowed;
+        return event;
     }
 
     @Redirect(method = "lambda$shootOnce$2", at = @At(value = "INVOKE", remap = true,

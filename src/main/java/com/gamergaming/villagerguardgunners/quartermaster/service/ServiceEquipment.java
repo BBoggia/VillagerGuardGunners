@@ -8,7 +8,7 @@ import com.tacz.guns.api.TimelessAPI;
 import java.util.List;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 public final class ServiceEquipment {
     public static final int SLOTS = 12;

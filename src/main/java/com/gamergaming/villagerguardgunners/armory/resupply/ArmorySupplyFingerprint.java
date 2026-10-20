@@ -3,23 +3,23 @@ package com.gamergaming.villagerguardgunners.armory.resupply;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /** Item and full tag identity captured without retaining a mutable live stack. */
 public record ArmorySupplyFingerprint(
         ResourceLocation itemId,
-        @Nullable CompoundTag itemTag) {
+        @Nullable DataComponentPatch itemTag) {
     public ArmorySupplyFingerprint {
         itemId = Objects.requireNonNull(itemId, "itemId");
-        itemTag = itemTag == null ? null : itemTag.copy();
+        itemTag = itemTag == null ? null : itemTag;
     }
 
     @Override
     @Nullable
-    public CompoundTag itemTag() {
-        return itemTag == null ? null : itemTag.copy();
+    public DataComponentPatch itemTag() {
+        return itemTag == null ? null : itemTag;
     }
 
     public static ArmorySupplyFingerprint capture(ItemStack stack) {
@@ -31,7 +31,7 @@ public record ArmorySupplyFingerprint(
         if (itemId == null || BuiltInRegistries.ITEM.get(itemId) != stack.getItem()) {
             throw new IllegalArgumentException("Cannot fingerprint an unregistered ammunition item");
         }
-        return new ArmorySupplyFingerprint(itemId, stack.getTag());
+        return new ArmorySupplyFingerprint(itemId, stack.getComponentsPatch());
     }
 
     public boolean matches(ItemStack stack) {
@@ -41,7 +41,7 @@ public record ArmorySupplyFingerprint(
         try {
             return BuiltInRegistries.ITEM.get(itemId) == stack.getItem()
                     && itemId.equals(BuiltInRegistries.ITEM.getKey(stack.getItem()))
-                    && Objects.equals(itemTag, stack.getTag());
+                    && Objects.equals(itemTag, stack.getComponentsPatch());
         } catch (RuntimeException exception) {
             return false;
         }

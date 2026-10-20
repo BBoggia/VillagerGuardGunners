@@ -14,8 +14,9 @@ final class VillageDefenseBuildingsStepThirteenContractTest {
             System.getProperty("villagerguardgunners.projectDir", "."));
 
     @Test
-    void combinedPerformanceModeCoversVillageCombatAndLogisticsPressure() throws IOException {
-        String build = read("build.gradle");
+    void retainedForgeCombinedPerformanceModeCoversVillageCombatAndLogisticsPressure() throws IOException {
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
         String performance = read("src/perftest/java/com/gamergaming/"
                 + "villagerguardgunners/worldgen/village/"
                 + "VillageDefenseBuildingsPerformanceGameTests.java");

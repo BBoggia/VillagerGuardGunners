@@ -12,10 +12,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /** Persistent, bounded retry outbox for canceled station-item spawns. Never loads chunks. */
 public final class QuartermasterRecovery extends SavedData {
+    private net.minecraft.core.HolderLookup.Provider registryProvider;
     private static final String KEY = "villagerguardgunners_quartermaster_recovery";
     private final LinkedHashMap<UUID, Pending> pending = new LinkedHashMap<>();
     private final ListTag quarantined = new ListTag();
@@ -23,7 +24,9 @@ public final class QuartermasterRecovery extends SavedData {
     private record Pending(BlockPos pos, ItemStack stack) {}
 
     public static QuartermasterRecovery get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(QuartermasterRecovery::load, QuartermasterRecovery::new, KEY);
+        QuartermasterRecovery data = level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(QuartermasterRecovery::new, QuartermasterRecovery::load), KEY);
+        data.registryProvider = level.registryAccess();
+        return data;
     }
     public int pendingCount() { return pending.size(); }
     public void enqueue(UUID id, BlockPos pos, ItemStack stack) {
@@ -36,8 +39,9 @@ public final class QuartermasterRecovery extends SavedData {
         }
         setDirty();
     }
-    public static QuartermasterRecovery load(CompoundTag tag) {
+    public static QuartermasterRecovery load(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         QuartermasterRecovery data = new QuartermasterRecovery();
+        data.registryProvider = registries;
         if (!tag.contains("Version", Tag.TAG_INT) || tag.getInt("Version") != 1
                 || !tag.contains("Pending", Tag.TAG_LIST)
                 || !Set.of("Version", "Pending", "Quarantined", "Preserved").containsAll(tag.getAllKeys())
@@ -53,13 +57,13 @@ public final class QuartermasterRecovery extends SavedData {
         ListTag entries = tag.getList("Pending", Tag.TAG_COMPOUND);
         for (Tag entry : entries) {
             CompoundTag value = (CompoundTag) entry;
-            ItemStack stack = ItemStack.of(value.getCompound("Stack"));
+            ItemStack stack = ItemStack.parseOptional(registries, value.getCompound("Stack"));
             if (!value.getAllKeys().equals(Set.of("Id", "Pos", "Stack"))
                     || !value.hasUUID("Id") || !value.contains("Pos", Tag.TAG_LONG) || stack.isEmpty()
                     || data.pending.containsKey(value.getUUID("Id"))
                     || !stack.is(ModItems.QUARTERMASTER.get())
                     || stack.getCount() != 1
-                    || !stack.save(new CompoundTag()).equals(value.getCompound("Stack"))) {
+                    || !stack.save(registries).equals(value.getCompound("Stack"))) {
                 data.quarantined.add(value.copy());
                 continue;
             }
@@ -68,7 +72,7 @@ public final class QuartermasterRecovery extends SavedData {
         for (Tag entry : tag.getList("Quarantined", Tag.TAG_COMPOUND)) data.quarantined.add(entry.copy());
         return data;
     }
-    @Override public CompoundTag save(CompoundTag tag) {
+    @Override public CompoundTag save(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         // Preserve an unsupported older outbox separately while allowing new removals to be saved.
         if (unsupported != null) tag.put("Preserved", unsupported.copy());
         tag.putInt("Version", 1);
@@ -78,11 +82,11 @@ public final class QuartermasterRecovery extends SavedData {
         tag.put("Quarantined", quarantined.copy());
         return tag;
     }
-    private static CompoundTag encode(UUID id, Pending value) {
+    private CompoundTag encode(UUID id, Pending value) {
         CompoundTag item = new CompoundTag();
         item.putUUID("Id", id);
         item.putLong("Pos", value.pos.asLong());
-        item.put("Stack", value.stack.save(new CompoundTag()));
+        item.put("Stack", value.stack.save(registryProvider));
         return item;
     }
     public void retry(ServerLevel level) {
@@ -116,8 +120,8 @@ public final class QuartermasterRecovery extends SavedData {
         item.setDefaultPickUpDelay();
         return level.addFreshEntity(item);
     }
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.getServer().getTickCount() % 100 != 0) return;
+    public static void onServerTick(ServerTickEvent.Post event) {
+        if (event.getServer().getTickCount() % 100 != 0) return;
         for (ServerLevel level : event.getServer().getAllLevels()) get(level).retry(level);
     }
 }

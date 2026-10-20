@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Bounded local search using native paths. No terrain lookup may request an unloaded chunk. */
 public final class TacticalPositionPlanner {
@@ -267,7 +267,7 @@ public final class TacticalPositionPlanner {
         return com.gamergaming.villagerguardgunners.ai.navigation.GuardGroundTraversal.safeStanding(guard, point);
     }
 
-    private boolean dangerousPathType(net.minecraft.world.level.pathfinder.BlockPathTypes type) {
+    private boolean dangerousPathType(net.minecraft.world.level.pathfinder.PathType type) {
         return guard.getPathfindingMalus(type) < 0 || type.name().contains("DAMAGE") || type.name().contains("DANGER");
     }
 

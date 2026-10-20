@@ -12,7 +12,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Final, one-shot Armory-to-guard ammunition transaction. */
 public final class ArmoryAmmunitionWithdrawal {

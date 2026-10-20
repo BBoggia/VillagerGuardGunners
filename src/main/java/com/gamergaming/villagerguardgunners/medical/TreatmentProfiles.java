@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.medical;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.tacz.guns.api.item.IGun;
@@ -18,10 +19,10 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.alchemy.PotionUtils;
+
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 /** Bounded, whole-registry publication; a bad reload retains the last valid profiles. */
 public final class TreatmentProfiles extends SimplePreparableReloadListener<TreatmentProfiles.Prepared> {
@@ -35,8 +36,8 @@ public final class TreatmentProfiles extends SimplePreparableReloadListener<Trea
     @Nullable public static TreatmentProfile resolve(ItemStack stack) {
         if (stack.isEmpty() || stack.getCount() > stack.getMaxStackSize()) return null;
         for (var profile : byItem.getOrDefault(BuiltInRegistries.ITEM.getKey(stack.getItem()), List.of())) {
-            if (profile.potion() != null && (stack.hasTag() && stack.getTag().contains("CustomPotionEffects")
-                    || !BuiltInRegistries.POTION.getKey(PotionUtils.getPotion(stack)).equals(profile.potion()))) continue;
+            if (profile.potion() != null && (!stack.getOrDefault(net.minecraft.core.component.DataComponents.POTION_CONTENTS, net.minecraft.world.item.alchemy.PotionContents.EMPTY).customEffects().isEmpty()
+                    || stack.getOrDefault(net.minecraft.core.component.DataComponents.POTION_CONTENTS, net.minecraft.world.item.alchemy.PotionContents.EMPTY).potion().map(p -> !p.is(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.POTION, profile.potion()))).orElse(true))) continue;
             if (profile.returnedItem() != null && stack.getCount() != 1) continue;
             return profile;
         }
@@ -48,8 +49,8 @@ public final class TreatmentProfiles extends SimplePreparableReloadListener<Trea
                 || item instanceof IAmmo || item instanceof IAmmoBox) throw new IllegalArgumentException("Invalid medical item");
         if (item instanceof PotionItem) {
             if (item != Items.POTION || profile.potion() == null
-                    || !(profile.potion().equals(BuiltInRegistries.POTION.getKey(Potions.HEALING))
-                    || profile.potion().equals(BuiltInRegistries.POTION.getKey(Potions.STRONG_HEALING)))
+                    || !(profile.potion().equals(BuiltInRegistries.POTION.getKey(Potions.HEALING.value()))
+                    || profile.potion().equals(BuiltInRegistries.POTION.getKey(Potions.STRONG_HEALING.value())))
                     || !ResourceLocation.withDefaultNamespace("glass_bottle").equals(profile.returnedItem()))
                 throw new IllegalArgumentException("Only plain drinkable healing potions with returned bottles are supported");
         } else if (profile.potion() != null) throw new IllegalArgumentException("Potion selector on a non-potion item");

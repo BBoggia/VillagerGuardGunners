@@ -10,7 +10,7 @@ import com.tacz.guns.util.AttachmentDataUtils;
 import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 /**
  * On-demand, allocation-bounded description of a TaCZ gun and its usable

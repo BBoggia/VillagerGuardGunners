@@ -98,7 +98,7 @@ final class VillageDefenseNetworkSavedDataTest {
         data.claimBuilding(building(300, "second_bridge"), 100.0D);
 
         UUID active = data.resolveNetworkId(first);
-        CompoundTag encoded = data.save(new CompoundTag());
+        CompoundTag encoded = data.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         VillageDefenseNetworkSavedData restored =
                 VillageDefenseNetworkSavedData.loadForLevel(
                         encoded, DIMENSION, WORLD_SEED);
@@ -173,7 +173,7 @@ final class VillageDefenseNetworkSavedDataTest {
         UUID retired = source.resolveNetworkId(leftNetwork).equals(leftNetwork)
                 ? rightNetwork
                 : leftNetwork;
-        CompoundTag encoded = source.save(new CompoundTag());
+        CompoundTag encoded = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
 
         VillageDefenseNetworkSavedData restored =
                 VillageDefenseNetworkSavedData.loadForLevel(
@@ -186,7 +186,7 @@ final class VillageDefenseNetworkSavedDataTest {
                 () -> assertEquals(1, restored.aliasCount()),
                 () -> assertNotNull(restored.getNetwork(retired)),
                 () -> assertFalse(restored.isDirty()),
-                () -> assertEquals(encoded, restored.save(new CompoundTag())));
+                () -> assertEquals(encoded, restored.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))));
     }
 
     @Test
@@ -194,7 +194,7 @@ final class VillageDefenseNetworkSavedDataTest {
         VillageDefenseNetworkSavedData source =
                 new VillageDefenseNetworkSavedData(DIMENSION, WORLD_SEED);
         source.claimBuilding(building(0, "first"), 96.0D);
-        CompoundTag encoded = source.save(new CompoundTag());
+        CompoundTag encoded = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         CompoundTag future = encoded.copy();
         future.putInt("Version", VillageDefenseNetworkSavedData.DATA_VERSION + 1);
         CompoundTag wrongList = encoded.copy();
@@ -215,9 +215,9 @@ final class VillageDefenseNetworkSavedDataTest {
 
         assertAll(
                 () -> assertFalse(disabledFuture.enabled()),
-                () -> assertEquals(future, disabledFuture.save(new CompoundTag())),
+                () -> assertEquals(future, disabledFuture.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))),
                 () -> assertFalse(disabledList.enabled()),
-                () -> assertEquals(wrongList, disabledList.save(new CompoundTag())),
+                () -> assertEquals(wrongList, disabledList.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))),
                 () -> assertFalse(wrongDimension.enabled()),
                 () -> assertFalse(wrongSeed.enabled()),
                 () -> assertEquals(
@@ -230,7 +230,7 @@ final class VillageDefenseNetworkSavedDataTest {
         VillageDefenseNetworkSavedData source =
                 new VillageDefenseNetworkSavedData(DIMENSION, WORLD_SEED);
         source.claimBuilding(building(0, "first"), 96.0D);
-        CompoundTag malformed = source.save(new CompoundTag());
+        CompoundTag malformed = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         CompoundTag network = malformed.getList(
                 "Networks", Tag.TAG_COMPOUND).getCompound(0);
         network.getCompound("DefenseStatus").putString("State", "future_state");
@@ -241,7 +241,7 @@ final class VillageDefenseNetworkSavedDataTest {
 
         assertAll(
                 () -> assertFalse(disabled.enabled()),
-                () -> assertEquals(malformed, disabled.save(new CompoundTag())),
+                () -> assertEquals(malformed, disabled.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()))),
                 () -> assertEquals(
                         VillageDefenseNetworkSavedData.StateUpdateStatus.DISABLED,
                         disabled.applySignal(
@@ -257,7 +257,7 @@ final class VillageDefenseNetworkSavedDataTest {
                 new VillageDefenseNetworkSavedData(DIMENSION, WORLD_SEED);
         source.claimBuilding(building(0, "first"), 96.0D);
         source.claimBuilding(building(400, "second"), 96.0D);
-        CompoundTag duplicated = source.save(new CompoundTag());
+        CompoundTag duplicated = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         ListTag networks = duplicated.getList("Networks", Tag.TAG_COMPOUND);
         CompoundTag firstBuilding = networks.getCompound(0)
                 .getList("Buildings", Tag.TAG_COMPOUND)
@@ -271,7 +271,7 @@ final class VillageDefenseNetworkSavedDataTest {
                 VillageDefenseNetworkSavedData.load(duplicated);
 
         assertFalse(disabled.enabled());
-        assertEquals(duplicated, disabled.save(new CompoundTag()));
+        assertEquals(duplicated, disabled.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
     }
 
     @Test
@@ -286,7 +286,7 @@ final class VillageDefenseNetworkSavedDataTest {
                 building(400, "other_network"), 96.0D).networkId();
         UUID forgedAlias = VillageDefenseNetworkIds.forBuilding(
                 nonCanonicalMember.buildingId());
-        CompoundTag malformed = source.save(new CompoundTag());
+        CompoundTag malformed = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         CompoundTag alias = new CompoundTag();
         alias.putUUID("From", forgedAlias);
         alias.putUUID("To", otherNetwork);
@@ -297,7 +297,7 @@ final class VillageDefenseNetworkSavedDataTest {
                         malformed, DIMENSION, WORLD_SEED);
 
         assertFalse(disabled.enabled());
-        assertEquals(malformed, disabled.save(new CompoundTag()));
+        assertEquals(malformed, disabled.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())));
     }
 
     @Test
@@ -344,7 +344,7 @@ final class VillageDefenseNetworkSavedDataTest {
                 VillageDefenseSignal.HOSTILE_CONFIRMED,
                 100L,
                 TIMINGS);
-        CompoundTag encoded = source.save(new CompoundTag());
+        CompoundTag encoded = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         VillageDefenseNetworkSavedData restored =
                 VillageDefenseNetworkSavedData.loadForLevel(
                         encoded, DIMENSION, WORLD_SEED);
@@ -442,7 +442,7 @@ final class VillageDefenseNetworkSavedDataTest {
                 new VillageDefenseNetworkSavedData(DIMENSION, WORLD_SEED);
         UUID networkId = source.claimBuilding(
                 building(0, "legacy"), 96.0D).networkId();
-        CompoundTag legacy = source.save(new CompoundTag());
+        CompoundTag legacy = source.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         CompoundTag legacyNetwork = legacy.getList(
                 "Networks", Tag.TAG_COMPOUND).getCompound(0);
         legacyNetwork.putInt("Version", VillageDefenseNetwork.LEGACY_SCHEMA_VERSION);
@@ -451,7 +451,7 @@ final class VillageDefenseNetworkSavedDataTest {
         VillageDefenseNetworkSavedData migrated =
                 VillageDefenseNetworkSavedData.loadForLevel(
                         legacy, DIMENSION, WORLD_SEED);
-        CompoundTag rewritten = migrated.save(new CompoundTag());
+        CompoundTag rewritten = migrated.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
         CompoundTag rewrittenNetwork = rewritten.getList(
                 "Networks", Tag.TAG_COMPOUND).getCompound(0);
 

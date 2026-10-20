@@ -8,7 +8,7 @@ import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
 import com.tacz.guns.api.entity.IGunOperator;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.LivingEntity;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Fail-closed live counterpart to the pure Step 1 precedence gate. Active

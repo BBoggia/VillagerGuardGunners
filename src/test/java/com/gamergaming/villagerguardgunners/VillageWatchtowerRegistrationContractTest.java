@@ -133,7 +133,7 @@ final class VillageWatchtowerRegistrationContractTest {
 
     @Test
     void releaseArtifactRequiresTheCompleteStepElevenSurface() throws IOException {
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(build.contains(
@@ -144,7 +144,7 @@ final class VillageWatchtowerRegistrationContractTest {
                         "data/villagerguardgunners/tags/worldgen/biome/has_structure/"
                                 + "watchtower.json")),
                 () -> assertTrue(build.contains(
-                        "data/villagerguardgunners/structures/watchtower.nbt")),
+                        "data/villagerguardgunners/structure/watchtower.nbt")),
                 () -> assertTrue(build.contains(
                         "com/gamergaming/villagerguardgunners/init/ModStructures.class")),
                 () -> assertTrue(build.contains(

@@ -87,7 +87,7 @@ final class DefenseDutyPatrolConfigurationContractTest {
         String language = read(
                 "src/main/resources/assets/villagerguardgunners/lang/en_us.json");
         String documentation = read("docs/configuration.md");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(language.contains(

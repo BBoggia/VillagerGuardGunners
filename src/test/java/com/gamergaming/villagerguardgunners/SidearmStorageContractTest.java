@@ -63,7 +63,7 @@ final class SidearmStorageContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/mixin/GuardMixin.java");
         int combinedStart = mixin.indexOf("IItemHandler combined = new CombinedInvWrapper(");
         int combinedEnd = mixin.indexOf(
-                "villagerGuardGunners$combinedItemHandler = LazyOptional.of",
+                "villagerGuardGunners$combinedItemHandler = new",
                 combinedStart);
         String combinedConstruction = mixin.substring(combinedStart, combinedEnd);
 

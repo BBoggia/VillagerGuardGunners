@@ -3,7 +3,7 @@ import com.gamergaming.villagerguardgunners.api.*;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderPermissions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 public final class MedicControls {
     public static boolean change(Player player, Guard guard, int button) {
         if (player.level().isClientSide || player.level() != guard.level() || !player.isAlive() || player.isSpectator()

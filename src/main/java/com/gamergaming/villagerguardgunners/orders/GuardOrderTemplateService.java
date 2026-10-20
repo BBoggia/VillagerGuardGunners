@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.orders;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.init.ModItems;
@@ -9,7 +10,7 @@ import java.util.Objects;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Server-authoritative, interaction-only capture and application of guard
@@ -37,7 +38,7 @@ public final class GuardOrderTemplateService {
         }
 
         ItemStack ledger = player.getItemInHand(hand);
-        DecodeResult existing = GuardOrderTemplate.readFrom(ledger.getTag());
+        DecodeResult existing = GuardOrderTemplate.readFrom(ItemCustomData.read(ledger));
         boolean replacingExisting = existing.status() != DecodeStatus.BLANK;
         if (!overwriteExisting) {
             switch (existing.status()) {
@@ -56,10 +57,10 @@ public final class GuardOrderTemplateService {
             }
         }
 
-        GuardOrderTemplate.writeTo(
-                ledger.getOrCreateTag(),
+        ItemCustomData.update(ledger, tag -> GuardOrderTemplate.writeTo(
+                tag,
                 GuardOrdersAccess.getOrders(guard),
-                GuardRoleAccess.getRoleId(guard));
+                GuardRoleAccess.getRoleId(guard)));
         player.getInventory().setChanged();
         return OperationResult.of(replacingExisting
                 ? OperationStatus.OVERWRITTEN
@@ -81,7 +82,7 @@ public final class GuardOrderTemplateService {
         }
 
         DecodeResult decoded = GuardOrderTemplate.readFrom(
-                player.getItemInHand(hand).getTag());
+                ItemCustomData.read(player.getItemInHand(hand)));
         switch (decoded.status()) {
             case BLANK -> {
                 return OperationResult.of(OperationStatus.BLANK_TEMPLATE);

@@ -75,7 +75,7 @@ public final class VillagePopulationJournal {
     private static CompoundTag read(Path file) throws IOException {
         if (Files.size(file) > 262_144) throw new IOException("Population journal file exceeds limit");
         try (var input = new DataInputStream(new GZIPInputStream(Files.newInputStream(file)))) {
-            return NbtIo.read(input, new NbtAccounter(524_288));
+            return NbtIo.read(input, NbtAccounter.create(524_288));
         }
     }
     private void writeNew(Path file, CompoundTag tag) throws IOException {

@@ -104,7 +104,7 @@ final class VillageWatchtowerTemplateContractTest {
     @Test
     void generationTaskValidatesAndPackagesTheBlueprint() throws IOException {
         String build = Files.readString(
-                PROJECT_DIRECTORY.resolve("build.gradle"), StandardCharsets.UTF_8);
+                PROJECT_DIRECTORY.resolve("gradle/neoforge-resources.gradle"), StandardCharsets.UTF_8);
 
         assertAll(
                 () -> assertTrue(build.contains("tasks.register('generateWatchtowerTemplate')")),
@@ -114,8 +114,8 @@ final class VillageWatchtowerTemplateContractTest {
                 () -> assertTrue(build.contains("blockEntityData.keySet()")),
                 () -> assertTrue(build.contains("namedTag(10, 'nbt')")),
                 () -> assertTrue(build.contains("processResources")),
-                () -> assertTrue(build.contains("dependsOn tasks.named('generateWatchtowerTemplate')")),
+                () -> assertTrue(build.contains("dependsOn 'generateWatchtowerTemplate', 'generateVillageBuildingTemplates'")),
                 () -> assertTrue(build.contains(
-                        "data/villagerguardgunners/structures/watchtower.nbt")));
+                        "data/villagerguardgunners/structure/watchtower.nbt")));
     }
 }

@@ -6,7 +6,7 @@ import com.gamergaming.villagerguardgunners.orders.GuardOrderPermissions;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Native menu buttons and commands share the same explicit authorization boundary. */
 public final class ServiceControls {

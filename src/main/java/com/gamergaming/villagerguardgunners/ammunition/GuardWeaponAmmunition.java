@@ -5,8 +5,8 @@ import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
 import com.tacz.guns.api.item.IGun;
 import java.util.Objects;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.items.IItemHandler;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Bounded ammunition view of a guard's primary and configured sidearm.

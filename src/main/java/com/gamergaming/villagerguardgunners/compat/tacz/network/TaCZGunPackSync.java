@@ -5,7 +5,7 @@ import com.tacz.guns.resource.CommonAssetsManager;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import org.slf4j.Logger;
 
 /** Overflow-only replacement for TaCZ 1.1.8's single login payload. */

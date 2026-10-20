@@ -26,7 +26,7 @@ final class OrdersLedgerRegistrationContractTest {
                 () -> assertTrue(registry.contains("\"orders_ledger\"")),
                 () -> assertTrue(registry.contains("new Item.Properties().stacksTo(1)")),
                 () -> assertTrue(registry.contains("CreativeModeTabs.TOOLS_AND_UTILITIES")),
-                () -> assertTrue(item.contains("GuardOrderTemplate.readFrom(stack.getTag())")),
+                () -> assertTrue(item.contains("GuardOrderTemplate.readFrom(ItemCustomData.read(stack))")),
                 () -> assertTrue(item.contains("public boolean isFoil(ItemStack stack)")),
                 () -> assertFalse(item.contains("getEntitiesOfClass(")),
                 () -> assertFalse(item.contains("Packet")),
@@ -35,7 +35,7 @@ final class OrdersLedgerRegistrationContractTest {
 
     @Test
     void ledgerHasARecipeModelAndCompleteEnglishTooltipText() throws IOException {
-        String recipe = read("src/main/resources/data/villagerguardgunners/recipes/orders_ledger.json");
+        String recipe = read("src/main/resources/data/villagerguardgunners/recipe/orders_ledger.json");
         String model = read("src/main/resources/assets/villagerguardgunners/models/item/orders_ledger.json");
         String language = read("src/main/resources/assets/villagerguardgunners/lang/en_us.json");
 
@@ -60,13 +60,13 @@ final class OrdersLedgerRegistrationContractTest {
 
     @Test
     void releaseArtifactRequiresTheCompleteLedgerSurface() throws IOException {
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(build.contains(
                         "assets/villagerguardgunners/models/item/orders_ledger.json")),
                 () -> assertTrue(build.contains(
-                        "data/villagerguardgunners/recipes/orders_ledger.json")),
+                        "data/villagerguardgunners/recipe/orders_ledger.json")),
                 () -> assertTrue(build.contains(
                         "com/gamergaming/villagerguardgunners/init/ModItems.class")),
                 () -> assertTrue(build.contains(

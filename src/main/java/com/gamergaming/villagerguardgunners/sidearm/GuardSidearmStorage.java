@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.sidearm;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.tacz.guns.api.item.IGun;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,8 +12,8 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 /**
  * Private, fixed-size weapon storage owned by one Guard Villager.
@@ -57,8 +58,11 @@ public final class GuardSidearmStorage extends ItemStackHandler {
     private UUID activeSidearmToken;
     private final IItemHandler configuredSidearmView = new ConfiguredSidearmView();
 
-    public GuardSidearmStorage() {
+    private final java.util.function.Supplier<net.minecraft.core.HolderLookup.Provider> registries;
+
+    public GuardSidearmStorage(java.util.function.Supplier<net.minecraft.core.HolderLookup.Provider> registries) {
         super(SLOT_COUNT);
+        this.registries = java.util.Objects.requireNonNull(registries);
     }
 
     /**
@@ -262,7 +266,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
             return false;
         }
 
-        CompoundTag stackTag = mainHand.getOrCreateTag();
+        CompoundTag stackTag = ItemCustomData.read(mainHand);
         if (stackTag.contains(STACK_TOKEN_TAG) && !stackTag.hasUUID(STACK_TOKEN_TAG)) {
             return false;
         }
@@ -273,6 +277,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
             return false;
         }
         stackTag.putUUID(STACK_TOKEN_TAG, token);
+        ItemCustomData.set(mainHand, stackTag);
         activeSidearmToken = token;
         contentRevision++;
         return true;
@@ -512,7 +517,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
                 activeToken);
     }
 
-    private static ItemStack readOptionalStack(
+    private ItemStack readOptionalStack(
             CompoundTag encoded,
             String key,
             Set<String> expectedKeys) {
@@ -523,7 +528,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
             throw new IllegalArgumentException("Stored weapon is not an item compound");
         }
         expectedKeys.add(key);
-        ItemStack stack = ItemStack.of(encoded.getCompound(key));
+        ItemStack stack = ItemStack.parseOptional(registries.get(), encoded.getCompound(key));
         if (stack.isEmpty()
                 || stack.getCount() != 1
                 || !(stack.getItem() instanceof IGun)) {
@@ -603,7 +608,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
             return first.isEmpty() && second.isEmpty();
         }
         return first.getCount() == second.getCount()
-                && ItemStack.isSameItemSameTags(first, second);
+                && ItemStack.isSameItemSameComponents(first, second);
     }
 
     static ItemStack withActiveToken(ItemStack stack, UUID token) {
@@ -611,24 +616,25 @@ public final class GuardSidearmStorage extends ItemStackHandler {
             throw new IllegalArgumentException("Active sidearm token requires one TaCZ gun");
         }
         ItemStack tagged = stack.copy();
-        tagged.getOrCreateTag().putUUID(STACK_TOKEN_TAG, token);
+        ItemCustomData.update(tagged, tag -> tag.putUUID(STACK_TOKEN_TAG, token));
         return tagged;
     }
 
     static ItemStack withoutActiveToken(ItemStack stack) {
         ItemStack cleaned = stack.copy();
-        CompoundTag tag = cleaned.getTag();
+        CompoundTag tag = ItemCustomData.read(cleaned);
         if (tag != null) {
             tag.remove(STACK_TOKEN_TAG);
+            ItemCustomData.set(cleaned, tag);
             if (tag.isEmpty()) {
-                cleaned.setTag(null);
+                ItemCustomData.set(cleaned, null);
             }
         }
         return cleaned;
     }
 
     private static boolean hasActiveToken(ItemStack stack, UUID expected) {
-        CompoundTag tag = stack.getTag();
+        CompoundTag tag = ItemCustomData.read(stack);
         return tag != null
                 && tag.hasUUID(STACK_TOKEN_TAG)
                 && expected.equals(tag.getUUID(STACK_TOKEN_TAG));
@@ -699,13 +705,13 @@ public final class GuardSidearmStorage extends ItemStackHandler {
         }
     }
 
-    private static void putStack(CompoundTag encoded, String key, ItemStack stack) {
+    private void putStack(CompoundTag encoded, String key, ItemStack stack) {
         if (!stack.isEmpty()) {
-            encoded.put(key, stack.save(new CompoundTag()));
+            encoded.put(key, stack.save(registries.get()));
         }
     }
 
-    private static List<ItemStack> recoverKnownStacks(Tag rawRecord) {
+    private List<ItemStack> recoverKnownStacks(Tag rawRecord) {
         if (!(rawRecord instanceof CompoundTag encoded)) {
             return List.of();
         }
@@ -715,7 +721,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
         return List.copyOf(recovered);
     }
 
-    private static void recoverKnownStack(
+    private void recoverKnownStack(
             CompoundTag encoded,
             String key,
             List<ItemStack> destination) {
@@ -723,7 +729,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
             return;
         }
         try {
-            copyNonEmpty(ItemStack.of(encoded.getCompound(key)), destination);
+            copyNonEmpty(ItemStack.parseOptional(registries.get(), encoded.getCompound(key)), destination);
         } catch (RuntimeException ignored) {
             // The unreadable raw record remains authoritative until removal.
         }

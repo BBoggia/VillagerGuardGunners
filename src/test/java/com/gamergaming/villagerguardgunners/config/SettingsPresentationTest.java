@@ -7,8 +7,6 @@ import com.google.gson.JsonParser;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import me.fzzyhmstrs.fzzy_config.annotations.Action;
-import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;
 import me.fzzyhmstrs.fzzy_config.annotations.Translation;
 import me.fzzyhmstrs.fzzy_config.config.ConfigAction;
 import me.fzzyhmstrs.fzzy_config.config.ConfigSection;
@@ -85,10 +83,13 @@ final class SettingsPresentationTest {
     }
 
     @Test void restartNoticesApplyOnlyToLayoutFilters() throws Exception {
-        var type = VillagerGuardGunnersConfig.VillageBuildingSettings.class;
+        // Reading Fzzy's Action enum initializes item registries. Verify the annotations in
+        // ConfigPersistenceAcceptance inside Minecraft; here validate their source declarations.
+        String source = Files.readString(Path.of("src/main/java/com/gamergaming/villagerguardgunners/config/VillagerGuardGunnersConfig.java"));
+        source = source.substring(source.indexOf("class VillageBuildingSettings"));
         for (String name : new String[]{"enabled", "barracks", "armories", "sentryPosts", "integratedWatchtowers", "trainingYards"})
-            assertEquals(Action.RESTART, type.getField(name).getAnnotation(RequiresAction.class).action());
+            assertTrue(java.util.regex.Pattern.compile("@RequiresAction\\(action = Action.RESTART\\)\\s+public ValidatedBoolean " + name + "\\b").matcher(source).find(), name);
         for (String name : new String[]{"spawnGarrisons", "maximumGuardsPerBuilding", "placeArmoryBlocks", "stockArmories"})
-            assertNull(type.getField(name).getAnnotation(RequiresAction.class));
+            assertFalse(java.util.regex.Pattern.compile("@RequiresAction\\(action = Action.RESTART\\)\\s+public \\w+ " + name + "\\b").matcher(source).find(), name);
     }
 }

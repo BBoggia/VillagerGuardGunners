@@ -4,11 +4,11 @@ import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Loaded-only fallback for nearby ground travel, independent of automatic coverage. */
 public final class GuardLocalRoutes {
@@ -96,7 +96,7 @@ public final class GuardLocalRoutes {
             Node node = new Node(position.getX(), position.getY(), position.getZ());
             // Node defaults to BLOCKED, which tactical consumers correctly reject.
             // This marks the verified route; movement still rechecks live terrain.
-            node.type = BlockPathTypes.WALKABLE;
+            node.type = PathType.WALKABLE;
             nodes.add(node);
         }
         return new Path(nodes, target, true);

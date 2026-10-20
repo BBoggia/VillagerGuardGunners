@@ -100,10 +100,7 @@ public final class SquadRegistrySavedData extends SavedData {
         SquadRegistrySavedData data = Objects.requireNonNull(server, "server")
                 .overworld()
                 .getDataStorage()
-                .computeIfAbsent(
-                        SquadRegistrySavedData::load,
-                        SquadRegistrySavedData::new,
-                        DATA_NAME);
+                .computeIfAbsent(new SavedData.Factory<>(SquadRegistrySavedData::new, (tag, registries) -> SquadRegistrySavedData.load(tag)), DATA_NAME);
         data.reportDisabledStateOnce();
         return data;
     }
@@ -268,7 +265,7 @@ public final class SquadRegistrySavedData extends SavedData {
     }
 
     @Override
-    public synchronized CompoundTag save(CompoundTag tag) {
+    public synchronized CompoundTag save(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         if (!enabled) {
             return unreadableRoot == null ? new CompoundTag() : unreadableRoot.copy();
         }

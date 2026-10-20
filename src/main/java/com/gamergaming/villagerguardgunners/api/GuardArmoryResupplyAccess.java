@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.api;
 
 import com.gamergaming.villagerguardgunners.armory.resupply.GuardArmoryResupplyController;
 import javax.annotation.Nullable;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Mixin-backed access to one guard's transient Armory runtime controller. */
 public interface GuardArmoryResupplyAccess {

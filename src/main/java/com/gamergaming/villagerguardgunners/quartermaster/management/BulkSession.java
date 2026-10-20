@@ -7,7 +7,7 @@ import com.gamergaming.villagerguardgunners.squad.SquadRegistrySavedData;
 import java.util.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceLocation;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Bounded, transient settings editor. A preview owns no stock and never queues unloaded edits. */
 public final class BulkSession {

@@ -75,13 +75,10 @@ public final class VillageBuildingSavedData extends SavedData {
 
     public static VillageBuildingSavedData get(ServerLevel level) {
         Objects.requireNonNull(level, "level");
-        VillageBuildingSavedData data = level.getDataStorage().computeIfAbsent(
-                encoded -> loadForLevel(
+        VillageBuildingSavedData data = level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(VillageBuildingSavedData::new, (encoded, registries) -> loadForLevel(
                         encoded,
                         level.dimension().location(),
-                        level.getSeed()),
-                VillageBuildingSavedData::new,
-                DATA_NAME);
+                        level.getSeed())), DATA_NAME);
         data.reportDisabledStateOnce(level.dimension().location());
         return data;
     }
@@ -345,7 +342,7 @@ public final class VillageBuildingSavedData extends SavedData {
     }
 
     @Override
-    public synchronized CompoundTag save(CompoundTag output) {
+    public synchronized CompoundTag save(CompoundTag output, net.minecraft.core.HolderLookup.Provider registries) {
         if (!enabled) {
             return unreadableRoot == null ? new CompoundTag() : unreadableRoot.copy();
         }

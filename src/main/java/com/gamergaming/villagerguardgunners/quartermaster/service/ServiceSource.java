@@ -4,8 +4,8 @@ import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.quartermaster.QuartermasterBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.ItemStackHandler;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 public record ServiceSource(BlockEntity block, ItemStackHandler inventory, ServiceReceipt receipt, int stockSlots) {
     public static ServiceSource of(QuartermasterBlockEntity station) { return new ServiceSource(station, station.inventory(), station.serviceReceipt(), 27); }

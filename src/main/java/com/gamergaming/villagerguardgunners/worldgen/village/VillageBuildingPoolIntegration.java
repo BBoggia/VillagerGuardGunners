@@ -25,8 +25,8 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.slf4j.Logger;
 
 /**
@@ -54,7 +54,7 @@ public final class VillageBuildingPoolIntegration {
                         .toList();
         List<VillageBuildingPoolEntry> activeEntries = requestedEntries.stream()
                 .filter(entry -> !VillageBuildingOptionalProviders.isAbsent(
-                        entry.targetPool(), net.minecraftforge.fml.ModList.get()::isLoaded, poolNamespaces))
+                        entry.targetPool(), net.neoforged.fml.ModList.get()::isLoaded, poolNamespaces))
                 .toList();
         int inactive = requestedEntries.size() - activeEntries.size();
         if (enabled && inactive > 0) {

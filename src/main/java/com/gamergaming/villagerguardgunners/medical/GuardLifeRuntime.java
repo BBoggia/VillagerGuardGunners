@@ -11,9 +11,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Early Guard death boundary, before upstream conversion and ordinary death side effects. */
 public final class GuardLifeRuntime {
@@ -53,14 +53,14 @@ public final class GuardLifeRuntime {
         var life = GuardLifeAccess.get(guard);
         if (life.dying && guard.isAlive() && !guard.isRemoved()) { life.recover(); synchronize(guard); }
     }
-    public static void damaged(LivingDamageEvent event) {
-        if (event.isCanceled() || !(event.getAmount() > 0) || !(event.getEntity() instanceof Guard guard)
-                || !(guard.level() instanceof ServerLevel) || !casualty(guard) || bypass(event.getSource())) return;
+    public static void damaged(Guard guard, DamageContainer damage) {
+        if (!(damage.getNewDamage() > 0) || !(guard.level() instanceof ServerLevel)
+                || !casualty(guard) || bypass(damage.getSource())) return;
         TransportRuntime.cancel(guard);
         PlayerTreatmentRuntime.cancel(guard);
         GuardMedicAccess.get(guard).damageRevision++; MedicRuntime.cancel(guard, MedicState.Status.INTERRUPTED);
-        GuardLifeAccess.get(guard).finishDamage(event.getAmount(), guard.level().getGameTime());
-        event.setCanceled(true);
+        GuardLifeAccess.get(guard).finishDamage(damage.getNewDamage(), guard.level().getGameTime());
+        damage.setNewDamage(0);
     }
     public static void reload(com.tacz.guns.api.event.common.GunReloadEvent event) {
         if (event.getEntity() instanceof Guard guard && (blocked(guard) || TransportRuntime.busy(guard))) event.setCanceled(true);
@@ -73,7 +73,7 @@ public final class GuardLifeRuntime {
     }
     public static float treatmentEvent(Guard guard, float amount) {
         Guard previous = TREATMENT_EVENT.get(); TREATMENT_EVENT.set(guard);
-        try { return net.minecraftforge.event.ForgeEventFactory.onLivingHeal(guard, amount); }
+        try { return net.neoforged.neoforge.event.EventHooks.onLivingHeal(guard, amount); }
         finally { if (previous == null) TREATMENT_EVENT.remove(); else TREATMENT_EVENT.set(previous); }
     }
     public static void completeTreatment(Guard guard, float healedHealth, int treatmentCooldown) {
@@ -121,8 +121,8 @@ public final class GuardLifeRuntime {
         MedicRuntime.cancel(guard, MedicState.Status.INTERRUPTED); MedicRuntime.stopRetreat(guard);
         com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseStaffingRuntime.synchronizeGuard(guard);
         // Stop goals so their movement/service ownership is released before the AI tick is suspended.
-        guard.goalSelector.getRunningGoals().toList().forEach(net.minecraft.world.entity.ai.goal.WrappedGoal::stop);
-        guard.targetSelector.getRunningGoals().toList().forEach(net.minecraft.world.entity.ai.goal.WrappedGoal::stop);
+        guard.goalSelector.getAvailableGoals().stream().filter(net.minecraft.world.entity.ai.goal.WrappedGoal::isRunning).toList().forEach(net.minecraft.world.entity.ai.goal.WrappedGoal::stop);
+        guard.targetSelector.getAvailableGoals().stream().filter(net.minecraft.world.entity.ai.goal.WrappedGoal::isRunning).toList().forEach(net.minecraft.world.entity.ai.goal.WrappedGoal::stop);
         guard.stopRiding(); if (guard.isSleeping()) guard.stopSleeping(); stopActions(guard);
     }
     private static void stopActions(Guard guard) {

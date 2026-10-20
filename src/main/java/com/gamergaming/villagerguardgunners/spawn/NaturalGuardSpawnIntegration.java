@@ -27,8 +27,8 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Event-driven bridge from Guard Villagers creation paths to the pure natural
@@ -345,7 +345,7 @@ public final class NaturalGuardSpawnIntegration {
 
     private static boolean isLiveIn(ServerLevel level, Guard guard) {
         return !guard.isRemoved()
-                && guard.isAddedToWorld()
+                && (guard.level().getEntity(guard.getId()) == guard)
                 && guard.level() == level;
     }
 

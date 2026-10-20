@@ -5,7 +5,7 @@ import com.gamergaming.villagerguardgunners.squad.SquadCommandRuntime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Mixin-backed persistent access to one guard's optional squad identity. */
 public interface GuardSquadAccess {

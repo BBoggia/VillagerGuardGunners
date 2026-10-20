@@ -62,7 +62,7 @@ final class PackAuthoredDefenseDutyContractTest {
                 + "village_buildings/plains_sentry_post.json");
         String commands = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "command/VillageBuildingCommands.java");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
 
         assertAll(
                 () -> assertTrue(guide.contains("one to four")),

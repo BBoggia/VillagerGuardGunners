@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.api;
 
 import com.gamergaming.villagerguardgunners.squad.SquadCommand;
 import javax.annotation.Nullable;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Mixin-backed access to one guard's optional temporary squad command. */
 public interface GuardSquadCommandAccess {

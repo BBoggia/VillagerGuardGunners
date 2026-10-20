@@ -4,7 +4,17 @@ This checklist records the work that cannot be inferred from a successful
 compile alone. Do not mark a public release ready until the automated gates and
 the relevant manual rows pass against the exact files being distributed.
 
-## Candidate identity
+## NeoForge alpha scope
+
+This checklist's Forge candidate records and completed rows below apply to the
+Minecraft 1.20.1 release. They do not certify the Minecraft 1.21.1 NeoForge port.
+For a NeoForge alpha, read the current version from `gradle.properties`, use
+[the upload process](curseforge-upload.md#neoforge-alpha-preparation), and retain
+installed-JAR results as described in [NeoForge development](neoforge-development.md).
+Use the Alpha file type and disclose remaining validation. Full release gates
+must be migrated and completed before treating the NeoForge port as stable.
+
+## Forge candidate identity
 
 - Version: read `mod_version` in `gradle.properties`. The current candidate is `1.9`.
 - Minecraft: `1.20.1`

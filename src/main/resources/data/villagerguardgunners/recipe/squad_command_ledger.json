@@ -5,10 +5,13 @@
       "item": "minecraft:writable_book"
     },
     {
+      "item": "minecraft:goat_horn"
+    },
+    {
       "item": "minecraft:emerald"
     }
   ],
   "result": {
-    "item": "villagerguardgunners:orders_ledger"
+    "id": "villagerguardgunners:squad_command_ledger"
   }
 }

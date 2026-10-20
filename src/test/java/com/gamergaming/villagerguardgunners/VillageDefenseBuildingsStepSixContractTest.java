@@ -88,7 +88,7 @@ final class VillageDefenseBuildingsStepSixContractTest {
     void configArtifactAndDocumentationExposeVillageGarrisons() throws IOException {
         String config = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "config/VillagerGuardGunnersConfig.java");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
         String docs = read("docs/village-defense-buildings.md");
 
         assertAll(

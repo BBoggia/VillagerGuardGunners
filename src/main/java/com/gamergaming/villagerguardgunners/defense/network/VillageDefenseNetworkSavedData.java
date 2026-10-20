@@ -125,10 +125,7 @@ public final class VillageDefenseNetworkSavedData extends SavedData {
     public static VillageDefenseNetworkSavedData get(ServerLevel level) {
         Objects.requireNonNull(level, "level");
         ResourceLocation dimension = level.dimension().location();
-        VillageDefenseNetworkSavedData data = level.getDataStorage().computeIfAbsent(
-                encoded -> loadForLevel(encoded, dimension, level.getSeed()),
-                () -> new VillageDefenseNetworkSavedData(dimension, level.getSeed()),
-                DATA_NAME);
+        VillageDefenseNetworkSavedData data = level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new VillageDefenseNetworkSavedData(dimension, level.getSeed()), (encoded, registries) -> loadForLevel(encoded, dimension, level.getSeed())), DATA_NAME);
         VillageBuildingSavedData buildings = VillageBuildingSavedData.get(level);
         if (buildings.enabled()) {
             data.reconcileBuildingRegistry(buildings::recordsSnapshot);
@@ -634,7 +631,7 @@ public final class VillageDefenseNetworkSavedData extends SavedData {
     }
 
     @Override
-    public synchronized CompoundTag save(CompoundTag output) {
+    public synchronized CompoundTag save(CompoundTag output, net.minecraft.core.HolderLookup.Provider registries) {
         if (!enabled) {
             return unreadableRoot == null ? new CompoundTag() : unreadableRoot.copy();
         }

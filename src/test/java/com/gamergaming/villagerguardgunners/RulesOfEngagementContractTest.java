@@ -54,9 +54,9 @@ final class RulesOfEngagementContractTest {
     @Test
     void datapackOverrideTagsArePackagedAsEntityTypeTags() throws IOException {
         String always = read(
-                "src/main/resources/data/villagerguardgunners/tags/entity_types/always_engage.json");
+                "src/main/resources/data/villagerguardgunners/tags/entity_type/always_engage.json");
         String never = read(
-                "src/main/resources/data/villagerguardgunners/tags/entity_types/never_engage.json");
+                "src/main/resources/data/villagerguardgunners/tags/entity_type/never_engage.json");
 
         assertAll(
                 () -> assertTrue(always.contains("\"replace\": false")),

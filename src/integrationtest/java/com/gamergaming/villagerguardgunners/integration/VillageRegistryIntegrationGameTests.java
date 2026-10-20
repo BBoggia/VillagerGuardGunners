@@ -28,10 +28,10 @@ import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.level.ChunkEvent;
-import net.minecraftforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -296,9 +296,9 @@ public final class VillageRegistryIntegrationGameTests {
     }
 
     @SuppressWarnings("unchecked")
-    private static boolean followingFlag(tallestegg.guardvillagers.entities.Guard guard) throws Exception {
+    private static boolean followingFlag(tallestegg.guardvillagers.common.entities.Guard guard) throws Exception {
         // isFollowing() also requires a connected owner; inspect the user's flag without a fake network connection.
-        var field = tallestegg.guardvillagers.entities.Guard.class.getDeclaredField("FOLLOWING");
+        var field = tallestegg.guardvillagers.common.entities.Guard.class.getDeclaredField("FOLLOWING");
         field.setAccessible(true);
         var key = (net.minecraft.network.syncher.EntityDataAccessor<Boolean>) field.get(null);
         return guard.getEntityData().get(key);

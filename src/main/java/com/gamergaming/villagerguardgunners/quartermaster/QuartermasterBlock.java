@@ -20,11 +20,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.event.level.BlockEvent;
+
 
 /** A portable workstation; its packed drop owns the complete inventory. */
 public final class QuartermasterBlock extends BaseEntityBlock {
+    @Override protected com.mojang.serialization.MapCodec<QuartermasterBlock> codec() { return simpleCodec(QuartermasterBlock::new); }
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public QuartermasterBlock(Properties properties) {
         super(properties);
@@ -50,16 +51,16 @@ public final class QuartermasterBlock extends BaseEntityBlock {
         if (!level.isClientSide && placer instanceof Player player
                 && level.getBlockEntity(pos) instanceof QuartermasterBlockEntity station) station.placedBy(player);
     }
-    @Override public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
+    @Override public net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack usedItem, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide && player instanceof ServerPlayer server
                 && level.getBlockEntity(pos) instanceof QuartermasterBlockEntity station) {
-            if (station.canInteract(player)) NetworkHooks.openScreen(server, station, pos);
+            if (station.canInteract(player)) server.openMenu(station, pos);
             else player.displayClientMessage(Component.translatable(station.readable()
                     ? "message.villagerguardgunners.quartermaster.denied"
                     : "message.villagerguardgunners.quartermaster.unreadable"), true);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
     @Override public void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
         QuartermasterBlockEntity removed = !state.is(next.getBlock())

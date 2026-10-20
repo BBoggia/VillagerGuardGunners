@@ -81,15 +81,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.InvWrapper;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
+
 import tallestegg.guardvillagers.configuration.GuardConfig;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @Mixin(Guard.class)
 public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gamergaming.villagerguardgunners.api.GuardMedicAccess, com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess, com.gamergaming.villagerguardgunners.api.GuardMedicalAccess, com.gamergaming.villagerguardgunners.api.GuardCoverageAccess, GuardArmoryResupplyAccess,
@@ -155,8 +152,6 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
 
     @Unique
     private com.gamergaming.villagerguardgunners.medical.MedicalStorage villagerGuardGunners$medicalStorage;
-    @Unique
-    private LazyOptional<com.gamergaming.villagerguardgunners.medical.MedicalSupplies> villagerGuardGunners$medicalCapability;
 
     @Override
     public com.gamergaming.villagerguardgunners.medical.MedicalStorage villagerGuardGunners$getMedicalStorage() {
@@ -177,7 +172,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
     private GuardArmoryResupplyController villagerGuardGunners$armoryResupplyController;
 
     @Unique
-    private LazyOptional<IItemHandler> villagerGuardGunners$combinedItemHandler;
+    private IItemHandler villagerGuardGunners$combinedItemHandler;
 
     @Unique
     private boolean villagerGuardGunners$itemCapabilityValid = true;
@@ -291,7 +286,6 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
             DifficultyInstance difficulty,
             MobSpawnType spawnType,
             @Nullable SpawnGroupData spawnData,
-            @Nullable CompoundTag spawnTag,
             CallbackInfoReturnable<SpawnGroupData> cir) {
         NaturalGuardSpawnIntegration.markInitialSpawn((Guard) (Object) this, spawnType);
         if (spawnType == MobSpawnType.STRUCTURE) {
@@ -308,7 +302,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
             method = "aiStep",
             at = @At(
                     value = "INVOKE",
-                    target = "Ltallestegg/guardvillagers/entities/Guard;"
+                    target = "Ltallestegg/guardvillagers/common/entities/Guard;"
                             + "getItemsFromLootTable(Lnet/minecraft/world/entity/LivingEntity;)"
                             + "Ljava/util/List;",
                     shift = At.Shift.AFTER,
@@ -482,27 +476,27 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
         List<ItemStack> savedOverflow = new ArrayList<>();
         ListTag serializedOverflow = compound.getList(VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG, Tag.TAG_COMPOUND);
         for (int index = 0; index < serializedOverflow.size(); index++) {
-            ItemStack stack = ItemStack.of(serializedOverflow.getCompound(index));
+            ItemStack stack = ItemStack.parseOptional(registryAccess(), serializedOverflow.getCompound(index));
             if (!stack.isEmpty()) {
                 savedOverflow.add(stack);
             }
         }
 
         if (compound.contains(VILLAGER_GUARD_GUNNERS_AMMO_TAG, Tag.TAG_COMPOUND)) {
-            List<ItemStack> rejectedAddonStacks = villagerGuardGunners$ammoHandler.loadSafely(
+            List<ItemStack> rejectedAddonStacks = villagerGuardGunners$ammoHandler.loadSafely(registryAccess(),
                     compound.getCompound(VILLAGER_GUARD_GUNNERS_AMMO_TAG));
             List<ItemStack> alreadyRestoredOverflow = new ArrayList<>(rejectedAddonStacks);
             alreadyRestoredOverflow.addAll(savedOverflow);
             villagerGuardGunners$pendingMigrationDrops.addAll(rejectedAddonStacks);
             villagerGuardGunners$pendingMigrationDrops.addAll(savedOverflow);
             villagerGuardGunners$pendingMigrationDrops.addAll(
-                    villagerGuardGunners$ammoHandler.importLegacyStacksDeduplicated(
+                    villagerGuardGunners$ammoHandler.importLegacyStacksDeduplicated(registryAccess(),
                             legacyAmmo,
                             alreadyRestoredOverflow));
         } else {
             villagerGuardGunners$ammoHandler.clear();
             villagerGuardGunners$pendingMigrationDrops.addAll(
-                    villagerGuardGunners$ammoHandler.importLegacyStacks(legacyAmmo));
+                    villagerGuardGunners$ammoHandler.importLegacyStacks(registryAccess(), legacyAmmo));
             villagerGuardGunners$pendingMigrationDrops.addAll(savedOverflow);
         }
     }
@@ -534,7 +528,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
         villagerGuardGunners$getEquipmentService().save(compound);
         villagerGuardGunners$ensureAmmoStorage();
         villagerGuardGunners$ensureSidearmStorage();
-        compound.put(VILLAGER_GUARD_GUNNERS_AMMO_TAG, villagerGuardGunners$ammoHandler.serializeNBT());
+        compound.put(VILLAGER_GUARD_GUNNERS_AMMO_TAG, villagerGuardGunners$ammoHandler.serializeNBT(registryAccess()));
         villagerGuardGunners$sidearmStorage.saveTo(compound, getMainHandItem());
 
         // Do not preserve a stale identity after a player or another mod has
@@ -589,7 +583,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
             ListTag serializedOverflow = new ListTag();
             for (ItemStack stack : villagerGuardGunners$pendingMigrationDrops) {
                 if (!stack.isEmpty()) {
-                    serializedOverflow.add(stack.save(new CompoundTag()));
+                    serializedOverflow.add(stack.save(registryAccess()));
                 }
             }
             compound.put(VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG, serializedOverflow);
@@ -605,9 +599,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
         // Guard#mobInteract has already performed Guard Villagers' authorization checks.
         guard.setOwnerId(player.getUUID());
         guard.interacting = true;
-        NetworkHooks.openScreen(
-                player,
-                new SimpleMenuProvider(
+        player.openMenu(new SimpleMenuProvider(
                         (windowId, playerInventory, menuPlayer) -> new GuardGunnerContainer(
                                 windowId,
                                 playerInventory,
@@ -619,53 +611,30 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
         ci.cancel();
     }
 
-    @Inject(method = "getCapability", at = @At("HEAD"), cancellable = true, remap = false)
-    private <T> void exposeCombinedItemHandler(
-            Capability<T> capability,
-            @Nullable Direction facing,
-            CallbackInfoReturnable<LazyOptional<T>> cir) {
-        if (capability == com.gamergaming.villagerguardgunners.medical.MedicalCapabilities.SUPPLIES
-                && isAlive() && villagerGuardGunners$itemCapabilityValid) {
-            if (villagerGuardGunners$medicalCapability == null) {
-                villagerGuardGunners$medicalCapability = LazyOptional.of(() -> villagerGuardGunners$getMedicalStorage().transport());
-            }
-            cir.setReturnValue(villagerGuardGunners$medicalCapability.cast());
-            return;
-        }
-        if (capability == ForgeCapabilities.ITEM_HANDLER
-                && isAlive()
-                && villagerGuardGunners$itemCapabilityValid) {
-            villagerGuardGunners$ensureAmmoStorage();
-            cir.setReturnValue(villagerGuardGunners$combinedItemHandler.cast());
-        }
-    }
-
-    @Inject(method = "invalidateCaps", at = @At("TAIL"), remap = false)
-    private void invalidateCombinedItemHandler(CallbackInfo ci) {
-        if (villagerGuardGunners$coverageGunGoal != null) {
-            villagerGuardGunners$coverageGunGoal.interrupt("capabilities invalidated");
-        }
-        villagerGuardGunners$itemCapabilityValid = false;
-        villagerGuardGunners$getMedicalStorage().invalidateTransport();
-        if (villagerGuardGunners$medicalCapability != null) {
-            villagerGuardGunners$medicalCapability.invalidate();
-            villagerGuardGunners$medicalCapability = null;
-        }
-        if (villagerGuardGunners$combinedItemHandler != null) {
-            villagerGuardGunners$combinedItemHandler.invalidate();
-            villagerGuardGunners$combinedItemHandler = null;
-        }
+    @Override
+    public IItemHandler villagerGuardGunners$getCombinedItemHandler() {
+        if (!isAlive() || isRemoved()) return null;
+        villagerGuardGunners$ensureAmmoStorage();
+        return villagerGuardGunners$combinedItemHandler;
     }
 
     @Override
-    public void reviveCaps() {
-        super.reviveCaps();
+    public void villagerGuardGunners$invalidateInventory() {
+        if (villagerGuardGunners$coverageGunGoal != null)
+            villagerGuardGunners$coverageGunGoal.interrupt("entity left level");
+        villagerGuardGunners$itemCapabilityValid = false;
+        villagerGuardGunners$getMedicalStorage().invalidateTransport();
+        villagerGuardGunners$combinedItemHandler = null;
+    }
+
+    @Override
+    public void villagerGuardGunners$reviveInventory() {
         villagerGuardGunners$itemCapabilityValid = true;
         villagerGuardGunners$ensureAmmoStorage();
     }
 
     @Inject(method = "dropCustomDeathLoot", at = @At("TAIL"))
-    private void dropAddonStorage(DamageSource source, int looting, boolean recentlyHit, CallbackInfo ci) {
+    private void dropAddonStorage(net.minecraft.server.level.ServerLevel level, DamageSource source, boolean recentlyHit, CallbackInfo ci) {
         villagerGuardGunners$ensureAmmoStorage();
         villagerGuardGunners$ensureSidearmStorage();
         villagerGuardGunners$dropPendingMigrationItems();
@@ -690,7 +659,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
             method = "die",
             at = @At(
                     value = "INVOKE",
-                    target = "Ltallestegg/guardvillagers/entities/Guard;discard()V"))
+                    target = "Ltallestegg/guardvillagers/common/entities/Guard;discard()V"))
     private void dropAmmoBeforeZombieConversion(DamageSource source, CallbackInfo ci) {
         villagerGuardGunners$dropConversionItems();
     }
@@ -699,7 +668,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
             method = "thunderHit",
             at = @At(
                     value = "INVOKE",
-                    target = "Ltallestegg/guardvillagers/entities/Guard;discard()V"))
+                    target = "Ltallestegg/guardvillagers/common/entities/Guard;discard()V"))
     private void dropAmmoBeforeWitchConversion(
             net.minecraft.server.level.ServerLevel level,
             net.minecraft.world.entity.LightningBolt lightning,
@@ -1084,24 +1053,24 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
             IItemHandler combined = new CombinedInvWrapper(
                     new InvWrapper(guard.guardInventory),
                     villagerGuardGunners$ammoHandler);
-            villagerGuardGunners$combinedItemHandler = LazyOptional.of(() -> new com.gamergaming.villagerguardgunners.quartermaster.service.ServiceInventoryView(combined,
+            villagerGuardGunners$combinedItemHandler = new com.gamergaming.villagerguardgunners.quartermaster.service.ServiceInventoryView(combined,
                     () -> guard.isAlive() && !guard.isRemoved() && villagerGuardGunners$itemCapabilityValid
                             && villagerGuardGunners$getEquipmentService().readable()
-                            && !com.gamergaming.villagerguardgunners.quartermaster.service.ServiceTransactions.mutating(guard)));
+                            && !com.gamergaming.villagerguardgunners.quartermaster.service.ServiceTransactions.mutating(guard));
         }
     }
 
     @Unique
     private void villagerGuardGunners$ensureSidearmStorage() {
         if (villagerGuardGunners$sidearmStorage == null) {
-            villagerGuardGunners$sidearmStorage = new GuardSidearmStorage();
+            villagerGuardGunners$sidearmStorage = new GuardSidearmStorage(this::registryAccess);
         }
     }
 
     @Unique
     private void villagerGuardGunners$dropStoredItemByChance(ItemStack stack) {
         if (!stack.isEmpty()
-                && !EnchantmentHelper.hasVanishingCurse(stack)
+                && !EnchantmentHelper.has(stack, net.minecraft.world.item.enchantment.EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)
                 && getRandom().nextFloat() < GuardConfig.COMMON.chanceToDropEquipment.get()) {
             spawnAtLocation(stack.copy());
         }

@@ -7,7 +7,7 @@ import java.util.Objects;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** One synchronous physical slot exchange. Destination and source snapshots are rechecked before the write-ahead checkpoint. */
 public final class ServiceTransactions {

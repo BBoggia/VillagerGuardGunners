@@ -59,6 +59,20 @@ class CombinedBuildingPackTests(unittest.TestCase):
                 combine([source], root / 'out.zip', 'All buildings')
             self.assertFalse((root / 'out.zip').exists())
 
+    def test_neoforge_pack_cannot_mix_in_forge_resources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            modern = self.pack(root / 'modern.zip', {'data/a/structure/tower.nbt': b'nbt'}, 48)
+            old = self.pack(root / 'forge.zip', {'data/b/structures/tower.nbt': b'old'}, 15)
+            target = root / 'combined.zip'
+            combine([modern], target, 'Minecraft 1.21.1', pack_format=48)
+            previous = target.read_bytes()
+            with zipfile.ZipFile(target) as archive:
+                self.assertEqual(48, json.loads(archive.read('pack.mcmeta'))['pack']['pack_format'])
+            with self.assertRaisesRegex(ValueError, 'datapack format 48'):
+                combine([modern, old], target, 'Minecraft 1.21.1', pack_format=48)
+            self.assertEqual(previous, target.read_bytes())
+
     def test_each_provider_selects_five_distinct_individual_packs(self):
         names = [name for provider in PROVIDERS for name in source_names(provider)]
         self.assertEqual(25, len(set(names)))

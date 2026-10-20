@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Bounded scale coverage for automatic-duty hot-path eligibility checks. */
 @GameTestHolder(VillagerGuardGunners.MODID + "_performance")

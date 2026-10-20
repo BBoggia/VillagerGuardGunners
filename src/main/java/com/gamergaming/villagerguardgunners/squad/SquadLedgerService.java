@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.squad;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderPermissions;
@@ -18,9 +19,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Server-authoritative membership operations for deliberate ledger use.
@@ -64,7 +65,7 @@ public final class SquadLedgerService {
         }
         long gameTime = guard.level().getGameTime();
         ItemStack ledger = player.getItemInHand(hand);
-        DecodeResult decoded = SquadLedgerBindingCodec.readFrom(ledger.getTag());
+        DecodeResult decoded = SquadLedgerBindingCodec.readFrom(ItemCustomData.read(ledger));
         if (decoded.status() == DecodeStatus.CORRUPT) {
             clearPending(server, player.getUUID());
             return OperationResult.of(OperationStatus.CORRUPT_LEDGER);
@@ -168,7 +169,7 @@ public final class SquadLedgerService {
             SquadRegistrySavedData registry,
             long gameTime,
             Supplier<UUID> squadIdSource) {
-        String requestedName = ledger.hasCustomHoverName()
+        String requestedName = ledger.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)
                 ? ledger.getHoverName().getString()
                 : null;
         if (currentMembership != null) {
@@ -278,7 +279,7 @@ public final class SquadLedgerService {
     private static String requestedRename(
             ItemStack ledger,
             SquadLedgerBinding binding) {
-        if (!ledger.hasCustomHoverName()) {
+        if (!ledger.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)) {
             return null;
         }
         String hoverName = ledger.getHoverName().getString();
@@ -289,11 +290,11 @@ public final class SquadLedgerService {
             ItemStack ledger,
             SquadMetadata metadata,
             Player player) {
-        SquadLedgerBindingCodec.writeTo(
-                ledger.getOrCreateTag(),
-                SquadLedgerBinding.bound(metadata.squadId(), metadata.displayName()));
-        if (ledger.hasCustomHoverName()) {
-            ledger.setHoverName(Component.literal(metadata.displayName()));
+        ItemCustomData.update(ledger, tag -> SquadLedgerBindingCodec.writeTo(
+                tag,
+                SquadLedgerBinding.bound(metadata.squadId(), metadata.displayName())));
+        if (ledger.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)) {
+            ledger.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, Component.literal(metadata.displayName()));
         }
         player.getInventory().setChanged();
     }

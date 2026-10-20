@@ -29,13 +29,13 @@ final class ArmoryFoundationContractTest {
                 () -> assertTrue(blocks.contains("new ArmoryBlock")),
                 () -> assertTrue(entities.contains("ArmoryBlockEntity::new")),
                 () -> assertTrue(items.contains("new BlockItem(ModBlocks.ARMORY.get()")),
-                () -> assertTrue(menus.contains("RegistryObject<MenuType<ArmoryMenu>> ARMORY")),
+                () -> assertTrue(menus.contains("DeferredHolder<MenuType<?>, MenuType<ArmoryMenu>> ARMORY")),
                 () -> assertTrue(client.contains("ArmoryScreen::new")),
                 () -> assertTrue(exists("src/main/resources/assets/villagerguardgunners/blockstates/armory.json")),
                 () -> assertTrue(exists("src/main/resources/assets/villagerguardgunners/models/block/armory.json")),
                 () -> assertTrue(exists("src/main/resources/assets/villagerguardgunners/models/item/armory.json")),
-                () -> assertTrue(exists("src/main/resources/data/villagerguardgunners/recipes/armory.json")),
-                () -> assertTrue(exists("src/main/resources/data/villagerguardgunners/loot_tables/blocks/armory.json")));
+                () -> assertTrue(exists("src/main/resources/data/villagerguardgunners/recipe/armory.json")),
+                () -> assertTrue(exists("src/main/resources/data/villagerguardgunners/loot_table/blocks/armory.json")));
     }
 
     @Test
@@ -49,8 +49,8 @@ final class ArmoryFoundationContractTest {
         assertAll(
                 () -> assertTrue(handler.contains("SLOT_COUNT = 9")),
                 () -> assertTrue(handler.contains("GuardAmmoHandler.isAmmo(stack)")),
-                () -> assertTrue(entity.contains("ForgeCapabilities.ITEM_HANDLER")),
-                () -> assertTrue(entity.contains("inventory.serializeNBT()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/medical/MedicalCapabilities.java").contains("ModBlockEntities.ARMORY.get()")),
+                () -> assertTrue(entity.contains("inventory.serializeNBT(registries)")),
                 () -> assertTrue(entity.contains("inventory.loadSafely(")),
                 () -> assertTrue(entity.contains("ArmorySquadLockCodec.writeTo")),
                 () -> assertTrue(entity.contains("public boolean maySupply(")),

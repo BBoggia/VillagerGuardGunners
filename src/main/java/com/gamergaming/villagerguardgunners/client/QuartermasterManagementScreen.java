@@ -89,13 +89,13 @@ public final class QuartermasterManagementScreen extends AbstractContainerScreen
         var help=text("refresh_help").copy();if(p!=null&&p.restricted())help.append("\n").append(text("restricted_help"));if(p!=null&&p.truncated())help.append("\n").append(text("truncated_help"));
         refresh.setTooltip(Tooltip.create(help));clear.setTooltip(Tooltip.create(text("all_guards_help")));
     }
-    @Override public boolean mouseScrolled(double x,double y,double amount) {
+    @Override public boolean mouseScrolled(double x,double y,double horizontal,double amount) {
         var p=page();if(p!=null&&x>=leftPos+8&&x<leftPos+296&&y>=topPos+62&&y<topPos+152) {
             scroll=Math.max(0,Math.min(Math.max(0,p.rows().size()-5),scroll+(amount<0?1:-1)));update();return true;
-        }return super.mouseScrolled(x,y,amount);
+        }return super.mouseScrolled(x,y,horizontal,amount);
     }
     @Override protected void containerTick(){super.containerTick();update();}
-    @Override public void render(GuiGraphics g,int x,int y,float partial){renderBackground(g);super.render(g,x,y,partial);renderTooltip(g,x,y);}
+    @Override public void render(GuiGraphics g,int x,int y,float partial){super.render(g,x,y,partial);renderTooltip(g,x,y);}
     @Override protected void renderBg(GuiGraphics g,float partial,int x,int y) {
         g.fill(leftPos,topPos,leftPos+imageWidth,topPos+imageHeight,0xff373737);
         g.fill(leftPos+1,topPos+1,leftPos+imageWidth-1,topPos+imageHeight-1,0xffeeeeee);

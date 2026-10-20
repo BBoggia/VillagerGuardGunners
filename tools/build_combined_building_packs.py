@@ -22,14 +22,14 @@ def source_names(provider):
     return [f'villager-guard-gunners-{prefix}{family}-{provider}.zip' for family in FAMILIES]
 
 
-def combine(sources, target, description):
+def combine(sources, target, description, pack_format=15):
     """Reject conflicting resources before replacing a previously built archive."""
     resources = {}
     for source in sources:
         with zipfile.ZipFile(source) as archive:
             metadata = json.loads(archive.read('pack.mcmeta'))
-            if metadata.get('pack', {}).get('pack_format') != 15:
-                raise ValueError(f'Expected Minecraft 1.20.1 datapack format in {source}')
+            if metadata.get('pack', {}).get('pack_format') != pack_format:
+                raise ValueError(f'Expected datapack format {pack_format} in {source}')
             for entry in archive.infolist():
                 name = entry.filename
                 if entry.is_dir() or name == 'pack.mcmeta':
@@ -43,7 +43,7 @@ def combine(sources, target, description):
     if not resources:
         raise ValueError('No player resources to combine')
     resources['pack.mcmeta'] = (json.dumps({'pack': {
-        'pack_format': 15, 'description': description,
+        'pack_format': pack_format, 'description': description,
     }}, indent=2) + '\n').encode('utf-8')
     target.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(dir=target.parent, suffix='.zip', delete=False) as stream:

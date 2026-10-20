@@ -1,87 +1,40 @@
-name: Build
+name: NeoForge development
 
 on:
   push:
   pull_request:
   workflow_dispatch:
-    inputs:
-      village_validation:
-        description: Run the complete village expansion validation matrix
-        type: boolean
-        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: build-${{ github.workflow }}-${{ github.ref }}
+  group: neoforge-development-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  check:
-    name: Java 17 build and release gate
+  foundation:
+    name: Java 21 production build and workflow tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
-
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
-
-      - name: Set up Gradle cache
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Test release evidence validation
-        run: python3 -m unittest discover -s tools/tests -v
-
-      - name: Run unit, source, build, and artifact gates
-        run: ./gradlew --no-daemon clean check --warning-mode all
-
-      - name: Warm native performance dependencies
-        if: github.event_name == 'workflow_dispatch' && inputs.village_validation
-        run: ./gradlew --no-daemon compilePerformanceGameTestJava prepareRunGameTestServer -Pstep13Performance=true
-
-      - name: Validate village expansion
-        if: github.event_name == 'workflow_dispatch' && inputs.village_validation
-        run: python3 tools/validate_village_expansion.py
-
-      - name: Retain village validation evidence
-        if: always() && github.event_name == 'workflow_dispatch' && inputs.village_validation
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build artifacts and run the complete test suite
+        run: ./gradlew --no-daemon build stageCoreQaMods stageMultiplayerQaMods
+      - name: Retain experimental development artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: village-validation-${{ github.sha }}
-          path: build/reports/village-expansion/
-          if-no-files-found: warn
-          retention-days: 14
-
-      - name: Verify release tag matches the embedded version
-        if: startsWith(github.ref, 'refs/tags/v')
-        shell: bash
-        run: |
-          version="$(sed -n 's/^mod_version=//p' gradle.properties)"
-          test "${GITHUB_REF_NAME}" = "v${version}"
-
-      - name: Certify tagged or manually dispatched artifact
-        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        run: ./gradlew --no-daemon prepareReleaseCandidate --warning-mode all
-
-      - name: Record release checksum
-        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        shell: bash
-        run: sha256sum build/libs/villagerguardgunners-*.jar > build/libs/SHA256SUMS.txt
-
-      - name: Upload verified release candidate
-        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
-        with:
-          name: villagerguardgunners-${{ github.sha }}
+          name: neoforge-development-${{ github.sha }}
           path: |
-            build/libs/villagerguardgunners-*.jar
-            build/libs/SHA256SUMS.txt
-            build/distributions/release-candidate/
+            build/neoforge/libs/*.jar
+            build/neoforge/core-qa/*.jar
+            build/neoforge/multiplayer-qa/*.jar
+            build/neoforge/reports/tests/test/**
+            build/neoforge/distributions/companion-packs/**
           if-no-files-found: error
+          retention-days: 7

@@ -14,7 +14,7 @@ import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Captures only the one-shot contextual data required by a selected pool. */
 public final class NaturalGuardLoadoutContextCapture {
@@ -114,7 +114,7 @@ public final class NaturalGuardLoadoutContextCapture {
                             TagKey.create(Registries.STRUCTURE, selector.id()))
                     : manager.getStructureWithPieceAt(
                             position,
-                            ResourceKey.create(Registries.STRUCTURE, selector.id()));
+                            holder -> holder.is(ResourceKey.create(Registries.STRUCTURE, selector.id())));
             if (start != null && start.isValid()) {
                 matching.add(selector);
             }

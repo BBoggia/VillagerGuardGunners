@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "ctov": "[3.4.14]"
+    "ctov": "[3.6.3]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -50,6 +50,14 @@
         "entrances": []
       }
     ],
+    "ctov:village/swamp/deco/archeology_tent": [
+      {
+        "kind": "decoration",
+        "sha256": "30c4f92dfbd44c83aa64d70c0f1946a8c77e2cbf1f1aa60ace0534e4e19706d6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
     "ctov:village/swamp/deco/bard_house": [
       {
         "kind": "decoration",
@@ -61,7 +69,7 @@
     "ctov:village/swamp/deco/beekeeper": [
       {
         "kind": "decoration",
-        "sha256": "c5942c5ad689db323f93f0db9c28388fba55a29c021536d3d487338460ec706f",
+        "sha256": "04ae63cccdb4528102880c27f0742048c419a8dfff1159870f675f82a145f88d",
         "beds": [],
         "entrances": []
       }
@@ -74,10 +82,24 @@
         "entrances": []
       }
     ],
+    "ctov:village/swamp/deco/climatologist": [
+      {
+        "kind": "decoration",
+        "sha256": "028b79dc79b5c61c6fad36d91a2bfe56e32c27566baa6fbb3ae13650eb83b5d9",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            4,
+            2
+          ]
+        ]
+      }
+    ],
     "ctov:village/swamp/deco/copper_golem": [
       {
         "kind": "decoration",
-        "sha256": "144c847ed5475dd7108e5b05b16e1d44bc5b6c39464347a82582858dbeacc97c",
+        "sha256": "9cc382dc2cddfed3f3bfa237214dd8bb35abcdf6145f6ada0c0b2ecacfa15992",
         "beds": [],
         "entrances": []
       }
@@ -85,7 +107,7 @@
     "ctov:village/swamp/deco/garbage_heaps": [
       {
         "kind": "decoration",
-        "sha256": "f96200937e6f49159d13fe2c843b964b60646085880f626783f39d4c55f35ec9",
+        "sha256": "b229e2145987e09c50b8689b1e8e988f4891a5719c45fdd7ef3e512ceeb9b884",
         "beds": [],
         "entrances": []
       }
@@ -181,7 +203,7 @@
     "ctov:village/swamp/house/big_1": [
       {
         "kind": "residence",
-        "sha256": "f0f877bd116738154721c94476e09cb47a4804f68fbcd6fd2a84302b30ca12b1",
+        "sha256": "31fcd4cbaa7be91d9631a2dbe93adf89b3c2188539918e47514f1459beab2d21",
         "beds": [
           [
             6,
@@ -216,7 +238,7 @@
     "ctov:village/swamp/house/big_2": [
       {
         "kind": "residence",
-        "sha256": "f4a6d58a4c489efd2790235bc017129e477c70ab8fa1f0af590b007022415756",
+        "sha256": "e2a8e4fb74b1b2fa9b43abd382aec090d673ed2939710424f17fd686e6885c75",
         "beds": [
           [
             9,
@@ -246,7 +268,7 @@
     "ctov:village/swamp/house/med_1": [
       {
         "kind": "residence",
-        "sha256": "460187a745fd1c37dbd4597597660e62ce85d96e4e38959978d981e88556d7ea",
+        "sha256": "f470f9faefe1ca3305bb78f9b8cd3745f5ebfdb22fe91baf38bae8effc731b7f",
         "beds": [
           [
             3,
@@ -276,7 +298,7 @@
     "ctov:village/swamp/house/med_2": [
       {
         "kind": "residence",
-        "sha256": "7ba2ad1768291cfcc2d244964e6fe59377b622f6ec12d87ddec43460a27da65c",
+        "sha256": "e81b20a894e6a0682e25854ec9047662b3ccba54264e713434d3aff632e7bdd5",
         "beds": [
           [
             3,
@@ -306,7 +328,7 @@
     "ctov:village/swamp/house/med_3": [
       {
         "kind": "residence",
-        "sha256": "211dd4064fb1ac98ad39ef781942ff2de36157d0fceb845fcac02ff35d549148",
+        "sha256": "60923637e48bf58fd5e7ef9d66e55ec20f8cc2381d783b87e5b0b6c196f817db",
         "beds": [
           [
             6,
@@ -336,7 +358,7 @@
     "ctov:village/swamp/house/small_1": [
       {
         "kind": "residence",
-        "sha256": "9c15235a9b45b6058ce02b945506e63f88f3d6c437ad18d05a3a9f5f02af3863",
+        "sha256": "d32775ac1b066320fdbf7bb8cd38cb8bdeb9dfb148247c834e2be72fdb342b0e",
         "beds": [
           [
             4,
@@ -361,7 +383,7 @@
     "ctov:village/swamp/house/small_2": [
       {
         "kind": "residence",
-        "sha256": "be1749214c04267c9cdf7739df4d799a9e63265972c90cf7cf282d3d06f45c71",
+        "sha256": "aec72eb6aefd9600971abbc721915b4b247815f6332a25780934934da57f2424",
         "beds": [
           [
             4,
@@ -386,7 +408,7 @@
     "ctov:village/swamp/house/small_3": [
       {
         "kind": "residence",
-        "sha256": "37acd311c05a28ec26d1d1a91aec32cc20057d08597d2dbaa0bc6d1b62bd71b0",
+        "sha256": "392e73a0e215481cf202083252d42f05486d09de1f30ced4ce09ee32fcae6cda",
         "beds": [
           [
             3,
@@ -411,7 +433,7 @@
     "ctov:village/swamp/house/small_4": [
       {
         "kind": "residence",
-        "sha256": "6af51db829117aa69ff2e308bceb48dfc8f8b8944ee4b6ff1d5c35ad0501a420",
+        "sha256": "dcf4bc58ef6618534bd2d11575bfbe5adf30dd0ebd595e607591fa579e4e426e",
         "beds": [
           [
             3,
@@ -599,7 +621,7 @@
     "ctov:village/swamp/jobsite/butcher": [
       {
         "kind": "service",
-        "sha256": "35e6d08faa8334f8cf88aa085bd6d9aa9df3d66112a5b5a85c47a4dbffed3d71",
+        "sha256": "7c86ef0870901138eb6541cc96e96ab6315e568efab746d0469036b8adb5fb34",
         "beds": [],
         "entrances": [
           [
@@ -618,7 +640,7 @@
     "ctov:village/swamp/jobsite/cartographer": [
       {
         "kind": "service",
-        "sha256": "a0b76566cb7dafd1220622180889f9f2f870583ac7824eac92108aaabb3db56d",
+        "sha256": "8a0d766d3651f77b5d32a61dbf0ec69d95c1a209c4ebdcfcb9e9dff3d86299a3",
         "beds": [],
         "entrances": [
           [
@@ -637,7 +659,7 @@
     "ctov:village/swamp/jobsite/chemist": [
       {
         "kind": "service",
-        "sha256": "f72c9bfc15d9b682ed95d22a7a25b79efb5fa16d6a9e7f5245b28d529e3911e1",
+        "sha256": "8179915eb27684d7a7ddf452dcf2cd93af35525e114a235db637a8d64c3265a6",
         "beds": [],
         "entrances": [
           [
@@ -656,7 +678,7 @@
     "ctov:village/swamp/jobsite/chicken_coop": [
       {
         "kind": "service",
-        "sha256": "e81a42598b426eaf4bc425e4cba8c331efffe192691f55f28e04253aa31cafc9",
+        "sha256": "3ddf33f4b3ddd20cc858ab82554d17eb6a20d0b11f85ae1989cb5d17a24eaf8d",
         "beds": [],
         "entrances": [
           [
@@ -678,7 +700,7 @@
     "ctov:village/swamp/jobsite/engineer": [
       {
         "kind": "service",
-        "sha256": "e6eb8be997004a06c59823afaa8d66245118f32283ca47bf96a0f5d207872beb",
+        "sha256": "9a5a1a7474e1a4f7ab8c304c2205bc7537e3ca14d952ea4d1fc073a5a6696d11",
         "beds": [],
         "entrances": [
           [
@@ -744,7 +766,7 @@
     "ctov:village/swamp/jobsite/fishing_hut": [
       {
         "kind": "service",
-        "sha256": "cb016608fba5016f9c187376f03c020467b5f96e48cdd16ff971239f61937a7a",
+        "sha256": "f5cd45f45f52ef6cfe4a03ee194aa3503af1b7c5f4aaaef2f5c3dd5c14027bfd",
         "beds": [],
         "entrances": [
           [
@@ -856,7 +878,7 @@
     "ctov:village/swamp/jobsite/hunter": [
       {
         "kind": "service",
-        "sha256": "88cc48ee13e535e68f87d0f7ecc2dce2ad8577dc620e13970092c63e51da96ae",
+        "sha256": "42a89247afdab44b460e30ec87b473cecfdbb65a8c36a5c239beb89dedc460cd",
         "beds": [],
         "entrances": [
           [
@@ -875,7 +897,7 @@
     "ctov:village/swamp/jobsite/hunter_trainer": [
       {
         "kind": "service",
-        "sha256": "37defdfe4d3dcef706f0071001107df1d27edbbfefab0be3b294035f76ddfe46",
+        "sha256": "b07aefb42979bfd8bead68df0e180485be236f0433cfe97e68697a882d721338",
         "beds": [],
         "entrances": [
           [
@@ -894,7 +916,7 @@
     "ctov:village/swamp/jobsite/imengineer": [
       {
         "kind": "service",
-        "sha256": "3b08f5ec1786312576e0c7affd6e847bdb63b418b7345bf426d866ef4a898176",
+        "sha256": "f470e28cb2c077d7bb665bfde59a511b5db84a7fc71a26926c9be875e024d9bc",
         "beds": [],
         "entrances": [
           [
@@ -970,7 +992,7 @@
     "ctov:village/swamp/jobsite/leatherworker": [
       {
         "kind": "service",
-        "sha256": "de4df4c31d0c2bbe9c187b5c61928993b6f4826e9c83c31d38d2c5a48e29c19a",
+        "sha256": "4b38a8e631a845f911fbdb2119662de9ecf6fd3c42048955e5f3ce29ee73622d",
         "beds": [],
         "entrances": [
           [
@@ -989,7 +1011,7 @@
     "ctov:village/swamp/jobsite/library": [
       {
         "kind": "service",
-        "sha256": "861be6f4fbc34beece82034215a242a913cc05a603f1440595c1076a2bfa6c4c",
+        "sha256": "5739c7ba8e8abf7df5f865afbb643ff510b8fac8af56e40d7fbc2e6cec8225f6",
         "beds": [],
         "entrances": [
           [
@@ -1008,7 +1030,7 @@
     "ctov:village/swamp/jobsite/mason": [
       {
         "kind": "service",
-        "sha256": "fa077eb7dde1af610c312e2e802531af35bd3ac0a8c6598c2cf010116446d6e6",
+        "sha256": "5f04213aa55c284a4afdf6ee23f089d4cf32e18858f8a1721092f39b5a844c86",
         "beds": [],
         "entrances": [
           [
@@ -1060,7 +1082,7 @@
     "ctov:village/swamp/jobsite/oceanographer": [
       {
         "kind": "service",
-        "sha256": "4fe9c48dadfad3b9a2859806483f8aa198e466ae4dff69c5ec82cc64a7c3808a",
+        "sha256": "6b00d3d9e29822ca3ff6f44f4f509ea3e28d6a74f9e570611b31921769c603e4",
         "beds": [],
         "entrances": [
           [
@@ -1200,7 +1222,7 @@
     "ctov:village/swamp/jobsite/restaurant": [
       {
         "kind": "service",
-        "sha256": "729cada3c1a144c56ca786c97d6ffbde3363e8500d82e19b00e532037db9c59a",
+        "sha256": "bd1a14b8c2b9abf7f10ec5aaafa267ceeed20274af052f6bf04578fdda46c5b6",
         "beds": [],
         "entrances": [
           [
@@ -1282,7 +1304,7 @@
     "ctov:village/swamp/jobsite/shepherd": [
       {
         "kind": "service",
-        "sha256": "1dc653142228b8421debf261e16c6112e6877858246ff1f59e166f4d12844a31",
+        "sha256": "787e59a10a160bd5f49acd866ebd831fe9931708ea379ebb2e2154ed325ab136",
         "beds": [],
         "entrances": [
           [
@@ -1306,7 +1328,7 @@
     "ctov:village/swamp/jobsite/smith": [
       {
         "kind": "service",
-        "sha256": "00afefc70b7d78cf8e46fa6fb7e06296840deed613f430dbe32bd8007a133fd4",
+        "sha256": "8b93d9c1f86af302fc2d7107a91c091021f1fd8c9657d35e3fe4f4b4bc8554d6",
         "beds": [],
         "entrances": [
           [
@@ -1317,6 +1339,61 @@
           [
             4,
             3,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp/jobsite/tavern": [
+      {
+        "kind": "residence",
+        "sha256": "e78aa2de0b400ae3537bb5c04f80ecb4ad9778a66f0067e972520449682474b3",
+        "beds": [
+          [
+            2,
+            9,
+            6
+          ],
+          [
+            2,
+            9,
+            7
+          ],
+          [
+            6,
+            9,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            9,
+            3
+          ],
+          [
+            5,
+            4,
+            3
+          ],
+          [
+            5,
+            9,
+            7
+          ],
+          [
+            6,
+            4,
+            3
+          ],
+          [
+            8,
+            9,
+            3
+          ],
+          [
+            8,
+            9,
             6
           ]
         ]
@@ -1421,7 +1498,7 @@
     "ctov:village/swamp/jobsite/woodworker": [
       {
         "kind": "service",
-        "sha256": "34308f8372a346bb086ee5587f2d0d4949152036cc2f07b9e46bdab2618a97dd",
+        "sha256": "a160091f7b16cfe9f4f1ca65f56bae99a187464187c38d11c6466cd7efa1501a",
         "beds": [],
         "entrances": [
           [
@@ -1437,26 +1514,26 @@
         ]
       }
     ],
-    "ctov:village/swamp/roads/bent_1": [
+    "ctov:village/swamp/roads/corner_1": [
       {
         "kind": "road",
-        "sha256": "4aa5324358767c7579698f705f6edc3e1e847f6826d6d632db23a4b65f9c7a1b",
+        "sha256": "9a655d8936ee8357859aaf80d18c355927b64f4d370b135509d182b456cbf8e1",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/swamp/roads/bent_2": [
+    "ctov:village/swamp/roads/corner_2": [
       {
         "kind": "road",
-        "sha256": "3d3e67a2e17c3730e6ab04323ac76733f8a388ed4bdddfaf5f525b0aa6b62427",
+        "sha256": "18adeacafb839e056c524af0684c5dcabd9c78eab51728a282e5025189523b10",
         "beds": [],
         "entrances": []
       }
     ],
-    "ctov:village/swamp/roads/inter": [
+    "ctov:village/swamp/roads/crossroad": [
       {
         "kind": "road",
-        "sha256": "ae1ed5094f537fba3791e454e279f28bf4c6b47285ff59404bf0ffa0cc2fc61f",
+        "sha256": "2293bfba9c867201f81752ecbb0a08ff01cb40bfc1eb364eec3d57ad1558339f",
         "beds": [],
         "entrances": []
       }
@@ -1464,7 +1541,7 @@
     "ctov:village/swamp/roads/respawn_obelisk": [
       {
         "kind": "road",
-        "sha256": "14fe975d6d62df600909a9493ba5b45fa957ba6a06a56d9be75a710db1661a77",
+        "sha256": "3593b790bcbf097dc7add7e52f61d70df6a06c48d926dc6d60f19b2bf897945d",
         "beds": [],
         "entrances": []
       }
@@ -1472,7 +1549,7 @@
     "ctov:village/swamp/roads/straight": [
       {
         "kind": "road",
-        "sha256": "ad025fce4f76310654c53e2ebd1dd1cfe2618af9acba317421e17b853b0ea941",
+        "sha256": "0da8e1646c822a1330406da39def5e393780ce070752e4b7f240be1af80b233e",
         "beds": [],
         "entrances": []
       }
@@ -1480,7 +1557,7 @@
     "ctov:village/swamp/roads/t_1": [
       {
         "kind": "road",
-        "sha256": "a6597824c75253c5c051ea8dfd94d8f2c81767c9295d394d92a4de802361bcfa",
+        "sha256": "0cfa8815947ac74ec7a193375b62d46dbb339b29c5523394f13b5a0807967574",
         "beds": [],
         "entrances": []
       }
@@ -1488,7 +1565,7 @@
     "ctov:village/swamp/roads/t_2": [
       {
         "kind": "road",
-        "sha256": "45186bb393c369f479ca2103ddf01624c43743b47e6653f8924cc4fa11d942bf",
+        "sha256": "252b82159aa9a93d62d436c3e0ca46f2ab342d0e3a564f72b4cf47aab1870b69",
         "beds": [],
         "entrances": []
       }
@@ -1496,7 +1573,7 @@
     "ctov:village/swamp/roads/t_3": [
       {
         "kind": "road",
-        "sha256": "a134a6d8d2e5956d114c3b7e428a5d6b34a3dc446ec114a885cb8f927f4a6a80",
+        "sha256": "cec25dadf8ff0aa6586599cef47082d4fc48b15c559d6f5b83e6cdd1d9b099ba",
         "beds": [],
         "entrances": []
       }
@@ -1504,7 +1581,7 @@
     "ctov:village/swamp/roads/terminator": [
       {
         "kind": "road",
-        "sha256": "00b4e6f9596fe204d6b1f7774b8662d6e1779b53ccf1303005897e8f1029867d",
+        "sha256": "b7ca36cab0f31f4b9b2a50b3cd329baae06668dfe9e8830d24940a0e82f4e6df",
         "beds": [],
         "entrances": []
       }
@@ -1520,7 +1597,7 @@
     "minecraft:village/common/animals/cat_black": [
       {
         "kind": "decoration",
-        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "sha256": "ce1c642a4a009ecf94fd2f0c93dfe7ea9cbc1b266ada6916fa2edbd82fde178e",
         "beds": [],
         "entrances": []
       }
@@ -1528,7 +1605,7 @@
     "minecraft:village/common/animals/cat_british": [
       {
         "kind": "decoration",
-        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "sha256": "256c5bac85a6ac921257a8d7c39cb480cb0e23d2ad166ce803f473b430c428a7",
         "beds": [],
         "entrances": []
       }
@@ -1536,7 +1613,7 @@
     "minecraft:village/common/animals/cat_calico": [
       {
         "kind": "decoration",
-        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "sha256": "bf9ea82c019d9e83ac2c47108b689737a1b7a73bd1b11c9ed48744b7db90a273",
         "beds": [],
         "entrances": []
       }
@@ -1544,7 +1621,7 @@
     "minecraft:village/common/animals/cat_jellie": [
       {
         "kind": "decoration",
-        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "sha256": "31ae6850c9c75d0626f3b8fc14027b3bc1906ab0d14201101a67250835aec847",
         "beds": [],
         "entrances": []
       }
@@ -1552,7 +1629,7 @@
     "minecraft:village/common/animals/cat_persian": [
       {
         "kind": "decoration",
-        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "sha256": "be7ee0101982cfc5374215e566d7282280ef5122cd351874310cd911e58c5271",
         "beds": [],
         "entrances": []
       }
@@ -1560,7 +1637,7 @@
     "minecraft:village/common/animals/cat_ragdoll": [
       {
         "kind": "decoration",
-        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "sha256": "14d14c7039371b4f08a0360eb6b5611029fb6d577a3e532f53c70d1b7a4779bd",
         "beds": [],
         "entrances": []
       }
@@ -1568,7 +1645,7 @@
     "minecraft:village/common/animals/cat_red": [
       {
         "kind": "decoration",
-        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "sha256": "d9523300a7a0cf0611562771490f3a11429d1f72dec987a88dea6538da8aed00",
         "beds": [],
         "entrances": []
       }
@@ -1576,7 +1653,7 @@
     "minecraft:village/common/animals/cat_siamese": [
       {
         "kind": "decoration",
-        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "sha256": "30ca3860e4c19669f380c5b5e01adb91112be60698c4cebd3cd94e3e391f0e9b",
         "beds": [],
         "entrances": []
       }
@@ -1584,7 +1661,7 @@
     "minecraft:village/common/animals/cat_tabby": [
       {
         "kind": "decoration",
-        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "sha256": "5a9800b43db9ebc3a0811e03d43ab7183110c32f76e727bee2bd24e387161880",
         "beds": [],
         "entrances": []
       }
@@ -1592,7 +1669,7 @@
     "minecraft:village/common/animals/cat_white": [
       {
         "kind": "decoration",
-        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "sha256": "81f96e424ee2856a15a9d6e235af3a3ca7a39b839bdbfbedf44162d29fb3cbf2",
         "beds": [],
         "entrances": []
       }
@@ -1600,7 +1677,7 @@
     "minecraft:village/common/iron_golem": [
       {
         "kind": "decoration",
-        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "sha256": "4e0c8c2fb1a5d7aa45e4918003cca74991f02ffa21284f341468d28d8db402fa",
         "beds": [],
         "entrances": []
       }

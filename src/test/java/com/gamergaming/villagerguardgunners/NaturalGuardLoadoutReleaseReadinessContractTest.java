@@ -56,7 +56,7 @@ final class NaturalGuardLoadoutReleaseReadinessContractTest {
                 () -> assertTrue(description.contains("## Features")),
                 () -> assertTrue(description.contains("## Requirements")),
                 () -> assertTrue(description.contains("**Natural gun loadouts.**")),
-                () -> assertTrue(plainDescription.contains("Newly generated guards can receive guns and matching ammo based on difficulty")),
+                () -> assertTrue(plainDescription.contains("Newly spawned guards can receive guns and matching ammo based on difficulty")),
                 () -> assertTrue(plainDescription.contains("Server settings and datapacks control the available loadouts")),
                 () -> assertTrue(description.contains("**Ammo and backup sidearms.**")),
                 () -> assertTrue(description.contains("Operators can use `/vgg` commands")),
@@ -68,9 +68,10 @@ final class NaturalGuardLoadoutReleaseReadinessContractTest {
     }
 
     @Test
-    void aggregateReleaseGateBindsNaturalCodeDocumentationAndManualCases()
+    void retainedForgeAggregateReleaseGateBindsNaturalCodeDocumentationAndManualCases()
             throws IOException {
-        String build = read("build.gradle");
+        // Retained Forge release contract; current NeoForge gates are tested separately.
+        String build = read("gradle/legacy-forge.gradle");
 
         assertAll(
                 () -> assertTrue(build.contains("api/GuardNaturalLoadoutAccess.class")),

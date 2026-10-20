@@ -33,7 +33,7 @@ public final class ServiceJournal {
         this.file = file;
         if (!Files.exists(file)) return;
         try {
-            CompoundTag root = NbtIo.readCompressed(file.toFile());
+            CompoundTag root = NbtIo.readCompressed(file, net.minecraft.nbt.NbtAccounter.create(16 * 1024 * 1024));
             if (!root.getAllKeys().equals(Set.of("Version", "LastOperation", "Owners")) || root.getInt("Version") != 1
                     || !root.contains("Version", Tag.TAG_INT) || !root.hasUUID("LastOperation") || !root.contains("Owners", Tag.TAG_LIST)) throw new IOException("Unsupported service journal");
             var list = root.getList("Owners", Tag.TAG_COMPOUND);
@@ -50,7 +50,7 @@ public final class ServiceJournal {
     public static ServiceJournal get(MinecraftServer server) {
         return SERVERS.computeIfAbsent(server, s -> new ServiceJournal(s.getWorldPath(LevelResource.ROOT).resolve("data/villagerguardgunners_equipment_service.dat")));
     }
-    public static void stopped(net.minecraftforge.event.server.ServerStoppedEvent event) { SERVERS.remove(event.getServer()); }
+    public static void stopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) { SERVERS.remove(event.getServer()); }
     public boolean healthy() { return healthy; }
     /** Read-only checkpoint comparison for reports; unlike verify, this never quarantines an owner. */
     public boolean matches(ServiceReceipt receipt) {
@@ -88,7 +88,7 @@ public final class ServiceJournal {
         });
         root.put("Owners", list); Files.createDirectories(file.getParent());
         Path temporary = file.resolveSibling(file.getFileName() + ".tmp");
-        NbtIo.writeCompressed(root, temporary.toFile());
+        NbtIo.writeCompressed(root, temporary);
         try (FileChannel channel = FileChannel.open(temporary, StandardOpenOption.WRITE)) { channel.force(true); }
         Files.move(temporary, file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
     }

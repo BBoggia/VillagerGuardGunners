@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.tacz.guns.api.item.IGun;
 import java.util.Set;
@@ -9,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Strict NBT codec and authenticity check for naturally issued guard guns.
@@ -69,7 +70,7 @@ public final class NaturalGuardLoadoutProvenanceCodec {
         if (!isTaCZGun(gunStack, provenance.gunId())) {
             return false;
         }
-        gunStack.getOrCreateTag().put(GUN_PROVENANCE_TAG, encode(provenance));
+        ItemCustomData.update(gunStack, tag -> tag.put(GUN_PROVENANCE_TAG, encode(provenance)));
         return provenance.equals(readGunRecord(gunStack));
     }
 
@@ -116,7 +117,7 @@ public final class NaturalGuardLoadoutProvenanceCodec {
         if (gunStack == null || gunStack.isEmpty()) {
             return null;
         }
-        CompoundTag itemTag = gunStack.getTag();
+        CompoundTag itemTag = ItemCustomData.read(gunStack);
         if (itemTag == null || !itemTag.contains(GUN_PROVENANCE_TAG, Tag.TAG_COMPOUND)) {
             return null;
         }

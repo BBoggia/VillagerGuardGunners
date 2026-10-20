@@ -24,7 +24,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Bounded, read-only operator diagnostics for Village Watchtowers. */
 public final class WatchtowerCommands {
@@ -62,8 +62,8 @@ public final class WatchtowerCommands {
         GuardPostGroupReloadSnapshot groups = GuardPostGroups.reloadSnapshot();
         send(source, "[VGG] Village Watchtowers", ChatFormatting.AQUA);
         send(source,
-                "Registration: structure=" + ModStructures.WATCHTOWER.isPresent()
-                        + ", piece=" + ModStructures.WATCHTOWER_PIECE.isPresent(),
+                "Registration: structure=" + ModStructures.WATCHTOWER.isBound()
+                        + ", piece=" + ModStructures.WATCHTOWER_PIECE.isBound(),
                 registrationColor());
         send(source,
                 "Policy: generation=" + policy.generationEnabled()
@@ -174,7 +174,7 @@ public final class WatchtowerCommands {
     }
 
     private static ChatFormatting registrationColor() {
-        return ModStructures.WATCHTOWER.isPresent() && ModStructures.WATCHTOWER_PIECE.isPresent()
+        return ModStructures.WATCHTOWER.isBound() && ModStructures.WATCHTOWER_PIECE.isBound()
                 ? ChatFormatting.GREEN
                 : ChatFormatting.RED;
     }

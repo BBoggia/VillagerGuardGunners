@@ -12,8 +12,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.registries.ForgeRegistries;
-import tallestegg.guardvillagers.entities.Guard;
+import net.minecraft.core.registries.BuiltInRegistries;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Allocation-free, server-authoritative firing policy for a target already
@@ -66,7 +66,7 @@ public final class GuardRulesOfEngagement {
                 ModConfigs.GUARD_GUNNERS.engagement;
         EngagementMode mode = GuardRoleResolver.effectiveOrders(shooter)
                 .resolveEngagementMode(settings.mode.get());
-        ResourceLocation entityTypeId = ForgeRegistries.ENTITY_TYPES.getKey(target.getType());
+        ResourceLocation entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
         if (entityTypeId != null && settings.excludedEntities.get().contains(entityTypeId)) {
             return EngagementReason.EXPLICIT_EXCLUSION;
         }

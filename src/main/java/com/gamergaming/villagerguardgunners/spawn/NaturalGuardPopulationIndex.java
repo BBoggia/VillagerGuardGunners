@@ -16,8 +16,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Dimension-local persistent spatial index for authentic natural gunners.
@@ -43,10 +43,7 @@ public final class NaturalGuardPopulationIndex extends SavedData {
     private final Map<Long, Map<UUID, Entry>> byChunk = new HashMap<>();
 
     public static NaturalGuardPopulationIndex get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(
-                NaturalGuardPopulationIndex::load,
-                NaturalGuardPopulationIndex::new,
-                DATA_NAME);
+        return level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(NaturalGuardPopulationIndex::new, (tag, registries) -> NaturalGuardPopulationIndex.load(tag)), DATA_NAME);
     }
 
     public static void synchronize(Guard guard) {
@@ -217,7 +214,7 @@ public final class NaturalGuardPopulationIndex extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public CompoundTag save(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         tag.putInt(VERSION_TAG, DATA_VERSION);
         ListTag entries = new ListTag();
         byGuard.values().stream()

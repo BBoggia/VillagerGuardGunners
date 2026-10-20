@@ -72,7 +72,7 @@ final class NaturalGuardPopulationIndexTest {
     void persistentRoundTripRetainsIdentityPositionAndCleanState() {
         NaturalGuardPopulationIndex original = new NaturalGuardPopulationIndex();
         original.put(FIRST_GUARD, issuance(1), -17.25D, 70.0D, 31.75D);
-        CompoundTag saved = original.save(new CompoundTag());
+        CompoundTag saved = original.save(new CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty()));
 
         NaturalGuardPopulationIndex restored = NaturalGuardPopulationIndex.load(saved);
 

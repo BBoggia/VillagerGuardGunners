@@ -5,10 +5,10 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Owns one transient loaded index and reservation ledger per running server. */
 public final class ArmoryResupplyServerServices {

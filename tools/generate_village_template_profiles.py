@@ -74,7 +74,7 @@ def meaning(template, resource):
     return dict(kind=kind, sha256=resource['sha256'], beds=beds, entrances=doors)
 
 
-def generate(audit):
+def generate(audit, version_conditions=None):
     definitions = {}
     boundaries = {}
     conditions = {
@@ -83,6 +83,8 @@ def generate(audit):
         'integrated_villages': {'integrated_villages': '[1.3.2+1.20.1-forge]', 'integrated_api': '[1.8.0]'},
         'villagesandpillages': {'villagesandpillages': '[1.0.2]'}, 'minecraft': {},
     }
+    if version_conditions is not None:
+        conditions.update(version_conditions)
     for structure, resources in sorted(audit['structures'].items()):
         ns, name = structure.split(':')
         if ns not in conditions or (ns == 'minecraft' and not name.startswith('village_')):
@@ -150,8 +152,9 @@ def main():
     parser.add_argument('--audit', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--report', required=True, type=Path)
+    parser.add_argument('--conditions', type=Path, help='Version conditions verified against the audited mod JARs')
     args = parser.parse_args()
-    definitions, boundaries = generate(json.loads(args.audit.read_text()))
+    definitions, boundaries = generate(json.loads(args.audit.read_text()), json.loads(args.conditions.read_text()) if args.conditions else None)
     args.output.mkdir(parents=True, exist_ok=True)
     for name, profile in definitions.items():
         (args.output / (name+'.json')).write_text(json.dumps(profile, indent=2)+'\n')

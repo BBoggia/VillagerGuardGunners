@@ -41,11 +41,11 @@ final class ArmoryResupplyStepSevenContractTest {
     }
 
     @Test
-    void performanceMatrixProvesIdleFastPathAndPressureBounds() throws IOException {
+    void retainedForgePerformanceMatrixCoversIdleFastPathAndPressureBounds() throws IOException {
         String harness = read(
                 "src/perftest/java/com/gamergaming/villagerguardgunners/gametest/"
                         + "PhaseEightPerformanceGameTests.java");
-        String build = read("build.gradle");
+        String build = read("gradle/legacy-forge.gradle");
 
         assertAll(
                 () -> assertTrue(harness.contains("\"armory-idle-100\", 0")),

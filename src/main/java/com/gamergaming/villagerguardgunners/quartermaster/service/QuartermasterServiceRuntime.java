@@ -9,11 +9,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Loaded-only indexes. Sixteen guards/operators and one durable transfer per dimension per second. */
 public final class QuartermasterServiceRuntime {
@@ -163,14 +163,14 @@ public final class QuartermasterServiceRuntime {
         List<T> result = new ArrayList<>(); int count = Math.min(INSPECTIONS, map.size());
         for (int i = 0; i < count; i++) { var entry = map.entrySet().iterator().next(); UUID id = entry.getKey(); T value = entry.getValue(); map.remove(id); map.put(id, value); result.add(value); } return result;
     }
-    public static void tick(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || event.getServer().getTickCount() % 20 != 0) return;
+    public static void tick(ServerTickEvent.Post event) {
+        if (event.getServer().getTickCount() % 20 != 0) return;
         for (ServerLevel level : event.getServer().getAllLevels()) {
             if (!LEVELS.containsKey(level)) continue;
             State state = state(level);
             for (Villager villager : rotate(state.villagers)) {
                 if (!villager.isAlive() || villager.isRemoved()) { state.villagers.remove(villager.getUUID()); continue; }
-                if (villager.getVillagerData().getProfession() != net.minecraftforge.registries.ForgeRegistries.VILLAGER_PROFESSIONS.getValue(QuartermasterProfession.ID)) continue;
+                if (villager.getVillagerData().getProfession() != net.minecraft.core.registries.BuiltInRegistries.VILLAGER_PROFESSION.get(QuartermasterProfession.ID)) continue;
                 villager.getBrain().getMemory(MemoryModuleType.JOB_SITE).filter(site -> site.dimension().equals(level.dimension())).ifPresent(site -> {
                     if (state.blocks.get(site.pos()) instanceof QuartermasterBlockEntity station) station.operator = villager.getUUID();
                 });

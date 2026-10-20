@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 @GameTestHolder(VillagerGuardGunners.MODID)
 @PrefixGameTestTemplate(false)
@@ -487,7 +487,7 @@ public final class VillageCoverageIntegrationGameTests {
                 var active = VillageCoverageRuntime.lease(guard);
                 helper.assertTrue(active != null, "No coverage claim available for unload check");
                 var affected = VillageCoverageRuntime.destination(guard, active).position();
-                VillageCoverageRuntime.onChunkChange(new net.minecraftforge.event.level.ChunkEvent.Unload(f.level.getChunkAt(affected)));
+                VillageCoverageRuntime.onChunkChange(new net.neoforged.neoforge.event.level.ChunkEvent.Unload(f.level.getChunkAt(affected)));
                 helper.assertTrue(VillageCoverageRuntime.lease(guard) == null, "Unloading the destination retained its coverage claim");
             } finally { f.close(); }
         }).thenSucceed();
@@ -533,7 +533,7 @@ public final class VillageCoverageIntegrationGameTests {
             helper.assertTrue(guard.getNavigation().getPath() != null, "Alternate destination received no path");
             controller.stop();
             f.level.setBlock(blocked[0], Blocks.AIR.defaultBlockState(), 3);
-            VillageCoverageRuntime.onChunkChange(new net.minecraftforge.event.level.ChunkEvent.Load(f.level.getChunkAt(blocked[0]), false));
+            VillageCoverageRuntime.onChunkChange(new net.neoforged.neoforge.event.level.ChunkEvent.Load(f.level.getChunkAt(blocked[0]), false));
         });
         helper.startSequence().thenIdle(140).thenExecute(() -> {
             for (int i = 0; i < 200; i++) VillageCoverageRuntime.tick(f.level);

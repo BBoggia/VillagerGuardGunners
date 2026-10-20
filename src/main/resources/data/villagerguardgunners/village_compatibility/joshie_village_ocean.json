@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "mr_tidal_towns": "[1.3.4]"
+    "mr_tidal_towns": "[2.0]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -13,7 +13,13 @@
     "joshie:village/ocean/centers/center": [
       {
         "kind": "gathering",
-        "sha256": "d51fd406424b3efcf97a7a884af816b08d3e032eb2a4463c2276a3f746c54146",
+        "sha256": "71907927e27cba127f7baa7be67177d88419259bde2c8bcbedba6c0deb0d0675",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "74f4ed92db077acbcec04d34874b732b644a7077a847e4a88d3b286539a7dc2b",
         "beds": [],
         "entrances": []
       }
@@ -21,15 +27,91 @@
     "joshie:village/ocean/decor/empty": [
       {
         "kind": "decoration",
-        "sha256": "8c79f7f46a77959884e797f981321b97d5641c77c3b119b327c15baa89b7605d",
+        "sha256": "3fdbcec7faeb0f78d8633ad14fbd010fb51a594a25382fa499e854f451725602",
         "beds": [],
         "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "c4cd185f7c4df8b6c30b89c600eb8ec661ded791ccf2861a50eeb6a9b8d0b4a7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/houses/fisherman_hut": [
+      {
+        "kind": "residence",
+        "sha256": "e69892fd85deb910692c0d562ca22016bffbcf0aa3621c5206facb3d353c726e",
+        "beds": [
+          [
+            4,
+            6,
+            8
+          ],
+          [
+            4,
+            8,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            2,
+            9
+          ],
+          [
+            7,
+            6,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "aea5604b9936d69e7c1803615eaac6f14b66fe423bdf360b42a0bfffd6c3cebd",
+        "beds": [
+          [
+            4,
+            6,
+            8
+          ],
+          [
+            4,
+            8,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            2,
+            9
+          ],
+          [
+            7,
+            6,
+            9
+          ]
+        ]
       }
     ],
     "joshie:village/ocean/houses/large_farm": [
       {
         "kind": "service",
-        "sha256": "09eebc53a44da24c9f496b7faa4adf9648bba0c01c47c982dde3ba57d8220fcf",
+        "sha256": "c67bad6b48740b6c1570cd48066c2c02360a3cb47f22560f9713edfdab5e2d2a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "768cf1455e875f4e8d751fa22bf2188e8e7b48e64379fb842a24dbbe9ca29661",
         "beds": [],
         "entrances": [
           [
@@ -43,7 +125,19 @@
     "joshie:village/ocean/houses/small_farm": [
       {
         "kind": "service",
-        "sha256": "943051984a0434583f2f15a8e8f6cae6f18c97e4165d780ac0885c3da0393350",
+        "sha256": "bfced92b57a0fbde7071494ec922acb5bc2fd081177261888e7b2bced39f9901",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "7f467412a66371900a2ed632f1e969a5b4984d542488e3ba8819146373af2404",
         "beds": [],
         "entrances": [
           [
@@ -57,7 +151,35 @@
     "joshie:village/ocean/houses/small_house1": [
       {
         "kind": "residence",
-        "sha256": "44040d3d0aa70f17c21e1593ac6395bb6549b34cd254ec5017aaf7d2ea8edfed",
+        "sha256": "3615b621a55444e005d5bdeb12f8db4e7db34c17287eab92f0c736b7a3a3680c",
+        "beds": [
+          [
+            3,
+            1,
+            10
+          ],
+          [
+            7,
+            1,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "9b514e6fca6fe4d14b2c0d81dd408b2ba99a8b0cbe2dc2157f7f07e669e36300",
         "beds": [
           [
             3,
@@ -87,7 +209,24 @@
     "joshie:village/ocean/houses/tower_1": [
       {
         "kind": "service",
-        "sha256": "074593615493b414bdb24cb47f178f8779d45b8bf624fc65da0a5d37d22314c9",
+        "sha256": "0d03e5ffcbe52ee16ad2927d133ece34abfd4778bad76f45e91683431f64b1fa",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "8c69d43bb588642a20b8f62c9f2660c02f8dc2b4c6920bd0e09367fbe93fb662",
         "beds": [],
         "entrances": [
           [
@@ -106,7 +245,24 @@
     "joshie:village/ocean/houses/tower_2": [
       {
         "kind": "service",
-        "sha256": "a090b228d128996712726d39b55609462c3568817d28a7816a844bd8677e8b0d",
+        "sha256": "066f109c3cba3daea4d430750e1b17427c3bcac013e996f3e1da70492bade9fc",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "929684ceef04027d7dd9596bdc382928b24367ddbbe116e0f6da3e3bed0666cf",
         "beds": [],
         "entrances": [
           [
@@ -122,10 +278,90 @@
         ]
       }
     ],
+    "joshie:village/ocean/houses/waterwheel_house": [
+      {
+        "kind": "residence",
+        "sha256": "92f4b2c11ae7d02134de6c3dececd1059b4361c3dc2155cae07cba9042c18501",
+        "beds": [
+          [
+            6,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            6,
+            8
+          ],
+          [
+            5,
+            6,
+            8
+          ],
+          [
+            7,
+            1,
+            9
+          ],
+          [
+            7,
+            1,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "b6923f4098a65601d8a6c48b88da1dcd223e964ca10e9abeeb8611d8a4511736",
+        "beds": [
+          [
+            6,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            6,
+            8
+          ],
+          [
+            5,
+            6,
+            8
+          ],
+          [
+            7,
+            1,
+            9
+          ],
+          [
+            7,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
     "joshie:village/ocean/houses/weaponsmith": [
       {
         "kind": "decoration",
-        "sha256": "7cd6bd59ea5d49028a7c581d0c1b93bfc277479404a91c94c1712e969a86481f",
+        "sha256": "1d2de800d811253b7857c9d6de8efeff7cccbbf9f4c2c18fa5d1e356e373dbd1",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "f1ca15f0cfdd1c9b04d847d8fb3bc159a04b88c62a5f4d3e71ff69d05f51a163",
         "beds": [],
         "entrances": [
           [
@@ -136,34 +372,122 @@
         ]
       }
     ],
-    "joshie:village/ocean/roads/corner1": [
+    "joshie:village/ocean/pieces/double_house": [
       {
-        "kind": "road",
-        "sha256": "316c09626b6d03be6d25f9650149c95692e16f503ed3b714d2f091903b18db4a",
+        "kind": "residence",
+        "sha256": "54f5d160137daea22cdbd0649e6923d07bb731512f66dc35a15c9d5fb2cde750",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            2,
+            1,
+            8
+          ],
+          [
+            9,
+            1,
+            17
+          ],
+          [
+            11,
+            1,
+            17
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            7
+          ],
+          [
+            10,
+            1,
+            14
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "685f825d91584afe39f26e193cee4972c27beeeb4c0e095d788610d7de628821",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            2,
+            1,
+            8
+          ],
+          [
+            9,
+            1,
+            17
+          ],
+          [
+            11,
+            1,
+            17
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            7
+          ],
+          [
+            10,
+            1,
+            14
+          ]
+        ]
+      }
+    ],
+    "joshie:village/ocean/pieces/large_platform_1": [
+      {
+        "kind": "service",
+        "sha256": "ece1fc416b9e1743cbe04fbbf5668901f1eb3ac2e01ad8f2e1e7ef69b7e80c74",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "service",
+        "sha256": "3bbed35b004cf43285f4123b7a183bceb71edc9c0f305c6b5f4288f139545d3d",
         "beds": [],
         "entrances": []
       }
     ],
-    "joshie:village/ocean/roads/corner_02": [
+    "joshie:village/ocean/pieces/market": [
       {
-        "kind": "road",
-        "sha256": "7327010f901418fca3ebd52e23a16dddd8bfd8a5a9b1e3531b4365062a88c491",
+        "kind": "service",
+        "sha256": "c087078ad56dd6a3640fed78d7ae28fe0c2c02f680b0e9bb8b65e10db1c5d8f0",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "service",
+        "sha256": "a51f2b7c2e85058680697b9a791000832c170414f229d2d9e11e3fbe298bd825",
         "beds": [],
         "entrances": []
       }
     ],
-    "joshie:village/ocean/roads/cross": [
+    "joshie:village/ocean/pieces/weaponsmith": [
       {
-        "kind": "road",
-        "sha256": "421541ba0d6e0f4bc2093ce174bbc1d33fc6700d7e618eae28570d09d319e50b",
+        "kind": "service",
+        "sha256": "83abd616fca86b3610b818494b1b15eab86e0d8447046443c58cb4a81d26268b",
         "beds": [],
         "entrances": []
-      }
-    ],
-    "joshie:village/ocean/roads/crossroad_01": [
+      },
       {
-        "kind": "road",
-        "sha256": "533fd1309e8fc0cabe363c757c0416ed20b0cbeba9996201f71757fe2dec2e33",
+        "kind": "service",
+        "sha256": "959a3ade891af75d02929b0c57d5eddc36f595813d49e4270e2ac1048848c4be",
         "beds": [],
         "entrances": []
       }
@@ -171,7 +495,13 @@
     "joshie:village/ocean/roads/crossroad_02": [
       {
         "kind": "road",
-        "sha256": "cd65d9d3ce164a8f7377d969227fac72587f4ddfa4d2df7c27b30534003282b1",
+        "sha256": "80f1e82155b2472804cf5166e86e11426207e5e6dbd8c5b69ac7bd70946012eb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "17bd528911a87604bc9513f1fb734b2be4bddc805044e73c9de32575c2956022",
         "beds": [],
         "entrances": []
       }
@@ -179,23 +509,13 @@
     "joshie:village/ocean/roads/crossroad_03": [
       {
         "kind": "road",
-        "sha256": "2cfefb8db6d5f1cd54c84e3c746cb7f6fdd7196bca557201ed6c73f6e7fd93de",
+        "sha256": "61a4430bd59f6a49793ae5922605735c1b22a45659d8d3322bd788917a8bc8d3",
         "beds": [],
         "entrances": []
-      }
-    ],
-    "joshie:village/ocean/roads/straight5": [
+      },
       {
         "kind": "road",
-        "sha256": "e3ce04a209d30307fac71566742984a8c51eabdb2fa450b893d6417f7bec12c6",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "joshie:village/ocean/roads/straight_01": [
-      {
-        "kind": "road",
-        "sha256": "be98c47867b19ed724a540ee2ff211152a545e2122c6d982ce160c6469713487",
+        "sha256": "f493d9c16ae3e690799fb17917924c31f0a32dd84489b35c2aa1bed280a7d552",
         "beds": [],
         "entrances": []
       }
@@ -203,23 +523,13 @@
     "joshie:village/ocean/roads/straight_02": [
       {
         "kind": "road",
-        "sha256": "f68204f6ff40f32ef5aab286dccfead1d4c01c0d7e464a46316f02906dd8d5bb",
+        "sha256": "26c2d1eddb348d4d5143a878e79c975b4397e210d7fde4aaee6baab96ab89959",
         "beds": [],
         "entrances": []
-      }
-    ],
-    "joshie:village/ocean/roads/straight_03": [
+      },
       {
         "kind": "road",
-        "sha256": "4a41c9f09e019155e2608101c2f393e2d26bd96f05b1d6b69922e1e87906f6a0",
-        "beds": [],
-        "entrances": []
-      }
-    ],
-    "joshie:village/ocean/roads/straight_04": [
-      {
-        "kind": "road",
-        "sha256": "f87987620cc7f42d42bb0211d6ab97bb85b7047da27c3bcb2e4d1d828c22460c",
+        "sha256": "22beb883ca4e88626d6c939cc693cc9602ac6bf661bba911d232b8df820e14db",
         "beds": [],
         "entrances": []
       }
@@ -227,15 +537,55 @@
     "joshie:village/ocean/roads/straight_05": [
       {
         "kind": "road",
-        "sha256": "f8943ae4073cacc642bc1a811818e96c9b1b02d491a9c0782cf5d6042f2d343b",
+        "sha256": "79ac3ce057297615fadf9f5c8897f1616627898a1e3c1b9a2058f442c6650730",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "d4367b63ae3fa3baa2b837534039f0263e764bf6d6e0d89712258d7e50518be1",
         "beds": [],
         "entrances": []
       }
     ],
-    "joshie:village/ocean/roads/wonky_1": [
+    "joshie:village/ocean/roads/straight_pieces_1": [
       {
         "kind": "road",
-        "sha256": "4136476a6d531d3bc1c1cc20124bf912dd7c46cce84b82c8c0c42eb487073459",
+        "sha256": "13704b82f07cea0153bd4de9eb5cd716a7a5fdb6571b972b2fde42fad561226c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "78d94bff3a3f7d616eb29849581434b7cf641329bd7b279ed6478e45278fd933",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/wonky_decor": [
+      {
+        "kind": "road",
+        "sha256": "1a0d1372eedf0986c466ac89fa3386dc672a59d591681c29b46a8701fe70b25d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "6a4df0c2c50660f9304523cb111ce1a15922c93b47a23d90f365807ecf85e7cd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/terminators/terminator_1": [
+      {
+        "kind": "decoration",
+        "sha256": "501332d2cd60e859a12624bc31cf8c61688899c86402be9b3092f87658f482f8",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "c4e806a5bfd3a77dc9485da49d1c09e9e8b03644faa7d3e24e536c3c37f7f374",
         "beds": [],
         "entrances": []
       }
@@ -243,7 +593,7 @@
     "minecraft:village/common/animals/cat_black": [
       {
         "kind": "decoration",
-        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "sha256": "ce1c642a4a009ecf94fd2f0c93dfe7ea9cbc1b266ada6916fa2edbd82fde178e",
         "beds": [],
         "entrances": []
       }
@@ -251,7 +601,7 @@
     "minecraft:village/common/animals/cat_british": [
       {
         "kind": "decoration",
-        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "sha256": "256c5bac85a6ac921257a8d7c39cb480cb0e23d2ad166ce803f473b430c428a7",
         "beds": [],
         "entrances": []
       }
@@ -259,7 +609,7 @@
     "minecraft:village/common/animals/cat_calico": [
       {
         "kind": "decoration",
-        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "sha256": "bf9ea82c019d9e83ac2c47108b689737a1b7a73bd1b11c9ed48744b7db90a273",
         "beds": [],
         "entrances": []
       }
@@ -267,7 +617,7 @@
     "minecraft:village/common/animals/cat_jellie": [
       {
         "kind": "decoration",
-        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "sha256": "31ae6850c9c75d0626f3b8fc14027b3bc1906ab0d14201101a67250835aec847",
         "beds": [],
         "entrances": []
       }
@@ -275,7 +625,7 @@
     "minecraft:village/common/animals/cat_persian": [
       {
         "kind": "decoration",
-        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "sha256": "be7ee0101982cfc5374215e566d7282280ef5122cd351874310cd911e58c5271",
         "beds": [],
         "entrances": []
       }
@@ -283,7 +633,7 @@
     "minecraft:village/common/animals/cat_ragdoll": [
       {
         "kind": "decoration",
-        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "sha256": "14d14c7039371b4f08a0360eb6b5611029fb6d577a3e532f53c70d1b7a4779bd",
         "beds": [],
         "entrances": []
       }
@@ -291,7 +641,7 @@
     "minecraft:village/common/animals/cat_red": [
       {
         "kind": "decoration",
-        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "sha256": "d9523300a7a0cf0611562771490f3a11429d1f72dec987a88dea6538da8aed00",
         "beds": [],
         "entrances": []
       }
@@ -299,7 +649,7 @@
     "minecraft:village/common/animals/cat_siamese": [
       {
         "kind": "decoration",
-        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "sha256": "30ca3860e4c19669f380c5b5e01adb91112be60698c4cebd3cd94e3e391f0e9b",
         "beds": [],
         "entrances": []
       }
@@ -307,7 +657,7 @@
     "minecraft:village/common/animals/cat_tabby": [
       {
         "kind": "decoration",
-        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "sha256": "5a9800b43db9ebc3a0811e03d43ab7183110c32f76e727bee2bd24e387161880",
         "beds": [],
         "entrances": []
       }
@@ -315,7 +665,7 @@
     "minecraft:village/common/animals/cat_white": [
       {
         "kind": "decoration",
-        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "sha256": "81f96e424ee2856a15a9d6e235af3a3ca7a39b839bdbfbedf44162d29fb3cbf2",
         "beds": [],
         "entrances": []
       }
@@ -323,7 +673,7 @@
     "minecraft:village/common/iron_golem": [
       {
         "kind": "decoration",
-        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "sha256": "4e0c8c2fb1a5d7aa45e4918003cca74991f02ffa21284f341468d28d8db402fa",
         "beds": [],
         "entrances": []
       }
@@ -331,7 +681,7 @@
     "minecraft:village/plains/villagers/baby": [
       {
         "kind": "service",
-        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "sha256": "53c1e3594bd22fd05fa5f939b6a235f77076963f7bb5c6dc5eb413b237564afd",
         "beds": [],
         "entrances": []
       }
@@ -339,7 +689,7 @@
     "minecraft:village/plains/villagers/nitwit": [
       {
         "kind": "service",
-        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "sha256": "4c7d496e0a4b22d93211626dd01742a93aa7a922c6498f42476bb958e1902e56",
         "beds": [],
         "entrances": []
       }
@@ -347,7 +697,7 @@
     "minecraft:village/plains/villagers/unemployed": [
       {
         "kind": "service",
-        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "sha256": "66b346caffa98caec6425b3f5529f3bc1802121f4c7d651320111fb186e5ffd1",
         "beds": [],
         "entrances": []
       }

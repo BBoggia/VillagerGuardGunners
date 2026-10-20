@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.raid.Raider;
 import tallestegg.guardvillagers.configuration.GuardConfig;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Ranks the existing perception sample, without another spatial query or sight pass. */
 public final class GuardTargetRanking {
@@ -77,7 +77,7 @@ public final class GuardTargetRanking {
                 && now - observation.attackEvidenceAt() < ThreatMemory.LIFETIME_TICKS) return true;
         // Match Guard Villagers' ordinary hostile families and its configurable selection rules.
         if (GuardConfig.COMMON.MobWhiteList.get().contains(candidate.getEncodeId())) return true;
-        return GuardConfig.AttackAllMobs ? candidate instanceof Enemy
+        return GuardConfig.COMMON.AttackAllMobs.get() ? candidate instanceof Enemy
                 : candidate instanceof Raider || candidate instanceof Witch
                     || (candidate instanceof Zombie && !(candidate instanceof ZombifiedPiglin));
     }

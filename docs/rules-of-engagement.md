@@ -44,7 +44,8 @@ For example, to allow a faction NPC in restricted modes:
 ```
 
 Save this as
-`data/villagerguardgunners/tags/entity_types/always_engage.json` in a datapack.
+`data/villagerguardgunners/tags/entity_type/always_engage.json` in a datapack.
+This is the Minecraft 1.21.1 path. Minecraft 1.20.1 packs use `entity_types`.
 The packaged tags are intentionally empty so the default remains compatible
 with Guard Villagers' own target configuration.
 

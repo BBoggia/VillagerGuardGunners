@@ -17,7 +17,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** One-time, bounded Guard Villagers creation used only by a claimed structure marker. */
 public final class GuardPostSpawner {
@@ -265,7 +265,6 @@ public final class GuardPostSpawner {
                 level,
                 level.getCurrentDifficultyAt(position),
                 MobSpawnType.STRUCTURE,
-                null,
                 null);
         return guard;
     }

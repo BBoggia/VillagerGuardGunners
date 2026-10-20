@@ -33,7 +33,7 @@ final class GuardOrderTemplateServiceContractTest {
                 () -> assertFalse(service.contains("GuardVillagers.hotvChecker")),
                 () -> assertTrue(permissions.contains("player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)")),
                 () -> assertTrue(permissions.contains("guard.getPlayerReputation(player)")),
-                () -> assertTrue(permissions.contains(">= GuardConfig.reputationRequirement")),
+                () -> assertTrue(permissions.contains(">= GuardConfig.COMMON.reputationRequirement.get()")),
                 () -> assertTrue(permissions.contains("ownerId.equals(player.getUUID())")),
                 () -> assertFalse(permissions.contains("GuardVillagers.hotvChecker")),
                 () -> assertTrue(service.contains("ModItems.ORDERS_LEDGER.get()")),

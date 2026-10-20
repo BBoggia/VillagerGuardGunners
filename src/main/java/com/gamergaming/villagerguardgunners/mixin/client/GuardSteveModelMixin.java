@@ -6,13 +6,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tallestegg.guardvillagers.client.models.GuardSteveModel;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Restores TaCZ's pose after the Steve Guard model's additional animation. */
 @Mixin(GuardSteveModel.class)
 public abstract class GuardSteveModelMixin {
     @Inject(
-            method = "setupAnim(Ltallestegg/guardvillagers/entities/Guard;FFFFF)V",
+            method = "setupAnim(Ltallestegg/guardvillagers/common/entities/Guard;FFFFF)V",
             at = @At("TAIL"),
             remap = false)
     private void reapplyNativeGunPose(

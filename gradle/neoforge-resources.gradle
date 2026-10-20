@@ -1,0 +1,190 @@
+// Current-game resources. The retained Forge build is not applied.
+def generatedWatchtowerTemplateDirectory = layout.buildDirectory.dir('generated/watchtower-template')
+def watchtowerTemplateBlueprint = layout.projectDirectory.file('src/main/templates/villagerguardgunners/watchtower.json')
+def generatedVillageBuildingTemplateDirectory = layout.buildDirectory.dir('generated/village-building-templates')
+sourceSets.main.resources.srcDirs(generatedWatchtowerTemplateDirectory, generatedVillageBuildingTemplateDirectory)
+
+tasks.register('generateWatchtowerTemplate') {
+    description = 'Compiles the reviewable watchtower layer blueprint into a Minecraft structure NBT.'
+    File blueprint = watchtowerTemplateBlueprint.asFile
+    File template = generatedWatchtowerTemplateDirectory.get().file(
+            'data/villagerguardgunners/structure/watchtower.nbt').asFile
+    inputs.file blueprint
+    outputs.file template
+
+    doLast {
+        Map<String, Object> root = new groovy.json.JsonSlurper().parse(blueprint) as Map
+        List<Integer> size = root.size as List<Integer>
+        List<Map<String, Object>> palette = root.palette as List<Map<String, Object>>
+        List<List<String>> layers = root.layers as List<List<String>>
+
+        if (size.size() != 3 || size.any { it <= 0 }) {
+            throw new GradleException('Watchtower size must contain three positive dimensions')
+        }
+        int width = size[0]
+        int height = size[1]
+        int depth = size[2]
+        if (layers.size() != height
+                || layers.any { it.size() != depth }
+                || layers.flatten().any { it.length() != width }) {
+            throw new GradleException(
+                    "Watchtower layers must exactly match ${width}x${height}x${depth}")
+        }
+
+        Map<String, Integer> states = [:]
+        Map<String, Map<String, Object>> paletteBySymbol = [:]
+        palette.eachWithIndex { entry, index ->
+            String symbol = entry.symbol as String
+            if (symbol.length() != 1 || states.put(symbol, index) != null) {
+                throw new GradleException(
+                        "Watchtower palette symbol must be unique and one character: ${symbol}")
+            }
+            paletteBySymbol[symbol] = entry
+            Map<String, Object> blockEntityData = (entry.nbt ?: [:]) as Map<String, Object>
+            if (!blockEntityData.isEmpty()) {
+                if (entry.name != 'minecraft:structure_block'
+                        || blockEntityData.keySet() != (['mode', 'metadata'] as Set)
+                        || blockEntityData.mode != 'DATA'
+                        || !(blockEntityData.metadata instanceof String)
+                        || (blockEntityData.metadata as String).length() > 128
+                        || (!((blockEntityData.metadata as String).startsWith('guard_post:'))
+                                && !((blockEntityData.metadata as String).startsWith('armory:')))) {
+                    throw new GradleException(
+                            "Watchtower marker ${symbol} has unsupported block-entity data")
+                }
+            }
+        }
+        Set<String> unknownSymbols = layers.flatten()
+                .collectMany { it.toList() }
+                .findAll { !states.containsKey(it) } as Set<String>
+        if (!unknownSymbols.isEmpty()) {
+            throw new GradleException(
+                    "Watchtower layers use unknown symbols: ${unknownSymbols.sort()}")
+        }
+        int markerCount = layers.flatten()
+                .collectMany { it.toList() }
+                .count { symbol ->
+                    !(((paletteBySymbol[symbol].nbt ?: [:]) as Map).isEmpty())
+                }
+        if (markerCount > 8) {
+            throw new GradleException('Watchtower blueprint exceeds the eight-marker hard limit')
+        }
+
+        template.parentFile.mkdirs()
+        template.withOutputStream { fileStream ->
+            new java.util.zip.GZIPOutputStream(fileStream).withCloseable { gzipStream ->
+                new DataOutputStream(gzipStream).withCloseable { output ->
+                    Closure<Void> namedTag = { int type, String name, Closure<Void> payload ->
+                        output.writeByte(type)
+                        output.writeUTF(name)
+                        payload.call()
+                        null
+                    }
+                    Closure<Void> stringTag = { String name, String value ->
+                        namedTag(8, name) { output.writeUTF(value) }
+                        null
+                    }
+                    Closure<Void> intTag = { String name, int value ->
+                        namedTag(3, name) { output.writeInt(value) }
+                        null
+                    }
+                    Closure<Void> intListTag = { String name, List<Integer> values ->
+                        namedTag(9, name) {
+                            output.writeByte(3)
+                            output.writeInt(values.size())
+                            values.each { output.writeInt(it) }
+                        }
+                        null
+                    }
+
+                    output.writeByte(10)
+                    output.writeUTF('')
+                    intTag('DataVersion', root.dataVersion as int)
+                    intListTag('size', size)
+
+                    namedTag(9, 'palette') {
+                        output.writeByte(10)
+                        output.writeInt(palette.size())
+                        palette.each { entry ->
+                            stringTag('Name', entry.name as String)
+                            Map<String, String> properties =
+                                    (entry.properties ?: [:]) as Map<String, String>
+                            if (!properties.isEmpty()) {
+                                namedTag(10, 'Properties') {
+                                    properties.keySet().sort().each { property ->
+                                        stringTag(property, properties[property])
+                                    }
+                                    output.writeByte(0)
+                                }
+                            }
+                            output.writeByte(0)
+                        }
+                    }
+
+                    namedTag(9, 'blocks') {
+                        output.writeByte(10)
+                        output.writeInt(width * height * depth)
+                        layers.eachWithIndex { layer, y ->
+                            layer.eachWithIndex { row, z ->
+                                row.toList().eachWithIndex { symbol, x ->
+                                    intListTag('pos', [x, y, z])
+                                    intTag('state', states[symbol])
+                                    Map<String, Object> blockEntityData =
+                                            (paletteBySymbol[symbol].nbt ?: [:]) as Map<String, Object>
+                                    if (!blockEntityData.isEmpty()) {
+                                        namedTag(10, 'nbt') {
+                                            blockEntityData.keySet().sort().each { key ->
+                                                stringTag(key, blockEntityData[key] as String)
+                                            }
+                                            output.writeByte(0)
+                                        }
+                                    }
+                                    output.writeByte(0)
+                                }
+                            }
+                        }
+                    }
+
+                    namedTag(9, 'entities') {
+                        output.writeByte(10)
+                        output.writeInt(0)
+                    }
+                    output.writeByte(0)
+                }
+            }
+        }
+    }
+}
+
+
+apply from: 'gradle/village-building-layouts.gradle'
+apply from: 'gradle/village-building-templates.gradle'
+tasks.register('generateVillageBuildingTemplates') {
+    inputs.files('src/main/templates/villagerguardgunners/village_buildings.json',
+            'gradle/village-building-layouts.gradle', 'gradle/village-building-templates.gradle')
+    outputs.dir generatedVillageBuildingTemplateDirectory
+    doLast {
+        Map root = new groovy.json.JsonSlurper().parse(file('src/main/templates/villagerguardgunners/village_buildings.json')) as Map
+        publishVillageBuildingResources(root, generatedVillageBuildingTemplateDirectory.get().asFile, new File(temporaryDir, 'resources'))
+    }
+}
+tasks.named('processResources') {
+    dependsOn 'generateWatchtowerTemplate', 'generateVillageBuildingTemplates'
+}
+tasks.register('combinedBuildingIntegration', Exec) {
+    group = 'distribution'
+    description = 'Builds Minecraft 1.21.1 companion packs without changing Forge outputs.'
+    dependsOn 'generateVillageBuildingTemplates'
+    inputs.files(fileTree('tools') { include '*.py' }, fileTree('src/structureDesign/resources'))
+    inputs.dir generatedVillageBuildingTemplateDirectory
+    outputs.dir layout.buildDirectory.dir('distributions/companion-packs')
+    commandLine 'python3', 'tools/build_neoforge_building_packs.py'
+}
+
+tasks.register('verifyNeoForgeCompanionPacks', Exec) {
+    group = 'verification'
+    dependsOn 'combinedBuildingIntegration'
+    inputs.dir layout.buildDirectory.dir('distributions/companion-packs')
+    inputs.file 'tools/validate_neoforge_resources.py'
+    commandLine 'python3', 'tools/validate_neoforge_resources.py'
+}

@@ -33,13 +33,13 @@ final class NaturalGuardLoadoutExampleDatapackTest {
     }
 
     @Test
-    void exampleIsAStandaloneMinecraftOneTwentyPointOneDatapack() throws IOException {
+    void exampleIsAStandaloneMinecraftOneTwentyOnePointOneDatapack() throws IOException {
         JsonObject root = readJson(examplePack.resolve("pack.mcmeta")).getAsJsonObject();
         JsonObject pack = root.getAsJsonObject("pack");
 
         assertEquals(Set.of("pack"), root.keySet());
         assertEquals(Set.of("description", "pack_format"), pack.keySet());
-        assertEquals(15, pack.get("pack_format").getAsInt());
+        assertEquals(48, pack.get("pack_format").getAsInt());
         assertFalse(Files.exists(
                 projectDirectory.resolve("src/main/resources/data/vgg_example")),
                 "Documentation examples must remain inert until a modpack installs them");

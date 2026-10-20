@@ -20,13 +20,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Marker;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import tallestegg.guardvillagers.GuardEntityType;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Loaded ticket queue. Initial credits, actual residents and weapon issuance remain independent. */
 public final class VillagePopulationRuntime {
@@ -108,7 +108,7 @@ public final class VillagePopulationRuntime {
     }
     public static void synchronizeGuard(Guard guard) {
         if (!(guard.level() instanceof ServerLevel current) || !ModConfigs.GUARD_GUNNERS.enabled.get()
-                || guard.isRemoved() || !guard.isAddedToWorld() || !current.getServer().isSameThread()) return;
+                || guard.isRemoved() || !(guard.level().getEntity(guard.getId()) == guard) || !current.getServer().isSameThread()) return;
         State state = LEVELS.computeIfAbsent(current, k -> new State());
         if (state.reconciled.contains(guard.getUUID())) return;
         CompoundTag persistent = guard.getPersistentData();
@@ -194,8 +194,8 @@ public final class VillagePopulationRuntime {
             }
         }
     }
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) for (ServerLevel level : event.getServer().getAllLevels()) tick(level);
+    public static void onServerTick(ServerTickEvent.Post event) {
+         for (ServerLevel level : event.getServer().getAllLevels()) tick(level);
     }
     public static void tick(ServerLevel level) {
         State state = LEVELS.get(level);
@@ -247,7 +247,7 @@ public final class VillagePopulationRuntime {
         if (guard == null) return;
         guard.setUUID(slot); guard.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, marker.getYRot(), 0);
         guard.setPersistenceRequired(); mark(guard, plan, source, ordinal);
-        guard.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null, null);
+        guard.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null);
         if (guard.isSpawnCancelled()) { guard.discard(); return; }
         if (!journal.reserve(slot, slot)) { guard.discard(); return; }
         boolean inserted = level.addFreshEntity(guard);

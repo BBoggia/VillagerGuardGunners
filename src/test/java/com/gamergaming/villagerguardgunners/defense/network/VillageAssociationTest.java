@@ -32,7 +32,7 @@ final class VillageAssociationTest {
         assertEquals(first.readinessNetwork(), networks.resolveNetworkId(leftNetwork));
         assertEquals(first.readinessNetwork(), networks.resolveNetworkId(rightNetwork));
         assertNotEquals(first.village(), second.village());
-        var restored = VillageRegistrySavedData.load(villages.save(new net.minecraft.nbt.CompoundTag()), dimension);
+        var restored = VillageRegistrySavedData.load(villages.save(new net.minecraft.nbt.CompoundTag(), net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty())), dimension);
         assertEquals(first, VillageDefenseAssociation.resolve(restored, networks, left.buildingId()));
         assertEquals(2, restored.size());
     }

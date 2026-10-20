@@ -8,11 +8,11 @@ import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import tallestegg.guardvillagers.VillagerToGuard;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.HandlerEvents;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Marks Guard Villagers' player conversion path, which bypasses finalizeSpawn. */
-@Mixin(VillagerToGuard.class)
+@Mixin(HandlerEvents.class)
 public abstract class VillagerToGuardMixin {
 
     @Redirect(

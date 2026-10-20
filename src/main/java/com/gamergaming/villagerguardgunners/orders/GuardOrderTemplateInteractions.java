@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.orders;
 
+import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplate.DecodeStatus;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplateService.OperationResult;
@@ -13,7 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Routes deliberate ledger use into the server-authoritative template service. */
 public final class GuardOrderTemplateInteractions {
@@ -53,7 +54,7 @@ public final class GuardOrderTemplateInteractions {
         }
 
         DecodeStatus templateStatus = GuardOrderTemplate.readFrom(
-                player.getItemInHand(ledgerHand).getTag()).status();
+                ItemCustomData.read(player.getItemInHand(ledgerHand))).status();
         boolean overwrite = player.isSecondaryUseActive();
         OperationResult result = overwrite || templateStatus == DecodeStatus.BLANK
                 ? GuardOrderTemplateService.capture(
@@ -122,7 +123,7 @@ public final class GuardOrderTemplateInteractions {
         return switch (status) {
             case CAPTURED, OVERWRITTEN -> SoundEvents.BOOK_PAGE_TURN;
             case APPLIED -> SoundEvents.EXPERIENCE_ORB_PICKUP;
-            case ALREADY_MATCHES -> SoundEvents.UI_BUTTON_CLICK.get();
+            case ALREADY_MATCHES -> SoundEvents.UI_BUTTON_CLICK.value();
             default -> SoundEvents.VILLAGER_NO;
         };
     }

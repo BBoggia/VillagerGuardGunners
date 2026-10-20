@@ -6,7 +6,7 @@ import com.gamergaming.villagerguardgunners.quartermaster.QuartermasterBlockEnti
 import java.util.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Incremental, copied assessment. Stock stays fixed for a scan; changes discard the estimate. */
 public final class ServiceSurvey {

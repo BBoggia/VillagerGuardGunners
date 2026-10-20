@@ -57,7 +57,6 @@ public final class QuartermasterScreen extends AbstractContainerScreen<Quarterma
     }
     @Override protected void containerTick() { super.containerTick(); updateControls(); }
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
     }

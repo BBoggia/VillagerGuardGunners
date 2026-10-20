@@ -12,12 +12,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
-import net.minecraftforge.event.entity.EntityMountEvent;
-import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Transient exclusive carrier/patient/cot claims. Vanilla saves the original passenger once. */
 public final class TransportRuntime {
@@ -260,7 +260,7 @@ public final class TransportRuntime {
         return !level.getBlockCollisions(null, box).iterator().hasNext() && !level.containsAnyLiquid(box);
     }
     public static void left(EntityLeaveLevelEvent event) { if (event.getEntity() instanceof Guard guard && !event.getLevel().isClientSide()) { cancel(guard); CotRestRuntime.left(guard); } }
-    public static void damaged(LivingDamageEvent event) { if (!event.isCanceled() && event.getAmount() > 0 && event.getEntity() instanceof Guard guard) cancel(guard); }
+    public static void damaged(LivingDamageEvent.Post event) { if (event.getNewDamage() > 0 && event.getEntity() instanceof Guard guard) cancel(guard); }
     public static void travel(EntityTravelToDimensionEvent event) {
         if (event.getEntity() instanceof Guard guard && busy(guard)) { var lease = lease(guard); if (lease != null && lease.carried) event.setCanceled(true); cancel(guard); }
     }

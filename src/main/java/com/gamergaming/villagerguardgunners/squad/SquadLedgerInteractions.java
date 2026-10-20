@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Routes deliberate sneak-use into the server-authoritative squad service. */
 public final class SquadLedgerInteractions {
@@ -136,7 +136,7 @@ public final class SquadLedgerInteractions {
             case CREATED_AND_ASSIGNED, BOUND_TO_EXISTING, RECOVERED_AND_BOUND ->
                     SoundEvents.BOOK_PAGE_TURN;
             case ASSIGNED, REASSIGNED -> SoundEvents.EXPERIENCE_ORB_PICKUP;
-            case REMOVED, CONFIRM_REASSIGNMENT -> SoundEvents.UI_BUTTON_CLICK.get();
+            case REMOVED, CONFIRM_REASSIGNMENT -> SoundEvents.UI_BUTTON_CLICK.value();
             default -> SoundEvents.VILLAGER_NO;
         };
     }

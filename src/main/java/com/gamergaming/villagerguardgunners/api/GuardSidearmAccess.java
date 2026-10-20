@@ -4,8 +4,8 @@ import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmStorage;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmStorageAccessKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import tallestegg.guardvillagers.entities.Guard;
+import net.neoforged.neoforge.items.IItemHandler;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Safe public view of guard sidearm state; it is not a Forge capability. */
 public interface GuardSidearmAccess {

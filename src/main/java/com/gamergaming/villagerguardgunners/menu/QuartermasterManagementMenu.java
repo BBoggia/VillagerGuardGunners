@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkHooks;
+
 
 /** Slotless interaction shell; all authority and navigation live on the server. */
 public final class QuartermasterManagementMenu extends AbstractContainerMenu {
@@ -129,7 +129,7 @@ public final class QuartermasterManagementMenu extends AbstractContainerMenu {
             }
             case ManagementProtocol.STOCK -> {
                 if(!session.stock()||!session.station().canInteract(player))return false;
-                NetworkHooks.openScreen(player,session.station(),session.station().getBlockPos());
+                player.openMenu(session.station(),session.station().getBlockPos());
                 return player.containerMenu instanceof QuartermasterMenu;
             }
             case ManagementProtocol.REFRESH -> {

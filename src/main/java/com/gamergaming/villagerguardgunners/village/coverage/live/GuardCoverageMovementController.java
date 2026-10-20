@@ -3,7 +3,7 @@ package com.gamergaming.villagerguardgunners.village.coverage.live;
 import com.gamergaming.villagerguardgunners.village.coverage.VillageCoverageReservations.Lease;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.pathfinder.Path;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Owns navigation only while selected by the existing automatic MOVE goal. */
 public final class GuardCoverageMovementController {

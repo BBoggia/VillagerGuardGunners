@@ -1,7 +1,7 @@
 {
   "format": 2,
   "mods": {
-    "ctov": "[3.4.14]"
+    "ctov": "[3.6.3]"
   },
   "priority": 20,
   "intent": "friendly",
@@ -42,6 +42,14 @@
         "entrances": []
       }
     ],
+    "ctov:village/mesa/deco/archeology_tent": [
+      {
+        "kind": "decoration",
+        "sha256": "4b895281a97f433a32641427a20ce9dcd704cc60676b2dab996d35e4469583d1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
     "ctov:village/mesa/deco/bard_house": [
       {
         "kind": "decoration",
@@ -56,6 +64,20 @@
         "sha256": "4ac6ea9686e17bf772e5921edf8e79cddf18c811e44af7295ea5534ade79d27e",
         "beds": [],
         "entrances": []
+      }
+    ],
+    "ctov:village/mesa/deco/climatologist": [
+      {
+        "kind": "decoration",
+        "sha256": "95eb953c750a6eec8d0ed3376f4313a5b099fd29bed70796ffec69d4a7bc25c2",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            1
+          ]
+        ]
       }
     ],
     "ctov:village/mesa/deco/copper_golem": [
@@ -101,7 +123,7 @@
     "ctov:village/mesa/deco/garbage_heaps": [
       {
         "kind": "decoration",
-        "sha256": "bbb612478a687e2d54ae4bdbeaf856ae949f242b14eb7c4c80527f8bfe8bb938",
+        "sha256": "0ce6db2c5857fef13f31a5e8a4a0483ca4af6f1d4e3bc9f3a544f32742c56306",
         "beds": [],
         "entrances": []
       }
@@ -1242,6 +1264,66 @@
         ]
       }
     ],
+    "ctov:village/mesa/jobsite/tavern": [
+      {
+        "kind": "residence",
+        "sha256": "96c326b53d79bb9945c21f333b94b1789ad83b30dd0f07480d07b4f050adb3e7",
+        "beds": [
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            2,
+            5,
+            10
+          ],
+          [
+            4,
+            5,
+            4
+          ],
+          [
+            9,
+            5,
+            4
+          ],
+          [
+            9,
+            5,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            5,
+            5,
+            7
+          ],
+          [
+            6,
+            5,
+            6
+          ]
+        ]
+      }
+    ],
     "ctov:village/mesa/jobsite/vault": [
       {
         "kind": "service",
@@ -1365,7 +1447,7 @@
     "ctov:village/mesa/roads/respawn_obelisk": [
       {
         "kind": "road",
-        "sha256": "c37673e9455da4b2c8d3173fabf9364d8916fbe681c598a7e16e046693adcc84",
+        "sha256": "5600e2403c777aba373a44fc231c1b48c669433247a37a80374c391068d9e6e0",
         "beds": [],
         "entrances": []
       }
@@ -1373,7 +1455,7 @@
     "ctov:village/mesa/roads/straight": [
       {
         "kind": "road",
-        "sha256": "5012ff10d535b51ce98ee0f871305b9e0da816e7d7da586f4b401c0c0eefaa4f",
+        "sha256": "03d2cd06feef7720d130fc1f15862e3a4e86f0260d56d162e044136699304bf4",
         "beds": [],
         "entrances": []
       }
@@ -1381,7 +1463,7 @@
     "ctov:village/mesa/roads/terminator": [
       {
         "kind": "road",
-        "sha256": "79b1ea9eeee207ae8dc240daec9840bd85374b9ab6013646aa64f72b8c26db54",
+        "sha256": "2f8cca5025b195e13e8461ad6dc0100d6286c63e9c8b0c6c5ab3ec796220a3fa",
         "beds": [],
         "entrances": []
       }
@@ -1397,7 +1479,7 @@
     "minecraft:village/desert/camel_spawn": [
       {
         "kind": "decoration",
-        "sha256": "b86c6a72779416021fd563f428cf292fc482a6846249a9954b867f3e9576729b",
+        "sha256": "bd44a868e22f90212ebaee100713b2c5435fcbeda98a7bff8536fa20014ec95b",
         "beds": [],
         "entrances": []
       }
@@ -1405,7 +1487,7 @@
     "minecraft:village/desert/villagers/baby": [
       {
         "kind": "service",
-        "sha256": "51498c4f5b07357eb709b52c2fb37a5a3f7ff1295749d9505fc235fdcdf55977",
+        "sha256": "2dadd00da8300565daf2bd929630d6b86c18a93359384012c8d820a25d7cd43a",
         "beds": [],
         "entrances": []
       }
@@ -1413,7 +1495,7 @@
     "minecraft:village/desert/villagers/nitwit": [
       {
         "kind": "service",
-        "sha256": "ba69be4e86e254ffcde34330bdc2382ffe5123371607ab679270d45c79e62ffe",
+        "sha256": "6252ceca78d5df5076f3f3a7dc8980d325edd12cfbfd0616b47f3408206b3b0a",
         "beds": [],
         "entrances": []
       }
@@ -1421,7 +1503,7 @@
     "minecraft:village/desert/villagers/unemployed": [
       {
         "kind": "service",
-        "sha256": "e88bf4fff7041107588b4cee6123adf907c3999674be7086cbcafbfc07482f1f",
+        "sha256": "3d31e152bf63ceabd98c604ace96a8133389ba6f4e9fe3b0f1a135913142a5ac",
         "beds": [],
         "entrances": []
       }

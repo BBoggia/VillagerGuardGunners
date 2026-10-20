@@ -51,7 +51,7 @@ final class VillageDefenseBuildingsStepSevenContractTest {
     @Test
     void initialStockTableIsAmmoOnlyConstantAndBounded() throws IOException {
         JsonObject root = JsonParser.parseString(read(
-                "src/main/resources/data/villagerguardgunners/loot_tables/chests/"
+                "src/main/resources/data/villagerguardgunners/loot_table/chests/"
                         + "village_armory.json")).getAsJsonObject();
         JsonArray pools = root.getAsJsonArray("pools");
 
@@ -73,7 +73,7 @@ final class VillageDefenseBuildingsStepSevenContractTest {
             throws IOException {
         String config = read("src/main/java/com/gamergaming/villagerguardgunners/"
                 + "config/VillagerGuardGunnersConfig.java");
-        String build = read("build.gradle");
+        String build = PackagedArtifact.entries();
         String docs = read("docs/village-defense-buildings.md");
 
         assertAll(
@@ -82,7 +82,7 @@ final class VillageDefenseBuildingsStepSevenContractTest {
                 () -> assertTrue(config.contains("stockArmories")),
                 () -> assertTrue(config.contains("restoreVersionFifteenDefaults")),
                 () -> assertTrue(build.contains(
-                        "loot_tables/chests/village_armory.json")),
+                        "loot_table/chests/village_armory.json")),
                 () -> assertTrue(build.contains(
                         "VillageBuildingArmoryLifecycle.class")),
                 () -> assertTrue(docs.contains("no recurring")),

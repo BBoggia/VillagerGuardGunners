@@ -8,7 +8,10 @@ public final class BulkProtocol {
     public static final int OPEN=0,TOGGLE=1,SQUAD=2,CLEAR=3,POLICY=4,PROFILE=5,REPLACE=6,ASSIGN=7,PREVIEW=8,APPLY=9,PAGE=10,VIEW=11,CLOSE=12;
     // The loaded index holds 4096 guards; retain up to 64 already-selected identities too.
     public static final int PAGE_SIZE=5,MAX_PAGE=831,MAX_PACKET=32768;
-    public record Navigation(int menu,UUID session,int sequence,boolean active) {
+    public record Navigation(int menu,UUID session,int sequence,boolean active) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<Navigation> TYPE = new Type<>(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "management_navigation"));
+        @Override public Type<Navigation> type() { return TYPE; }
+
         public Navigation {
             if(menu<1||menu>100||session==null||sequence<1)throw new IllegalArgumentException("Invalid bulk navigation");
         }
@@ -19,7 +22,10 @@ public final class BulkProtocol {
             if(b.isReadable())throw new IllegalArgumentException("Trailing navigation data");return v;
         }
     }
-    public record Action(int menu,UUID session,int sequence,int action,int value,UUID guard,UUID token) {
+    public record Action(int menu,UUID session,int sequence,int action,int value,UUID guard,UUID token) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<Action> TYPE = new Type<>(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "bulk_action"));
+        @Override public Type<Action> type() { return TYPE; }
+
         public Action {
             if(menu<1||menu>100||session==null||sequence<1||action<OPEN||action>CLOSE||value< -1||value>MAX_PAGE
                     ||(action==TOGGLE||action==SQUAD)!=(guard!=null)||(action==APPLY)!=(token!=null))throw new IllegalArgumentException("Invalid bulk action");
@@ -41,7 +47,10 @@ public final class BulkProtocol {
     }
     public record State(int menu,UUID session,int revision,int view,int page,int pages,int selected,int excluded,boolean limited,
             int policy,String profile,int replacement,int assignment,int currentPolicy,String currentProfile,int currentReplacement,int currentAssignment,
-            UUID token,long expiresAt,String status,int applied,boolean refreshing,List<Line> rows) {
+            UUID token,long expiresAt,String status,int applied,boolean refreshing,List<Line> rows) implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<State> TYPE = new Type<>(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "bulk_state"));
+        @Override public Type<State> type() { return TYPE; }
+
         public State {
             rows=List.copyOf(rows);
             if(menu<1||menu>100||session==null||revision<1||view<0||view>2||page<0||page>MAX_PAGE||pages<1||pages>MAX_PAGE+1||page>=pages

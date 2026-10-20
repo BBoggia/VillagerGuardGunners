@@ -22,16 +22,17 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import tallestegg.guardvillagers.GuardPacketHandler;
 import tallestegg.guardvillagers.GuardVillagers;
 import tallestegg.guardvillagers.configuration.GuardConfig;
-import tallestegg.guardvillagers.entities.Guard;
+import tallestegg.guardvillagers.common.entities.Guard;
 import tallestegg.guardvillagers.networking.GuardFollowPacket;
 import tallestegg.guardvillagers.networking.GuardSetPatrolPosPacket;
 
@@ -39,17 +40,17 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
 
     private static final ResourceLocation GUARD_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(VillagerGuardGunners.MODID, "textures/gui/gunner_inventory.png");
 
-    private static final ResourceLocation GUARD_FOLLOWING_ICON = ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, "textures/container/following_icons.png");
-    private static final ResourceLocation GUARD_NOT_FOLLOWING_ICON = ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, "textures/container/not_following_icons.png");
-    private static final ResourceLocation PATROL_ICON = ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, "textures/container/patrollingui.png");
-    private static final ResourceLocation NOT_PATROLLING_ICON = ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, "textures/container/notpatrollingui.png");
-    private static final ResourceLocation GUI_ICONS_LOCATION =
-            ResourceLocation.withDefaultNamespace("textures/gui/icons.png");
+    private static final WidgetSprites GUARD_FOLLOWING_ICON = guardSprites("following/following", "following/following_highlighted");
+    private static final WidgetSprites GUARD_NOT_FOLLOWING_ICON = guardSprites("following/not_following", "following/not_following_highlighted");
+    private static final WidgetSprites PATROL_ICON = guardSprites("patrolling/patrolling1", "patrolling/patrolling2");
+    private static final WidgetSprites NOT_PATROLLING_ICON = guardSprites("patrolling/notpatrolling1", "patrolling/notpatrolling2");
+
+    private static WidgetSprites guardSprites(String normal, String highlighted) {
+        return new WidgetSprites(ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, normal),
+                ResourceLocation.fromNamespaceAndPath(GuardVillagers.MODID, highlighted));
+    }
     private static final int STATUS_ICON_X = 80;
     private static final int STATUS_ICON_SPACING = 6;
-    private static final int EMPTY_HEART_TEXTURE_X = 16;
-    private static final int FULL_HEART_TEXTURE_X = 34;
-    private static final int HALF_HEART_TEXTURE_X = 43;
     private static final int AMMO_HEADER_X = 96;
     private static final int AMMO_HEADER_Y = 33;
     private static final int AMMO_HEADER_HEIGHT = 11;
@@ -86,7 +87,6 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
     private long lastAmmoFingerprintTick = Long.MIN_VALUE;
     private float mousePosX;
     private float mousePosY;
-    private boolean buttonPressed;
     private final Button[] orderButtons = new Button[OrderField.COUNT];
     private Button recoveryButton;
     private Button medicButton, retreatButton;
@@ -111,15 +111,15 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         int buttonHeight = 18;
         int buttonY = this.topPos + 1;
 
-        if ((GuardConfig.followHero && player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) || !GuardConfig.followHero) {
-            this.addRenderableWidget(new GuardGuiButton(this.leftPos + 136, buttonY, buttonWidth, buttonHeight, 0, 0, 19, GUARD_FOLLOWING_ICON, GUARD_NOT_FOLLOWING_ICON, true, (button) -> {
-                GuardPacketHandler.INSTANCE.sendToServer(new GuardFollowPacket(guard.getId()));
+        if ((GuardConfig.COMMON.followHero.get() && player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) || !GuardConfig.COMMON.followHero.get()) {
+            this.addRenderableWidget(new GuardGuiButton(this.leftPos + 136, buttonY, buttonWidth, buttonHeight, GUARD_FOLLOWING_ICON, GUARD_NOT_FOLLOWING_ICON, true, (button) -> {
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new GuardFollowPacket(guard.getId()));
             }));
         }
-        if ((GuardConfig.setGuardPatrolHotv && player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) || !GuardConfig.setGuardPatrolHotv) {
-            this.addRenderableWidget(new GuardGuiButton(this.leftPos + 156, buttonY, buttonWidth, buttonHeight, 0, 0, 19, PATROL_ICON, NOT_PATROLLING_ICON, false, (button) -> {
-                buttonPressed = !buttonPressed;
-                GuardPacketHandler.INSTANCE.sendToServer(new GuardSetPatrolPosPacket(guard.getId(), buttonPressed));
+        if ((GuardConfig.COMMON.setGuardPatrolHotv.get() && player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) || !GuardConfig.COMMON.setGuardPatrolHotv.get()) {
+            this.addRenderableWidget(new GuardGuiButton(this.leftPos + 156, buttonY, buttonWidth, buttonHeight, PATROL_ICON, NOT_PATROLLING_ICON, false, (button) -> {
+                // The NeoForge packet carries the current state; Guard Villagers toggles it on the server.
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new GuardSetPatrolPosPacket(guard.getId(), guard.isPatrolling()));
             }));
         }
 
@@ -242,7 +242,7 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
                 SLOT_BACKGROUND_SOURCE_Y,
                 18,
                 18);
-        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics,i + 51, j + 75, 30, (float) (i + 51) - this.mousePosX, (float) (j + 75 - 50) - this.mousePosY, this.guard);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, i + 26, j + 8, i + 76, j + 78, 30, 0.0625F, this.mousePosX, this.mousePosY, this.guard);
 
         int panelX = orderPanelX();
         int panelBottom = this.topPos + this.imageHeight;
@@ -296,15 +296,9 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
         } else if (armor > 0) {
             for (int index = 0; index < 10; index++) {
                 int armorPoint = index * 2 + 1;
-                int textureX = armorPoint < armor ? 34 : armorPoint == armor ? 25 : 16;
-                graphics.blit(
-                        GUI_ICONS_LOCATION,
-                        STATUS_ICON_X + index * STATUS_ICON_SPACING,
-                        20,
-                        textureX,
-                        9,
-                        9,
-                        9);
+                ResourceLocation armorSprite = ResourceLocation.withDefaultNamespace(
+                        armorPoint < armor ? "hud/armor_full" : armorPoint == armor ? "hud/armor_half" : "hud/armor_empty");
+                graphics.blitSprite(armorSprite, STATUS_ICON_X + index * STATUS_ICON_SPACING, 20, 9, 9);
             }
         }
         GuardAmmoSummary.Snapshot ammoSummary = currentAmmoSummary();
@@ -399,22 +393,13 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
             int y,
             boolean container,
             boolean halfHeart) {
-        int textureX = container
-                ? EMPTY_HEART_TEXTURE_X
-                : halfHeart ? HALF_HEART_TEXTURE_X : FULL_HEART_TEXTURE_X;
-        graphics.blit(
-                GUI_ICONS_LOCATION,
-                x,
-                y,
-                textureX,
-                0,
-                9,
-                9);
+        ResourceLocation sprite = ResourceLocation.withDefaultNamespace(
+                container ? "hud/heart/container" : halfHeart ? "hud/heart/half" : "hud/heart/full");
+        graphics.blitSprite(sprite, x, y, 9, 9);
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics);
         this.mousePosX = (float) mouseX;
         this.mousePosY = (float) mouseY;
         super.render(graphics, mouseX, mouseY, partialTicks);
@@ -717,17 +702,18 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
             return first.isEmpty() && second.isEmpty();
         }
         return first.getCount() == second.getCount()
-                && ItemStack.isSameItemSameTags(first, second);
+                && ItemStack.isSameItemSameComponents(first, second);
     }
 
-    class GuardGuiButton extends ImageButton {
-        private ResourceLocation texture;
-        private ResourceLocation newTexture;
-        private boolean isFollowButton;
+    class GuardGuiButton extends net.minecraft.client.gui.components.Button {
+        private final WidgetSprites texture;
+        private final WidgetSprites newTexture;
+        private final boolean isFollowButton;
 
-        public GuardGuiButton(int xIn, int yIn, int widthIn, int heightIn, int xTexStartIn, int yTexStartIn, int yDiffTextIn, ResourceLocation resourceLocationIn, ResourceLocation newTexture, boolean isFollowButton, OnPress onPressIn) {
-            super(xIn, yIn, widthIn, heightIn, xTexStartIn, yTexStartIn, yDiffTextIn, resourceLocationIn, onPressIn);
-            this.texture = resourceLocationIn;
+        public GuardGuiButton(int x, int y, int width, int height, WidgetSprites texture,
+                WidgetSprites newTexture, boolean isFollowButton, OnPress onPress) {
+            super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
+            this.texture = texture;
             this.newTexture = newTexture;
             this.isFollowButton = isFollowButton;
         }
@@ -740,15 +726,9 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
 
         @Override
         public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-            ResourceLocation icon = this.requirementsForTexture() ? texture : newTexture;
-            RenderSystem.setShaderTexture(0, icon);
-            int i = this.yTexStart;
-            if (this.isHoveredOrFocused()) {
-                i += this.yDiffTex;
-            }
-
-            RenderSystem.enableDepthTest();
-            graphics.blit(icon, this.getX(), this.getY(), (float) this.xTexStart, (float) i, this.width, this.height, this.textureWidth, this.textureHeight);
+            WidgetSprites sprites = this.requirementsForTexture() ? texture : newTexture;
+            graphics.blitSprite(sprites.get(isActive(), isHoveredOrFocused()),
+                    getX(), getY(), width, height);
         }
     }
 

@@ -15,7 +15,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import tallestegg.guardvillagers.entities.Guard;
 
-/** Performs the one entity query allowed for a shot that is actually due. */
+/** Queries current world state for a shot that is actually due. */
 public final class GuardFriendlyFireSafety {
     private GuardFriendlyFireSafety() {
     }
@@ -60,6 +60,12 @@ public final class GuardFriendlyFireSafety {
                 return found.stream().map(entity -> new GuardShotSafety.Candidate(entity.getId(),
                         entity.getBoundingBox().minmax(com.tacz.guns.util.HitboxHelper.getFixedBoundingBox(entity, shooter)),
                         isProtected(shooter, entity))).toList();
+            }
+
+            @Override
+            public boolean isDry(net.minecraft.core.BlockPos pos) {
+                return level.isOutsideBuildHeight(pos)
+                        || level.hasChunkAt(pos) && level.getFluidState(pos).isEmpty();
             }
 
             @Override

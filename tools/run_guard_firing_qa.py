@@ -51,7 +51,7 @@ def regression_guns(tacz, destination):
     for name in ['dynamic', 'dynamic-explosion', 'dynamic-explosion-values', 'dynamic-pellets', 'unsupported', 'oversized']:
         data = copy.deepcopy(base)
         if name == 'oversized':
-            data['bullet']['life'] = 20
+            data['bullet']['life'] = 100
         else:
             data['script'] = 'vgg_aim_qa:' + name
         if name == 'dynamic-pellets':
@@ -181,7 +181,8 @@ def main():
     parser.add_argument('--mods', type=Path, required=True, help='Directory containing the four dependencies')
     parser.add_argument('--libraries', type=Path, required=True, help='Existing installed Forge server libraries')
     parser.add_argument('--output', type=Path, required=True, help='New disposable server directory')
-    parser.add_argument('--mode', choices=['firing', 'safety', 'regression', 'smoke'], default='firing')
+    parser.add_argument('--mode', choices=['firing', 'safety', 'regression', 'packSafety', 'smoke'], default='firing')
+    parser.add_argument('--extra-mod', type=Path, action='append', default=[], help='Additional installed mod JAR; repeat for gun packs and their dependencies')
     parser.add_argument('--observer', type=Path, default=ROOT / 'build/accuracy-qa/vgg-accuracy-probe.jar')
     parser.add_argument('--java', type=Path, default=Path('/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java'))
     parser.add_argument('--timeout', type=int, default=300)

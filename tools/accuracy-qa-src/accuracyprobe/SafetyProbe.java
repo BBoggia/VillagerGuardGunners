@@ -78,8 +78,7 @@ public final class SafetyProbe {
                 // Explicit native stance fixtures; this test does not simulate ADS timing or fire rounds.
                 com.tacz.guns.entity.sync.ModSyncedEntityData.AIMING_PROGRESS_KEY.setValue(guard, 0.0F);
                 var hip = controller.captureShotBallistics(1).orElseThrow();
-                expect("native-hip-" + gun, shot(straight), hip, gun.equals("glock_17")
-                        ? GuardShotSafety.Status.CLEAR : GuardShotSafety.Status.EXCESSIVE_ENVELOPE);
+                expect("native-hip-" + gun, shot(straight), hip, GuardShotSafety.Status.CLEAR);
                 com.tacz.guns.entity.sync.ModSyncedEntityData.AIMING_PROGRESS_KEY.setValue(guard, 1.0F);
                 var resolved = controller.captureShotBallistics(1).orElseThrow();
                 expect("native-aimed-" + gun, shot(straight), resolved, GuardShotSafety.Status.CLEAR);

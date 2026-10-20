@@ -8,10 +8,12 @@ import net.minecraft.world.phys.Vec3;
 
 /** Immutable, conservative envelope for one native kinetic discharge, not a firing approval. */
 public final class GuardShotEnvelope {
-    public static final int MAX_LIFE_TICKS = 200;
-    public static final double MAX_TRAVEL = 1024;
-    public static final double MAX_PADDING = 32;
-    public static final int MAX_QUERY_CHUNKS = 1024;
+    public static final int MAX_LIFE_TICKS = 400;
+    public static final double MAX_TRAVEL = 8192;
+    public static final double MAX_PADDING = 256;
+    public static final int MAX_QUERY_CHUNKS = 8192;
+    private static final int QUERY_STRIDE = 64;
+    private static final int MAX_QUERY_BOXES = 256;
     private static final double ROUNDING = 0.0002;
 
     /** Speed is blocks/tick; blast reach is damage reach, not the native explosion power. */
@@ -31,9 +33,10 @@ public final class GuardShotEnvelope {
     private final double spread;
     private final List<Slice> slices;
     private final AABB bounds;
+    private final List<AABB> queries;
 
     private GuardShotEnvelope(GuardShotAim aim, Ballistics ballistics, double clearance,
-                              Vec3 velocity, double spread, List<Slice> slices, AABB bounds) {
+                              Vec3 velocity, double spread, List<Slice> slices, AABB bounds, List<AABB> queries) {
         this.aim = aim;
         this.ballistics = ballistics;
         this.clearance = clearance;
@@ -41,6 +44,7 @@ public final class GuardShotEnvelope {
         this.spread = spread;
         this.slices = List.copyOf(slices);
         this.bounds = bounds;
+        this.queries = List.copyOf(queries);
     }
 
     public static Preparation prepare(GuardShotAim aim, Ballistics b, double clearance) {
@@ -101,19 +105,96 @@ public final class GuardShotEnvelope {
         }
         // TaCZ's entity search expands its sweep by one block before applying fixed hitboxes.
         bounds = bounds.inflate(1);
-        long chunksX = ((long) Math.floor(bounds.maxX) >> 4) - ((long) Math.floor(bounds.minX) >> 4) + 1;
-        long chunksZ = ((long) Math.floor(bounds.maxZ) >> 4) - ((long) Math.floor(bounds.minZ) >> 4) + 1;
-        if (chunksX * chunksZ > MAX_QUERY_CHUNKS) {
-            return new Preparation(Failure.EXCESSIVE_ENVELOPE, null);
-        }
+        // Partition along the dominant horizontal axis. Each strip contains every possible
+        // trajectory there, but excludes the empty corners of a long diagonal's bounding box.
+        List<AABB> queries = queries(aim.projectileOrigin(), velocity, spread, fastDistance,
+                clearance + b.blastReach + 1, bounds);
+        if (queries == null) return new Preparation(Failure.EXCESSIVE_ENVELOPE, null);
         return new Preparation(Failure.NONE,
-                new GuardShotEnvelope(aim, b, clearance, velocity, spread, slices, bounds));
+                new GuardShotEnvelope(aim, b, clearance, velocity, spread, slices, bounds, queries));
+    }
+
+    private static List<AABB> queries(Vec3 origin, Vec3 velocity, double spread, double end,
+                                     double padding, AABB bounds) {
+        boolean xAxis = Math.abs(velocity.x) >= Math.abs(velocity.z);
+        double major = xAxis ? velocity.x : velocity.z;
+        double minor = xAxis ? velocity.z : velocity.x;
+        double start = xAxis ? bounds.minX : bounds.minZ;
+        double stop = xAxis ? bounds.maxX : bounds.maxZ;
+        double originMajor = xAxis ? origin.x : origin.z;
+        double originMinor = xAxis ? origin.z : origin.x;
+        List<AABB> queries = new ArrayList<>();
+        long chunks = 0;
+        for (double lo = start; lo < stop; lo += QUERY_STRIDE) {
+            if (queries.size() >= MAX_QUERY_BOXES) return null;
+            double hi = Math.min(stop, lo + QUERY_STRIDE);
+            double min = xAxis ? bounds.minZ : bounds.minX;
+            double max = xAxis ? bounds.maxZ : bounds.maxX;
+            if (Math.abs(major) > spread) {
+                double near = major > 0 ? lo - originMajor : originMajor - hi;
+                double far = major > 0 ? hi - originMajor : originMajor - lo;
+                double from = Math.max(0, (near - padding) / (Math.abs(major) + spread));
+                double to = Math.min(end, Math.max(0, (far + padding) / (Math.abs(major) - spread)));
+                double width = spread * to + padding;
+                min = Math.max(min, originMinor + Math.min(minor * from, minor * to) - width);
+                max = Math.min(max, originMinor + Math.max(minor * from, minor * to) + width);
+            }
+            AABB query = xAxis ? new AABB(lo, bounds.minY, min, hi, bounds.maxY, max)
+                    : new AABB(min, bounds.minY, lo, max, bounds.maxY, hi);
+            // Include the entity-section search's two-block margin in the work budget.
+            long nx = ((long)Math.floor(query.maxX + 2) >> 4) - ((long)Math.floor(query.minX - 2) >> 4) + 1;
+            long nz = ((long)Math.floor(query.maxZ + 2) >> 4) - ((long)Math.floor(query.minZ - 2) >> 4) + 1;
+            chunks += nx * nz;
+            if (chunks > MAX_QUERY_CHUNKS) return null;
+            queries.add(query);
+        }
+        return queries;
     }
 
     public GuardShotAim aim() { return aim; }
     public Ballistics ballistics() { return ballistics; }
     public double clearance() { return clearance; }
     public AABB bounds() { return bounds; }
+    public List<AABB> queries() { return queries; }
+
+    /**
+     * Air-only prefix ending after all pellets escape a vulnerable area's horizontal extent.
+     * The caller must verify that every possible water-contact block in this prefix is dry.
+     * Horizontal drag cannot reverse motion, so later water/gravity cannot return a pellet
+     * to the area. Vertical shots and profiles without a proven escape keep the full envelope.
+     */
+    GuardShotEnvelope dryEscapePrefix(AABB danger) {
+        boolean xAxis = Math.abs(velocity.x) >= Math.abs(velocity.z);
+        double major = xAxis ? velocity.x : velocity.z;
+        if (Math.abs(major) <= spread) return null;
+        double origin = xAxis ? aim.projectileOrigin().x : aim.projectileOrigin().z;
+        double edge = xAxis ? (major > 0 ? danger.maxX : danger.minX)
+                : (major > 0 ? danger.maxZ : danger.minZ);
+        double distance = (edge - origin) * Math.signum(major);
+        double fastRetention = Math.min(1, 1 - ballistics.friction + .0000001);
+        double slowRetention = Math.max(0, 1 - ballistics.friction - .0000001);
+        double fast = 1, slow = 1, end = 0, start = 0, fall = 0, falling = 0;
+        List<Slice> prefix = new ArrayList<>();
+        AABB prefixBounds = new AABB(aim.projectileOrigin(), aim.projectileOrigin());
+        for (int tick = 0; tick < ballistics.lifeTicks; tick++) {
+            end += fast;
+            fall += falling;
+            Slice slice = new Slice(start, end, fall);
+            prefix.add(slice);
+            prefixBounds = prefixBounds.minmax(new AABB(aim.projectileOrigin().add(velocity.scale(start)),
+                    aim.projectileOrigin().add(velocity.scale(end))).expandTowards(0, -fall, 0)
+                    .inflate(spread * end));
+            start += slow;
+            if ((Math.abs(major) - spread) * start > distance) {
+                return new GuardShotEnvelope(aim, ballistics, clearance, velocity, spread,
+                        prefix, prefixBounds.inflate(1), List.of());
+            }
+            fast *= fastRetention;
+            slow *= slowRetention;
+            falling = falling * fastRetention + ballistics.gravity;
+        }
+        return null;
+    }
 
     public boolean intersects(AABB candidate, double padding) {
         for (Slice slice : slices) {

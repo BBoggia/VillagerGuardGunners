@@ -42,10 +42,19 @@ than a prediction of one bullet flying through a known scene.
 
 ## World checks and limits
 
-Each evaluation makes one bounded entity query. It includes protected entities
-and other pickable entities that could cause an explosive impact, such as boats.
-Candidate bounds include both current bounds and TaCZ's movement-adjusted
-hitboxes. The query includes TaCZ's one-block entity-search margin.
+Each evaluation searches bounded strips along the dominant horizontal flight
+axis. Strip widths are 64 blocks; their other horizontal extent includes every
+possible spread offset over that part of the flight. This avoids scanning the
+empty corners of a long diagonal's bounding box. The full native lifetime and
+water/air bounds still apply. Vertical trajectories retain their full horizontal
+extent.
+
+Queries include protected entities and other pickable entities that could cause
+an explosive impact, such as boats. Candidates shared by multiple strips count
+once against the total entity budget. Candidate bounds include both current
+bounds and TaCZ's movement-adjusted hitboxes. Each strip includes TaCZ's one-block
+entity-search margin, and the work budget also counts the entity-section search's
+two-block margin.
 
 Protected entities in the projectile envelope or forward blast envelope block
 the shot, including entities beyond the target. Allies beside or behind the
@@ -53,18 +62,35 @@ muzzle do not automatically create a blast prohibition in otherwise open space.
 Those exceptions and the shooter receive explicit nearby entity-impact,
 block-impact, and fuse checks. Block checks include possible spread contacts,
 not only the center ray. They read collision shapes without loading chunks.
-They do not remove blocks, alter penetration, or create explosions.
+They do not remove blocks, alter penetration, or create explosions. Block-origin
+positions whose entire supported collision region misses the possible impact
+path are skipped before reading their shapes. The origin search includes shapes
+extending one block beyond their owner, including tall fences.
+
+For a muzzle-side blast check, the checker can use a shorter dry-flight prefix
+only after verifying that its entire possible flight volume, plus a one-block
+water-contact margin, contains no fluid in loaded chunks. The prefix ends only
+when every possible pellet has passed the vulnerable area's horizontal extent.
+Horizontal drag cannot reverse that motion, and gravity cannot bring it back
+horizontally. This removes false near-shooter ground impacts from hypothetical
+water on dry ground without cutting off protection farther downrange. Vertical
+shots, water, unknown chunks, an unproven escape, or an exhausted fluid-check
+budget retain the full air/water envelope. Nearby impacts and fuses are still
+checked; the optimization does not approve a shot by itself.
 
 Hard limits make the work finite:
 
 | Limit | Value |
 | --- | --- |
-| Projectile lifetime | 200 ticks |
-| Initial-motion travel plus maximum fall | 1,024 blocks |
-| Spread, clearance, and blast padding combined | 32 blocks |
-| Entity query footprint | 1,024 chunks |
+| Projectile lifetime | 400 ticks |
+| Initial-motion travel plus maximum fall | 8,192 blocks |
+| Spread, clearance, and blast padding combined | 256 blocks |
+| Entity search work across strips, including repeated chunks and margins | 8,192 chunks |
+| Entity query strips | 256 |
 | Entity candidates | 256; a 257th refuses the shot |
-| Distinct nearby block positions | 8,192 |
+| Block-origin positions considered across nearby impact checks | 65,536 |
+| Distinct nearby collision-shape reads | 8,192 |
+| Distinct fluid checks | 8,192 |
 | Collision boxes per block | 64 |
 
 Oversized geometry, exceeded budgets, unavailable nearby impact chunks, and
@@ -72,10 +98,9 @@ invalid world data refuse the shot with a descriptive status. These limits are
 not new gun range settings. A longer-lived or unusually wide custom projectile
 can exceed them even when the intended target is close.
 
-Wide hip-fire profiles can exceed the padding limit before TaCZ completes aiming,
-including ordinary rifles with its default global bullet-speed multiplier. Fully
-aimed profiles are substantially narrower. Guards wait for a supported safe profile; the hook never substitutes the narrower
-aimed profile for a captured hip-fire round. Gameplay validation must measure
+Very wide or long-lived profiles can still exceed the budgets, especially before
+TaCZ completes aiming. Guards wait for a supported safe profile; the hook never
+substitutes the narrower aimed profile for a captured hip-fire round. Gameplay validation must measure
 time to first shot and safety refusals separately from misses.
 
 ## Integration and diagnostic contract
@@ -139,7 +164,19 @@ refusals separately from misses before release.
 `GuardShotSafetyTest` exercises off-axis and behind-target allies, repeated checks,
 nearby explosive impacts, vertical shots, limits, and sampled trajectories with
 changing air/water drag. Existing `GuardFriendlyFireSafetyTest` cases continue to
-cover the legacy path.
+cover the legacy path. Community-pack profile regressions cover long travel,
+wide spread, all firing directions, shared entity budgets, dry escape, water,
+nearby collisions, and fuses.
+
+The optional `accuracyprobe.PackSafetyProbe` exercises real native firing with
+installed community gun packs. Run `tools/run_guard_firing_qa.py --mode packSafety`
+with the production JAR, the observer JAR, and repeated `--extra-mod` arguments
+for the published Elite X Quality Guns, Daffa's Arsenal, and Maxstuff JARs and
+their dependencies. It checks clear shots, allies in front and behind the target,
+fire-event ally movement, refusal ammo preservation, resumed firing, and nearby
+explosive impacts. Its output records exact installed-JAR hashes. Use the normal
+installed-client gun-pack tests separately for rendering, normal AI, and reload
+coverage.
 
 The optional observer JAR includes `accuracyprobe.SafetyProbe`. Build it with
 `./gradlew -I tools/accuracy-qa.gradle reobfAccuracyProbeJar`, then install it

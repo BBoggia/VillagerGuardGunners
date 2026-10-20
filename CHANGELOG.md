@@ -6,6 +6,15 @@ in local development notes.
 
 ## Unreleased
 
+### Fixed
+
+- Guards can use additional high-speed, long-lived, and wide-spread TaCZ gun-pack
+  weapons without unnecessary safety refusals. Friendly-fire checks still cover
+  allies beyond the target and are repeated for each round.
+- Guards can fire large-blast weapons such as Daffa's Arsenal's M79 in clear,
+  dry surroundings while retaining checks for nearby allies, impact hazards,
+  water, and explosive fuses.
+
 ## 1.9 - 2026-10-08
 
 ### Added

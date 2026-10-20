@@ -6,7 +6,7 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: read `mod_version` in `gradle.properties`. The current candidate is `1.9`.
+- Version: read `mod_version` in `gradle.properties`. The current candidate is `1.9.1`.
 - Minecraft: `1.20.1`
 - Forge: `47.4.10` minimum; compatible 47.x releases
 - Guard Villagers: `1.20.1-1.6.19`
@@ -18,11 +18,20 @@ the relevant manual rows pass against the exact files being distributed.
 - Automated baseline gun pack: TaCZ Default Gun Pack bundled with TaCZ
   `1.1.8-hotfix`. Record additional tested pack versions with candidate evidence.
 - Candidate JAR SHA-256: use the checksum shipped with the candidate being tested.
-  Earlier release and development hashes do not identify the current 1.9 build.
+  Earlier release and development hashes do not identify the current 1.9.1 build.
+
+## Gun-pack hotfix scope
+
+Version 1.9.1 changes guard shot safety for additional community gun-pack
+profiles. Validate open firing lanes, allies before and beyond the target,
+per-round safety checks, explosive impact hazards, and firing after reload
+using installed Forge client and server JARs. Retain the exact candidate hash
+and gun-pack versions with the results. These targeted checks do not replace
+unrelated pending rows in the full release matrix.
 
 ## Full update from 1.8
 
-The 1.9 candidate includes the Quartermaster expansion, combat and navigation
+The 1.9 release introduced the Quartermaster expansion, combat and navigation
 improvements, automatic-loadout changes, and the TaCZ compatibility update.
 The 1.8.1 patch contains only the TaCZ compatibility change and is not the
 baseline for certifying the additional gameplay features.
@@ -45,7 +54,7 @@ results do not certify changed code merely because its version was unchanged.
 Use the checksum in the prepared candidate bundle's `SHA256SUMS.txt` to identify
 its exact files. Earlier development reports do not certify changed artifacts.
 The checked rows below are historical preparation results and apply only to
-their recorded artifact, not automatically to the current 1.9 JAR.
+their recorded artifact, not automatically to the current 1.9.1 JAR.
 Current preparation results are recorded with the candidate review evidence;
 manual, multiplayer, upgrade, performance, and remote CI checks still require
 matching evidence before public release.

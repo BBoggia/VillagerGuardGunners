@@ -6,6 +6,8 @@ in local development notes.
 
 ## Unreleased
 
+## 1.9.1 - 2026-10-20
+
 ### Fixed
 
 - Guards can use additional high-speed, long-lived, and wide-spread TaCZ gun-pack

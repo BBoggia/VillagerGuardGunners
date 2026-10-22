@@ -6,6 +6,14 @@ in local development notes.
 
 ## Unreleased
 
+## 1.9-neoforge-alpha.2 - 2026-10-22
+
+### Fixed
+
+- Fixed a NeoForge crash when another TaCZ addon changes shot scheduling or
+  projectile creation. Guard friendly-fire checks remain active while the
+  other addon's firing behavior is preserved.
+
 ## 1.9-neoforge-alpha.1 - 2026-10-20
 
 ### Added

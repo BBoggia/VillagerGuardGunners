@@ -71,7 +71,7 @@ The NeoForge alpha requires these exact mod and loader versions:
 The initial port uses exact dependency ranges. Broader version compatibility
 requires validation. Use fresh test worlds: the unofficial TaCZ port does not
 support its 1.20.1 world data. Download the NeoForge alpha JAR for this version; keep the Forge JAR for
-Minecraft 1.20.1. See [alpha release notes](docs/releases/1.9-neoforge-alpha.1.md).
+Minecraft 1.20.1. See [alpha release notes](docs/releases/1.9-neoforge-alpha.2.md).
 
 See [Quartermaster service](docs/quartermaster-service.md) for automatic
 equipment stocking and station setup.

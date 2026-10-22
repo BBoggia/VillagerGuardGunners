@@ -1,7 +1,7 @@
 # NeoForge development
 
 This branch targets Minecraft 1.21.1, NeoForge 21.1.233, and Java 21. The
-current candidate is `1.9-neoforge-alpha.1`, an alpha test build, not a stable release.
+current candidate is `1.9-neoforge-alpha.2`, an alpha test build, not a stable release.
 The 1.20.1 Forge implementation remains on `v1.9`.
 
 ## Build and dependency contracts

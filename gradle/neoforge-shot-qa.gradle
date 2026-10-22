@@ -1,0 +1,29 @@
+// Separate packaged fixtures for installed NeoForge testing; never added to a dev run or release.
+sourceSets { shotqa; shotconflictqa }
+[sourceSets.shotqa, sourceSets.shotconflictqa].each { fixture ->
+    configurations[fixture.implementationConfigurationName].extendsFrom(configurations.implementation)
+    configurations[fixture.runtimeOnlyConfigurationName].extendsFrom(configurations.runtimeOnly)
+    fixture.compileClasspath += sourceSets.main.output
+    neoForge.addModdingDependenciesTo(fixture)
+}
+
+def observer = tasks.register('shotQaJar', Jar) {
+    group = 'verification'
+    from sourceSets.shotqa.output
+    archiveBaseName = 'vgg-shot-qa'
+    destinationDirectory = layout.buildDirectory.dir('shot-qa')
+}
+def conflict = tasks.register('shotConflictQaJar', Jar) {
+    group = 'verification'
+    from sourceSets.shotconflictqa.output
+    archiveBaseName = 'vgg-shot-conflict-qa'
+    destinationDirectory = layout.buildDirectory.dir('shot-qa')
+}
+tasks.register('stageShotQaMods', Sync) {
+    group = 'verification'
+    dependsOn tasks.named('verifyPinnedMods')
+    from configurations.installedMods
+    from tasks.named('jar')
+    from observer
+    into layout.buildDirectory.dir('shot-qa/mods')
+}

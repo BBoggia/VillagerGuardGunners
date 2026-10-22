@@ -134,6 +134,22 @@ bounds can also refuse a shot because of an ally behind cover or well below the
 likely dry-air trajectory. Packaged combat validation must measure those
 refusals separately from misses before release.
 
+## Addons wrapping native firing
+
+The scheduling call in `ModernKineticGunScriptAPI.shootOnce` and projectile
+insertion in its native round callback use MixinExtras `@WrapOperation`.
+Each wrapper invokes its supplied operation exactly once, preserving other
+addons' redirects at those call sites. Guards still bind each scheduled round
+to its controller and commit the proposed aim only when the insertion operation
+returns `true`. Non-guard shooters pass through the same native operation.
+NeoForge supplies MixinExtras; the gameplay JAR does not embed another copy.
+
+The fire-event bridge continues to validate guard eligibility before and after
+subscribers run, with the final scene check before native ammo consumption.
+A competing addon must preserve the native event, callback, and insertion-result
+contracts. Wrapping these two operations does not make arbitrary replacements
+of the firing method or custom projectile logic safe.
+
 ## Verification
 
 `GuardShotSafetyTest` exercises off-axis and behind-target allies, repeated checks,
@@ -149,3 +165,37 @@ fixture. It creates test entities and a temporary wall, records assertions, and
 stops the server. Use a disposable world. This fixture tests the packaged safety
 API and native property resolution; it does not claim live firing integration
 or multiplayer balance acceptance.
+
+### NeoForge installed-JAR regression
+
+Build the separate observer and conflicting-hook addon with Java 21:
+
+```sh
+./gradlew stageShotQaMods shotConflictQaJar
+python3 tools/run_neoforge_shot_qa.py --prepare
+```
+
+The runner accepts `--jar <gameplay.jar>`, `--output <new-disposable-directory>`,
+and `--accept-eula` after accepting Minecraft's EULA. Use `--mode regression`
+(the default) for the server suite, and `--mode client` for a connected graphical
+client. Run both modes with and without `--conflict`. The client adapter uses
+macOS ARM64 launch metadata, as does the existing multiplayer QA runner.
+
+The regression suite covers semi-auto, automatic and burst fire, an ally entering
+a queued burst, shotgun pellets, event cancellation, rejected insertion, reload,
+blocked-to-clear recovery, event-time ally/team/block changes, dynamic native
+properties, and unsupported trajectories. The conflicting addon counts scheduler
+callbacks and insertion attempts/results; the observer verifies that the hook
+chain still runs and that native ammo and successful-round counts agree.
+The client suite uses native player firing packets and ordinary guard AI for
+Glock 17, AK-47, M16A4, and SPAS-12, including guard reload and resumed fire.
+
+For a negative control, pass the original NeoForge alpha JAR with `--conflict
+--expect-conflict`. Success in this mode requires the recorded mixin
+transformation error and failed required injection; an unrelated startup failure
+is not accepted. The observer catches the error and stops the disposable server,
+so its process can exit normally even when the injection failed.
+
+Both fixtures are separate JARs and must never be shipped with the mod. The
+competing addon recreates the conflicting hooks; it is not a port of Arcana and
+does not establish compatibility with an actual NeoForge release of Arcana.

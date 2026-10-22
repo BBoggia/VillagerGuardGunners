@@ -286,3 +286,5 @@ tasks.named('check') {
 }
 
 apply from: 'gradle/neoforge-distribution.gradle'
+
+apply from: 'gradle/neoforge-shot-qa.gradle'

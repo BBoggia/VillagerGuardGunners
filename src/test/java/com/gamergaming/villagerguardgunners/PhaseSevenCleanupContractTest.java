@@ -44,7 +44,7 @@ final class PhaseSevenCleanupContractTest {
         productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
                 medicalRecovery, medicalRecovery.replace("addFreshEntity(", "recoveredMedicalItemInsertion("));
         String shotBridge = read("src/main/java/com/gamergaming/villagerguardgunners/mixin/TaCZGuardShotMixin.java");
-        assertTrue(shotBridge.contains("boolean added = level.addFreshEntity(projectile);"));
+        assertTrue(shotBridge.contains("boolean added = original.call(level, projectile);"));
         assertFalse(shotBridge.contains("new EntityKineticBullet"));
         productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
                 shotBridge, shotBridge.replace("addFreshEntity(", "nativeProjectileInsertion("));

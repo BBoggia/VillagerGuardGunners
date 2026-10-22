@@ -30,5 +30,8 @@ final class SupplyMedicalPackagingTest {
         assertTrue(entries.contains("data/minecraft/tags/block/mineable/axe.json"));
         assertFalse(entries.contains("data/minecraft/tags/blocks/mineable/axe.json"));
         assertFalse(entries.contains("/qa/"));
+        assertFalse(entries.contains("shotqa/"));
+        assertFalse(entries.contains("shotconflict/"));
+        assertFalse(entries.contains("vgg-shot-conflict.mixins.json"));
     }
 }

@@ -6,6 +6,11 @@ in local development notes.
 
 ## Unreleased
 
+### Fixed
+
+- Fixed a crash when firing guns with TacZ:Arcana installed. Guards retain
+  per-round friendly-fire checks, and Arcana's firing hooks remain active.
+
 ## 1.9.1 - 2026-10-20
 
 ### Fixed

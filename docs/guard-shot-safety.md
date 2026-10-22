@@ -131,8 +131,17 @@ available. This does not roll back arbitrary script side effects or unrelated
 changes made by event subscribers. A projectile insertion canceled after native
 ammo consumption keeps TaCZ's existing ammo behavior.
 
-These hooks apply to guards. Other shooters retain TaCZ's native property and
-ammo handling.
+The scheduling and projectile-insertion hooks use MixinExtras `WrapOperation`.
+Each calls the existing operation exactly once, preserving other mods' redirects
+and wrappers, including TacZ:Arcana's burst scheduling and bullet-spawn event.
+Successful shot accounting uses the insertion operation's returned value; rejected
+insertions never commit the guard's aim proposal. Fire-event validation and ammo
+preservation remain required independently of these wrappers.
+
+MixinExtras is provided by the required TaCZ JAR. The build compiles against the
+embedded API and does not bundle a second copy or require an extra player download.
+These hooks apply guard-specific changes only to guards. Other shooters retain
+TaCZ's native property and ammo handling and any installed firing extensions.
 Native bursts capture spread and speed when scheduled, before individual rounds
 fire. The hook validates those captured values with each round's new proposal.
 The inspection command reports an applicable recent check, including its tick
@@ -186,3 +195,14 @@ fixture. It creates test entities and a temporary wall, records assertions, and
 stops the server. Use a disposable world. This fixture tests the packaged safety
 API and native property resolution; it does not claim live firing integration
 or multiplayer balance acceptance.
+
+The packaged `accuracyprobe.ShotRegressionProbe` covers semi-auto, automatic,
+burst, and pellet firing, reloads, canceled fire events and projectile insertions,
+allies crossing between burst rounds, event-time scene changes, and refusal ammo
+preservation. Run `tools/run_guard_firing_qa.py --mode regression` with and without
+optional compatibility JARs. `--spawn-event` accepts an external Forge event class
+with one `EntityKineticBullet` field and checks that it runs exactly once per spawn
+attempt. Supply the class from the exact dependency version under test; obfuscated
+event names can differ between versions. This observer remains separate from the
+production mod. Arcana's special ammo and altered projectile trajectories need
+separate safety validation beyond firing-hook coexistence.

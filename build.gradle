@@ -497,23 +497,44 @@ repositories {
     }
 }
 
-// TaCZ embeds its Lua API. Compile against those exact classes without bundling another Lua runtime.
+// Required TaCZ embeds Lua and MixinExtras. Compile against its exact APIs; Forge loads the bundled libraries.
 configurations { taczEmbeddedApi }
 dependencies { taczEmbeddedApi("maven.modrinth:timeless-and-classics-zero:${tacz_version}") { transitive = false } }
-def extractedTaCZLua = layout.buildDirectory.dir('tacz-embedded-api')
-def extractTaCZLua = tasks.register('extractTaCZLua', Sync) {
+def extractedTaCZApis = layout.buildDirectory.dir('tacz-embedded-api')
+def extractTaCZApis = tasks.register('extractTaCZApis', Sync) {
     from({ zipTree(configurations.taczEmbeddedApi.singleFile) }) {
-        include 'META-INF/jarjar/luaj-*.jar'
+        include 'META-INF/jarjar/luaj-*.jar', 'META-INF/jarjar/mixinextras-forge-*.jar'
         eachFile { path = name }
         includeEmptyDirs = false
     }
-    into extractedTaCZLua
+    into extractedTaCZApis
 }
-def taczLuaApi = files(provider { fileTree(extractedTaCZLua.get().asFile) { include '*.jar' } }).builtBy(extractTaCZLua)
+def taczEmbeddedApis = files(provider { fileTree(extractedTaCZApis.get().asFile) { include '*.jar' } }).builtBy(extractTaCZApis)
+
+// MixinExtras' Forge bootstrap keeps its annotations/processor in a second nested JAR.
+def extractedTaCZMixinExtras = layout.buildDirectory.dir('tacz-mixinextras-api')
+def extractTaCZMixinExtras = tasks.register('extractTaCZMixinExtras', Sync) {
+    dependsOn extractTaCZApis
+    from({
+        fileTree(extractedTaCZApis.get().asFile) { include 'mixinextras-forge-*.jar' }
+                .collect { zipTree(it) }
+    }) {
+        include 'META-INF/jars/MixinExtras-*.jar'
+        eachFile { path = name }
+        includeEmptyDirs = false
+    }
+    into extractedTaCZMixinExtras
+}
+def taczMixinExtrasApi = files(provider {
+    fileTree(extractedTaCZMixinExtras.get().asFile) { include '*.jar' }
+}).builtBy(extractTaCZMixinExtras)
 
 dependencies {
-    compileOnly taczLuaApi
-    testRuntimeOnly taczLuaApi
+    compileOnly taczEmbeddedApis
+    compileOnly taczMixinExtrasApi
+    annotationProcessor taczMixinExtrasApi
+    testRuntimeOnly taczEmbeddedApis
+    testRuntimeOnly taczMixinExtrasApi
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation fg.deobf("maven.modrinth:guard-villagers:${guard_villager_version}")

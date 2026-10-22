@@ -22,6 +22,7 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.*;
@@ -31,13 +32,13 @@ import tallestegg.guardvillagers.entities.Guard;
 /** Packaged-runtime regressions for shot approval, native scripts, and refusal display. */
 @Mod.EventBusSubscriber(modid = "vggaccuracyprobe")
 public final class ShotRegressionProbe {
-    private static final List<String> CASES = List.of("glock", "spas", "spas-blocked", "glock-blocked",
+    private static final List<String> CASES = List.of("glock", "auto", "burst", "burst-crossing", "spawn-cancel", "spas", "spas-blocked", "glock-blocked",
             "spas-cancel", "spas-resume", "spas-reload", "event-ally", "event-team", "event-block",
             "dynamic", "dynamic-explosion", "dynamic-explosion-values", "dynamic-pellets", "unsupported", "oversized");
     private static final Set<String> BLOCKED = Set.of("spas-blocked", "glock-blocked", "spas-cancel",
             "event-ally", "event-team", "event-block", "unsupported", "oversized");
-    private static int index = -1, ticks, fired, events, initialAmmo, propertyChecks;
-    private static boolean finished, changed, reloaded;
+    private static int index = -1, ticks, fired, events, initialAmmo, propertyChecks, spawnEvents, rejectedSpawns;
+    private static boolean finished, changed, reloaded, spawnListenerRegistered;
     private static String failure;
     private static Guard guard;
     private static LivingEntity target;
@@ -56,6 +57,11 @@ public final class ShotRegressionProbe {
             var level = event.getServer().overworld();
             if (guard == null) {
                 if (++index == CASES.size()) { finish(event, ""); return; }
+                if (!spawnListenerRegistered) {
+                    String eventClass = System.getProperty("vgg.regression.spawnEvent", "");
+                    if (!eventClass.isEmpty()) observeSpawnEvent(Class.forName(eventClass).asSubclass(Event.class));
+                    spawnListenerRegistered = true;
+                }
                 begin(level);
             }
             String name = CASES.get(index);
@@ -75,7 +81,14 @@ public final class ShotRegressionProbe {
                 int used = initialAmmo - ammo();
                 if (name.equals("spas-reload")) used += 32 - GuardAmmoAccess.getAmmoHandler(guard).getStackInSlot(0).getCount();
                 if (BLOCKED.contains(name)) require(fired == 0 && used == 0, "Refused shot emitted/spent ammo: " + fired + "/" + used);
+                else if (name.equals("spawn-cancel")) require(rejectedSpawns > 0 && fired == 0 && used > 0
+                        && controller.successfulAimRounds() == 0, "Rejected insertion counted as a successful round");
                 else require(fired > 0 && used == controller.successfulAimRounds(), "Normal ammo/round accounting failed");
+                if (name.equals("burst-crossing")) require(changed && fired == 1 && used == 1,
+                        "Queued burst continued after an ally entered its path");
+                if (name.equals("burst")) require(fired >= 3, "Native burst did not complete");
+                if (!System.getProperty("vgg.regression.spawnEvent", "").isEmpty())
+                    require(spawnEvents == fired + rejectedSpawns, "External spawn hook skipped or duplicated: " + spawnEvents);
                 if (name.equals("spas-reload")) require(reloaded && controller.successfulAimRounds() > initialAmmo, "SPAS reload did not resume");
                 if (name.startsWith("dynamic")) require(propertyChecks == fired && GRAVITIES.size() == 2, "Dynamic property coverage incomplete");
                 if (name.startsWith("dynamic-explosion")) require(BLASTS.size() == 2, "Explosion enable/disable was not exercised");
@@ -93,7 +106,8 @@ public final class ShotRegressionProbe {
                 }
                 RESULTS.add(Map.of("case", name, "projectiles", fired, "rounds", controller.successfulAimRounds(),
                         "ammoUsed", used, "fireEvents", events, "propertyChecks", propertyChecks,
-                        "safety", controller.lastShotSafety().status().name(), "display", display));
+                        "safety", controller.lastShotSafety().status().name(), "display", display,
+                        "externalSpawnEvents", spawnEvents, "rejectedSpawns", rejectedSpawns));
                 Files.writeString(Path.of(System.getProperty("vgg.regression.output")).resolveSibling("progress.json"),
                         new GsonBuilder().setPrettyPrinting().create().toJson(RESULTS));
                 controller.stopAiming();
@@ -113,7 +127,7 @@ public final class ShotRegressionProbe {
         String name = CASES.get(index);
         level.setChunkForced(0, 0, true);
         for (int x = -2; x <= 3; x++) for (int z = -2; z <= 2; z++) level.getChunk(x, z);
-        ticks = fired = events = propertyChecks = 0; changed = reloaded = false; ally = null; failure = null;
+        ticks = fired = events = propertyChecks = spawnEvents = rejectedSpawns = 0; changed = reloaded = false; ally = null; failure = null;
         GRAVITIES.clear(); BLASTS.clear();
         var aiming = ModConfigs.GUARD_GUNNERS.combat.aiming;
         aiming.errorDegrees.accept(0.0); aiming.overridePlayers.accept(false);
@@ -122,14 +136,14 @@ public final class ShotRegressionProbe {
         target.setPos(16.5, 100, .5); level.addFreshEntity(target);
         guard = tallestegg.guardvillagers.GuardEntityType.GUARD.get().create(level);
         guard.setNoAi(true); guard.setNoGravity(true); guard.setInvulnerable(true); guard.setOnGround(true); guard.setPos(.5, 100, .5);
-        String id = name.startsWith("spas") ? "tacz:spas_12" : name.equals("event-block") ? "tacz:rpg7"
+        String id = name.equals("auto") ? "tacz:ak47" : name.startsWith("burst") ? "tacz:m16a4" : name.startsWith("spas") ? "tacz:spas_12" : name.equals("event-block") ? "tacz:rpg7"
                 : name.startsWith("dynamic") || name.equals("unsupported") || name.equals("oversized") ? "vgg_aim_qa:" + name : "tacz:glock_17";
         gun = GunItemBuilder.create().setId(ResourceLocation.parse(id))
-                .setFireMode(name.startsWith("spas") ? FireMode.BURST : FireMode.SEMI)
+                .setFireMode(name.equals("auto") ? FireMode.AUTO : name.startsWith("spas") || name.startsWith("burst") ? FireMode.BURST : FireMode.SEMI)
                 .setAmmoCount(name.equals("spas-reload") ? 1 : 100).setAmmoInBarrel(true).build();
         guard.setItemSlot(EquipmentSlot.MAINHAND, gun); level.addFreshEntity(guard); guard.setTarget(target);
         if (name.endsWith("blocked") || name.equals("spas-resume")) addAlly(level, false, 24.5, .5);
-        if (name.equals("event-ally")) addAlly(level, false, 8.5, 10.5);
+        if (name.equals("event-ally") || name.equals("burst-crossing")) addAlly(level, false, 8.5, 10.5);
         if (name.equals("event-team")) {
             addAlly(level, true, 8.5, .5);
             var team = level.getScoreboard().addPlayerTeam("vgg_shot_qa");
@@ -164,6 +178,30 @@ public final class ShotRegressionProbe {
         if (name.equals("event-block")) { guard.level().setBlockAndUpdate(IMPACT_BLOCK, Blocks.STONE_SLAB.defaultBlockState()); changed = true; }
     }
 
+    /** Optional external hook, supplied by class name so the observer has no Arcana dependency. */
+    private static <T extends Event> void observeSpawnEvent(Class<T> eventType) throws Exception {
+        var fields = Arrays.stream(eventType.getDeclaredFields())
+                .filter(field -> field.getType() == EntityKineticBullet.class).toList();
+        if (fields.size() != 1) throw new IllegalArgumentException("Expected one projectile field: " + eventType);
+        var field = fields.get(0);
+        field.setAccessible(true);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, false, eventType, event -> {
+            try {
+                var bullet = (EntityKineticBullet) field.get(event);
+                if (guard != null && bullet.getOwner() == guard) spawnEvents++;
+            } catch (ReflectiveOperationException error) { failure = error.toString(); }
+        });
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void rejectInsertion(EntityJoinLevelEvent event) {
+        if (guard != null && CASES.get(index).equals("spawn-cancel")
+                && event.getEntity() instanceof EntityKineticBullet bullet && bullet.getOwner() == guard) {
+            rejectedSpawns++;
+            event.setCanceled(true);
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void projectile(EntityJoinLevelEvent event) {
         if (guard == null || event.isCanceled() || !(event.getEntity() instanceof EntityKineticBullet bullet) || bullet.getOwner() != guard) return;
@@ -184,6 +222,10 @@ public final class ShotRegressionProbe {
                 require(((Number) get(bullet, "explosionDelayCount")).intValue() == profile.fuseTicks(), "Fuse mismatch");
             }
             propertyChecks++; GRAVITIES.add(profile.gravity()); BLASTS.add(profile.blastReach());
+            if (CASES.get(index).equals("burst-crossing") && !changed) {
+                ally.setPos(8.5, 100, .5);
+                changed = true;
+            }
         } catch (Throwable error) { failure = error.toString(); }
     }
 

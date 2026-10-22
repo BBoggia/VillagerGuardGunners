@@ -2,11 +2,13 @@
 """Run packaged native firing/safety fixtures or a production-only Forge server smoke test."""
 import argparse
 import copy
+import io
 import json
 from pathlib import Path
 import shutil
 import subprocess
 import time
+import tomllib
 import zipfile
 
 import run_village_compatibility as qa
@@ -80,6 +82,24 @@ return M
             'data': 'vgg_aim_qa:' + name, 'type': 'pistol'}))
 
 
+
+def compatibility_mod_ids(path):
+    """Inventory normal Forge mods and Arcana's loader container without unpacking them."""
+    ids = set(qa.jar_metadata(path)[0]['mods'])
+    if ids:
+        return ids
+    # Arcana 1.1.4 distributes its Forge mod inside this loader-owned entry.
+    # Install the original outer JAR; this only reads its identity for duplicate checks.
+    with zipfile.ZipFile(path) as outer:
+        if 'META-INF/mod.jar' not in outer.namelist():
+            return set()
+        with zipfile.ZipFile(io.BytesIO(outer.read('META-INF/mod.jar'))) as inner:
+            if 'META-INF/mods.toml' not in inner.namelist():
+                return set()
+            metadata = tomllib.loads(inner.read('META-INF/mods.toml').decode())
+            return {mod['modId'] for mod in metadata.get('mods', [])}
+
+
 def run(args):
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=False)
@@ -105,7 +125,7 @@ def run(args):
     # Forge resolves shared Jar-in-Jar libraries; reject duplicate top-level mods only.
     installed_ids = {key for jar in mods.glob('*.jar') for key in qa.jar_metadata(jar)[0]['mods']}
     for jar in getattr(args, 'extra_mod', []):
-        ids = set(qa.jar_metadata(jar)[0]['mods'])
+        ids = compatibility_mod_ids(jar)
         if not ids or ids & installed_ids or (mods / jar.name).exists():
             raise ValueError('Missing mod metadata or duplicate compatibility mod: ' + str(jar))
         shutil.copy2(jar, mods / jar.name)
@@ -133,6 +153,8 @@ def run(args):
     command = [str(args.java), '-Xmx2G']
     if args.mode != 'smoke':
         command.append('-Dvgg.' + args.mode + '.output=' + str(out / 'result.json'))
+    if getattr(args, 'spawn_event', None):
+        command.append('-Dvgg.regression.spawnEvent=' + args.spawn_event)
     command += ['@libraries/net/minecraftforge/forge/1.20.1-47.4.10/unix_args.txt', 'nogui']
     before = {p.name: qa.sha(p) for p in mods.glob('*.jar')}
     manifest = {'command': command, 'mode': args.mode, 'jars': before,
@@ -183,6 +205,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True, help='New disposable server directory')
     parser.add_argument('--mode', choices=['firing', 'safety', 'regression', 'packSafety', 'smoke'], default='firing')
     parser.add_argument('--extra-mod', type=Path, action='append', default=[], help='Additional installed mod JAR; repeat for gun packs and their dependencies')
+    parser.add_argument('--spawn-event', help='Optional external projectile event class to verify in regression mode')
     parser.add_argument('--observer', type=Path, default=ROOT / 'build/accuracy-qa/vgg-accuracy-probe.jar')
     parser.add_argument('--java', type=Path, default=Path('/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java'))
     parser.add_argument('--timeout', type=int, default=300)

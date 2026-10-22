@@ -5,7 +5,8 @@ import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.item.ModernKineticGunScriptAPI;
 import com.tacz.guns.resource.pojo.data.gun.BulletData;
 import com.tacz.guns.resource.pojo.data.gun.GunData;
-import com.tacz.guns.util.CycleTaskHelper;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import java.util.function.BooleanSupplier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,9 +38,10 @@ public abstract class TaCZGuardShotMixin {
         villagerGuardGunners$roundRefused = shooter instanceof Guard;
     }
 
-    @Redirect(method = "shootOnce", at = @At(value = "INVOKE",
+    @WrapOperation(method = "shootOnce", at = @At(value = "INVOKE",
             target = "Lcom/tacz/guns/util/CycleTaskHelper;addCycleTask(Ljava/util/function/BooleanSupplier;JI)V"))
-    private void villagerGuardGunners$bindRoundIdentity(BooleanSupplier task, long interval, int count) {
+    private void villagerGuardGunners$bindRoundIdentity(BooleanSupplier task, long interval, int count,
+            Operation<Void> original) {
         if (shooter instanceof Guard guard) {
             var controller = GuardNativeShotAccess.controller(guard);
             BooleanSupplier bound = controller == null ? () -> false : controller.bindNativeRounds(task, itemStack);
@@ -55,7 +57,8 @@ public abstract class TaCZGuardShotMixin {
                 }
             };
         }
-        CycleTaskHelper.addCycleTask(task, interval, count);
+        // Preserve other mods' scheduling hooks, including Arcana's player burst callbacks.
+        original.call(task, interval, count);
     }
 
     @Inject(method = {"removeAmmoFromMagazine", "putAmmoInMagazine", "consumeAmmoFromPlayer"},
@@ -98,10 +101,12 @@ public abstract class TaCZGuardShotMixin {
         return canceled || !allowed;
     }
 
-    @Redirect(method = "lambda$shootOnce$2", at = @At(value = "INVOKE", remap = true,
+    @WrapOperation(method = "lambda$shootOnce$2", at = @At(value = "INVOKE", remap = true,
             target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean villagerGuardGunners$observeProjectile(Level level, Entity projectile) {
-        boolean added = level.addFreshEntity(projectile);
+    private boolean villagerGuardGunners$observeProjectile(Level level, Entity projectile,
+            Operation<Boolean> original) {
+        // Invoke the complete spawn chain once so external bullet-spawn events still run.
+        boolean added = original.call(level, projectile);
         if (added && shooter instanceof Guard guard) {
             var controller = GuardNativeShotAccess.controller(guard);
             if (controller != null) controller.nativeProjectileAdded();

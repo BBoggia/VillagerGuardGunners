@@ -6,7 +6,7 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: read `mod_version` in `gradle.properties`. The current candidate is `1.9.1`.
+- Version: read `mod_version` in `gradle.properties`. The current candidate is `1.9.2`.
 - Minecraft: `1.20.1`
 - Forge: `47.4.10` minimum; compatible 47.x releases
 - Guard Villagers: `1.20.1-1.6.19`
@@ -18,16 +18,18 @@ the relevant manual rows pass against the exact files being distributed.
 - Automated baseline gun pack: TaCZ Default Gun Pack bundled with TaCZ
   `1.1.8-hotfix`. Record additional tested pack versions with candidate evidence.
 - Candidate JAR SHA-256: use the checksum shipped with the candidate being tested.
-  Earlier release and development hashes do not identify the current 1.9.1 build.
+  Earlier release and development hashes do not identify the current 1.9.2 build.
 
-## Gun-pack hotfix scope
+## Arcana compatibility hotfix scope
 
-Version 1.9.1 changes guard shot safety for additional community gun-pack
-profiles. Validate open firing lanes, allies before and beyond the target,
-per-round safety checks, explosive impact hazards, and firing after reload
-using installed Forge client and server JARs. Retain the exact candidate hash
-and gun-pack versions with the results. These targeted checks do not replace
-unrelated pending rows in the full release matrix.
+Version 1.9.2 fixes a firing-hook conflict with TacZ:Arcana. Validate the exact
+candidate with and without Arcana 1.1.4 using installed Forge clients and
+servers with TaCZ 1.1.8-hotfix2. Check player and guard semi-auto, automatic,
+burst, and shotgun firing; firing after reload; per-round friendly-fire
+refusals; ammo preservation; and Arcana's projectile events. Retain the
+candidate hash and dependency versions with the results. Special Arcana ammo
+and altered projectile trajectories need separate validation. These targeted
+checks do not mark unrelated pending rows in the full release matrix complete.
 
 ## Full update from 1.8
 
@@ -54,7 +56,7 @@ results do not certify changed code merely because its version was unchanged.
 Use the checksum in the prepared candidate bundle's `SHA256SUMS.txt` to identify
 its exact files. Earlier development reports do not certify changed artifacts.
 The checked rows below are historical preparation results and apply only to
-their recorded artifact, not automatically to the current 1.9.1 JAR.
+their recorded artifact, not automatically to the current 1.9.2 JAR.
 Current preparation results are recorded with the candidate review evidence;
 manual, multiplayer, upgrade, performance, and remote CI checks still require
 matching evidence before public release.

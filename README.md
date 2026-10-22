@@ -293,7 +293,7 @@ These diagnostics do not issue equipment, locate structures, or load chunks.
 
 ## Documentation
 
-- [Version 1.9.1 release notes](docs/releases/1.9.1.md)
+- [Version 1.9.2 release notes](docs/releases/1.9.2.md)
 - [Current development changelog](CHANGELOG.md)
 - [CurseForge description](docs/curseforge-description.md)
 - [Configuration](docs/configuration.md)

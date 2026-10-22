@@ -6,6 +6,8 @@ in local development notes.
 
 ## Unreleased
 
+## 1.9.2 - 2026-10-22
+
 ### Fixed
 
 - Fixed a crash when firing guns with TacZ:Arcana installed. Guards retain

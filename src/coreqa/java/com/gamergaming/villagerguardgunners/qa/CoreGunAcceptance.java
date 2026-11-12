@@ -67,6 +67,10 @@ public final class CoreGunAcceptance {
             new SupplyMedicalAcceptance();
             return;
         }
+        if ("cgm".equals(System.getProperty("vgg.qa.suite"))) {
+            new CgmGunAcceptance();
+            return;
+        }
         if ("behavior".equals(System.getProperty("vgg.qa.suite"))) {
             new CombatBehaviorAcceptance();
             return;

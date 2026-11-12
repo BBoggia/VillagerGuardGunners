@@ -28,6 +28,17 @@ public final class GuardFriendlyFireSafety {
     public static GuardShotSafety.Result diagnoseShot(
             Guard shooter, LivingEntity target, GuardShotAim aim,
             GuardShotEnvelope.Ballistics ballistics, double clearance) {
+        return diagnoseShot(shooter, target, aim, ballistics, clearance, true);
+    }
+
+    /**
+     * @param inheritsShooterMotion true when the gun mod adds the shooter's
+     *     motion to the projectile. The ballistics must then carry the
+     *     shooter's current motion, or the aim is reported stale.
+     */
+    public static GuardShotSafety.Result diagnoseShot(
+            Guard shooter, LivingEntity target, GuardShotAim aim,
+            GuardShotEnvelope.Ballistics ballistics, double clearance, boolean inheritsShooterMotion) {
         if (!(shooter.level() instanceof net.minecraft.server.level.ServerLevel level)
                 || target.level() != level || !target.isAlive() || !shooter.isAlive()) {
             return GuardShotSafety.result(GuardShotSafety.Status.INVALID_WORLD, -1, null, null);
@@ -47,7 +58,7 @@ public final class GuardFriendlyFireSafety {
         Vec3 motion = shooter.getDeltaMovement();
         Vec3 inherited = new Vec3(motion.x, shooter.onGround() ? 0 : motion.y, motion.z);
         if (aim.gameTick() != level.getGameTime() || origin.distanceToSqr(aim.projectileOrigin()) > 1.0E-10
-                || inherited.distanceToSqr(ballistics.inheritedVelocity()) > 1.0E-10) {
+                || inheritsShooterMotion && inherited.distanceToSqr(ballistics.inheritedVelocity()) > 1.0E-10) {
             return GuardShotSafety.result(GuardShotSafety.Status.STALE_AIM, -1, null, preparation.envelope());
         }
         return GuardShotSafety.check(preparation.envelope(), shooter.getBoundingBox(), new GuardShotSafety.Scene() {

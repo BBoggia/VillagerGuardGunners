@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.ai;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.EnumSet;
 import com.gamergaming.villagerguardgunners.ai.tactics.GuardTacticalController;
 import com.gamergaming.villagerguardgunners.ai.tactics.CombatIntentPolicy;
@@ -14,6 +15,7 @@ import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
 import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngagement;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
+import com.gamergaming.villagerguardgunners.guns.GuardWeaponControl;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.MovementOrder;
 import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
@@ -33,14 +35,15 @@ import tallestegg.guardvillagers.common.entities.Guard;
  * Lightweight guard decision layer for TaCZ guns.
  *
  * <p>The goal controls looking, coarse navigation, and whether the trigger may
- * be pressed. All firearm behavior is delegated to {@link NativeGunController}
- * and, through it, TaCZ's {@code IGunOperator}.</p>
+ * be pressed. All firearm behavior is delegated through
+ * {@link GuardWeaponControl} to the held gun's driver: for TaCZ,
+ * {@link NativeGunController} and, through it, TaCZ's {@code IGunOperator}.</p>
  */
 public final class GuardGunCombatGoal extends Goal {
 
     private final Guard guard;
     private final PathNavigation navigation;
-    private final NativeGunController gunController;
+    private final GuardWeaponControl gunController;
     private final GuardTacticalController tactics;
     private final com.gamergaming.villagerguardgunners.ai.tactics.TacticalNavigationController tacticalNavigation;
     private final com.gamergaming.villagerguardgunners.ai.tactics.GuardTargetRanking targetRanking;
@@ -76,7 +79,7 @@ public final class GuardGunCombatGoal extends Goal {
     public GuardGunCombatGoal(Guard guard) {
         this.guard = guard;
         this.navigation = guard.getNavigation();
-        this.gunController = new NativeGunController(guard);
+        this.gunController = new GuardWeaponControl(guard);
         this.tactics = new GuardTacticalController(guard);
         this.targetRanking = new com.gamergaming.villagerguardgunners.ai.tactics.GuardTargetRanking(guard);
         this.investigation = new com.gamergaming.villagerguardgunners.ai.tactics.GuardInvestigationController(guard);
@@ -134,7 +137,7 @@ public final class GuardGunCombatGoal extends Goal {
             return true;
         }
         if (!config.enabled.get()
-                || !NativeGunController.isGun(guard.getMainHandItem())) {
+                || !GunProviders.isGun(guard.getMainHandItem())) {
             return false;
         }
         commandMovement.synchronize(true);
@@ -160,7 +163,7 @@ public final class GuardGunCombatGoal extends Goal {
             return true;
         }
         if (!config.enabled.get()
-                || !NativeGunController.isGun(guard.getMainHandItem())) {
+                || !GunProviders.isGun(guard.getMainHandItem())) {
             return false;
         }
         commandMovement.synchronize(true);
@@ -542,7 +545,7 @@ public final class GuardGunCombatGoal extends Goal {
         if (!config.enabled.get()) {
             return GuardCombatStatus.DISABLED;
         }
-        if (!NativeGunController.isGun(guard.getMainHandItem())) {
+        if (!GunProviders.isGun(guard.getMainHandItem())) {
             return GuardCombatStatus.UNARMED;
         }
 
@@ -783,7 +786,11 @@ public final class GuardGunCombatGoal extends Goal {
     public Diagnostics captureDiagnostics() {
         LivingEntity observedTarget = target != null ? target : guard.getTarget();
         boolean active = target != null;
-        NativeGunController.Diagnostics nativeState = gunController.captureDiagnostics();
+        // Administrator inspection still reports TaCZ's own state. The TaCZ driver
+        // exists for every guard while TaCZ is the fallback provider.
+        NativeGunController.Diagnostics nativeState = gunController.driver(NativeGunController.class)
+                .orElseThrow(() -> new IllegalStateException("Guard has no TaCZ weapon driver"))
+                .captureDiagnostics();
         int requiredVisibleTicks = gunController.getRequiredVisibleTicks();
         double aimToleranceDegrees = gunController.getAimToleranceDegrees();
         double distance = observedTarget == null
@@ -882,7 +889,7 @@ public final class GuardGunCombatGoal extends Goal {
         if (!observedTarget.isAlive()) {
             return FireDecision.TARGET_DEAD;
         }
-        if (!NativeGunController.isGun(guard.getMainHandItem())) {
+        if (!GunProviders.isGun(guard.getMainHandItem())) {
             return FireDecision.NO_GUN;
         }
         if (nativeState.suspended()) {
@@ -950,7 +957,7 @@ public final class GuardGunCombatGoal extends Goal {
                 || !expectedTarget.isAlive()
                 || !GuardRulesOfEngagement.mayEngage(guard, expectedTarget)
                 || !gunController.isWeaponAllowedByOrders()
-                || !NativeGunController.isGun(guard.getMainHandItem())) {
+                || !GunProviders.isGun(guard.getMainHandItem())) {
             return false;
         }
 

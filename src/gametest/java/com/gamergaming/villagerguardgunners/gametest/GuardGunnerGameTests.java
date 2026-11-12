@@ -6766,7 +6766,7 @@ public final class GuardGunnerGameTests {
 
         guard.setItemSlot(EquipmentSlot.MAINHAND, gun(GLOCK_17, FireMode.SEMI, 1, true));
         controller.startAiming();
-        NativeGunController.CachedTacticalState pistol =
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState pistol =
                 controller.captureDiagnostics().tacticalState();
         helper.assertTrue(pistol.metadataReadable(),
                 "The Glock tactical metadata cache was not marked ready");
@@ -6804,7 +6804,7 @@ public final class GuardGunnerGameTests {
         helper.assertTrue(!controller.canFireAtDistanceSquared(4.0D * 4.0D),
                 "A changed guard order left the previous burst firing window live");
         controller.startAiming();
-        NativeGunController.CachedTacticalState orderedPistol =
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState orderedPistol =
                 controller.captureDiagnostics().tacticalState();
         helper.assertTrue(
                 orderedPistol.resolution().profile() == TacticalProfile.MARKSMAN
@@ -6825,7 +6825,7 @@ public final class GuardGunnerGameTests {
                         && !controller.canFireAtDistanceSquared(16.0D * 16.0D),
                 "A hand swap exposed the previous gun's stale tactical requirements");
         controller.startAiming();
-        NativeGunController.CachedTacticalState shotgun =
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState shotgun =
                 controller.captureDiagnostics().tacticalState();
         helper.assertTrue(shotgun.metadataReadable()
                         && shotgun.resolution().profile() == TacticalProfile.BREACHER
@@ -6835,7 +6835,7 @@ public final class GuardGunnerGameTests {
 
         guard.setItemSlot(EquipmentSlot.MAINHAND, gun(RPG_7, FireMode.SEMI, 1, true));
         controller.startAiming();
-        NativeGunController.CachedTacticalState launcher =
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState launcher =
                 controller.captureDiagnostics().tacticalState();
         helper.assertTrue(launcher.metadataReadable()
                         && launcher.resolution().profile() == TacticalProfile.DEMOLITIONS

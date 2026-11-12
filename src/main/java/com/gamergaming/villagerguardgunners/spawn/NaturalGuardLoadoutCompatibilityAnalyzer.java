@@ -144,7 +144,7 @@ public final class NaturalGuardLoadoutCompatibilityAnalyzer {
                     0.0F);
         }
 
-        GuardAmmoSummary.Snapshot ammoUse = GuardAmmoSummary.capture(
+        GuardAmmoSummary.Snapshot ammoUse = com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczAmmoSummary.capture(
                 gunStack.copy(),
                 gunData,
                 null);

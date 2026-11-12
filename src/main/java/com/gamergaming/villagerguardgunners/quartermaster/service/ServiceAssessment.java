@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.quartermaster.service;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.ammunition.GuardInfiniteAmmo;
 import com.gamergaming.villagerguardgunners.api.*;
 import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
@@ -9,8 +10,6 @@ import com.gamergaming.villagerguardgunners.medical.TreatmentProfiles;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderPermissions;
 import com.gamergaming.villagerguardgunners.quartermaster.QuartermasterBlockEntity;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
-import com.tacz.guns.api.TimelessAPI;
-import com.tacz.guns.api.item.*;
 import java.util.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -202,18 +201,19 @@ public final class ServiceAssessment {
             String item=BuiltInRegistries.ITEM.getKey(copy.getItem()).toString(), gun=null,ammo=null;
             var kind=ServiceNeeds.Kind.OTHER; boolean known=true, physicalReserve=true;
             try {
-                if(copy.getItem() instanceof IGun nativeGun) {
-                    kind=ServiceNeeds.Kind.GUN; var id=nativeGun.getGunId(copy.copy()); gun=id==null?null:id.toString();
-                    var definition=id==null?null:TimelessAPI.getCommonGunIndex(id).orElse(null);
-                    known=definition!=null;
-                    if(known&&definition.getGunData().getAmmoId()!=null)ammo=definition.getGunData().getAmmoId().toString();
+                var gunProvider=GunProviders.find(copy).orElse(null); var ammoProvider=gunProvider!=null?null:GunProviders.findAmmoOwner(copy).orElse(null);
+                if(gunProvider!=null) {
+                    kind=ServiceNeeds.Kind.GUN; gun=gunProvider.ref(copy.copy()).map(ref->ref.id().toString()).orElse(null);
+                    var definition=gunProvider.describe(copy.copy()).orElse(null);
+                    known=definition!=null&&definition.firingDataPresent();
+                    if(known&&definition.ammoId()!=null)ammo=definition.ammoId().toString();
                     if(known) {
-                        var reserve=GuardAmmoSummary.capture(copy.copy(),definition.getGunData(),null);
+                        var reserve=gunProvider.captureAmmo(copy.copy(),null);
                         known=reserve.isReady(); physicalReserve=reserve.reserveSource()==GuardAmmoSummary.ReserveSource.PHYSICAL;
                     }
-                } else if(copy.getItem() instanceof IAmmoBox) kind=ServiceNeeds.Kind.AMMO_BOX;
-                else if(copy.getItem() instanceof IAmmo nativeAmmo) {
-                    kind=ServiceNeeds.Kind.LOOSE_AMMO; var id=nativeAmmo.getAmmoId(copy.copy()); ammo=id==null?null:id.toString();
+                } else if(ammoProvider!=null&&!ammoProvider.isLooseAmmo(copy)) kind=ServiceNeeds.Kind.AMMO_BOX;
+                else if(ammoProvider!=null) {
+                    kind=ServiceNeeds.Kind.LOOSE_AMMO; ammo=ammoProvider.ammoId(copy.copy()).map(Object::toString).orElse(null);
                 } else if(TreatmentProfiles.resolve(copy.copy())!=null)kind=ServiceNeeds.Kind.MEDICAL;
             } catch(RuntimeException unavailable) { known=false; }
             facts.put(key,new ServiceNeeds.Variant(key,item,gun,ammo,kind,known,physicalReserve)); return new ServiceNeeds.Stack(key,count);

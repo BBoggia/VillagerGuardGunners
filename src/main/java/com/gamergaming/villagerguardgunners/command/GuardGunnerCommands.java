@@ -286,7 +286,7 @@ public final class GuardGunnerCommands {
                         + ", dataReady=" + nativeState.weaponDataReady()
                         + ", suspended=" + nativeState.suspended(),
                 ChatFormatting.GRAY));
-        NativeGunController.CachedTacticalState tactical = nativeState.tacticalState();
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState tactical = nativeState.tacticalState();
         TacticalEnvelope envelope = tactical.envelope();
         send(source, line(
                 "Cached tactics",

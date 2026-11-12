@@ -124,7 +124,7 @@ final class VillageDefenseBuildingsStepNineContractTest {
                 () -> assertTrue(gameTests.contains("ModBlocks.ARMORY.get()")),
                 () -> assertTrue(poolElement.contains("setKnownShape(false)")),
                 () -> assertTrue(placement.contains("UPPER_DECK_OFFSET = 5")),
-                () -> assertTrue(placement.contains("NativeGunController.isGun")),
+                () -> assertTrue(placement.contains("GunProviders.isGun")),
                 () -> assertTrue(placement.contains("Items.CROSSBOW")),
                 () -> assertTrue(placement.contains("level.hasChunkAt(upperPosition)")),
                 () -> assertFalse(placement.contains("TickEvent")),

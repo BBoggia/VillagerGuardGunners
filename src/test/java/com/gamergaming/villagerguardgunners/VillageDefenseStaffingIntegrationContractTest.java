@@ -54,7 +54,7 @@ final class VillageDefenseStaffingIntegrationContractTest {
                 () -> assertTrue(staffingStart >= 0 && staffingStart < stateStart),
                 () -> assertTrue(stateTick >= 0 && stateTick < staffingTick),
                 () -> assertTrue(mixin.contains("((tickCount + getId()) & 31) == 0")),
-                () -> assertTrue(suitability.contains("NativeGunController.isGun(main)")),
+                () -> assertTrue(suitability.contains("GunProviders.isGun(main)")),
                 () -> assertTrue(suitability.contains("instanceof CrossbowItem")),
                 () -> assertTrue(suitability.contains("instanceof SwordItem")),
                 () -> assertFalse(runtime.contains("getEntities")),

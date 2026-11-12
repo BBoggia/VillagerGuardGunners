@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.quartermaster.service;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import com.tacz.guns.api.item.IGun;
 
 /** Selects physical stock only. No item construction or NBT rewriting is part of a profile. */
 public record EquipmentProfile(List<String> primary, List<String> sidearm, Map<String, List<String>> armor,
@@ -51,8 +51,12 @@ public record EquipmentProfile(List<String> primary, List<String> sidearm, Map<S
         return List.copyOf(result);
     }
     public static boolean matches(ItemStack stack, List<String> selectors, boolean gun) {
-        if (stack.isEmpty() || (gun && !(stack.getItem() instanceof IGun))) return false;
-        ResourceLocation id = gun ? ((IGun) stack.getItem()).getGunId(stack) : net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (stack.isEmpty()) return false;
+        ResourceLocation id = gun
+                ? GunProviders.find(stack).flatMap(provider -> provider.ref(stack)).map(ref -> ref.id()).orElse(null)
+                : net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem());
+        // A gun whose identity cannot be read matches no selector.
+        if (id == null) return false;
         for (String selector : selectors) {
             if (selector.startsWith("#")) {
                 if (stack.is(TagKey.create(Registries.ITEM, ResourceLocation.parse(selector.substring(1))))) return true;

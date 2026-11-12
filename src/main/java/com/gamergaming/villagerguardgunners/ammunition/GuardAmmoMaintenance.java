@@ -1,9 +1,9 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.guns.GunProvider;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IAmmoBox;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import tallestegg.guardvillagers.common.entities.Guard;
@@ -27,21 +27,12 @@ public final class GuardAmmoMaintenance {
         if (stack == null || stack.isEmpty()) {
             return false;
         }
-        if (stack.getItem() instanceof IAmmo) {
-            return true;
+        for (GunProvider provider : GunProviders.all()) {
+            if (provider.isUsableSupply(stack)) {
+                return true;
+            }
         }
-        if (!(stack.getItem() instanceof IAmmoBox ammoBox)) {
-            return false;
-        }
-
-        try {
-            ItemStack checkedBox = stack.copy();
-            return ammoBox.isAllTypeCreative(checkedBox)
-                    || ammoBox.isCreative(checkedBox)
-                    || ammoBox.getAmmoCount(checkedBox) > 0;
-        } catch (RuntimeException exception) {
-            return false;
-        }
+        return false;
     }
 
     /**
@@ -106,20 +97,14 @@ public final class GuardAmmoMaintenance {
     }
 
     static boolean isEmptyFiniteBox(ItemStack stack) {
-        if (stack == null
-                || stack.isEmpty()
-                || stack.getItem() instanceof IAmmo
-                || !(stack.getItem() instanceof IAmmoBox ammoBox)) {
+        if (stack == null || stack.isEmpty()) {
             return false;
         }
-
-        try {
-            ItemStack checkedBox = stack.copy();
-            return !ammoBox.isAllTypeCreative(checkedBox)
-                    && !ammoBox.isCreative(checkedBox)
-                    && ammoBox.getAmmoCount(checkedBox) <= 0;
-        } catch (RuntimeException exception) {
-            return false;
+        for (GunProvider provider : GunProviders.all()) {
+            if (provider.isSpentAmmoContainer(stack)) {
+                return true;
+            }
         }
+        return false;
     }
 }

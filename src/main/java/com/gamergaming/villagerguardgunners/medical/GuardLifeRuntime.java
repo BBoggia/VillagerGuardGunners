@@ -2,7 +2,6 @@ package com.gamergaming.villagerguardgunners.medical;
 
 import com.gamergaming.villagerguardgunners.api.*;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
-import com.tacz.guns.api.entity.IGunOperator;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -129,9 +128,7 @@ public final class GuardLifeRuntime {
         guard.setTarget(null); guard.getNavigation().stop(); guard.stopUsingItem(); guard.setSprinting(false);
         guard.setSpeed(0); guard.setZza(0); guard.setXxa(0); guard.setJumping(false);
         guard.setDeltaMovement(0, guard.getDeltaMovement().y, 0);
-        var operator = IGunOperator.fromLivingEntity(guard); operator.cancelReload(); operator.aim(false);
-        operator.getDataHolder().meleePrepTickCount = -1;
-        operator.getDataHolder().isBolting = false; operator.getDataHolder().boltTimestamp = -1;
+        com.gamergaming.villagerguardgunners.guns.GuardWeapons.halt(guard);
     }
     public static void synchronize(Guard guard) {
         var access = (GuardLifeAccess)guard; var life = GuardLifeAccess.get(guard);

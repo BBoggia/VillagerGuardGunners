@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.inventory;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.tacz.guns.api.item.IAmmo;
 import com.tacz.guns.api.item.IAmmoBox;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public final class GuardAmmoHandler extends ItemStackHandler {
     }
 
     public static boolean isAmmo(ItemStack stack) {
-        return !stack.isEmpty() && isAmmoItem(stack.getItem());
+        return !stack.isEmpty() && GunProviders.isAmmo(stack);
     }
 
     public static boolean isAmmoItem(Item item) {

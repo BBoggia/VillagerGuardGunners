@@ -1,13 +1,11 @@
 package com.gamergaming.villagerguardgunners.worldgen.post;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
 import com.gamergaming.villagerguardgunners.mixin.accessor.LootPoolAccessor;
 import com.gamergaming.villagerguardgunners.mixin.accessor.LootPoolEntryAccessor;
 import com.gamergaming.villagerguardgunners.mixin.accessor.LootPoolSingletonAccessor;
 import com.gamergaming.villagerguardgunners.mixin.accessor.LootTableAccessor;
-import com.tacz.guns.api.TimelessAPI;
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IAmmoBox;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
@@ -147,21 +145,9 @@ public final class GuardPostArmoryLoot {
         if (stack == null || stack.isEmpty()) {
             return false;
         }
-        ResourceLocation ammoId;
-        if (stack.getItem() instanceof IAmmo ammo) {
-            ammoId = ammo.getAmmoId(stack);
-        } else if (stack.getItem() instanceof IAmmoBox box) {
-            if (box.isAllTypeCreative(stack)) {
-                return true;
-            }
-            if (!box.isCreative(stack) && box.getAmmoCount(stack) <= 0) {
-                return false;
-            }
-            ammoId = box.getAmmoId(stack);
-        } else {
-            return false;
-        }
-        return ammoId != null && TimelessAPI.getCommonAmmoIndex(ammoId).isPresent();
+        return GunProviders.findAmmoOwner(stack)
+                .map(provider -> provider.isKnownUsableSupply(stack))
+                .orElse(false);
     }
 
     /** Stackless singleton used only to abort loot-pool iteration at the cap. */

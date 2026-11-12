@@ -23,7 +23,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--java-home', type=Path, default=Path(os.environ.get('JAVA_HOME', '/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home')))
 parser.add_argument('--accept-eula', action='store_true')
 parser.add_argument('--fresh', action='store_true', help='Delete only this runner’s previous test world and expected record')
-parser.add_argument('--suite', choices=('core', 'behavior', 'workflow', 'worldgen'), default='core')
+parser.add_argument('--suite', choices=('core', 'behavior', 'workflow', 'worldgen', 'cgm'), default='core',
+                    help='cgm adds the optional gun mods; build first with ./gradlew stageOptionalGunQaMods')
 parser.add_argument('--start-case', help='Debug a behavior-suite suffix; the report marks this as a partial run')
 parser.add_argument('--worldgen-scenario', choices=('builtin', 'universal', 'providers', 'providers-baseline'), default='builtin')
 parser.add_argument('--neo-version', help='Test another 21.1.x loader in a separate installation without changing the build pin')
@@ -34,6 +35,10 @@ if args.neo_version and not re.fullmatch(r'21\.1\.\d+', args.neo_version):
     parser.error('--neo-version must name a Minecraft 1.21.1 NeoForge build (21.1.x)')
 runtime = ROOT / 'build/neoforge/installed-core-qa'
 results_root = ROOT / 'build/neoforge/core-qa/results'
+optional_guns = args.suite == 'cgm'
+if optional_guns:
+    # Separate installation: its mods folder holds gun mods the other suites must not see.
+    runtime = runtime.with_name(runtime.name + '-optional-guns')
 if args.neo_version:
     runtime = runtime.with_name(runtime.name + '-' + args.neo_version)
     results_root = results_root / args.neo_version
@@ -44,17 +49,17 @@ if args.suite == 'worldgen':
     evidence = evidence / scenario
 world_name = args.suite + ('-' + scenario if args.suite == 'worldgen' else '') + '-world'
 expected_name = args.suite + ('-' + scenario if args.suite == 'worldgen' else '') + '-qa-expected.nbt'
-log_prefix = {'core': 'VGG_CORE_QA_', 'behavior': 'VGG_BEHAVIOR_QA_', 'workflow': 'VGG_WORKFLOW_QA_', 'worldgen': 'VGG_WORLDGEN_QA_'}[args.suite]
+log_prefix = {'core': 'VGG_CORE_QA_', 'behavior': 'VGG_BEHAVIOR_QA_', 'workflow': 'VGG_WORKFLOW_QA_', 'worldgen': 'VGG_WORLDGEN_QA_', 'cgm': 'VGG_CGM_QA_'}[args.suite]
 if baseline:
     log_prefix = 'VGG_PORT_'
-staged = ROOT / 'build/neoforge/core-qa/mods'
+staged = ROOT / ('build/neoforge/optional-gun-qa/mods' if optional_guns else 'build/neoforge/core-qa/mods')
 props = dict(line.split('=', 1) for line in (ROOT / 'gradle.properties').read_text().splitlines() if '=' in line and not line.startswith('#'))
 version = args.neo_version or props['neo_version']
 java = str(args.java_home / 'bin/java')
 if not args.accept_eula:
     raise SystemExit('Pass --accept-eula only after accepting Minecraft’s EULA for this isolated test server.')
 if not list(staged.glob('vgg-core-qa-*.jar')):
-    raise SystemExit('Run ./gradlew stageCoreQaMods first.')
+    raise SystemExit('Run ./gradlew stageOptionalGunQaMods first.' if optional_guns else 'Run ./gradlew stageCoreQaMods first.')
 evidence.mkdir(parents=True, exist_ok=True)
 marker = runtime / '.vgg-core-qa-runtime'
 if runtime.exists() and not marker.exists():

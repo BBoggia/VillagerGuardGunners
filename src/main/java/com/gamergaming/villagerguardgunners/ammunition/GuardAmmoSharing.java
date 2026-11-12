@@ -1,12 +1,10 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IAmmoBox;
-import com.tacz.guns.api.item.IGun;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -47,7 +45,7 @@ public final class GuardAmmoSharing {
 
     private static SharingResult tryShareSafely(Guard recipient) {
         ItemStack recipientGun = recipient.getMainHandItem();
-        if (recipientGun.isEmpty() || !(recipientGun.getItem() instanceof IGun)) {
+        if (recipientGun.isEmpty() || !GunProviders.isGun(recipientGun)) {
             return SharingResult.failed(SharingStatus.INVALID_RECIPIENT);
         }
 
@@ -232,8 +230,7 @@ public final class GuardAmmoSharing {
             long shareableUnits,
             ItemStack ammunitionTemplate) {
         if (candidate.isEmpty()
-                || !(candidate.getItem() instanceof IAmmo)
-                || candidate.getItem() instanceof IAmmoBox
+                || !GunProviders.isLooseAmmo(candidate)
                 || !ItemStack.isSameItemSameComponents(candidate, ammunitionTemplate)
                 || !AmmoCompatibility.assess(recipientGun, candidate).isCompatible()) {
             return 0;

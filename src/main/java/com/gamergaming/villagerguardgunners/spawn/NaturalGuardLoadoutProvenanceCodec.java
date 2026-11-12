@@ -2,7 +2,7 @@ package com.gamergaming.villagerguardgunners.spawn;
 
 import com.gamergaming.villagerguardgunners.inventory.ItemCustomData;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
-import com.tacz.guns.api.item.IGun;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -129,15 +129,13 @@ public final class NaturalGuardLoadoutProvenanceCodec {
             ResourceLocation expectedGunId) {
         if (gunStack == null
                 || gunStack.isEmpty()
-                || gunStack.getCount() != 1
-                || !(gunStack.getItem() instanceof IGun gun)) {
+                || gunStack.getCount() != 1) {
             return false;
         }
-        try {
-            return expectedGunId.equals(gun.getGunId(gunStack));
-        } catch (RuntimeException exception) {
-            return false;
-        }
+        return GunProviders.find(gunStack)
+                .flatMap(provider -> provider.ref(gunStack))
+                .map(ref -> expectedGunId.equals(ref.id()))
+                .orElse(false);
     }
 
     private static CompoundTag encode(NaturalGuardLoadoutProvenance provenance) {

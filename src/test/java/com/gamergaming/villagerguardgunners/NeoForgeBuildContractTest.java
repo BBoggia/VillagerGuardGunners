@@ -29,7 +29,10 @@ final class NeoForgeBuildContractTest {
         try (var jar = new ZipFile(System.getProperty("villagerguardgunners.artifact"))) {
             String metadata = new String(jar.getInputStream(jar.getEntry("META-INF/neoforge.mods.toml")).readAllBytes(), StandardCharsets.UTF_8);
             assertFalse(metadata.contains("${"));
-            assertEquals(6, metadata.split("\\[\\[dependencies\\.villagerguardgunners]]", -1).length - 1);
+            // Six required dependencies and one optional gun mod.
+            assertEquals(7, metadata.split("\\[\\[dependencies\\.villagerguardgunners]]", -1).length - 1);
+            assertEquals(6, metadata.split("type=\"required\"", -1).length - 1);
+            assertTrue(metadata.contains("modId=\"cgm\"\ntype=\"optional\""));
             assertNull(jar.getEntry("META-INF/mods.toml"));
             var mixins = JsonParser.parseString(new String(jar.getInputStream(jar.getEntry("mixins.villagerguardgunners.json")).readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();
             assertTrue(mixins.get("required").getAsBoolean());

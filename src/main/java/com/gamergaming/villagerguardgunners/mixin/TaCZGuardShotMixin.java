@@ -77,14 +77,14 @@ public abstract class TaCZGuardShotMixin {
     @Inject(method = "removeAmmoFromMagazine", at = @At("RETURN"))
     private void villagerGuardGunners$replenishScriptMagazine(int count, CallbackInfoReturnable<Integer> cir) {
         if (!villagerGuardGunners$roundRefused && cir.getReturnValue() > 0) {
-            GuardInfiniteAmmo.replenishMagazine(shooter, itemStack);
+            com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczInfiniteAmmo.replenishMagazine(shooter, itemStack);
         }
     }
 
     @Inject(method = "reduceAmmoOnce", at = @At("RETURN"))
     private void villagerGuardGunners$replenishNativeMagazine(CallbackInfoReturnable<Boolean> cir) {
         if (!villagerGuardGunners$roundRefused && cir.getReturnValue()) {
-            GuardInfiniteAmmo.replenishMagazine(shooter, itemStack);
+            com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczInfiniteAmmo.replenishMagazine(shooter, itemStack);
         }
     }
 

@@ -13,6 +13,9 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 def pinnedMods = new groovy.json.JsonSlurper().parse(file('gradle/neoforge-mods.json'))
 def modCoordinates = { entry -> "maven.modrinth:${entry.projectId}:${entry.versionId}" }
+// Gun mods the production JAR supports but does not require. Compile-only; never bundled.
+def optionalMods = new groovy.json.JsonSlurper().parse(file('gradle/neoforge-optional-mods.json'))
+def optionalCoordinates = { entry -> "curse.maven:${entry.name}-${entry.projectId}:${entry.fileId}" }
 
 sourceSets {
     coreqa
@@ -24,6 +27,7 @@ sourceSets {
 }
 configurations {
     installedMods { canBeConsumed = false; transitive = false }
+    optionalGunMods { canBeConsumed = false; transitive = false }
     taczEmbeddedApi { canBeConsumed = false; transitive = false }
     bootstrapImplementation.extendsFrom implementation
     bootstrapCompileOnly.extendsFrom compileOnly
@@ -76,6 +80,10 @@ repositories {
         forRepository { maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' } }
         filter { includeGroup 'maven.modrinth' }
     }
+    exclusiveContent {
+        forRepository { maven { name = 'CurseMaven'; url = 'https://cursemaven.com' } }
+        filter { includeGroup 'curse.maven' }
+    }
     maven {
         name = 'KotlinForForge'
         url = 'https://thedarkcolour.github.io/KotlinForForge/'
@@ -89,6 +97,10 @@ dependencies {
         if (entry.name != 'kotlin') implementation(modCoordinates(entry)) { transitive = false }
     }
     implementation "thedarkcolour:kotlinforforge-neoforge:${kotlin_for_forge_version}"
+    optionalMods.each { entry ->
+        optionalGunMods(optionalCoordinates(entry)) { transitive = false }
+        compileOnly(optionalCoordinates(entry)) { transitive = false }
+    }
     taczEmbeddedApi(modCoordinates(pinnedMods.find { it.name == 'tacz' }))
     testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:${junit_platform_version}"
@@ -148,7 +160,7 @@ tasks.register('combatTest', Test) {
     classpath = sourceSets.test.runtimeClasspath
     filter {
         ['*combat.*', '*inventory.*', '*ammunition.*', '*ai.*', '*orders.*', '*squad.*', '*sidearm.*', '*role.*',
-         '*GuardAimingConfigTest', '*Squad*Test', '*Sidearm*Test', '*Orders*Test', '*GuardRolesContractTest',
+         '*guns.*', '*compat.cgm.*', '*GunProviderSeamContractTest', '*GuardAimingConfigTest', '*Squad*Test', '*Sidearm*Test', '*Orders*Test', '*GuardRolesContractTest',
          '*NativeCombatSourceContractTest', '*GuardPatrolRouteMovementControllerTest',
          '*RulesOfEngagementContractTest', '*GuardAllyProtectionContractTest'].each { includeTestsMatching it }
     }
@@ -197,6 +209,23 @@ def verifyPinnedMods = tasks.register('verifyPinnedMods') {
         }
     }
 }
+def verifyOptionalMods = tasks.register('verifyOptionalMods') {
+    group = 'verification'
+    description = 'Checks the optional gun mod JARs against their recorded SHA-512 hashes.'
+    inputs.file 'gradle/neoforge-optional-mods.json'
+    inputs.files configurations.optionalGunMods
+    doLast {
+        def artifacts = configurations.optionalGunMods.resolvedConfiguration.resolvedArtifacts
+        optionalMods.each { entry ->
+            def artifact = artifacts.find { it.moduleVersion.id.version == entry.fileId.toString() }
+            if (artifact == null) throw new GradleException("Missing optional mod: ${entry.name}")
+            def digest = java.security.MessageDigest.getInstance('SHA-512').digest(artifact.file.bytes).encodeHex().toString()
+            if (digest != entry.sha512) throw new GradleException("Recorded checksum mismatch: ${entry.name}")
+            logger.lifecycle("Verified optional ${entry.name} ${entry.version}")
+        }
+    }
+}
+tasks.named('compileJava') { dependsOn verifyOptionalMods }
 tasks.register('stageBootstrapMods', Sync) {
     group = 'verification'
     description = 'Stages normal mod JARs and the isolated probe for installed-server testing.'
@@ -251,6 +280,17 @@ tasks.register('stageCoreQaMods', Sync) {
     from tasks.named('jar')
     from coreQaJar
     into layout.buildDirectory.dir('core-qa/mods')
+}
+
+// Same as the core QA mods folder plus the optional gun mods, for provider checks.
+tasks.register('stageOptionalGunQaMods', Sync) {
+    group = 'verification'
+    dependsOn verifyPinnedMods, verifyOptionalMods
+    from configurations.installedMods
+    from configurations.optionalGunMods
+    from tasks.named('jar')
+    from coreQaJar
+    into layout.buildDirectory.dir('optional-gun-qa/mods')
 }
 
 apply from: 'gradle/neoforge-resources.gradle'

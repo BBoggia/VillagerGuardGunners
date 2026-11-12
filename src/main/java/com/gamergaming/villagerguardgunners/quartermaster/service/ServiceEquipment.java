@@ -1,10 +1,9 @@
 package com.gamergaming.villagerguardgunners.quartermaster.service;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.api.*;
 import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmEquipmentService;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmRuntimeAssessment;
-import com.tacz.guns.api.item.IGun;
-import com.tacz.guns.api.TimelessAPI;
 import java.util.List;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +31,7 @@ public final class ServiceEquipment {
     public static boolean valid(Guard guard, int slot, ItemStack stack) {
         if (stack.isEmpty()) return false;
         try {
-            if (slot == 0) return stack.getCount() == 1 && stack.getItem() instanceof IGun gun && TimelessAPI.getCommonGunIndex(gun.getGunId(stack)).isPresent();
+            if (slot == 0) return stack.getCount() == 1 && GunProviders.find(stack).flatMap(provider -> provider.describe(stack)).isPresent();
             if (slot == 1) return stack.getCount() == 1 && SidearmRuntimeAssessment.assessEligibility(guard, stack).eligible();
             if (slot < 6) return stack.getCount() == 1 && stack.canEquip(EQUIPMENT[slot], guard);
             if (slot < 9) return GuardAmmoAccess.getAmmoHandler(guard).isItemValid(slot - 6, stack);

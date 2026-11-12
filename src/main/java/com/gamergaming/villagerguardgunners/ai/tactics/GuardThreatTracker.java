@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.ai.tactics;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.UUID;
@@ -7,7 +8,6 @@ import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection;
 import com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime;
 import com.gamergaming.villagerguardgunners.medical.MedicRuntime;
-import com.tacz.guns.api.item.IGun;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -179,7 +179,7 @@ public final class GuardThreatTracker {
         if (velocity.lengthSqr() > 1) velocity = velocity.normalize();
         boolean ranged = entity instanceof RangedAttackMob
                 || entity.getMainHandItem().getItem() instanceof ProjectileWeaponItem
-                || entity.getMainHandItem().getItem() instanceof IGun;
+                || GunProviders.isGun(entity.getMainHandItem());
         boolean explosive = entity instanceof Creeper creeper && (creeper.isIgnited() || creeper.getSwellDir() > 0);
         boolean attackedGuard = entity == recentAttacker();
         long attackTick = attackedGuard

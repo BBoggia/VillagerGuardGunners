@@ -1,0 +1,20 @@
+[
+  {
+    "name": "cgm",
+    "project": "cgm-unofficial",
+    "version": "1.4.21+NeoForge+1.21.1",
+    "projectId": 945471,
+    "fileId": 8978515,
+    "filename": "CGM-Unofficial-1.4.21+NeoForge+1.21.1.jar",
+    "sha512": "da85607dc167933877d022925f33b1c1570d73dafedd093b81e3c99f0472c58d4515794b25eae556d7da9d3ef268d5557a97f7d47b197dc1bd47d37f412ffbfa"
+  },
+  {
+    "name": "framework",
+    "project": "framework",
+    "version": "0.13.11",
+    "projectId": 549225,
+    "fileId": 7530361,
+    "filename": "framework-neoforge-1.21.1-0.13.11.jar",
+    "sha512": "bcc662c5588d0bd898f0878913b6d94d13e8fe7d58b54ae4fa15cf584a6ed5a4d202533f71f7ca40affcbd221da3d29d8b3af06329ae84faf75c68da99f27551"
+  }
+]

@@ -1,8 +1,8 @@
 package com.gamergaming.villagerguardgunners.ai;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
 import com.gamergaming.villagerguardgunners.ai.navigation.GuardNavigationRuntime;
-import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.squad.SquadCommand;
@@ -102,7 +102,7 @@ public final class SquadCommandMovementController {
         SquadCommand command = synchronize(false);
         if (command == null
                 || command.type() != SquadCommandType.FOCUS_TARGET
-                || NativeGunController.isGun(guard.getMainHandItem())) {
+                || GunProviders.isGun(guard.getMainHandItem())) {
             return command;
         }
         if (SquadCommandRuntime.synchronizeFocusTarget(guard, command) == null) {

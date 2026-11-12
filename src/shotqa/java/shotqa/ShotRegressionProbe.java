@@ -228,7 +228,7 @@ public final class ShotRegressionProbe {
             nativeGun.setCurrentAmmoCount(gun, 0);
             nativeGun.setBulletInBarrel(gun, false);
             if (name.equals("ammo-blocked") || name.equals("ammo-cancel")) {
-                GuardInfiniteAmmo.replenishMagazine(guard, gun, data);
+                com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczInfiniteAmmo.replenishMagazine(guard, gun, data);
                 nativeGun.setBulletInBarrel(gun, true);
             }
             if (name.startsWith("ammo-box")) {

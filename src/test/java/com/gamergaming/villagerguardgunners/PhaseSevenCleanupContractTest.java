@@ -36,7 +36,7 @@ final class PhaseSevenCleanupContractTest {
                 "").replace(
                         read("src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/GuardPostSpawner.java"),
                         "");
-        String infiniteAmmo = read("src/main/java/com/gamergaming/villagerguardgunners/ammunition/GuardInfiniteAmmo.java");
+        String infiniteAmmo = read("src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/provider/TaczInfiniteAmmo.java");
         productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
                 infiniteAmmo, infiniteAmmo.replace("setCurrentAmmoCount(", "configuredMagazineRefill("));
         String recovery = read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/QuartermasterRecovery.java");
@@ -51,6 +51,15 @@ final class PhaseSevenCleanupContractTest {
         assertFalse(shotBridge.contains("new EntityKineticBullet"));
         productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
                 shotBridge, shotBridge.replace("addFreshEntity(", "nativeProjectileInsertion("));
+        // MrCrayfish's Gun Mod has no way for a non-player to fire, so its backend inserts the
+        // projectile that the mod's own factory built. It must never construct or tune one itself.
+        String cgmBackend = read("src/main/java/com/gamergaming/villagerguardgunners/compat/cgm/CgmGunBackend.java");
+        assertTrue(cgmBackend.contains("ProjectileEntity entity = factory.create(level, guard, stack, item, gun);"));
+        assertFalse(cgmBackend.contains("new ProjectileEntity("));
+        assertFalse(cgmBackend.contains("setDeltaMovement("));
+        assertEquals(1, countOccurrences(cgmBackend, "addFreshEntity("));
+        productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
+                cgmBackend, cgmBackend.replace("addFreshEntity(", "modFactoryProjectileInsertion("));
         for (String file : List.of("VillagePopulationRuntime.java", "VillagePopulationPlacement.java")) {
             String population = read("src/main/java/com/gamergaming/villagerguardgunners/village/population/" + file);
             productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
@@ -140,7 +149,13 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertTrue(properties.contains("fzzy_config_version=0.7.7+fix1+1.21+neoforge")),
                 () -> assertTrue(metadata.contains("modId=\"fzzy_config\"")),
                 () -> assertTrue(metadata.contains("modId=\"kotlinforforge\"")),
-                () -> assertEquals(6, countOccurrences(metadata, "[[dependencies.${mod_id}]]")));
+                // Optional gun mods are compile-only and verified by hash; they are never bundled or required.
+                () -> assertTrue(build.contains("compileOnly(optionalCoordinates(entry)) { transitive = false }")),
+                () -> assertFalse(build.contains("implementation(optionalCoordinates")),
+                () -> assertTrue(build.contains("tasks.named('compileJava') { dependsOn verifyOptionalMods }")),
+                () -> assertEquals(6, countOccurrences(metadata, "type=\"required\"")),
+                () -> assertEquals(1, countOccurrences(metadata, "type=\"optional\"")),
+                () -> assertEquals(7, countOccurrences(metadata, "[[dependencies.${mod_id}]]")));
     }
 
     @Test
@@ -233,7 +248,12 @@ final class PhaseSevenCleanupContractTest {
         String medicalReload = read("src/main/java/com/gamergaming/villagerguardgunners/medical/TreatmentProfiles.java");
         String tradeRuntime = read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/trade/QuartermasterTrades.java");
         assertTrue(tradeRuntime.contains("if(WARNED.add(id))"));
+        String cgmBootstrap = read("src/main/java/com/gamergaming/villagerguardgunners/compat/cgm/CgmBootstrap.java");
+        // One operator warning, issued once, never per shot.
+        assertEquals(1, countOccurrences(cgmBootstrap, "LOGGER."));
+        assertTrue(cgmBootstrap.contains("if (!warnedImprovedHitboxes) {"));
         String performanceSensitiveSource = productionSource
+                .replace(cgmBootstrap, "")
                 .replace(tradeRuntime, "")
                 .replace(read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/trade/TradeDefinitions.java"), "")
                 .replace(medicalReload, "")

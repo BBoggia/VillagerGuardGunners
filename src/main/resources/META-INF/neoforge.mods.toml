@@ -53,3 +53,11 @@ type="required"
 versionRange="${kotlin_for_forge_version_range}"
 ordering="NONE"
 side="BOTH"
+
+# Optional gun mods. Guards can use their guns when they are installed.
+[[dependencies.${mod_id}]]
+modId="cgm"
+type="optional"
+versionRange="[0,)"
+ordering="AFTER"
+side="BOTH"

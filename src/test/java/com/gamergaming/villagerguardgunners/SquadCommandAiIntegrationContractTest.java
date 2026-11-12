@@ -52,7 +52,7 @@ final class SquadCommandAiIntegrationContractTest {
                 () -> assertTrue(goal.contains("target == null || !target.isAlive()")),
                 () -> assertTrue(goal.contains("synchronizeSharedFocusTarget()")),
                 () -> assertTrue(controller.contains(
-                        "NativeGunController.isGun(guard.getMainHandItem())")),
+                        "GunProviders.isGun(guard.getMainHandItem())")),
                 () -> assertTrue(controller.contains("case RALLY")),
                 () -> assertTrue(controller.contains("case DEFEND")),
                 () -> assertTrue(controller.contains("case HOLD")),

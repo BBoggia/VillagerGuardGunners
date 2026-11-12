@@ -40,6 +40,14 @@ public class VillagerGuardGunners {
     public VillagerGuardGunners(IEventBus modEventBus) {
 
         ModConfigs.init();
+        // Gun mods register before any guard exists; lookups follow this order.
+        com.gamergaming.villagerguardgunners.guns.GunProviders.register(
+                new com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczGunProvider());
+        // Optional gun mods: each bootstrap class is touched only when its mod is installed.
+        if (net.neoforged.fml.ModList.get().isLoaded(
+                com.gamergaming.villagerguardgunners.guns.OptionalGunMods.CGM)) {
+            com.gamergaming.villagerguardgunners.compat.cgm.CgmBootstrap.register();
+        }
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent event) -> {
             if (event.getEntity() instanceof tallestegg.guardvillagers.common.entities.Guard guard)
                 ((com.gamergaming.villagerguardgunners.api.GuardAmmoAccess) guard).villagerGuardGunners$invalidateInventory();

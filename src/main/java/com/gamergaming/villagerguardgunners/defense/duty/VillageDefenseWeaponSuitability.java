@@ -1,6 +1,6 @@
 package com.gamergaming.villagerguardgunners.defense.duty;
 
-import com.gamergaming.villagerguardgunners.combat.NativeGunController;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.Objects;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -22,7 +22,7 @@ public final class VillageDefenseWeaponSuitability {
     public static WeaponClass classify(ItemStack mainHand, ItemStack offhand) {
         ItemStack main = Objects.requireNonNull(mainHand, "mainHand");
         ItemStack off = Objects.requireNonNull(offhand, "offhand");
-        if (NativeGunController.isGun(main)
+        if (GunProviders.isGun(main)
                 || main.getItem() instanceof CrossbowItem
                 || off.getItem() instanceof CrossbowItem) {
             return WeaponClass.RANGED;

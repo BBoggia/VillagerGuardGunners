@@ -15,7 +15,12 @@ def pinnedMods = new groovy.json.JsonSlurper().parse(file('gradle/neoforge-mods.
 def modCoordinates = { entry -> "maven.modrinth:${entry.projectId}:${entry.versionId}" }
 // Gun mods the production JAR supports but does not require. Compile-only; never bundled.
 def optionalMods = new groovy.json.JsonSlurper().parse(file('gradle/neoforge-optional-mods.json'))
-def optionalCoordinates = { entry -> "curse.maven:${entry.name}-${entry.projectId}:${entry.fileId}" }
+def optionalCoordinates = { entry ->
+    entry.source == 'curseforge'
+            ? "curse.maven:${entry.name}-${entry.projectId}:${entry.versionId}"
+            : "maven.modrinth:${entry.projectId}:${entry.versionId}"
+}
+def optionalQaSets = optionalMods.collectMany { it.qaSets }.unique()
 
 sourceSets {
     coreqa
@@ -28,6 +33,8 @@ sourceSets {
 configurations {
     installedMods { canBeConsumed = false; transitive = false }
     optionalGunMods { canBeConsumed = false; transitive = false }
+    // Some gun mods share a mod ID and cannot be installed together, so each QA set has its own folder.
+    optionalQaSets.each { set -> create("optionalGunMods_${set}") { canBeConsumed = false; transitive = false } }
     taczEmbeddedApi { canBeConsumed = false; transitive = false }
     bootstrapImplementation.extendsFrom implementation
     bootstrapCompileOnly.extendsFrom compileOnly
@@ -57,6 +64,15 @@ neoForge {
             client()
             gameDirectory = file('build/neoforge/run/client')
             loadedMods = [mods[mod_id]]
+        }
+        // One development client per optional gun mod, each with its own game folder:
+        // runCgmClient, runPointblankClient, runJellyClient.
+        optionalQaSets.each { set ->
+            create("${set}Client") {
+                client()
+                gameDirectory = file("build/neoforge/run/${set}-client")
+                loadedMods = [mods[mod_id]]
+            }
         }
         server {
             server()
@@ -99,6 +115,7 @@ dependencies {
     implementation "thedarkcolour:kotlinforforge-neoforge:${kotlin_for_forge_version}"
     optionalMods.each { entry ->
         optionalGunMods(optionalCoordinates(entry)) { transitive = false }
+        entry.qaSets.each { set -> add("optionalGunMods_${set}", optionalCoordinates(entry)) { transitive = false } }
         compileOnly(optionalCoordinates(entry)) { transitive = false }
     }
     taczEmbeddedApi(modCoordinates(pinnedMods.find { it.name == 'tacz' }))
@@ -160,7 +177,7 @@ tasks.register('combatTest', Test) {
     classpath = sourceSets.test.runtimeClasspath
     filter {
         ['*combat.*', '*inventory.*', '*ammunition.*', '*ai.*', '*orders.*', '*squad.*', '*sidearm.*', '*role.*',
-         '*guns.*', '*compat.cgm.*', '*GunProviderSeamContractTest', '*GuardAimingConfigTest', '*Squad*Test', '*Sidearm*Test', '*Orders*Test', '*GuardRolesContractTest',
+         '*guns.*', '*compat.cgm.*', '*compat.pointblank.*', '*GunProviderSeamContractTest', '*GuardAimingConfigTest', '*Squad*Test', '*Sidearm*Test', '*Orders*Test', '*GuardRolesContractTest',
          '*NativeCombatSourceContractTest', '*GuardPatrolRouteMovementControllerTest',
          '*RulesOfEngagementContractTest', '*GuardAllyProtectionContractTest'].each { includeTestsMatching it }
     }
@@ -209,6 +226,23 @@ def verifyPinnedMods = tasks.register('verifyPinnedMods') {
         }
     }
 }
+// Point Blank: Jelly has the same methods as Vic's Point Blank under other package names.
+// Its adapter is generated from the hand-written one, so the two cannot drift apart.
+def pbjAdapterDirectory = layout.buildDirectory.dir('generated/sources/pointblank-jelly')
+def generatePbjAdapter = tasks.register('generatePbjAdapter', Copy) {
+    group = 'build'
+    description = "Generates the Point Blank: Jelly adapter from the Vic's Point Blank one."
+    from('src/main/java/com/gamergaming/villagerguardgunners/compat/pointblank/vpb') { include '*.java' }
+    into pbjAdapterDirectory.map { it.dir('com/gamergaming/villagerguardgunners/compat/pointblank/pbj') }
+    rename { it.replace('Vpb', 'Pbj') }
+    filter { line ->
+        line.replace('com.vicmatskiv.pointblank', 'mod.pbj')
+            .replace('compat.pointblank.vpb', 'compat.pointblank.pbj')
+            .replace('Vpb', 'Pbj')
+    }
+}
+sourceSets.main.java.srcDir(files(pbjAdapterDirectory).builtBy(generatePbjAdapter))
+
 def verifyOptionalMods = tasks.register('verifyOptionalMods') {
     group = 'verification'
     description = 'Checks the optional gun mod JARs against their recorded SHA-512 hashes.'
@@ -217,7 +251,7 @@ def verifyOptionalMods = tasks.register('verifyOptionalMods') {
     doLast {
         def artifacts = configurations.optionalGunMods.resolvedConfiguration.resolvedArtifacts
         optionalMods.each { entry ->
-            def artifact = artifacts.find { it.moduleVersion.id.version == entry.fileId.toString() }
+            def artifact = artifacts.find { it.moduleVersion.id.version == entry.versionId }
             if (artifact == null) throw new GradleException("Missing optional mod: ${entry.name}")
             def digest = java.security.MessageDigest.getInstance('SHA-512').digest(artifact.file.bytes).encodeHex().toString()
             if (digest != entry.sha512) throw new GradleException("Recorded checksum mismatch: ${entry.name}")
@@ -282,15 +316,32 @@ tasks.register('stageCoreQaMods', Sync) {
     into layout.buildDirectory.dir('core-qa/mods')
 }
 
-// Same as the core QA mods folder plus the optional gun mods, for provider checks.
-tasks.register('stageOptionalGunQaMods', Sync) {
+// The core QA mods folder plus one set of optional gun mods, for provider checks.
+def stageOptionalSets = optionalQaSets.collect { set ->
+    tasks.register("stageOptionalGunQaMods_${set}", Sync) {
+        group = 'verification'
+        dependsOn verifyPinnedMods, verifyOptionalMods
+        from configurations.installedMods
+        from configurations["optionalGunMods_${set}"]
+        from tasks.named('jar')
+        from coreQaJar
+        into layout.buildDirectory.dir("optional-gun-qa/${set}/mods")
+    }
+}
+// The development clients load an optional gun mod from their own mods folder.
+optionalQaSets.each { set ->
+    def stageClientMods = tasks.register("stage${set.capitalize()}ClientMods", Sync) {
+        group = 'verification'
+        dependsOn verifyOptionalMods
+        from configurations["optionalGunMods_${set}"]
+        into layout.buildDirectory.dir("run/${set}-client/mods")
+    }
+    tasks.matching { it.name == "run${set.capitalize()}Client" }.configureEach { dependsOn stageClientMods }
+}
+tasks.register('stageOptionalGunQaMods') {
     group = 'verification'
-    dependsOn verifyPinnedMods, verifyOptionalMods
-    from configurations.installedMods
-    from configurations.optionalGunMods
-    from tasks.named('jar')
-    from coreQaJar
-    into layout.buildDirectory.dir('optional-gun-qa/mods')
+    description = 'Stages one installed-server mods folder per optional gun mod.'
+    dependsOn stageOptionalSets
 }
 
 apply from: 'gradle/neoforge-resources.gradle'

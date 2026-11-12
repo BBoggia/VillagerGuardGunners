@@ -156,6 +156,11 @@ public final class CgmGunProvider implements GunProvider {
     }
 
     @Override
+    public boolean usesGenericHeldPose() {
+        return true;
+    }
+
+    @Override
     public WeaponDriver createDriver(Guard guard) {
         return new ManagedWeaponDriver(guard, this, backend);
     }

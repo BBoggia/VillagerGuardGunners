@@ -3,18 +3,66 @@
     "name": "cgm",
     "project": "cgm-unofficial",
     "version": "1.4.21+NeoForge+1.21.1",
-    "projectId": 945471,
-    "fileId": 8978515,
+    "source": "curseforge",
+    "projectId": "945471",
+    "versionId": "8978515",
     "filename": "CGM-Unofficial-1.4.21+NeoForge+1.21.1.jar",
+    "qaSets": [
+      "cgm"
+    ],
     "sha512": "da85607dc167933877d022925f33b1c1570d73dafedd093b81e3c99f0472c58d4515794b25eae556d7da9d3ef268d5557a97f7d47b197dc1bd47d37f412ffbfa"
   },
   {
     "name": "framework",
     "project": "framework",
     "version": "0.13.11",
-    "projectId": 549225,
-    "fileId": 7530361,
+    "source": "curseforge",
+    "projectId": "549225",
+    "versionId": "7530361",
     "filename": "framework-neoforge-1.21.1-0.13.11.jar",
+    "qaSets": [
+      "cgm"
+    ],
     "sha512": "bcc662c5588d0bd898f0878913b6d94d13e8fe7d58b54ae4fa15cf584a6ed5a4d202533f71f7ca40affcbd221da3d29d8b3af06329ae84faf75c68da99f27551"
+  },
+  {
+    "name": "pointblank",
+    "project": "vics-point-blank",
+    "version": "2.2.0",
+    "source": "modrinth",
+    "projectId": "og4KPYmA",
+    "versionId": "7jPye7PA",
+    "filename": "pointblank-neoforge-1.21-2.2.0.jar",
+    "qaSets": [
+      "pointblank"
+    ],
+    "sha512": "84d8adbb956be7d99d9b2688272b5ec2be76a1a133b2ba0f02e7951ef110df94b94b9445b29022d7150cd485b1f3ab8c8d894667cee7a9ff1be5c5b5c272f3fc"
+  },
+  {
+    "name": "jelly",
+    "project": "pointblank-jelly",
+    "version": "2.1.0",
+    "source": "modrinth",
+    "projectId": "RghT3FYJ",
+    "versionId": "qKTLymMH",
+    "filename": "pointblank-neoforge-1.21.1-2.1.0.jar",
+    "qaSets": [
+      "jelly"
+    ],
+    "sha512": "ca6b522ad30595b65de6a56b775d1450597a5c6d500bc2be12de225c0ecf13e3fa566f8cf5e61309c2e8872ed577b3cce2bbc2353aed862d070074a3134b9af2"
+  },
+  {
+    "name": "geckolib",
+    "project": "geckolib",
+    "version": "4.9.3",
+    "source": "modrinth",
+    "projectId": "8BmcQJ2H",
+    "versionId": "Grwn5rUB",
+    "filename": "geckolib-neoforge-1.21.1-4.9.3.jar",
+    "qaSets": [
+      "pointblank",
+      "jelly"
+    ],
+    "sha512": "8dfa5f8c57224a5e34e5098367ea9819ca6dc9c11357cd3062c16da3455c8bd1a483098af7383debc4b9ce8e4d7ab3fdc799b415644eb829da83eb72a7335dfd"
   }
 ]

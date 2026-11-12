@@ -154,8 +154,8 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(build.contains("implementation(optionalCoordinates")),
                 () -> assertTrue(build.contains("tasks.named('compileJava') { dependsOn verifyOptionalMods }")),
                 () -> assertEquals(6, countOccurrences(metadata, "type=\"required\"")),
-                () -> assertEquals(1, countOccurrences(metadata, "type=\"optional\"")),
-                () -> assertEquals(7, countOccurrences(metadata, "[[dependencies.${mod_id}]]")));
+                () -> assertEquals(2, countOccurrences(metadata, "type=\"optional\"")),
+                () -> assertEquals(8, countOccurrences(metadata, "[[dependencies.${mod_id}]]")));
     }
 
     @Test

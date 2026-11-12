@@ -23,8 +23,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--java-home', type=Path, default=Path(os.environ.get('JAVA_HOME', '/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home')))
 parser.add_argument('--accept-eula', action='store_true')
 parser.add_argument('--fresh', action='store_true', help='Delete only this runner’s previous test world and expected record')
-parser.add_argument('--suite', choices=('core', 'behavior', 'workflow', 'worldgen', 'cgm'), default='core',
-                    help='cgm adds the optional gun mods; build first with ./gradlew stageOptionalGunQaMods')
+parser.add_argument('--suite', choices=('core', 'behavior', 'workflow', 'worldgen', 'cgm', 'pointblank', 'jelly'), default='core',
+                    help='cgm, pointblank, and jelly each add one optional gun mod; build first with ./gradlew stageOptionalGunQaMods')
 parser.add_argument('--start-case', help='Debug a behavior-suite suffix; the report marks this as a partial run')
 parser.add_argument('--worldgen-scenario', choices=('builtin', 'universal', 'providers', 'providers-baseline'), default='builtin')
 parser.add_argument('--neo-version', help='Test another 21.1.x loader in a separate installation without changing the build pin')
@@ -35,10 +35,11 @@ if args.neo_version and not re.fullmatch(r'21\.1\.\d+', args.neo_version):
     parser.error('--neo-version must name a Minecraft 1.21.1 NeoForge build (21.1.x)')
 runtime = ROOT / 'build/neoforge/installed-core-qa'
 results_root = ROOT / 'build/neoforge/core-qa/results'
-optional_guns = args.suite == 'cgm'
+optional_guns = args.suite in ('cgm', 'pointblank', 'jelly')
 if optional_guns:
-    # Separate installation: its mods folder holds gun mods the other suites must not see.
-    runtime = runtime.with_name(runtime.name + '-optional-guns')
+    # One installation per gun mod: each writes its own content packs and config into the server
+    # folder, and the two Point Blank builds cannot read each other's.
+    runtime = runtime.with_name(runtime.name + '-' + args.suite)
 if args.neo_version:
     runtime = runtime.with_name(runtime.name + '-' + args.neo_version)
     results_root = results_root / args.neo_version
@@ -49,10 +50,11 @@ if args.suite == 'worldgen':
     evidence = evidence / scenario
 world_name = args.suite + ('-' + scenario if args.suite == 'worldgen' else '') + '-world'
 expected_name = args.suite + ('-' + scenario if args.suite == 'worldgen' else '') + '-qa-expected.nbt'
-log_prefix = {'core': 'VGG_CORE_QA_', 'behavior': 'VGG_BEHAVIOR_QA_', 'workflow': 'VGG_WORKFLOW_QA_', 'worldgen': 'VGG_WORLDGEN_QA_', 'cgm': 'VGG_CGM_QA_'}[args.suite]
+log_prefix = {'core': 'VGG_CORE_QA_', 'behavior': 'VGG_BEHAVIOR_QA_', 'workflow': 'VGG_WORKFLOW_QA_', 'worldgen': 'VGG_WORLDGEN_QA_', 'cgm': 'VGG_CGM_QA_',
+              'pointblank': 'VGG_PB_QA_', 'jelly': 'VGG_PB_QA_'}[args.suite]
 if baseline:
     log_prefix = 'VGG_PORT_'
-staged = ROOT / ('build/neoforge/optional-gun-qa/mods' if optional_guns else 'build/neoforge/core-qa/mods')
+staged = ROOT / (f'build/neoforge/optional-gun-qa/{args.suite}/mods' if optional_guns else 'build/neoforge/core-qa/mods')
 props = dict(line.split('=', 1) for line in (ROOT / 'gradle.properties').read_text().splitlines() if '=' in line and not line.startswith('#'))
 version = args.neo_version or props['neo_version']
 java = str(args.java_home / 'bin/java')
@@ -132,6 +134,12 @@ packs_before = pack_hashes()
 # house_1 template. Accept these only after reproducing both without VGG or its
 # pack, with the same pinned Sky Villages JAR. Keep the messages in the report.
 known_provider_messages = set()
+# Point Blank: Jelly 2.1.0 logs each registered extension at ERROR level during normal startup.
+# Accept that exact line only from that exact JAR; keep it in the report.
+known_provider_patterns = []
+if args.suite == 'jelly' and '97dba6febc5d5aa8b57ca3d40ef7c6aa9fb8dc05c604755d89416cb8bb1856fe' in before.values():
+    known_provider_patterns.append(re.compile(
+        r'\[pointblank/\]: Adding extension: mod\.pbj\.registry\.ExtensionRegistry\$Extension@[0-9a-f]+$'))
 if args.suite == 'worldgen' and scenario == 'providers':
     baseline_report = results_root / 'worldgen/providers-baseline/result.json'
     if baseline_report.exists():
@@ -175,7 +183,8 @@ def run(name, success_marker):
         failed |= log_prefix + 'FAIL' in line
         if '/ERROR]' in line or '/FATAL]' in line:
             errors.append(line.strip())
-            if any(line.strip().endswith(message) for message in known_provider_messages):
+            if (any(line.strip().endswith(message) for message in known_provider_messages)
+                    or any(pattern.search(line.strip()) for pattern in known_provider_patterns)):
                 known_errors.append(line.strip())
             elif not pending_known_error(line, before):
                 failed = True

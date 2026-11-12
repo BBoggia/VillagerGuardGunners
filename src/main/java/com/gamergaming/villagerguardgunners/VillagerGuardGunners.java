@@ -48,6 +48,10 @@ public class VillagerGuardGunners {
                 com.gamergaming.villagerguardgunners.guns.OptionalGunMods.CGM)) {
             com.gamergaming.villagerguardgunners.compat.cgm.CgmBootstrap.register();
         }
+        if (net.neoforged.fml.ModList.get().isLoaded(
+                com.gamergaming.villagerguardgunners.guns.OptionalGunMods.POINT_BLANK)) {
+            com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankBootstrap.register();
+        }
         NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent event) -> {
             if (event.getEntity() instanceof tallestegg.guardvillagers.common.entities.Guard guard)
                 ((com.gamergaming.villagerguardgunners.api.GuardAmmoAccess) guard).villagerGuardGunners$invalidateInventory();

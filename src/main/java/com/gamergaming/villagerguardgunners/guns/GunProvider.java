@@ -94,6 +94,14 @@ public interface GunProvider {
     }
 
     /**
+     * True when the mod poses arms only for player models, so a guard holding
+     * one of its guns needs this mod's shared shouldered pose. Read on the client.
+     */
+    default boolean usesGenericHeldPose() {
+        return false;
+    }
+
+    /**
      * Creates the driver that operates this provider's guns for one guard.
      * Called at most once per guard; the driver lives as long as the guard's
      * combat goal.

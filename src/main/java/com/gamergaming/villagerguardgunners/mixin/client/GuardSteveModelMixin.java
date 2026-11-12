@@ -32,5 +32,8 @@ public abstract class GuardSteveModelMixin {
                 model.head,
                 limbSwingAmount,
                 ageInTicks);
+        // Gun mods without their own pose for non-player models get a shared one.
+        com.gamergaming.villagerguardgunners.client.GuardGenericGunPose.apply(
+                guard, model.rightArm, model.leftArm, model.head);
     }
 }

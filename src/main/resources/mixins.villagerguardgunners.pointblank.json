@@ -1,0 +1,18 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "package": "com.gamergaming.villagerguardgunners.compat.pointblank.mixin",
+  "plugin": "com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankMixinPlugin",
+  "mixins": [
+    "VpbHurtingItemMixin",
+    "PbjHurtingItemMixin"
+  ],
+  "client": [
+    "VpbGunItemRendererMixin",
+    "PbjGunItemRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

@@ -12,6 +12,10 @@ description='''${mod_description}'''
 [[mixins]]
 config="mixins.${mod_id}.json"
 
+# Applies only when a Point Blank build is installed.
+[[mixins]]
+config="mixins.${mod_id}.pointblank.json"
+
 [[dependencies.${mod_id}]]
 modId="neoforge"
 type="required"
@@ -57,6 +61,13 @@ side="BOTH"
 # Optional gun mods. Guards can use their guns when they are installed.
 [[dependencies.${mod_id}]]
 modId="cgm"
+type="optional"
+versionRange="[0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="pointblank"
 type="optional"
 versionRange="[0,)"
 ordering="AFTER"

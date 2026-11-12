@@ -29,8 +29,18 @@ final class NeoForgeBuildContractTest {
         try (var jar = new ZipFile(System.getProperty("villagerguardgunners.artifact"))) {
             String metadata = new String(jar.getInputStream(jar.getEntry("META-INF/neoforge.mods.toml")).readAllBytes(), StandardCharsets.UTF_8);
             assertFalse(metadata.contains("${"));
-            // Six required dependencies and one optional gun mod.
-            assertEquals(7, metadata.split("\\[\\[dependencies\\.villagerguardgunners]]", -1).length - 1);
+            // Six required dependencies and two optional gun mods.
+            assertEquals(8, metadata.split("\\[\\[dependencies\\.villagerguardgunners]]", -1).length - 1);
+            assertTrue(metadata.contains("modId=\"pointblank\"\ntype=\"optional\""));
+            // The Point Blank mixins sit in their own optional config and both builds' adapters are packaged.
+            var pointBlankMixins = JsonParser.parseString(new String(jar.getInputStream(jar.getEntry("mixins.villagerguardgunners.pointblank.json")).readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();
+            assertFalse(pointBlankMixins.get("required").getAsBoolean());
+            assertEquals(0, pointBlankMixins.getAsJsonObject("injectors").get("defaultRequire").getAsInt());
+            assertEquals(2, pointBlankMixins.getAsJsonArray("client").size());
+            for (String side : new String[]{"mixins", "client"}) for (var mixin : pointBlankMixins.getAsJsonArray(side))
+                assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/compat/pointblank/mixin/" + mixin.getAsString() + ".class"), mixin.toString());
+            for (String adapter : new String[]{"vpb/VpbAccess", "pbj/PbjAccess"})
+                assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/compat/pointblank/" + adapter + ".class"), adapter);
             assertEquals(6, metadata.split("type=\"required\"", -1).length - 1);
             assertTrue(metadata.contains("modId=\"cgm\"\ntype=\"optional\""));
             assertNull(jar.getEntry("META-INF/mods.toml"));

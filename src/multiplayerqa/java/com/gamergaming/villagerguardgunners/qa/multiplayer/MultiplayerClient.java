@@ -78,6 +78,16 @@ public final class MultiplayerClient {
             int next=json.get("stage").getAsInt();
             if(next!=stage) { stage=next;step=0;last=tick;System.out.println("VGG_MULTIPLAYER_CLIENT "+role()+" stage="+stage); }
             if(tick-last<12 || step==99)return;last=tick;
+            if(stage==29) {
+                String scope = "villagerguardgunners.guard_gunners.ammunition";
+                if(step==0) {
+                    me.fzzyhmstrs.fzzy_config.api.ConfigApiJava.INSTANCE.openScreen(scope); step=1;
+                } else {
+                    check(me.fzzyhmstrs.fzzy_config.api.ConfigApiJava.isScreenOpen(scope), "Fzzy ammunition screen did not open");
+                    ack();
+                }
+                return;
+            }
             if(stage==13 && role().equals("A")) {
                 if(mc.player==null) { if(step==0){connect(mc);step=1;} return; }
                 if(mc.player.getInventory().countItem(ModItems.BANDAGE.get())==4)ack();return;
@@ -199,6 +209,7 @@ public final class MultiplayerClient {
             if(stage==1) {
                 check(mc.screen instanceof QuartermasterManagementScreen,"Management screen factory missing");
                 check(com.gamergaming.villagerguardgunners.init.ModConfigs.GUARD_GUNNERS.combat.aiming.errorDegrees.get()==3.5,"Server accuracy config did not synchronize");
+                check(com.gamergaming.villagerguardgunners.init.ModConfigs.GUARD_GUNNERS.ammunition.infiniteAmmoMode.get()==com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.CREATIVE_AMMO_BOX,"Server infinite ammo mode did not synchronize");
                 if(role().equals("A")){check(m.summary().stock()&&m.summary().manage(),"Owner permissions missing");ack();}
                 else if(step==0){check(!m.summary().stock()&&!m.summary().manage(),"Peer has unauthorized permissions");ManagementNetwork.request(m.requestBulk(BulkProtocol.OPEN,0,null,null));ManagementNetwork.request(m.request(ManagementProtocol.STOCK));step++;}
                 else{check(m.bulkState()==null,"Denied peer opened bulk session");ack();}

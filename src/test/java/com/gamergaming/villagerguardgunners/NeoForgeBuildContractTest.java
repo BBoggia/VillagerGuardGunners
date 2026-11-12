@@ -22,7 +22,7 @@ final class NeoForgeBuildContractTest {
         assertTrue(workflow.contains("./gradlew --no-daemon build stageCoreQaMods stageMultiplayerQaMods"));
         assertTrue(workflow.contains("build/neoforge/reports/tests/test/**"));
         assertFalse(build.contains("apply from: 'gradle/legacy-forge.gradle'"));
-        assertTrue(read("docs/neoforge-development.md").contains("not a stable release"));
+        assertTrue(read("gradle/neoforge-distribution.gradle").contains("prepareNeoForgeRelease"));
     }
 
     @Test void packagedMetadataMixinsAndClassesAreCompleteAndDoNotContainTestMods() throws Exception {

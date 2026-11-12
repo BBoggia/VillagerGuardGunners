@@ -1010,13 +1010,13 @@ public final class PhaseEightPerformanceGameTests {
             return;
         }
         boolean triggerDue = testTick % weapon.nominalShotIntervalTicks == 0L;
-        long currentTime = System.currentTimeMillis();
+        long currentTime = com.tacz.guns.util.time.GunTime.nowMillis();
         for (int index = 0; index < operators.size(); index++) {
             IGunOperator operator = operators.get(index);
             var data = operator.getDataHolder();
             data.drawTimestamp = currentTime - 10_000L;
             if (data.reloadTimestamp >= 0L) {
-                // TaCZ reload scripts use wall-clock time. Advance an active
+                // TaCZ reload scripts use the native gun clock. Advance an active
                 // reload only, preserving the native script and inventory path
                 // while keeping the unthrottled GameTest workload meaningful.
                 data.reloadTimestamp = currentTime - 10_000L;

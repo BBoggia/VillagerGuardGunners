@@ -36,6 +36,9 @@ final class PhaseSevenCleanupContractTest {
                 "").replace(
                         read("src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/GuardPostSpawner.java"),
                         "");
+        String infiniteAmmo = read("src/main/java/com/gamergaming/villagerguardgunners/ammunition/GuardInfiniteAmmo.java");
+        productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
+                infiniteAmmo, infiniteAmmo.replace("setCurrentAmmoCount(", "configuredMagazineRefill("));
         String recovery = read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/QuartermasterRecovery.java");
         // Item-entity recovery does not implement custom gun projectiles.
         productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
@@ -134,7 +137,7 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(runtimeBuild.contains("Implementation-Timestamp")),
                 () -> assertTrue(read("gradle/neoforge-mods.json").contains("fzzy")),
                 () -> assertTrue(runtimeBuild.contains("thedarkcolour:kotlinforforge")),
-                () -> assertTrue(properties.contains("fzzy_config_version=0.7.7+1.21+neoforge")),
+                () -> assertTrue(properties.contains("fzzy_config_version=0.7.7+fix1+1.21+neoforge")),
                 () -> assertTrue(metadata.contains("modId=\"fzzy_config\"")),
                 () -> assertTrue(metadata.contains("modId=\"kotlinforforge\"")),
                 () -> assertEquals(6, countOccurrences(metadata, "[[dependencies.${mod_id}]]")));
@@ -154,7 +157,7 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyDamageMixin\",\"GuardFollowPacketMixin\",\"GuardPatrolPacketMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardProjectileMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\",\"QuartermasterOfferMixin\",\"QuartermasterOffersMixin\",\"QuartermasterLevelTradesMixin\",\"QuartermasterResultSlotMixin\",\"QuartermasterMerchantMenuMixin\"]")),
+                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyDamageMixin\",\"GuardFollowPacketMixin\",\"GuardPatrolPacketMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardAmmoMixin\",\"TaCZGuardProjectileMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\",\"QuartermasterOfferMixin\",\"QuartermasterOffersMixin\",\"QuartermasterLevelTradesMixin\",\"QuartermasterResultSlotMixin\",\"QuartermasterMerchantMenuMixin\"]")),
                 () -> assertTrue(mixins.contains(
                         "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\",\"client.CasualtyRendererMixin\",\"client.CotNameTagMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));

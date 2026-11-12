@@ -1,19 +1,25 @@
 package com.gamergaming.villagerguardgunners.compat.tacz.network;
 
-import com.tacz.guns.network.message.ServerMessageSyncGunPack;
 import com.tacz.guns.resource.network.DataType;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.zip.CRC32;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
-/** Pure bounded serialization, fragmentation, and reassembly for TaCZ's native cache format. */
+/** Bounded serialization and fragmentation for the legacy TaCZ 1.1.8 cache format. */
 public final class TaCZGunPackSyncProtocol {
+    // Preserve our schema-1 wire format independently of TaCZ's changing packet API.
+    private static final StreamCodec<FriendlyByteBuf, Map<DataType, Map<ResourceLocation, String>>> LEGACY_CODEC =
+            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.fromCodec(DataType.CODEC),
+                    ByteBufCodecs.map(HashMap::new, ResourceLocation.STREAM_CODEC, ByteBufCodecs.STRING_UTF8));
     public static final int CURRENT_SCHEMA_VERSION = 1;
     public static final int MINECRAFT_CUSTOM_PAYLOAD_LIMIT = 1_048_576;
     public static final int NATIVE_SAFE_PAYLOAD_BYTES = 900 * 1024;
@@ -26,9 +32,9 @@ public final class TaCZGunPackSyncProtocol {
 
     public static byte[] encodeCache(
             Map<DataType, Map<ResourceLocation, String>> cache) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(256, MAXIMUM_TRANSFER_BYTES));
         try {
-            ServerMessageSyncGunPack.STREAM_CODEC.encode(buffer, new ServerMessageSyncGunPack(cache));
+            LEGACY_CODEC.encode(buffer, cache);
             int length = buffer.readableBytes();
             if (length > MAXIMUM_TRANSFER_BYTES) {
                 throw new IllegalArgumentException("TaCZ common-data cache exceeds the chunked-sync bound");
@@ -47,11 +53,11 @@ public final class TaCZGunPackSyncProtocol {
         }
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(encoded));
         try {
-            ServerMessageSyncGunPack message = ServerMessageSyncGunPack.STREAM_CODEC.decode(buffer);
+            Map<DataType, Map<ResourceLocation, String>> cache = LEGACY_CODEC.decode(buffer);
             if (buffer.isReadable()) {
                 throw new IllegalArgumentException("TaCZ common-data payload contains trailing bytes");
             }
-            return message.getCache();
+            return cache;
         } finally {
             buffer.release();
         }

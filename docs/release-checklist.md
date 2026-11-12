@@ -4,15 +4,28 @@ This checklist records the work that cannot be inferred from a successful
 compile alone. Do not mark a public release ready until the automated gates and
 the relevant manual rows pass against the exact files being distributed.
 
-## NeoForge alpha scope
+## NeoForge release scope
 
-This checklist's Forge candidate records and completed rows below apply to the
-Minecraft 1.20.1 release. They do not certify the Minecraft 1.21.1 NeoForge port.
-For a NeoForge alpha, read the current version from `gradle.properties`, use
-[the upload process](curseforge-upload.md#neoforge-alpha-preparation), and retain
-installed-JAR results as described in [NeoForge development](neoforge-development.md).
-Use the Alpha file type and disclose remaining validation. Full release gates
-must be migrated and completed before treating the NeoForge port as stable.
+The Forge candidate records below apply to Minecraft 1.20.1. For Minecraft
+1.21.1, use [the upload process](curseforge-upload.md#neoforge-preparation) and
+retain installed-JAR evidence as described in [NeoForge development](neoforge-development.md).
+The NeoForge release gates are:
+
+- Treat official TaCZ 1.2.0 as a new dependency baseline. Previous results using
+  the unofficial port do not validate this migration. Check saved equipment and
+  inventories on backed-up worlds as well as fresh-world behavior.
+- Complete `build` and `prepareNeoForgeRelease`, including unit tests, dependency
+  checksums, packaged artifact checks, and companion resource validation.
+- Run installed-JAR shot safety and all infinite-ammo cases, with the competing
+  hook addon and the ordinary dependency set.
+- Check both supported Fzzy Config builds. Confirm configuration save/load and
+  server-to-client synchronization for the new setting.
+- Run packaged behavior, supply/medical/restart, worldgen, and connected-client
+  multiplayer checks. Bind each report to the gameplay JAR checksum.
+- Keep long-running server, additional provider/gun-pack, shader, operating
+  system, and network-latency coverage limits explicit in development records.
+- Match the public version, requirements, changelog, release channel and JAR
+  checksum before uploading. Publishing is a separate action.
 
 ## Forge candidate identity
 

@@ -32,20 +32,20 @@ Upload only the verified gameplay JAR as the mod file. NeoForge files are named
 `villagerguardgunners-<minecraft>-neoforge-<version>.jar`. Do not upload bootstrap,
 QA, sources, or GameTest JARs, and do not bundle the dependency mods.
 
-## NeoForge alpha preparation
+## NeoForge preparation
 
-Run `./gradlew prepareNeoForgeAlpha stageCoreQaMods stageMultiplayerQaMods` with
+Run `./gradlew prepareNeoForgeRelease stageCoreQaMods stageMultiplayerQaMods` with
 Java 21. This runs the complete JUnit suite, verifies pinned dependencies and
-companion packs, and stages the named alpha under
-`build/neoforge/distributions/alpha/<version>/`. It includes the gameplay JAR,
+companion packs, and stages the stable release under
+`build/neoforge/distributions/release/<version>/`. It includes the gameplay JAR,
 copy-ready description and change notes, license, upload settings, SHA-256
 checksums, and the optional Minecraft 1.21.1 universal datapack.
 
 Test that exact JAR through the installed-server and connected-client runners
 in [NeoForge development](neoforge-development.md). Keep the matching JAR hashes
-and reports. Use **Alpha** for this candidate; completing the alpha packaging
-and gameplay checks does not certify the remaining stable-release/performance
-matrix. The current exact dependency versions are in `gradle.properties` and
+and reports. Choose **Release** for stable versions. For an alpha version, use
+`prepareNeoForgeAlpha` and the Alpha file type instead. Packaging does not replace
+the installed gameplay checks. The loader and dependency ranges are in `gradle.properties` and
 `META-INF/neoforge.mods.toml`.
 
 ## Forge release preparation
@@ -64,10 +64,10 @@ the manual publication checks below.
 Mark each project as a required dependency on the CurseForge file:
 
 - Guard Villagers
-- Timeless and Classics Zero for Forge files, or
-  **[UNOFFICIAL] TaCZ NeoForge Port** for NeoForge files. Use the
-  [NeoForge port project](https://www.curseforge.com/minecraft/mc-mods/tacz-1-21-1)
-  for the latter relation.
+- [Timeless and Classics Zero](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero)
+  for Forge and for the migrated NeoForge files. The new NeoForge source requires
+  the official 1.2.0 build. Retain the unofficial-port relation on older files
+  that still require it; do not change their dependency requirements retroactively.
 - Fzzy Config
 - Kotlin for Forge
 
@@ -76,7 +76,7 @@ The dependencies are separate downloads and are not bundled in the mod JAR.
 ## Final review
 
 - For stable releases, complete every applicable row in `docs/release-checklist.md`
-  against the exact candidate JAR. Keep outstanding alpha limitations explicit.
+  against the exact candidate JAR. Record validation limits explicitly.
 - Confirm the Minecraft and loader tags agree with the packaged metadata.
 - Confirm the release type matches the intended release channel.
 - Confirm all four required relations are present.

@@ -24,7 +24,7 @@ public final class SidearmRuntimeAssessment {
             return new Assessment(weapon.eligibility(), false);
         }
 
-        GuardAmmoSummary.Snapshot ammunition = GuardAmmoSummary.capture(
+        GuardAmmoSummary.Snapshot ammunition = GuardAmmoSummary.captureForGuard(guard,
                 sidearm.copy(),
                 weapon.gunData(),
                 GuardAmmoAccess.getTaCZInventoryHandler(guard));

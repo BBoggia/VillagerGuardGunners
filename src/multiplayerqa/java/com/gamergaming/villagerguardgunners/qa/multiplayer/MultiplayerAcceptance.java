@@ -56,6 +56,8 @@ public final class MultiplayerAcceptance {
     long revision;
     int stage = -1, ticks, entered;
     int shots, commandRevision;
+    net.minecraft.world.entity.monster.Husk firingTarget;
+    com.gamergaming.villagerguardgunners.combat.NativeGunController firingController;
     boolean done;
     final BlockPos origin = new BlockPos(0, 160, 0);
     public MultiplayerAcceptance() {
@@ -80,6 +82,7 @@ public final class MultiplayerAcceptance {
             level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false,event.getServer());
             level.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false,event.getServer());
             ModConfigs.GUARD_GUNNERS.combat.aiming.errorDegrees.accept(3.5);
+            ModConfigs.GUARD_GUNNERS.ammunition.infiniteAmmoMode.accept(com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.CREATIVE_AMMO_BOX);
             ModConfigs.GUARD_GUNNERS.medical.enabled.accept(true);
             ModConfigs.GUARD_GUNNERS.medical.downed.accept(true);
             ModConfigs.GUARD_GUNNERS.medical.transport.accept(true);
@@ -120,7 +123,7 @@ public final class MultiplayerAcceptance {
                 a.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.HERO_OF_THE_VILLAGE,24000));
                 guard=GuardEntityType.GUARD.get().create(level); guard.setPersistenceRequired(); guard.setNoAi(true);
                 guard.setPos(2.5,160,1.5); guard.setOwnerId(a.getUUID()); guard.setCustomName(Component.literal("QA Guard")); guard.setCustomNameVisible(false);
-                guard.setItemSlot(EquipmentSlot.MAINHAND,GunItemBuilder.create().setId(ResourceLocation.parse("tacz:ak47")).setAmmoCount(20).build(level.registryAccess()));
+                guard.setItemSlot(EquipmentSlot.MAINHAND,GunItemBuilder.create().setId(ResourceLocation.parse("tacz:ak47")).setAmmoCount(20).setAmmoInBarrel(true).setFireMode(com.tacz.guns.api.item.gun.FireMode.SEMI).build(level.registryAccess()));
                 GuardMedicalAccess.get(guard).inventory().setStackInSlot(0,new ItemStack(ModItems.BANDAGE.get(),4));
                 require(GuardSidearmAccess.getConfiguredSidearmInventory(guard).insertItem(0,
                         GunItemBuilder.create().setId(ResourceLocation.parse("tacz:glock_17")).build(level.registryAccess()),false).isEmpty(),"Pistol sidearm fixture rejected");
@@ -216,20 +219,37 @@ public final class MultiplayerAcceptance {
                 op.getDataHolder().drawTimestamp=op.getDataHolder().shootTimestamp=-1;
                 op.getDataHolder().meleePrepTickCount=-1; op.aim(true); advance(18);
             } else if(stage==18 && both()) {
-                passed("native-aim-state-reaches-both-clients"); advance(19);
+                passed("native-aim-state-reaches-both-clients");
+                // TaCZ 1.2.0 publishes the shot event after discharge. Exercise
+                // a real approved guard round, not a direct operator call that
+                // our safety hooks correctly reject without a firing context.
+                firingTarget=EntityType.HUSK.create(level);
+                firingTarget.setNoAi(true); firingTarget.setInvulnerable(true);
+                firingTarget.setPos(2.5,160,-9.5); level.addFreshEntity(firingTarget);
+                GuardOrdersAccess.setOrders(guard,GuardOrders.DEFAULT);
+                guard.setTarget(firingTarget);
+                firingController=new com.gamergaming.villagerguardgunners.combat.NativeGunController(guard);
+                firingController.startAiming(); advance(19);
             } else if(stage==19) {
-                if(ticks-entered>10 && (ticks-entered)%10==0 && shots<3) {
-                    var result=com.tacz.guns.api.entity.IGunOperator.fromLivingEntity(guard).shoot(()->-15f,()->180f);
-                    if(result==com.tacz.guns.api.entity.ShootResult.SUCCESS)shots++;
-                }
+                firingController.tick(firingTarget,true,()->true,()->true);
+                shots=(int)firingController.successfulAimRounds();
+                if((ticks-entered)%100==0) System.out.println("VGG_MULTIPLAYER_FIRING "+firingController.captureDiagnostics()+" safety="+firingController.lastShotSafety()+" targetCurrent="+(guard.getTarget()==firingTarget));
                 if(both()) {
                     require(shots>0,"Native shot did not execute"); passed("native-gunshot-event-and-render-on-both-clients");
+                    firingController.stopAiming(); guard.setTarget(null); firingTarget.discard();
+                    GuardOrdersAccess.setOrders(guard,GuardOrders.DEFAULT.cycle(GuardOrders.OrderField.ENGAGEMENT));
                     GuardAmmoAccess.getAmmoHandler(guard).setStackInSlot(0,AmmoItemBuilder.create().setId(ResourceLocation.parse("tacz:762x39")).setCount(32).build());
-                    com.tacz.guns.api.entity.IGunOperator.fromLivingEntity(guard).reload(); advance(20);
+                    advance(20);
                 }
-            } else if(stage==20 && both()) {
-                passed("native-reload-event-reaches-both-clients");
-                sendLargeCache(a,b); advance(21);
+            } else if(stage==20) {
+                // Reload is refused during the final shot's cooldown. Retry
+                // after that cooldown instead of assuming the first call starts it.
+                if(both()) {
+                    passed("native-reload-event-reaches-both-clients");
+                    sendLargeCache(a,b); advance(21);
+                } else if((ticks-entered)%10==0) {
+                    com.tacz.guns.api.entity.IGunOperator.fromLivingEntity(guard).reload();
+                }
             } else if(stage==21 && both()) {
                 passed("oversized-gun-cache-fragments-applied-on-both-clients");
                 com.tacz.guns.api.entity.IGunOperator.fromLivingEntity(guard).aim(false);
@@ -266,6 +286,9 @@ public final class MultiplayerAcceptance {
             } else if(stage==28 && ack("A",28)) {
                 require(!guard.isFollowing() && !guard.isPatrolling(), "Owner bypassed live Hero requirement");
                 passed("native-commands-revoked-hero-denied");
+                a.closeContainer(); b.closeContainer(); advance(29);
+            } else if(stage==29 && ack("A",29) && ack("B",29)) {
+                passed("fzzy-ammunition-screen-and-synchronized-mode");
                 done=true; write("server-result.json",Map.of("passed",true,"cases",passed));
                 System.out.println("VGG_MULTIPLAYER_QA_PASS cases="+passed.size());
             }
@@ -276,14 +299,19 @@ public final class MultiplayerAcceptance {
         com.tacz.guns.resource.CommonAssetsManager.getInstance().getNetworkCache().forEach((type,values)->cache.put(type,new HashMap<>(values)));
         var guns=cache.get(com.tacz.guns.resource.network.DataType.GUN_DATA);
         String sample=guns.values().iterator().next();
-        guns.put(ResourceLocation.parse("vgg_multiplayer_qa:sync_probe"),sample);
-        // Legal JSON whitespace increases wire size without changing any gun behavior.
-        cache.forEach((type,values)->values.replaceAll((id,json)->json+" ".repeat(Math.max(0,28000-json.length()))));
-        byte[] data=com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncProtocol.encodeCache(cache);
-        require(data.length>1_048_576,"Fixture did not exercise the custom-payload size boundary");
-        var chunks=com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncProtocol.split(UUID.randomUUID(),data);
+        // Mixed legal JSON whitespace stays valid but does not compress to a single small packet.
+        var random=new java.util.Random(120);
+        char[] whitespace=new char[8*1024*1024];
+        char[] alphabet={' ', '\t', '\n', '\r'};
+        for(int i=0;i<whitespace.length;i++)whitespace[i]=alphabet[random.nextInt(alphabet.length)];
+        guns.put(ResourceLocation.parse("vgg_multiplayer_qa:sync_probe"),sample+new String(whitespace));
+        var chunks=com.tacz.guns.network.message.ServerMessageSyncGunPack.createMessages(cache);
+        var part=chunks.getFirst().getPart();
+        require(part.compressedSize()>1_048_576 && chunks.size()>1,
+                "Fixture did not exercise native compressed packet fragmentation");
         for(var player:players)for(var chunk:chunks)net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player,chunk);
-        System.out.println("VGG_MULTIPLAYER_QA_LARGE_CACHE bytes="+data.length+" chunks="+chunks.size());
+        System.out.println("VGG_MULTIPLAYER_QA_LARGE_CACHE bytes="+part.uncompressedSize()
+                +" compressed="+part.compressedSize()+" chunks="+chunks.size());
     }
     void fail(Throwable error) {
         done=true; error.printStackTrace();

@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
+import com.gamergaming.villagerguardgunners.ammunition.GuardInfiniteAmmo;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoTransactions;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
@@ -73,7 +74,7 @@ public final class NaturalGuardLoadoutIssuance {
         }
 
         ItemStack primaryGun = primary.preparedGun();
-        ItemStack primaryAmmo = primary.preparedAmmunition();
+        ItemStack primaryAmmo = GuardInfiniteAmmo.spawnSupply(primaryGun, primary.preparedAmmunition());
         ItemStack sidearmGun = ItemStack.EMPTY;
         ItemStack sidearmAmmo = ItemStack.EMPTY;
         if (candidate.sidearmId() != null) {
@@ -89,7 +90,7 @@ public final class NaturalGuardLoadoutIssuance {
                 return Preparation.failed(IssuanceStatus.SIDEARM_INELIGIBLE);
             }
             sidearmGun = sidearm.weapon().preparedGun();
-            sidearmAmmo = sidearm.weapon().preparedAmmunition();
+            sidearmAmmo = GuardInfiniteAmmo.spawnSupply(sidearmGun, sidearm.weapon().preparedAmmunition());
         }
 
         final NaturalGuardLoadoutProvenance provenance;

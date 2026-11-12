@@ -59,7 +59,7 @@ public final class GuardDroppedAmmoPickup {
 
         for (Guard guard : nearbyGuards) {
             double distanceSquared = guard.distanceToSqr(droppedAmmo);
-            if (distanceSquared > radiusSquared
+            if (GuardInfiniteAmmo.virtualReserve(guard) || distanceSquared > radiusSquared
                     || !GuardRoleResolver.effectiveOrders(guard).permitsAmmoPickup(true)
                     || (recipient != null
                     && (distanceSquared > nearestDistanceSquared

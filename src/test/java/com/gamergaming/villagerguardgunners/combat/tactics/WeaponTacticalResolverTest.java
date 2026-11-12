@@ -19,6 +19,7 @@ final class WeaponTacticalResolverTest {
                 () -> assertProfile("smg", TacticalProfile.SKIRMISHER),
                 () -> assertProfile("shotgun", TacticalProfile.BREACHER),
                 () -> assertProfile("sniper", TacticalProfile.MARKSMAN),
+                () -> assertProfile("dmr", TacticalProfile.MARKSMAN),
                 () -> assertProfile("mg", TacticalProfile.SUPPORT),
                 () -> assertProfile("rpg", TacticalProfile.DEMOLITIONS));
     }

@@ -3916,7 +3916,7 @@ public final class GuardGunnerGameTests {
                     "Dry sharing fixture could not enter the gun goal");
             goal.start();
             IGunOperator.fromLivingEntity(recipient).getDataHolder().drawTimestamp =
-                    System.currentTimeMillis() - 10_000L;
+                    com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
             goal.tick();
 
             NativeGunController.Diagnostics sharingDiagnostics =
@@ -4858,7 +4858,7 @@ public final class GuardGunnerGameTests {
                 "The explosive sidearm-hysteresis fixture could not enter the gun goal");
         goal.start();
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
         goal.tick();
 
         helper.assertTrue(
@@ -4877,7 +4877,7 @@ public final class GuardGunnerGameTests {
             pinEntity(guard, guardX, guardY, guardZ);
             pinEntity(target, guardX + 13.0D, target.getY(), target.getZ());
             guard.setTarget(target);
-            operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+            operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
             operator.getDataHolder().shootTimestamp = -10_000L;
             operator.getDataHolder().lastShootTimestamp = -10_000L;
             goal.tick();
@@ -6976,7 +6976,7 @@ public final class GuardGunnerGameTests {
                 "The Marksman firing fixture could not start its gun goal");
         goal.start();
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
 
         double guardX = guard.getX();
         double guardY = guard.getY();
@@ -7000,7 +7000,7 @@ public final class GuardGunnerGameTests {
                 guard.yBodyRot = offsetYaw;
             }
 
-            long relativeNow = System.currentTimeMillis()
+            long relativeNow = com.tacz.guns.util.time.GunTime.nowMillis()
                     - operator.getDataHolder().baseTimestamp;
             operator.getDataHolder().shootTimestamp = relativeNow - 10_000L;
             operator.getDataHolder().lastShootTimestamp = relativeNow - 10_000L;
@@ -7086,7 +7086,7 @@ public final class GuardGunnerGameTests {
                 "The profile range-cap fixture could not start its gun goal");
         goal.start();
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
 
         GuardGunCombatGoal.Diagnostics initial = goal.captureDiagnostics();
         helper.assertTrue(initial.validFiringWindow()
@@ -7114,7 +7114,7 @@ public final class GuardGunnerGameTests {
             guard.setTarget(target);
             guard.getSensing().tick();
             faceTarget(guard, target);
-            long relativeNow = System.currentTimeMillis()
+            long relativeNow = com.tacz.guns.util.time.GunTime.nowMillis()
                     - operator.getDataHolder().baseTimestamp;
             operator.getDataHolder().shootTimestamp = relativeNow - 10_000L;
             operator.getDataHolder().lastShootTimestamp = relativeNow - 10_000L;
@@ -7171,7 +7171,7 @@ public final class GuardGunnerGameTests {
                 "The explosive-standoff fixture could not start its gun goal");
         goal.start();
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
 
         GuardGunCombatGoal.Diagnostics initial = goal.captureDiagnostics();
         helper.assertTrue(initial.validFiringWindow()
@@ -7197,7 +7197,7 @@ public final class GuardGunnerGameTests {
             guard.setTarget(target);
             guard.getSensing().tick();
             faceTarget(guard, target);
-            long relativeNow = System.currentTimeMillis()
+            long relativeNow = com.tacz.guns.util.time.GunTime.nowMillis()
                     - operator.getDataHolder().baseTimestamp;
             operator.getDataHolder().shootTimestamp = relativeNow - 10_000L;
             operator.getDataHolder().lastShootTimestamp = relativeNow - 10_000L;
@@ -7277,7 +7277,7 @@ public final class GuardGunnerGameTests {
                 "The explosive muzzle-clearance fixture could not start its gun goal");
         goal.start();
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
         boolean[] forwardBlastGateObserved = {false};
         double guardX = guard.getX();
         double guardY = guard.getY();
@@ -7405,11 +7405,11 @@ public final class GuardGunnerGameTests {
         controller.startAiming();
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
         IGun gunItem = (IGun) gunStack.getItem();
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
         long originalDrawTimestamp = operator.getDataHolder().drawTimestamp;
 
         helper.onEachTick(() -> {
-            long relativeNow = System.currentTimeMillis()
+            long relativeNow = com.tacz.guns.util.time.GunTime.nowMillis()
                     - operator.getDataHolder().baseTimestamp;
             operator.getDataHolder().shootTimestamp = relativeNow - 10_000L;
             operator.getDataHolder().lastShootTimestamp = relativeNow - 10_000L;
@@ -7458,7 +7458,7 @@ public final class GuardGunnerGameTests {
         helper.assertTrue(goal.canUse(), "The configured guard gun goal could not start");
         goal.start();
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
 
         GuardGunCombatGoal.Diagnostics initial = goal.captureDiagnostics();
         helper.assertTrue(initial.distance() > initial.preferredRange(),
@@ -7491,7 +7491,7 @@ public final class GuardGunnerGameTests {
             // only that public cooldown clock due so this range assertion is
             // deterministic; firing still goes through the real goal and
             // native controller.
-            long relativeNow = System.currentTimeMillis() - operator.getDataHolder().baseTimestamp;
+            long relativeNow = com.tacz.guns.util.time.GunTime.nowMillis() - operator.getDataHolder().baseTimestamp;
             operator.getDataHolder().shootTimestamp = relativeNow - 10_000L;
             operator.getDataHolder().lastShootTimestamp = relativeNow - 10_000L;
             int ammoBeforeGoalTick = gunItem.getCurrentAmmoCount(gunStack);
@@ -7542,7 +7542,7 @@ public final class GuardGunnerGameTests {
         long[] removalTick = {-1L};
         int[] ammoAtRemoval = {-1};
         controller.startAiming();
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
 
         helper.onEachTick(() -> {
             if (!targetRemoved[0]) {
@@ -7584,7 +7584,7 @@ public final class GuardGunnerGameTests {
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
         boolean[] swapped = {false};
         controller.startAiming();
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
         helper.onEachTick(() -> {
             controller.tick(target, false, () -> true);
             if (!swapped[0] && operator.getDataHolder().reloadStateType.isReloading()) {
@@ -7618,7 +7618,7 @@ public final class GuardGunnerGameTests {
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
         boolean[] swapped = {false};
         controller.startAiming();
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
         helper.onEachTick(() -> {
             controller.tick(target, false, () -> true);
             if (!swapped[0] && operator.getDataHolder().isBolting) {
@@ -7691,7 +7691,7 @@ public final class GuardGunnerGameTests {
             feed.set(reload, com.tacz.guns.resource.pojo.data.gun.FeedType.INVENTORY);
             controller.startAiming();
             forceNativeSwapFixtureIdle(operator);
-            operator.getDataHolder().baseTimestamp = System.currentTimeMillis() - 10_000L;
+            operator.getDataHolder().baseTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
             controller.tick(target, true, () -> true);
             helper.assertTrue(controller.isCurrentWeaponDryConfirmed(),
                     "An inventory-fed native NO_AMMO result did not confirm exhaustion");
@@ -7860,7 +7860,7 @@ public final class GuardGunnerGameTests {
         // TaCZ's own cooldown calculation includes the initial relative timestamp,
         // even before a first shot. Put this isolated event fixture past that window.
         IGunOperator.fromLivingEntity(guard).getDataHolder().baseTimestamp =
-                System.currentTimeMillis() - 10_000L;
+                com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
         class ReloadCancellation {
             int requests;
             @net.neoforged.bus.api.SubscribeEvent
@@ -7948,7 +7948,7 @@ public final class GuardGunnerGameTests {
         helper.assertTrue(gunGoal.canUse(),
                 "A newly equipped dry gun was not given its bounded reload attempt");
         gunGoal.start();
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
         gunGoal.tick();
         helper.assertTrue(gunGoal.captureDiagnostics().nativeState().dryRetryTicks() > 0L,
                 "The dry gun did not enter its bounded retry state");
@@ -8369,7 +8369,7 @@ public final class GuardGunnerGameTests {
         }
 
         IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-        operator.getDataHolder().drawTimestamp = System.currentTimeMillis() - 10_000L;
+        operator.getDataHolder().drawTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000L;
         int startingAmmo = gunItem.getCurrentAmmoCount(gunStack);
         helper.onEachTick(() -> {
             try {
@@ -9549,7 +9549,7 @@ public final class GuardGunnerGameTests {
 
     /** Advance both native clock views for manually ticked, accelerated firing fixtures. */
     private static void forceNativeShotFixtureReady(Guard guard, IGunOperator operator) {
-        long now = System.currentTimeMillis();
+        long now = com.tacz.guns.util.time.GunTime.nowMillis();
         var data = operator.getDataHolder();
         data.drawTimestamp = now - 10_000L;
         data.shootTimestamp = now - data.baseTimestamp - 10_000L;
@@ -9558,7 +9558,7 @@ public final class GuardGunnerGameTests {
         com.tacz.guns.entity.sync.ModSyncedEntityData.SHOOT_COOL_DOWN_KEY.setValue(guard, 0L);
     }
 
-    /** Clears wall-clock TaCZ actions that are irrelevant to swap-lifecycle fixtures. */
+    /** Clears native-clock TaCZ actions that are irrelevant to swap-lifecycle fixtures. */
     private static void forceNativeSwapFixtureIdle(IGunOperator operator) {
         // A forced idle fixture must reset both TaCZ's holder and its synchronized cooldown view.
         if (operator instanceof LivingEntity entity) {

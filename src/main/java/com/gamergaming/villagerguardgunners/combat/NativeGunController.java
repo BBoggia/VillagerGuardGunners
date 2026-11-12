@@ -1,5 +1,7 @@
 package com.gamergaming.villagerguardgunners.combat;
 
+import com.gamergaming.villagerguardgunners.ammunition.GuardInfiniteAmmo;
+import com.gamergaming.villagerguardgunners.compat.tacz.TaCZRuntimeCompatibility;
 import java.util.Map;
 import com.gamergaming.villagerguardgunners.api.GuardNativeShotAccess;
 import com.gamergaming.villagerguardgunners.combat.aim.GuardAimPoint;
@@ -242,6 +244,10 @@ public final class NativeGunController {
             return;
         }
 
+        GuardInfiniteAmmo.replenishMagazine(guard, trackedStack, gunData);
+        if (GuardInfiniteAmmo.virtualReserve(guard)) {
+            weaponState.clearDry();
+        }
         long nowTimestamp = currentRelativeTimestamp();
         boolean mayAttemptAction = weaponState.mayAttemptAction(guard.level().getGameTime());
         updateNativeBurstSafety(nowTimestamp, mayFire && mayAttemptAction);
@@ -745,7 +751,7 @@ public final class NativeGunController {
         if (!Float.isFinite(drawTimeSeconds) || drawTimeSeconds < 0.0F) {
             return true;
         }
-        long elapsed = System.currentTimeMillis() - drawTimestamp;
+        long elapsed = TaCZRuntimeCompatibility.gunTimeMillis() - drawTimestamp;
         if (elapsed < 0L) {
             return true;
         }
@@ -1536,7 +1542,7 @@ public final class NativeGunController {
         // TaCZ deliberately leaves depleted finite ammo boxes in place. Make
         // room only when a reload is actually requested, preserving each box
         // as a nearby drop instead of scanning every guard on every tick.
-        GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard);
+        if (!GuardInfiniteAmmo.virtualReserve(guard)) GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard);
 
         boolean nativeCanReload = trackedGun instanceof AbstractGunItem gunItem
                 && (!operator.needCheckAmmo() || gunItem.canReload(guard, gunStack));
@@ -1549,7 +1555,7 @@ public final class NativeGunController {
             return;
         }
 
-        GuardAmmoSummary.Snapshot ammunition = GuardAmmoSummary.capture(
+        GuardAmmoSummary.Snapshot ammunition = GuardAmmoSummary.captureForGuard(guard,
                 gunStack.copy(),
                 gunData,
                 GuardAmmoAccess.getTaCZInventoryHandler(guard));
@@ -1652,7 +1658,7 @@ public final class NativeGunController {
     }
 
     private long currentRelativeTimestamp() {
-        return System.currentTimeMillis() - operator.getDataHolder().baseTimestamp;
+        return TaCZRuntimeCompatibility.gunTimeMillis() - operator.getDataHolder().baseTimestamp;
     }
 
     private ShootResult shoot(long timestamp, BooleanSupplier burstSafetyCheck) {

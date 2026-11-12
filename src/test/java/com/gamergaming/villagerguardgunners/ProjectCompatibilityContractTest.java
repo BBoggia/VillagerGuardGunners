@@ -39,20 +39,31 @@ final class ProjectCompatibilityContractTest {
     }
 
     @Test
-    void targetsTheReviewedMinecraftAndNeoForgeVersions() {
+    void retainsTheMinecraftVersionAndNeoForgeCompilationBaseline() {
         assertAll(
                 () -> assertEquals("1.21.1", property("minecraft_version")),
                 () -> assertEquals("21.1.233", property("neo_version")),
                 () -> assertEquals("[1.21.1]", property("minecraft_version_range")),
-                () -> assertEquals("[21.1.233]", property("neo_version_range")));
+                () -> assertEquals("[21.1.233,21.2)", property("neo_version_range")));
+    }
+
+    @Test
+    void allowsNewerNeoForgePatchesWithinTheSupportedMinecraftLine() throws InvalidVersionSpecificationException {
+        String specification = property("neo_version_range");
+        assertDependency("neoforge", specification);
+        VersionRange range = VersionRange.createFromVersionSpec(specification);
+        for (String version : new String[]{"21.1.233", "21.1.247", "21.1.264", "21.1.9999"})
+            assertTrue(range.containsVersion(new DefaultArtifactVersion(version)), version);
+        for (String version : new String[]{"21.0.167", "21.1.0", "21.1.232", "21.2", "21.2.1", "21.3.0"})
+            assertFalse(range.containsVersion(new DefaultArtifactVersion(version)), version);
     }
 
     @Test
     void targetsTheReviewedCompatibilityModVersions() {
         assertAll(
                 () -> assertEquals("2.4.12", property("guard_villager_version")),
-                () -> assertEquals("1.1.8-hotfix-r7", property("tacz_version")),
-                () -> assertEquals("0.7.7+1.21+neoforge", property("fzzy_config_version")),
+                () -> assertEquals("1.2.0", property("tacz_version")),
+                () -> assertEquals("0.7.7+fix1+1.21+neoforge", property("fzzy_config_version")),
                 () -> assertEquals("5.12.0", property("kotlin_for_forge_version")));
     }
 
@@ -66,11 +77,20 @@ final class ProjectCompatibilityContractTest {
     }
 
     @Test
-    void unofficialPortRequiresTheReviewedTaczBuild() throws InvalidVersionSpecificationException {
-        assertEquals("[1.1.8-hotfix-r7]", property("tacz_version_range"));
+    void requiresTheOfficialTaczMigrationTarget() throws InvalidVersionSpecificationException {
+        assertEquals("[1.2.0]", property("tacz_version_range"));
         VersionRange range = VersionRange.createFromVersionSpec(property("tacz_version_range"));
-        assertTrue(range.containsVersion(new DefaultArtifactVersion("1.1.8-hotfix-r7")));
-        for (String version : new String[]{"1.1.8", "1.1.8-hotfix", "1.1.8-hotfix-r6", "1.1.8-hotfix-r8", "1.1.9"})
+        assertTrue(range.containsVersion(new DefaultArtifactVersion("1.2.0")));
+        for (String version : new String[]{"1.1.8", "1.1.8-hotfix", "1.1.8-hotfix-r7", "1.1.8-hotfix-r8", "1.1.9", "1.2.1", "2.0.0"})
+            assertFalse(range.containsVersion(new DefaultArtifactVersion(version)), version);
+    }
+
+    @Test
+    void acceptsBothReviewedFzzyBuildsWithoutAcceptingOtherMinecraftOrLoaderVariants() throws Exception {
+        var range = VersionRange.createFromVersionSpec(property("fzzy_config_version_range"));
+        for (String version : new String[]{"0.7.7+1.21+neoforge", "0.7.7+fix1+1.21+neoforge"})
+            assertTrue(range.containsVersion(new DefaultArtifactVersion(version)), version);
+        for (String version : new String[]{"0.7.6+1.21+neoforge", "0.7.7+1.20.1+forge", "0.7.8+1.21+neoforge", "0.8.0"})
             assertFalse(range.containsVersion(new DefaultArtifactVersion(version)), version);
     }
 

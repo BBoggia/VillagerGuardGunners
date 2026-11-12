@@ -10,11 +10,13 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import selectors
 import shutil
 import subprocess
 import time
 import urllib.request
+from tacz_runtime_diagnostics import classify_errors, pending_known_error
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -24,11 +26,18 @@ parser.add_argument('--fresh', action='store_true', help='Delete only this runne
 parser.add_argument('--suite', choices=('core', 'behavior', 'workflow', 'worldgen'), default='core')
 parser.add_argument('--start-case', help='Debug a behavior-suite suffix; the report marks this as a partial run')
 parser.add_argument('--worldgen-scenario', choices=('builtin', 'universal', 'providers', 'providers-baseline'), default='builtin')
+parser.add_argument('--neo-version', help='Test another 21.1.x loader in a separate installation without changing the build pin')
 args = parser.parse_args()
 if args.start_case and args.suite != 'behavior':
     parser.error('--start-case requires --suite behavior')
+if args.neo_version and not re.fullmatch(r'21\.1\.\d+', args.neo_version):
+    parser.error('--neo-version must name a Minecraft 1.21.1 NeoForge build (21.1.x)')
 runtime = ROOT / 'build/neoforge/installed-core-qa'
-evidence = ROOT / 'build/neoforge/core-qa/results' / args.suite
+results_root = ROOT / 'build/neoforge/core-qa/results'
+if args.neo_version:
+    runtime = runtime.with_name(runtime.name + '-' + args.neo_version)
+    results_root = results_root / args.neo_version
+evidence = results_root / args.suite
 scenario = args.worldgen_scenario
 baseline = args.suite == 'worldgen' and scenario == 'providers-baseline'
 if args.suite == 'worldgen':
@@ -40,7 +49,7 @@ if baseline:
     log_prefix = 'VGG_PORT_'
 staged = ROOT / 'build/neoforge/core-qa/mods'
 props = dict(line.split('=', 1) for line in (ROOT / 'gradle.properties').read_text().splitlines() if '=' in line and not line.startswith('#'))
-version = props['neo_version']
+version = args.neo_version or props['neo_version']
 java = str(args.java_home / 'bin/java')
 if not args.accept_eula:
     raise SystemExit('Pass --accept-eula only after accepting Minecraft’s EULA for this isolated test server.')
@@ -119,7 +128,7 @@ packs_before = pack_hashes()
 # pack, with the same pinned Sky Villages JAR. Keep the messages in the report.
 known_provider_messages = set()
 if args.suite == 'worldgen' and scenario == 'providers':
-    baseline_report = ROOT / 'build/neoforge/core-qa/results/worldgen/providers-baseline/result.json'
+    baseline_report = results_root / 'worldgen/providers-baseline/result.json'
     if baseline_report.exists():
         proof = json.loads(baseline_report.read_text())
         sky = 'SkyVillages-1.0.6-1.21.x-neoforge-release.jar'
@@ -163,7 +172,7 @@ def run(name, success_marker):
             errors.append(line.strip())
             if any(line.strip().endswith(message) for message in known_provider_messages):
                 known_errors.append(line.strip())
-            else:
+            elif not pending_known_error(line, before):
                 failed = True
         if log_prefix + 'CASE_PASS' in line:
             cases.append(line.split(log_prefix + 'CASE_PASS', 1)[1].strip())
@@ -193,11 +202,16 @@ def run(name, success_marker):
         for line in (pending + tail).splitlines():
             record(line)
     selector.close()
+    # Validate the complete multiline diagnostic before accepting any deferred header.
+    all_errors, tacz_errors = classify_errors((evidence / (name + '-console.log')).read_text(), before)
+    known_errors.extend(tacz_errors)
+    failed |= any(line not in known_errors for line in all_errors)
     if (runtime / 'logs/latest.log').exists():
         shutil.copy2(runtime / 'logs/latest.log', evidence / (name + '-latest.log'))
     return {'passed': passed and ready and stopped and not failed and process.returncode == 0,
             'markerSeen': passed, 'serverReady': ready, 'exitCode': process.returncode,
             'cases': cases, 'runtimeErrors': errors, 'knownProviderErrors': known_errors,
+            'knownTaCZErrors': tacz_errors,
             'elapsedSeconds': round(time.monotonic() - start, 1)}
 
 first = run('combat', 'VGG_PORT_BOOTSTRAP_PASS' if baseline else log_prefix + 'READY_TO_RESTART')

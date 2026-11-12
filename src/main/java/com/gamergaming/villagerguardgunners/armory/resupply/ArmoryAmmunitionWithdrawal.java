@@ -184,7 +184,7 @@ public final class ArmoryAmmunitionWithdrawal {
             return Preflight.failed(LiveStatus.WEAPON_CHANGED);
         }
 
-        GuardAmmoSummary.Snapshot liveSummary = GuardAmmoSummary.capture(liveGun, destination);
+        GuardAmmoSummary.Snapshot liveSummary = GuardAmmoSummary.captureForGuard(guard, liveGun, destination);
         if (!liveSummary.isReady()
                 || liveSummary.gunId() == null
                 || !request.matchesLiveWeapon(

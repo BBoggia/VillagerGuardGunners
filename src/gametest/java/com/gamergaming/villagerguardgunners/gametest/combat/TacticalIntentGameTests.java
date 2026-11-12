@@ -301,7 +301,7 @@ public final class TacticalIntentGameTests {
     }
     private static void idle(Guard guard) {
         var data = IGunOperator.fromLivingEntity(guard).getDataHolder();
-        data.drawTimestamp = -1; data.shootTimestamp = -10_000; data.baseTimestamp = System.currentTimeMillis() - 10_000;
+        data.drawTimestamp = -1; data.shootTimestamp = -10_000; data.baseTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000;
         com.tacz.guns.entity.sync.ModSyncedEntityData.DRAW_COOL_DOWN_KEY.setValue(guard, 0L);
         com.tacz.guns.entity.sync.ModSyncedEntityData.SHOOT_COOL_DOWN_KEY.setValue(guard, 0L);
     }

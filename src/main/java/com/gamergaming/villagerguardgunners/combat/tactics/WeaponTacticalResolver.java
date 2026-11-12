@@ -13,6 +13,7 @@ public final class WeaponTacticalResolver {
             Map.entry("smg", TacticalProfile.SKIRMISHER),
             Map.entry("rifle", TacticalProfile.GENERALIST),
             Map.entry("sniper", TacticalProfile.MARKSMAN),
+            Map.entry("dmr", TacticalProfile.MARKSMAN),
             Map.entry("shotgun", TacticalProfile.BREACHER),
             Map.entry("mg", TacticalProfile.SUPPORT),
             Map.entry("rpg", TacticalProfile.DEMOLITIONS));

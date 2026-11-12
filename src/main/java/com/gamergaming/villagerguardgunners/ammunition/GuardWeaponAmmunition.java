@@ -110,8 +110,8 @@ public final class GuardWeaponAmmunition {
         return new LoadoutSummary(
                 loadout.state(),
                 loadout.activeRole(),
-                GuardAmmoSummary.capture(loadout.primary(), reserveHandler),
-                GuardAmmoSummary.capture(loadout.sidearm(), reserveHandler));
+                GuardAmmoSummary.captureForGuard(guard, loadout.primary(), reserveHandler),
+                GuardAmmoSummary.captureForGuard(guard, loadout.sidearm(), reserveHandler));
     }
 
     /**

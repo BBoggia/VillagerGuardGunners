@@ -42,6 +42,15 @@ final class ConfigPersistenceAcceptance {
         require(new GuardAimSettings(3.5, GuardAimPoint.CENTER_MASS).equals(reloaded.combat.aiming.resolve(true))
                 && !reloaded.enabled.get() && reloaded.combat.maximumEngagementRange.get() == 48,
                 "Config round trip changed aim or existing controls");
+        for (var mode : com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.values()) {
+            config.ammunition.infiniteAmmoMode.accept(mode);
+            errors.clear();
+            var ammoEncoded = ConfigApiImpl.INSTANCE.serializeConfig$fzzy_config(config, errors, (byte) 0, FileType.TOML);
+            var copy = new VillagerGuardGunnersConfig();
+            var ammoDecoded = ConfigApiImpl.INSTANCE.deserializeConfig$fzzy_config(copy, ammoEncoded.get(), errors, (byte) 0, FileType.TOML);
+            require(!ammoEncoded.isError() && !ammoDecoded.isError() && copy.ammunition.infiniteAmmoMode.get() == mode,
+                    "Infinite ammo TOML round trip failed: " + mode + errors);
+        }
         LogUtils.getLogger().info("VGG_BEHAVIOR_QA_CONFIG_PASS");
     }
     static void restartAnnotations() {

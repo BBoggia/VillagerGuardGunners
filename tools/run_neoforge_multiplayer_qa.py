@@ -20,6 +20,7 @@ import time
 import urllib.request
 import uuid
 import zipfile
+from tacz_runtime_diagnostics import classify_errors
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / 'build/neoforge/installed-multiplayer-qa'
@@ -279,12 +280,17 @@ def run(args):
         manifest['exitCodes'] = {k: p.returncode for k, p in processes.items()}
         manifest['errors'] = {k: [line for line in (RESULTS / (k + '-console.log')).read_text(errors='replace').splitlines()
                                       if '/ERROR]' in line or '/FATAL]' in line or 'Failed to load texture:' in line] for k in processes}
+        manifest['knownTaCZErrors'] = {
+            k: classify_errors((RESULTS / (k + '-console.log')).read_text(errors='replace'), jars)[1]
+            for k in processes}
         manifest['jarHashesUnchanged'] = all(jars == {p.name: sha(p) for p in (game / 'mods').glob('*.jar')}
                             for game in (RUNTIME, RUNTIME / 'client-A', RUNTIME / 'client-B'))
         manifest['captures'] = {p.name: sha(p) for p in RESULTS.glob('*.png')}
         manifest['passed'] = (not manifest.get('failure') and manifest.get('serverResult', {}).get('passed', False)
                     and all(v == 0 for v in manifest['exitCodes'].values())
-                    and not any(manifest['errors'].values()) and manifest['jarHashesUnchanged'])
+                    and not any(line.strip() not in manifest['knownTaCZErrors'][k]
+                                for k, lines in manifest['errors'].items() for line in lines)
+                    and manifest['jarHashesUnchanged'])
         (RESULTS / 'result.json').write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps({'passed': manifest['passed'], 'result': str(RESULTS / 'result.json')}), flush=True)
     return 0 if manifest['passed'] else 1

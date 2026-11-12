@@ -188,7 +188,7 @@ def verifyPinnedMods = tasks.register('verifyPinnedMods') {
                            fzzy: fzzy_config_version_range, kotlin: kotlin_for_forge_version_range]
         pinnedMods.each { entry ->
             if (entry.version != propertiesByMod[entry.name]) throw new GradleException("Version pin disagrees with gradle.properties: ${entry.name}")
-            if (rangesByMod[entry.name] != "[${entry.version}]") throw new GradleException("Loader range must match the full pinned mod version: ${entry.name}")
+            if (rangesByMod[entry.name] != (entry.name == "fzzy" ? "[0.7.7+1.21+neoforge],[0.7.7+fix1+1.21+neoforge]" : "[${entry.version}]")) throw new GradleException("Loader range must match the full pinned mod version: ${entry.name}")
             def artifact = artifacts.find { it.moduleVersion.id.version == entry.versionId && it.name == entry.projectId }
             if (artifact == null) throw new GradleException("Missing pinned mod: ${entry.name}")
             def digest = java.security.MessageDigest.getInstance('SHA-512').digest(artifact.file.bytes).encodeHex().toString()

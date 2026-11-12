@@ -89,6 +89,7 @@ final class WorkflowSupplyChecks {
     }
     static void service(SupplyMedicalAcceptance q) {
         var station=q.station;
+        for(var name:AmmoServiceCases.run(q.level,station,q.owner)) passed(name);
         var g=q.guard(ORIGIN.offset(7,0,0),false);
         var state=GuardEquipmentServiceAccess.get(g); var context=ServiceManagementPermissions.Context.of(station);
         require(ServiceEligibility.station(station)==ServiceStatus.READY,"Operator not ready");
@@ -147,6 +148,17 @@ final class WorkflowSupplyChecks {
         linked.setSquadLock(ArmorySquadLock.assigned(UUID.randomUUID(),"Restricted"));
         require(ServicePlanner.plan(g,station,QuartermasterServiceRuntime.sources(station))==null,"Linked Armory ignored squad lock");
         linked.setSquadLock(null); g.setPos(8.5,160,2.5);
+        for(var mode:List.of(com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.WITH_RELOADING,
+                com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.WITHOUT_RELOADING)) {
+            ModConfigs.GUARD_GUNNERS.ammunition.infiniteAmmoMode.accept(mode);
+            require(ServicePlanner.plan(g,station,QuartermasterServiceRuntime.sources(station))==null,
+                    "Quartermaster tried to top up virtual reserves: "+mode);
+            var summary=com.gamergaming.villagerguardgunners.ammunition.GuardWeaponAmmunition.captureSummary(g,GuardAmmoAccess.getTaCZInventoryHandler(g));
+            require(summary.primary().infiniteReserve() && summary.sidearm().infiniteReserve(), "Virtual primary/sidearm reserve missing");
+            require(reserve(g)==0 && linked.getInventory().getStackInSlot(0).getCount()==12, "Virtual ammo created or moved physical items");
+        }
+        ModConfigs.GUARD_GUNNERS.ammunition.infiniteAmmoMode.accept(com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.OFF);
+        passed("virtual_ammo_skips_quartermaster_top_up");
         p=ServicePlanner.plan(g,station,QuartermasterServiceRuntime.sources(station));
         require(p!=null&&ServiceTransactions.transfer(p)==ServiceStatus.SUPPLIED&&reserve(g)==12&&linked.getInventory().getStackInSlot(0).isEmpty(),"Linked ammo was lost or duplicated");
         station.changeSetting(q.owner,5); q.level.removeBlock(linked.getBlockPos(),false);

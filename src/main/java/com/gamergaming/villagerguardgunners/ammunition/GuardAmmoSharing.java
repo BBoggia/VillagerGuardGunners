@@ -33,7 +33,7 @@ public final class GuardAmmoSharing {
         }
         boolean serverSharingEnabled =
                 ModConfigs.GUARD_GUNNERS.ammunition.shareAmmoBetweenGuards.get();
-        if (!GuardRoleResolver.effectiveOrders(recipient)
+        if (GuardInfiniteAmmo.virtualReserve(recipient) || !GuardRoleResolver.effectiveOrders(recipient)
                 .permitsAmmoSharing(serverSharingEnabled)) {
             return SharingResult.failed(SharingStatus.DISABLED);
         }
@@ -54,7 +54,7 @@ public final class GuardAmmoSharing {
         GuardAmmoHandler destination = GuardAmmoAccess.getAmmoHandler(recipient);
         GuardAmmoMaintenance.ejectEmptyFiniteBoxes(recipient);
         GuardAmmoSummary.Snapshot recipientAmmo =
-                GuardAmmoSummary.capture(recipientGun.copy(), destination);
+                GuardAmmoSummary.captureForGuard(recipient, recipientGun.copy(), destination);
         if (!recipientAmmo.isReady()
                 || recipientAmmo.reserveSource() != GuardAmmoSummary.ReserveSource.PHYSICAL
                 || !recipientAmmo.reserveScanComplete()) {

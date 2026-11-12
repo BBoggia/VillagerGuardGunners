@@ -1,6 +1,6 @@
 # Villager Guard Gunners
 
-This branch contains the **Minecraft 1.21.1 NeoForge alpha**.
+This branch contains the **Minecraft 1.21.1 NeoForge**.
 Core guard gun use, combat behavior, guard commands, supply, medical workflows,
 and resource/worldgen migration have installed dedicated-server checks.
 Two connected clients also cover inventories, Quartermasters, trading,
@@ -54,24 +54,46 @@ orders, join squads, restock from Village Armories, and protect their allies.
 - Friendly-fire, ally, and explosive-weapon protection.
 - Clear ammo and combat status in the guard inventory.
 
+## Infinite ammo (NeoForge)
+
+In Fzzy Config, open **Villager Guard Gunners → Ammo Quality of Life → Infinite Ammo**.
+The server controls `ammunition.infiniteAmmoMode` in `guard_gunners.toml`:
+
+| Value | Behavior |
+| --- | --- |
+| `OFF` | Normal ammo use. Default. |
+| `WITH_RELOADING` | Unlimited reserves for all guards; normal magazine reloads. |
+| `WITHOUT_RELOADING` | Unlimited reserves and supplied magazines for all guards; no magazine reloads. |
+| `CREATIVE_AMMO_BOX` | New gun loadouts include compatible creative ammo boxes. Equip existing guards manually. |
+
+Virtual modes leave carried supplies untouched. Action cycling, firing delays,
+heat and friendly-fire checks remain active. Changing modes does not remove
+issued creative boxes. Boxes are normal TaCZ items that players can transfer;
+this option deliberately makes them available through guards. The gun spawn
+chance remains controlled by Natural Gun Loadouts.
+
 ## Requirements
 
-The NeoForge alpha requires these exact mod and loader versions:
+The NeoForge requires Minecraft 1.21.1 and the following dependencies:
 
 | Component | Version |
 | --- | --- |
 | Minecraft | 1.21.1 |
-| NeoForge | 21.1.233 |
+| NeoForge | 21.1.233 or newer 21.1.x |
 | Guard Villagers | 2.4.12 |
-| Unofficial TaCZ NeoForge port | 1.1.8-hotfix-r7 |
-| Fzzy Config | 0.7.7+1.21+neoforge |
+| Timeless and Classics Zero (official NeoForge) | 1.2.0 |
+| Fzzy Config | 0.7.7+1.21+neoforge or 0.7.7+fix1+1.21+neoforge |
 | Kotlin for Forge | 5.12.0 |
 | Java | 21 |
 
-The initial port uses exact dependency ranges. Broader version compatibility
-requires validation. Use fresh test worlds: the unofficial TaCZ port does not
-support its 1.20.1 world data. Download the NeoForge alpha JAR for this version; keep the Forge JAR for
-Minecraft 1.20.1. See [alpha release notes](docs/releases/1.9-neoforge-alpha.2.md).
+Use the listed Guard Villagers, TaCZ, and Kotlin versions. Fzzy Config accepts either of the two listed builds.
+Use the official [TaCZ project](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero)
+for this release and remove the unofficial TaCZ JAR instead of installing both.
+Earlier `1.10-neoforge` JARs still require the unofficial port. Preserve a backup
+when updating an existing world. TaCZ's gun-pack converter does not establish
+compatibility for moving a whole world from Minecraft 1.20.1.
+See the [1.11 release notes](docs/releases/1.11-neoforge.md) and
+[validation status](docs/neoforge-development.md#official-tacz-migration).
 
 See [Quartermaster service](docs/quartermaster-service.md) for automatic
 equipment stocking and station setup.

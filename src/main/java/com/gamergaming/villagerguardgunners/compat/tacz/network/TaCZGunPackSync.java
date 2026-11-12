@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.compat.tacz.network;
 
+import com.gamergaming.villagerguardgunners.compat.tacz.TaCZRuntimeCompatibility;
 import com.mojang.logging.LogUtils;
 import com.tacz.guns.resource.CommonAssetsManager;
 import java.util.List;
@@ -20,6 +21,10 @@ public final class TaCZGunPackSync {
      * Small payloads retain TaCZ's original synchronization unchanged.
      */
     public static boolean replaceIfOversized(OnDatapackSyncEvent event) {
+        // Check before touching the legacy codec, including for small/default packs.
+        if (TaCZRuntimeCompatibility.hasNativeChunkedSync()) {
+            return false;
+        }
         CommonAssetsManager manager = CommonAssetsManager.getInstance();
         if (manager == null) {
             return false;

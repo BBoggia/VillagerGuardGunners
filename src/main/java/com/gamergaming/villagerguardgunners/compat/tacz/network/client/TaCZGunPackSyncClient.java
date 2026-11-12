@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.compat.tacz.network.client;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
+import com.gamergaming.villagerguardgunners.compat.tacz.TaCZRuntimeCompatibility;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncAssembly;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncPacket;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncProtocol;
@@ -27,6 +28,11 @@ public final class TaCZGunPackSyncClient {
     }
 
     public static void accept(TaCZGunPackSyncPacket packet, boolean remoteConnection) {
+        if (TaCZRuntimeCompatibility.hasNativeChunkedSync()) {
+            // A legacy transfer must not overwrite a cache published by TaCZ 1.2.0.
+            ASSEMBLY.clear();
+            return;
+        }
         ASSEMBLY.accept(packet).ifPresent(encoded -> {
             try {
                 var cache = TaCZGunPackSyncProtocol.decodeCache(encoded);

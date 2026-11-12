@@ -146,7 +146,7 @@ Defaults are the recommended native-TaCZ guard profile. TaCZ remains authoritati
 | `movement.retreatSpeed` | 0.75 | 0.1–1.0 | Navigation speed while retreating. |
 | `movement.repositionSpeed` | 0.75 | 0.1–1.0 | Navigation speed while finding a clear firing lane. |
 | `movement.friendlyRepositionTicks` | 20 | 5–100 ticks | Delay before retrying a lane blocked by a protected entity. |
-| `tactics.typeProfiles` | seven mappings | validated map | Maps TaCZ type labels to profiles. Keys are trimmed and matched without regard to capitalization; conflicting normalized aliases are ignored. |
+| `tactics.typeProfiles` | eight mappings | validated map | Maps TaCZ type labels to profiles. Keys are trimmed and matched without regard to capitalization; conflicting normalized aliases are ignored. |
 | `tactics.gunOverrides` | empty | resource-ID map | Selects a profile for an exact TaCZ gun ID. Individual Guard Orders take precedence; this overrides gun-type mappings. |
 | `engagement.mode` | `GUARD_TARGETS` | enum | Filters the guard's selected target using compatibility, hostile-only, defensive, or hold-fire policy. |
 | `engagement.defensiveMemoryTicks` | 200 | 20–1200 ticks | Time that an attack against the guard or a protected ally remains engageable in `DEFENSIVE` mode. |
@@ -449,6 +449,37 @@ or replace its equipment. A guard with disabled AI rejects the interaction, as
 does a gun whose TaCZ data selects dummy or native-infinite reserves that cannot
 consume physical inventory ammunition.
 
+## Infinite ammo (Minecraft 1.21.1 NeoForge)
+
+Use **Ammo Quality of Life → Infinite Ammo** in Fzzy Config, or set
+`infiniteAmmoMode` under `[ammunition]` in `config/villagerguardgunners/guard_gunners.toml`.
+The server controls the setting; client preferences cannot override it.
+
+| Value | Effect |
+| --- | --- |
+| `OFF` | Normal ammo requirements. Default for new and upgraded configurations. |
+| `WITH_RELOADING` | Unlimited reserve ammo for every guard, with normal reloads. |
+| `WITHOUT_RELOADING` | Unlimited reserves and supplied magazines for every guard. Action cycling still applies. |
+| `CREATIVE_AMMO_BOX` | New gun loadouts receive a caliber-specific creative box for each weapon. Existing guards need boxes supplied manually. |
+
+The two virtual modes apply to existing guards immediately. Their carried ammo
+is not consumed. Guards do not seek ammo from Village Armories or request ammo
+top-ups from Quartermasters while using virtual reserves. Automatic dropped-ammo
+pickup is also skipped; manual inventory access and supply handoffs still work.
+Equipment and medical service remain available.
+
+No-reload mode keeps magazines supplied up to their attachment-adjusted capacity.
+It does not bypass manual action cycling, firing delays, heat, or friendly-fire
+checks. A reload already underway can finish when the mode changes. When virtual
+ammo is disabled, loaded rounds remain and guards return to ordinary supply
+requirements. Inventory-fed guns follow their native behavior without a magazine
+reload in either virtual mode.
+
+Creative boxes are ordinary TaCZ items: players can remove or transfer them, and
+they remain usable after changing the mode. Removing a box does not remove rounds
+already loaded in the gun. This option does not change natural gun spawn chances,
+replace existing loadouts, or require a datapack.
+
 ## Rules of engagement
 
 Rules of engagement filter the guard's selected target, including replacements
@@ -491,8 +522,13 @@ The default type map is:
 | `rifle` | Generalist |
 | `shotgun` | Breacher |
 | `sniper` | Marksman |
+| `dmr` | Marksman |
 | `mg` | Support |
 | `rpg` | Demolitions |
+
+The `dmr` entry covers TaCZ 1.2.0's marksman-rifle category. If an existing saved
+type map lacks this entry, add `dmr = "MARKSMAN"` to that map or use the settings
+screen. Customized type maps are preserved.
 
 Exact gun overrides use a namespaced TaCZ gun ID such as `example:precision_rifle`. Profile values are serialized as `GENERALIST`, `SKIRMISHER`, `BREACHER`, `MARKSMAN`, `SUPPORT`, or `DEMOLITIONS`.
 

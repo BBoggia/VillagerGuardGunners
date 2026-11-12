@@ -1,5 +1,19 @@
 # Large TaCZ Gun-Pack Login Sync
 
+## Official TaCZ 1.2.0
+
+The NeoForge source targets official TaCZ 1.2.0, which provides native compression
+and fragmentation. The add-on yields before encoding and does not publish legacy
+replacement packets over TaCZ's native client cache. The 1.11-neoforge release
+has passed compilation, unit checks, and installed-client joining and firing
+checks with official TaCZ 1.2.0. Two installed clients also received a cache
+large enough to require native compressed packet fragmentation, preserving the
+existing gun index and adding the test entry. The legacy validation below
+concerns the older path.
+
+The remaining sections describe the legacy 1.1.8 workaround. Its schema-1 codec
+is now kept in the add-on instead of calling TaCZ packet APIs removed in 1.2.0.
+
 ## Problem
 
 TaCZ 1.1.8-hotfix serializes all common gun-pack data into one Forge login
@@ -18,8 +32,8 @@ the server's common resource cache to the joining client.
 
 ## Compatibility behavior
 
-Villager Guard Gunners now intercepts only TaCZ's common-data synchronization
-event and measures the exact payload produced by TaCZ's own packet codec.
+On legacy TaCZ, Villager Guard Gunners intercepts only the common-data
+synchronization event and measures the payload encoded in the legacy packet format.
 
 - Payloads at or below 900 KiB keep TaCZ's native synchronization unchanged.
 - Larger payloads are divided into replacement packets containing at most

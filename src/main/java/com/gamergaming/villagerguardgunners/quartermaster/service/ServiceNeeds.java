@@ -23,8 +23,17 @@ public final class ServiceNeeds {
     public record GuardInput(UUID id, List<Stack> inventory, List<Rule> equipment, boolean manual,
             boolean profileMissing, boolean readable, boolean replace, int ammoReserve, int medicalReserve,
             Set<String> medicines, boolean medicalConfigured, Set<String> returnable,
-            Map<String, List<Integer>> capacities, Set<String> sources, boolean restrictedSources) {
+            Map<String, List<Integer>> capacities, Set<String> sources, boolean restrictedSources,
+            Set<String> infiniteWeapons) {
+        public GuardInput(UUID id, List<Stack> inventory, List<Rule> equipment, boolean manual,
+                boolean profileMissing, boolean readable, boolean replace, int ammoReserve, int medicalReserve,
+                Set<String> medicines, boolean medicalConfigured, Set<String> returnable,
+                Map<String, List<Integer>> capacities, Set<String> sources, boolean restrictedSources) {
+            this(id, inventory, equipment, manual, profileMissing, readable, replace, ammoReserve, medicalReserve,
+                    medicines, medicalConfigured, returnable, capacities, sources, restrictedSources, Set.of());
+        }
         public GuardInput {
+            infiniteWeapons = Set.copyOf(infiniteWeapons);
             inventory = List.copyOf(inventory); equipment = List.copyOf(equipment);
             medicines = Set.copyOf(medicines); returnable = Set.copyOf(returnable); sources = Set.copyOf(sources);
             Map<String,List<Integer>> copy = new HashMap<>(); capacities.forEach((k,v)->copy.put(k,List.copyOf(v))); capacities = Map.copyOf(copy);
@@ -130,6 +139,9 @@ public final class ServiceNeeds {
                 }
                 if(!fact.physicalReserve()) {
                     rows.add(row("ammo",weapon,label(input,stack.variant()),0,0,Reason.RESERVE_NOT_PHYSICAL)); continue;
+                }
+                if(guard.infiniteWeapons().contains(stack.variant())) {
+                    rows.add(row("ammo",weapon,label(input,stack.variant()),0,0,Reason.ACCEPTED)); continue;
                 }
                 if(fact.ammoId()==null) {
                     rows.add(row("ammo",weapon,label(input,stack.variant()),0,0,Reason.DEFINITION_UNAVAILABLE)); continue;

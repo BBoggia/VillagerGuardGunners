@@ -32,6 +32,19 @@ import org.junit.jupiter.api.Test;
 final class VillagerGuardGunnersConfigTest {
 
     @Test
+    void infiniteAmmoIsOptInAndAllModesAreSelectable() {
+        var config = new VillagerGuardGunnersConfig();
+        var modes = com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.values();
+        assertEquals(com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.OFF,
+                config.ammunition.infiniteAmmoMode.get());
+        for (var mode : modes) {
+            config.ammunition.infiniteAmmoMode.accept(mode);
+            config.update(VillagerGuardGunnersConfig.CONFIG_VERSION);
+            assertEquals(mode, config.ammunition.infiniteAmmoMode.get());
+        }
+    }
+
+    @Test
     void peacefulLoadoutsCanBeTunedAndDisabledIndependentlyOfEasy() {
         var config = new VillagerGuardGunnersConfig();
         var loadouts = config.naturalLoadouts;

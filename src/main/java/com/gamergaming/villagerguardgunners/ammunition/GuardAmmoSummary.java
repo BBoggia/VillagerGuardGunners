@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
+import tallestegg.guardvillagers.common.entities.Guard;
 import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.resource.pojo.data.gun.Bolt;
@@ -75,6 +76,23 @@ public final class GuardAmmoSummary {
         } catch (RuntimeException exception) {
             return Snapshot.unavailable(Status.UNREADABLE_GUN, gunId);
         }
+    }
+
+    public static Snapshot captureForGuard(Guard guard,
+            ItemStack stack, @Nullable IItemHandler handler) {
+        return withVirtualReserve(guard, capture(stack, handler));
+    }
+
+    public static Snapshot captureForGuard(Guard guard,
+            ItemStack stack, GunData data, @Nullable IItemHandler handler) {
+        return withVirtualReserve(guard, capture(stack, data, handler));
+    }
+
+    private static Snapshot withVirtualReserve(Guard guard, Snapshot value) {
+        if (!GuardInfiniteAmmo.virtualReserve(guard) || !value.isReady()) return value;
+        return Snapshot.ready(value.gunId(), value.feedType(), value.loadedAmmo(), value.magazineCapacity(),
+                value.supportsChamber(), value.chambered(), 0L, true, ReserveSource.VIRTUAL,
+                0, 0, 0, true);
     }
 
     private static Snapshot captureResolved(
@@ -242,7 +260,8 @@ public final class GuardAmmoSummary {
         NONE,
         PHYSICAL,
         DUMMY,
-        NATIVE_INFINITE
+        NATIVE_INFINITE,
+        VIRTUAL
     }
 
     public record Snapshot(

@@ -25,11 +25,11 @@ class ServiceNeedsTest {
         List<Rule> rules=new ArrayList<>(Collections.nCopies(6,new Rule(false,Set.of())));
         boolean manual=false,missing=false,readable=true,replace=false,medical=false;
         Set<String> meds=Set.of(),returnable=Set.of("rifle","pistol","otherGun"),allowed=Set.of("station","armory");
-        int ammo=64,doses=16;
+        int ammo=64,doses=16; Set<String> infinite=Set.of();
         Builder() { inv.set(0,new Stack("rifle",1)); }
         GuardInput build() {
             Map<String,List<Integer>> caps=new HashMap<>();facts().keySet().forEach(k->caps.put(k,List.of(1,1,1,1,1,1,64,64,64,64,64,64)));
-            return new GuardInput(id,inv,rules,manual,missing,readable,replace,ammo,doses,meds,medical,returnable,caps,allowed,false);
+            return new GuardInput(id,inv,rules,manual,missing,readable,replace,ammo,doses,meds,medical,returnable,caps,allowed,false,infinite);
         }
     }
     private static Map<String,Set<String>> compatibility() {
@@ -40,6 +40,31 @@ class ServiceNeedsTest {
         return ServiceNeeds.evaluate(new Input(facts(),stock,returns,List.of(guards),compatibility()));
     }
     private static Row ammo(Result r, int guard) {return r.guards().get(guard).rows().stream().filter(x->x.category().equals("ammo")&&x.slot()==6).findFirst().orElseThrow();}
+    @Test void creativeReserveSuppressesOnlyCoveredWeapon() {
+        var g=new Builder();g.inv.set(1,new Stack("otherGun",1));g.inv.set(6,new Stack("box",1));g.infinite=Set.of("rifle");
+        var r=evaluate(List.of(supply("ammo",64,0),supply("otherAmmo",64,1)),List.of(),g.build());
+        assertEquals(List.of("otherAmmo"),r.guards().get(0).transfers().stream().map(Transfer::variant).toList());
+        assertTrue(r.guards().get(0).rows().stream().anyMatch(x->x.category().equals("ammo")&&x.slot()==0&&x.requested()==0));
+    }
+    @Test void uncoveredSameCaliberWeaponStillRequestsAmmo() {
+        var g=new Builder();g.inv.set(1,new Stack("pistol",1));g.inv.set(6,new Stack("box",1));g.infinite=Set.of("rifle");
+        assertEquals(64,ammo(evaluate(List.of(supply("ammo",64,0)),List.of(),g.build()),0).requested());
+    }
+    @Test void replacementWeaponUsesItsOwnCreativeCompatibility() {
+        var g=new Builder();g.replace=true;g.rules.set(0,new Rule(true,Set.of("otherGun")));g.inv.set(6,new Stack("box",1));g.infinite=Set.of("rifle");
+        var r=evaluate(List.of(supply("otherGun",1,0),supply("otherAmmo",64,1)),List.of(27),g.build());
+        assertEquals(64,ammo(r,0).requested());
+        g.infinite=Set.of("otherGun");
+        r=evaluate(List.of(supply("otherGun",1,0),supply("otherAmmo",64,1)),List.of(27),g.build());
+        assertEquals(List.of("otherGun"),r.guards().get(0).transfers().stream().map(Transfer::variant).toList());
+    }
+    @Test void coveredGuardLeavesSharedAmmoForOtherGuardsAndCanReceiveMedicine() {
+        var a=new Builder();a.infinite=Set.of("rifle");a.medical=true;a.meds=Set.of("bandage");
+        var b=new Builder();b.id=B;
+        var r=evaluate(List.of(supply("ammo",64,0),supply("bandage",16,1)),List.of(),a.build(),b.build());
+        assertEquals(List.of("bandage"),r.guards().get(0).transfers().stream().map(Transfer::variant).toList());
+        assertEquals(64,ammo(r,1).available());
+    }
     @Test void twoWeaponsShareOneCaliberReserve() {
         var g=new Builder();g.inv.set(1,new Stack("pistol",1));g.inv.set(6,new Stack("ammo",10));
         var result=evaluate(List.of(supply("ammo",64,0)),List.of(),g.build());

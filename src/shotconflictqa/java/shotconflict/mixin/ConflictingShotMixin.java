@@ -25,7 +25,7 @@ public abstract class ConflictingShotMixin {
         }, interval, count);
     }
 
-    @Redirect(method = "lambda$shootOnce$2", at = @At(value = "INVOKE", remap = true,
+    @Redirect(method = "/^lambda\\$shootOnce\\$[0-9]+$/", at = @At(value = "INVOKE", remap = true,
             target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private boolean competingInsertion(Level level, Entity projectile) {
         HookCounters.INSERTIONS.incrementAndGet();

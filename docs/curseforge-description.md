@@ -10,9 +10,10 @@ their orders. Village Armories and Quartermasters provide supplies, while
 medic guards can treat injured allies. Optional generation settings and a
 companion datapack add defense buildings to newly generated villages.
 
-**Available for Minecraft 1.20.1 with Forge and as an alpha for Minecraft
+**Available for Minecraft 1.20.1 with Forge and for Minecraft
 1.21.1 with NeoForge.** Choose the file and dependencies for your Minecraft
-version. The NeoForge version uses the unofficial TaCZ NeoForge port.
+version. Both versions use the official TaCZ project, with the file for the
+matching Minecraft version and loader.
 
 ## Features
 
@@ -88,22 +89,38 @@ a local copy of the datapack.
 The companion pack expands the base mod’s smaller built-in buildings.
 Large structures need space, and occasional awkward terrain placement is possible.
 
+## Infinite Ammo
+
+Both versions have four options under **Ammo Quality of Life → Infinite Ammo**:
+
+- **Off (default):** normal ammo use.
+- **Infinite Ammo with Reloading:** all guards have unlimited reserves and keep normal reload delays.
+- **Infinite Ammo without Reloading:** all guards keep their magazines supplied. Firing delays, action cycling, heat, and friendly-fire checks still apply.
+- **Infinite Ammo with Creative Ammo Box:** new gun loadouts include compatible creative ammo boxes. Existing guards can receive boxes manually.
+
+Virtual modes leave carried supplies untouched. Changing the setting does not
+remove boxes already issued. Boxes can be removed and transferred like other
+TaCZ items. This setting does not change the chance of a guard spawning with a gun.
+
 ## Requirements
 
-| Component | Minecraft 1.20.1 — Forge | Minecraft 1.21.1 — NeoForge alpha |
+| Component | Minecraft 1.20.1 — Forge | Minecraft 1.21.1 — NeoForge |
 | --- | --- | --- |
-| Loader | Forge 47.4.10 or newer 47.x | NeoForge 21.1.233 |
+| Loader | Forge 47.4.10 or newer 47.x | NeoForge 21.1.233 or newer 21.1.x |
 | Java | 17 | 21 |
 | Guard Villagers | 1.20.1-1.6.19 | 2.4.12 |
-| TaCZ | Original TaCZ, 1.1.8 or newer for 1.20.1 | Unofficial NeoForge port, 1.1.8-hotfix-r7 |
-| Fzzy Config | 0.7.6 for 1.20.1 | 0.7.7+1.21+neoforge |
+| TaCZ | Original TaCZ, 1.1.8 or newer for 1.20.1 | Official NeoForge release, 1.2.0 |
+| Fzzy Config | 0.7.6 or 0.7.7 for 1.20.1 | 0.7.7+1.21+neoforge or 0.7.7+fix1+1.21+neoforge |
 | Kotlin for Forge | 4.12.0 | 5.12.0 |
 
-**The NeoForge alpha requires the exact loader and mod versions listed above.**
-Use the [unofficial TaCZ NeoForge port](https://www.curseforge.com/minecraft/mc-mods/tacz-1-21-1)
-for Minecraft 1.21.1. When moving from 1.20.1, start a new world: the port does
-not support TaCZ world data from that version. Custom gun packs can also need
-conversion; follow the port's gun-pack compatibility instructions.
+**Use the listed Guard Villagers, TaCZ, and Kotlin versions for NeoForge. Fzzy Config accepts either listed build.**
+Download the Minecraft 1.21.1 NeoForge file from the
+[official TaCZ project](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero).
+Replace the unofficial port rather than installing both. TaCZ 1.2.0's NeoForge
+file is currently marked Beta. Older custom gun packs can need conversion;
+TaCZ provides `/tacz convert universal` to generate Minecraft 1.21.1 overlays.
+Keep a world backup when changing dependencies. Gun-pack conversion is separate
+from upgrading an entire world between Minecraft versions.
 
 ## Servers, Modpacks, and Support
 
@@ -116,8 +133,7 @@ Datapacks can customize gun loadouts, guard roles, treatment supplies,
 Quartermaster equipment and trades, ally protection, and village buildings.
 Operators can use `/vgg` commands to inspect guards and village systems.
 
-The NeoForge port is an alpha. Wider modpack combinations and long-running
-server behavior still need testing. Report issues with your Minecraft, loader,
+Report issues with your Minecraft, loader,
 and mod versions, relevant logs, gun-pack list, and reproduction steps.
 
 Villager Guard Gunners is an unofficial add-on and is not affiliated with or

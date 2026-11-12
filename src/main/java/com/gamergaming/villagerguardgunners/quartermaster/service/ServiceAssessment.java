@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.quartermaster.service;
 
+import com.gamergaming.villagerguardgunners.ammunition.GuardInfiniteAmmo;
 import com.gamergaming.villagerguardgunners.api.*;
 import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
 import com.gamergaming.villagerguardgunners.ammunition.AmmoCompatibility;
@@ -139,9 +140,10 @@ public final class ServiceAssessment {
                 rules.add(new ServiceNeeds.Rule(!selectors.isEmpty(),matches));
             }
             List<String> medicineIds=profile==null?inventory.subList(9,12).stream().filter(s->!s.isEmpty()).map(s->BuiltInRegistries.ITEM.getKey(s.getItem()).toString()).distinct().toList():profile.medical();
-            Set<String> medicines=new HashSet<>(),returnable=new HashSet<>(); Map<String,List<Integer>> capacities=new HashMap<>();
+            Set<String> medicines=new HashSet<>(),returnable=new HashSet<>(),infiniteWeapons=new HashSet<>(); Map<String,List<Integer>> capacities=new HashMap<>();
             for(var entry:catalog.stacks.entrySet()) {
                 String key=entry.getKey(); ItemStack stack=entry.getValue(); var fact=catalog.facts.get(key);
+                if(read && fact.kind()==ServiceNeeds.Kind.GUN && ServiceAmmoDemand.hasCreativeReserve(stack,inventory)) infiniteWeapons.add(key);
                 if(fact.kind()==ServiceNeeds.Kind.MEDICAL && matches(stack,medicineIds,false)) medicines.add(key);
                 if(read && stack.getCount()==1 && !EnchantmentHelper.has(stack, net.minecraft.world.item.enchantment.EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)
                         && station.inventory().isItemValid(27,stack.copy()))returnable.add(key);
@@ -160,8 +162,8 @@ public final class ServiceAssessment {
             for(var source:sources.entrySet()) if(station.mayService(guard) && source.getValue().live(guard))allowed.add(source.getKey()); else denied=true;
             inputs.add(new ServiceNeeds.GuardInput(guard.getUUID(),inventory.stream().map(catalog::stack).toList(),rules,
                     wanted.policy()==GuardServiceState.Policy.MANUAL,wanted.policy()==GuardServiceState.Policy.PROFILE&&profile==null,read,
-                    wanted.replaceExisting(),profile==null?64:profile.ammoReserve(),profile==null?16:profile.medicalReserve(),medicines,
-                    !medicineIds.isEmpty(),returnable,capacities,allowed,denied));
+                    wanted.replaceExisting(),GuardInfiniteAmmo.virtualReserve(guard) ? 0 : profile==null?64:profile.ammoReserve(),profile==null?16:profile.medicalReserve(),medicines,
+                    !medicineIds.isEmpty(),returnable,capacities,allowed,denied,infiniteWeapons));
         }
         Map<String,Set<String>> compatibleAmmo=new HashMap<>();
         for(var gun:catalog.facts.values()) if(gun.kind()==ServiceNeeds.Kind.GUN && gun.definitionKnown() && gun.physicalReserve()) {

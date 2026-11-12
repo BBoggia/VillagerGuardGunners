@@ -23,6 +23,7 @@
     "RaiseShieldGoalMixin",
     "TaCZCommonAssetsManagerMixin",
     "TaCZGuardShotMixin",
+    "TaCZGuardAmmoMixin",
     "TaCZGuardProjectileMixin",
     "VillagerToGuardMixin",
     "WalkBackToCheckPointGoalMixin",

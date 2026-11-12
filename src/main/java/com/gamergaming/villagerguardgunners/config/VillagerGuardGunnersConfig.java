@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.config;
 
+import com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode;
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyLimits;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
@@ -662,6 +663,7 @@ public final class VillagerGuardGunnersConfig extends Config {
             defaults.put("smg", TacticalProfile.SKIRMISHER);
             defaults.put("rifle", TacticalProfile.GENERALIST);
             defaults.put("sniper", TacticalProfile.MARKSMAN);
+            defaults.put("dmr", TacticalProfile.MARKSMAN);
             defaults.put("shotgun", TacticalProfile.BREACHER);
             defaults.put("mg", TacticalProfile.SUPPORT);
             defaults.put("rpg", TacticalProfile.DEMOLITIONS);
@@ -819,6 +821,11 @@ public final class VillagerGuardGunnersConfig extends Config {
 
     @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.ammunition")
     public static final class AmmunitionSettings extends ConfigSection {
+
+        @Comment("OFF uses normal ammo. WITH_RELOADING gives all guards unlimited reserves with normal reloads. WITHOUT_RELOADING also keeps magazines supplied; action cycling, heat and firing safety still apply. CREATIVE_AMMO_BOX gives compatible creative boxes with new gun loadouts only; equip existing guards manually. Changing this setting never removes issued boxes.")
+        public ValidatedEnum<InfiniteAmmoMode> infiniteAmmoMode =
+                new ValidatedEnum<>(InfiniteAmmoMode.OFF);
+
 
         @Comment("Allow guards to collect compatible TaCZ ammo they naturally walk over without pathfinding to it. Requires the mobGriefing game rule to be on and this guard’s Ammo Pickup order to allow it.")
         public ValidatedBoolean pickupDroppedAmmo = new ValidatedBoolean(true);

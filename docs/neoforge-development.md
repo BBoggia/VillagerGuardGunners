@@ -1,8 +1,94 @@
 # NeoForge development
 
-This branch targets Minecraft 1.21.1, NeoForge 21.1.233, and Java 21. The
-current candidate is `1.9-neoforge-alpha.2`, an alpha test build, not a stable release.
-The 1.20.1 Forge implementation remains on `v1.9`.
+This branch targets Minecraft 1.21.1 and Java 21. It compiles against NeoForge
+21.1.233 and allows runtime versions in `[21.1.233,21.2)`. The
+`1.11-neoforge` release targets official TaCZ 1.2.0. Earlier
+`1.10-neoforge` release artifacts use the unofficial port.
+The 1.20.1 Forge implementation remains in its separate Forge worktree.
+
+## Official TaCZ migration
+
+The dependency pin is the official NeoForge 1.2.0 file, published as Beta:
+[release notes](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero/files/9454361),
+[tagged source](https://github.com/MCModderAnchor/TACZ/tree/1.2.0-neoforge-1.21.1).
+The Modrinth project/version IDs are `SzzJttH8` / `O2Pfsh6w`; the published
+SHA-512 is recorded in `gradle/neoforge-mods.json`. The loader requirement is
+exactly `[1.2.0]` for this release. Other dependency pins and
+the NeoForge loader range are unchanged.
+
+The build and installed-runtime staging tasks read that pin. The release build
+and 1,047 JUnit checks pass. Packaged-JAR checks on NeoForge 21.1.233 cover
+33 firing/ammo cases, four connected-client firing/reload cases, and 43 supply
+and medical cases plus restart persistence. Two installed clients also verify
+firing/reload events and native oversized-cache fragmentation. Firing checks include the conflicting
+hook test addon. Companion resource validation covers 31 packs, 150 templates,
+and 175 definitions. Historical results below describe their named earlier
+artifacts; they are not evidence for this dependency upgrade.
+
+The official TaCZ JAR logs a missing `tacz:blood_strike_1` reference in
+`minecraft:placeable`, also reproduced on an isolated TaCZ-only server. QA keeps
+this error in reports and recognizes only that exact diagnostic with the
+verified dependency SHA-256. Other runtime errors still fail validation.
+Existing-world migration from the unofficial port has not been runtime-tested.
+
+TaCZ now compresses and fragments its own common-data synchronization. The legacy
+overflow handler yields before encoding, and its client handler ignores legacy
+transfers on the official release. Guard timestamps use TaCZ's `GunTime` clock.
+Firing hooks select the discharge lambda by its operations and capture only the
+needed arguments, allowing the extra attachment-cache parameter and preserving
+the native post-fire event. Required injection checks remain enabled.
+
+The default tactical mapping includes the new `dmr` type as Marksman. Existing
+custom type maps are preserved; add the entry explicitly if it is missing.
+
+Guards continue to use TaCZ's item APIs and registry-aware ItemStack serialization.
+The inspected item accessors retain `minecraft:custom_data`, gun/ammo identifiers,
+magazine state, and nested attachment stacks. No speculative saved-item conversion
+is applied. Existing worlds from the unofficial port still need an installed-JAR
+round trip covering guards, sidearms, ammo boxes, attachments, Armories, and
+Quartermaster deliveries. Cross-Minecraft-version world conversion is not implied.
+
+Before release, run the packaged firing and infinite-ammo suites, competing-hook
+addon, login/reload/reconnect checks, and the connected-client suite. Its large-cache
+fixture now uses TaCZ's native compressed packets and mixed JSON whitespace to
+exercise fragmentation even after compression. Check old and converted gun packs,
+and verify existing-world persistence separately from fresh-world behavior.
+
+## Quartermaster ammo correction
+
+The updated `1.10-neoforge` JAR has SHA-256
+`2ca3b084bc8072e6879d8991d74b75611a41b3781c6b19f74368d550cf0a2375`. It fixes pending ammo deliveries after
+virtual-mode changes and recognizes per-weapon creative reserves. Validation
+for this artifact covers the build checks, 1,047 unit tests, and the installed
+supply/medical workflow suite with ten additional ammo-service regressions and
+restart. The broader matrix below identifies the earlier artifact; its results
+are historical and were not all repeated for this targeted correction.
+
+## Earlier stable candidate validation
+
+The earlier `1.10-neoforge` gameplay JAR had SHA-256
+`ffc81db5ecd078a9a0c409c770b6f4aadbe32da52467630e490cb5bbcc33e21f`.
+The following installed-runtime results use that exact JAR, ordinary published
+mod dependencies, and NeoForge 21.1.233 on macOS ARM64:
+
+| Coverage | Result |
+| --- | --- |
+| Unit and packaged artifact checks | 1,043 tests passed; 31 companion packs and 150 templates validated |
+| Firing safety with competing TaCZ hooks | 20 cases passed |
+| Infinite ammo with competing TaCZ hooks | 13 cases passed, including manual actions, bursts, shotguns, empty-box preservation, mode changes, paired creative-box issuance and inventory-fed guns |
+| Original Fzzy 0.7.7, without the competing addon | 8 ammo cases passed; default testing uses fix1 |
+| Combat, accuracy, squads and patrols | 17 cases plus restart passed; all four config values round-tripped through Fzzy TOML |
+| Supply, Quartermaster and medical workflows | 33 cases plus restart passed, including virtual-reserve stock preservation |
+| Two real connected clients | 31 cases passed, including mode synchronization, firing/reload rendering and the Fzzy ammunition screen |
+| Universal companion pack | 95 building placements, native jigsaw generation, resource reload and restart persistence passed |
+
+Reports retain dependency and gameplay JAR hashes under the installed-runner
+result directories; a consolidated record is generated under
+`build/neoforge/release-qa/1.10-neoforge/`. Disposable worlds and copied mods are
+removed after recording results. No development runtime substitutes for these
+installed tests. Additional gun packs/providers, long-running servers, network
+latency, shaders and other operating systems remain outside this candidate's
+new validation. Earlier loader-widening evidence is recorded separately below.
 
 ## Build and dependency contracts
 
@@ -22,14 +108,74 @@ for compilation only and are not bundled into the add-on.
 configuration. Mixins use Java 21 and named Minecraft classes. The old Forge
 refmap and reobfuscation tasks do not apply to this build.
 
-## Alpha packaging
+### Loader compatibility
 
-`./gradlew prepareNeoForgeAlpha` runs the complete build checks and stages player
-files under `build/neoforge/distributions/alpha/<version>/`. The directory contains
+`neo_version` stays at the minimum supported build for compilation;
+`neo_version_range` controls which installed loaders can run the packaged mod.
+The range `[21.1.233,21.2)` admits newer 21.1.x builds without a metadata update.
+Minecraft remains restricted to 1.21.1. Guard Villagers, TaCZ, and Kotlin retain
+their exact version requirements. Fzzy Config accepts the original 0.7.7 NeoForge
+build and its fix1 hotfix. Compilation and primary installed testing use fix1. Allowing future loader patches does not
+mean they have already been tested.
+
+Earlier Alpha 3 installed-JAR checks covered firing safety on 21.1.233, 21.1.247, and 21.1.264;
+supply, medical care, and restart persistence on both newer builds; connected
+player/guard firing on 21.1.247; and two-client multiplayer workflows on
+21.1.264. These checks use the pinned dependency mods and the same gameplay JAR
+compiled against 21.1.233.
+
+The installed shot and core runners accept `--neo-version 21.1.247` (or another
+21.1.x build). This selects a separate installation with the loader version in
+its directory name; it does not change the compilation pin or the mod JAR.
+Use the same option for both shot-runtime preparation and execution:
+
+```sh
+./gradlew build stageShotQaMods shotConflictQaJar stageCoreQaMods
+python3 tools/run_neoforge_shot_qa.py --neo-version 21.1.247 --prepare
+python3 tools/run_neoforge_shot_qa.py --neo-version 21.1.247 --jar /path/to/candidate.jar --output build/neoforge/shot-qa/results/loader-247-regression --conflict --accept-eula
+python3 tools/run_neoforge_core_qa.py --neo-version 21.1.247 --suite workflow --accept-eula --fresh
+```
+
+The shot runner requires a new output directory for each run. Repeat it with
+`--mode client` and another output directory for real connected-client firing
+and reload checks. `--conflict` adds a separate test addon that exercises
+competing TaCZ hooks; omit it to check the ordinary dependency set. Core
+reports are separated by loader version under `build/neoforge/core-qa/results`.
+The workflow suite covers supply, treatment, damage absorption, and saved state
+after a server restart. Accept the EULA before using `--accept-eula`.
+
+## Packaging
+
+`./gradlew prepareNeoForgeRelease` runs the complete build checks and stages player
+files under `build/neoforge/distributions/release/<version>/`. The directory contains
 only the gameplay JAR, player copy, license, checksums, upload settings, and an
-optional Minecraft 1.21.1 universal companion ZIP. The task accepts alpha version
-names only. Run the installed QA suites against the exact staged gameplay JAR
+optional Minecraft 1.21.1 universal companion ZIP. Use `prepareNeoForgeAlpha` for alpha versions and the corresponding alpha
+output directory. Run the installed QA suites against the exact staged gameplay JAR
 before distribution. See [CurseForge upload process](curseforge-upload.md).
+
+## Infinite ammo validation
+
+The server config `ammunition.infiniteAmmoMode` selects OFF, WITH_RELOADING,
+WITHOUT_RELOADING, or CREATIVE_AMMO_BOX. Virtual reserves use TaCZ's native
+unlimited-reserve reload path. The no-reload policy refills the magazine after
+native/script consumption while preserving chamber cycling. Rejected rounds
+remain subject to the existing per-round safety checks. No fake ammo items are
+exposed through entity capabilities.
+
+Guard-aware ammo summaries report virtual reserves to diagnostics, sidearm
+assessment, and Armory planning. Dropped-ammo pickup and emergency sharing skip
+virtual recipients; Quartermaster assessment requests zero physical ammo while
+retaining equipment and medical service. Creative boxes are prepared inside
+natural-loadout issuance and committed through its existing transaction.
+
+The shot regression runner includes empty-gun activation, mode changes, primary
+and sidearm creative-box issuance, removal, manual actions, native bursts,
+shotguns, inventory-fed fixtures, canceled rounds and protected allies. Use
+`--fzzy-original` to run with the checksum-verified original Fzzy 0.7.7 build;
+the default stages fix1. Keep both mod and observer hashes in the report.
+The multiplayer observer checks server-to-client mode synchronization and opens
+the Fzzy ammunition screen on both clients. Config persistence checks round-trip
+all four values through Fzzy TOML serialization.
 
 ## Foundation checks
 
@@ -223,8 +369,9 @@ must intercept the remaining damage before health loss. `CasualtyDamageMixin`
 therefore intercepts the final damage read in `LivingEntity.actuallyHurt`, after
 native absorption and its reduction callbacks, and passes that value to the
 casualty timer. Absorbed damage is neither refunded nor counted against the
-timer. Bypass damage keeps the normal death path. The required mixin and exact
-NeoForge pin prevent an incompatible damage hook from silently going unused.
+timer. Bypass damage keeps the normal death path. The required mixin fails
+loading if its injection point disappears. Installed workflow checks also
+verify damage and absorption behavior when testing a newer NeoForge build.
 
 The installed workflow suite verifies active and downed guards with full and
 partial absorption, canceled damage, and an absorption reduction callback. It
@@ -443,6 +590,8 @@ focused work. CI retains the full test report. It does not silently accept the
 Minecraft EULA or run the graphical acceptance suite on its headless Linux
 worker.
 
-Use fresh worlds for installed tests. The unofficial TaCZ port documents
-incompatible 1.20.1 world data and separate gun-pack conversion requirements:
-[TaCZ NeoForge port](https://www.curseforge.com/minecraft/mc-mods/tacz-1-21-1).
+Use fresh worlds for baseline installed tests and backed-up copies for migration
+checks. Official TaCZ supports `/tacz convert universal` for older gun packs;
+converted overlays are written separately under `tacz-converted`. That tool does
+not validate a whole-world Minecraft version upgrade. Follow the
+[official release instructions](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero/files/9454361).

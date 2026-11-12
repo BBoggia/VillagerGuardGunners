@@ -187,7 +187,7 @@ public final class CombatHandoffGameTests {
         h.runAtTickTime(3, () -> {
             phase[0] = 1;
             var data = original.getDataHolder(); data.drawTimestamp = -1; data.shootTimestamp = -10_000;
-            data.baseTimestamp = System.currentTimeMillis() - 10_000; data.meleePrepTickCount = -1;
+            data.baseTimestamp = com.tacz.guns.util.time.GunTime.nowMillis() - 10_000; data.meleePrepTickCount = -1;
             com.tacz.guns.entity.sync.ModSyncedEntityData.DRAW_COOL_DOWN_KEY.setValue(guard, 0L);
             com.tacz.guns.entity.sync.ModSyncedEntityData.SHOOT_COOL_DOWN_KEY.setValue(guard, 0L);
             runtime.evaluate(null, nativeController, false, false);

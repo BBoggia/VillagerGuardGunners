@@ -11,22 +11,22 @@
   },
   {
     "name": "tacz",
-    "project": "tacz-1-21-1",
-    "version": "1.1.8-hotfix-r7",
-    "versionId": "62q6mB5Q",
-    "filename": "tacz-neoforge-1.21.1-1.1.8-hotfix-r7.jar",
-    "url": "https://cdn.modrinth.com/data/OypNE65K/versions/62q6mB5Q/tacz-neoforge-1.21.1-1.1.8-hotfix-r7.jar",
-    "sha512": "7700ed99a080729c3aa21f9619e018fbe9e2303cfbcaa463175ee5170553a000b692bc4cfa2e8ce0778747eed34dcc0197fb5e4344bb258cff1ba90adc842642",
-    "projectId": "OypNE65K"
+    "project": "timeless-and-classics-zero",
+    "version": "1.2.0",
+    "versionId": "O2Pfsh6w",
+    "filename": "tacz-neoforge-1.21.1-1.2.0.jar",
+    "url": "https://cdn.modrinth.com/data/SzzJttH8/versions/O2Pfsh6w/tacz-neoforge-1.21.1-1.2.0.jar",
+    "sha512": "8f54d0b620040cd4451329ee62fa2b2ede153220d85a8722ef9ffe6e31b9aaeff9f3a55a9bc92df29f1769ea751a50d36110139eacc809a84d5ca4186fdcc461",
+    "projectId": "SzzJttH8"
   },
   {
     "name": "fzzy",
     "project": "fzzy-config",
-    "version": "0.7.7+1.21+neoforge",
-    "versionId": "uG7oHgw6",
-    "filename": "fzzy_config-0.7.7+1.21+neoforge.jar",
-    "url": "https://cdn.modrinth.com/data/hYykXjDp/versions/uG7oHgw6/fzzy_config-0.7.7%2B1.21%2Bneoforge.jar",
-    "sha512": "ef03b411b0e1b241a9952e1a8fdac61979665953eb5f28116aac06530964e7378eb20a78594a47ba4d942c74dfa20d550c292014b5de8e63c42b882a33aef5a5",
+    "version": "0.7.7+fix1+1.21+neoforge",
+    "versionId": "jRuOkBAG",
+    "filename": "fzzy_config-0.7.7+fix1+1.21+neoforge.jar",
+    "url": "https://cdn.modrinth.com/data/hYykXjDp/versions/jRuOkBAG/fzzy_config-0.7.7%2Bfix1%2B1.21%2Bneoforge.jar",
+    "sha512": "7ea074ac2bee3471a213ed6e55d3beafded16631ea517ecbc6711324f6af82b697c9d391aaadcefff67eda13d5dcc2bfb5011373c73a7015761060b6d89cf15c",
     "projectId": "hYykXjDp"
   },
   {

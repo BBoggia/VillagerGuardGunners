@@ -109,8 +109,13 @@ unavailable within the first 64 requests. Requests beyond that limit are truncat
 not inspected. No offline inventory or chunk loading is used.
 
 Stock rows identify the item, gun or ammo ID where readable, category, physical
-count, and reserved count. Ammo boxes are a separate category and cannot satisfy
-loose-ammo requests. Reports contain no item NBT, native inventory handlers, or
+count, and reserved count. Finite ammo boxes are a separate category and do not count toward loose-ammo
+reserve targets. A compatible creative ammo box satisfies the covered weapon’s
+ammo demand; other weapons can still request loose ammo. Removing a creative
+box restores ordinary demand. Both virtual Infinite Ammo modes suppress ammo
+requests and invalidate pending ammo deliveries, while equipment and medical
+service continue. These checks also apply to incoming-delivery previews and
+final transfers. Reports contain no item NBT, native inventory handlers, or
 transfer plans. Current Armory inventory viewing is public; its squad lock limits
 guard supply. Unreadable or recovery-locked sources are omitted. Missing loaded
 links and guard supply restrictions mark the report as restricted or incomplete.

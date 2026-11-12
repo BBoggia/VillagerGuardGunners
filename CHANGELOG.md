@@ -6,6 +6,54 @@ in local development notes.
 
 ## Unreleased
 
+## 1.11-neoforge - 2026-11-10
+
+### Compatibility
+
+- Migrate Minecraft 1.21.1 NeoForge to official Timeless and Classics Zero 1.2.0,
+  replacing the unofficial port dependency.
+- Map TaCZ's new `dmr` gun category to Marksman tactics in the default settings.
+
+### Fixed
+
+- Use TaCZ 1.2.0's native gun-pack synchronization to avoid the removed packet
+  constructor crash when joining a world.
+- Match guard firing and draw timing to TaCZ's clock, including single-player pauses.
+- Adapt per-shot safety hooks to TaCZ 1.2.0's firing callbacks and post-fire events.
+
+## 1.10-neoforge - 2026-11-05
+
+### Added
+
+- Stable Minecraft 1.21.1 NeoForge release.
+- Added four Infinite Ammo modes: Off (default), unlimited reserves with normal
+  reloads, unlimited ammo without reloads, and creative ammo boxes issued with
+  new guard gun loadouts. Virtual modes apply to existing and new guards without
+  consuming carried supplies. Firing delays, heat, action cycling, and
+  friendly-fire protection remain active.
+- Guard ammo status and resupply decisions account for virtual infinite ammo.
+  Existing guards can be given creative boxes manually; issued boxes remain
+  usable after changing modes.
+
+### Compatibility
+
+- Accept both Fzzy Config `0.7.7+1.21+neoforge` and
+  `0.7.7+fix1+1.21+neoforge`.
+
+### Fixed
+
+- Cancel pending Quartermaster ammo deliveries when virtual Infinite Ammo is enabled.
+- Recognize carried creative ammo boxes per weapon when planning Quartermaster
+  resupply, while preserving supplies for other weapons and medical care.
+
+## 1.9-neoforge-alpha.3 - 2026-10-24
+
+### Compatibility
+
+- Allow NeoForge 21.1.233 and newer 21.1.x builds, including 21.1.247 and
+  21.1.264, instead of requiring exactly 21.1.233. Minecraft 1.21.1 and the
+  dependency mod requirements are unchanged.
+
 ## 1.9-neoforge-alpha.2 - 2026-10-22
 
 ### Fixed

@@ -47,6 +47,9 @@ configurations {
     fixture.runtimeClasspath += sourceSets.main.output
 }
 
+// Native optional-provider regression helpers are compiled only into the isolated QA mod.
+configurations.coreqaCompileOnly.extendsFrom(configurations.compileOnly)
+
 neoForge {
     enable {
         version = neo_version
@@ -338,10 +341,21 @@ optionalQaSets.each { set ->
     }
     tasks.matching { it.name == "run${set.capitalize()}Client" }.configureEach { dependsOn stageClientMods }
 }
+// Point Blank with TaCZ left out: proves the mod loads and works with no TaCZ installed.
+def stageNoTaczQaMods = tasks.register('stageOptionalGunQaMods_pointblank_no_tacz', Sync) {
+    group = 'verification'
+    dependsOn verifyPinnedMods, verifyOptionalMods
+    def tacz = pinnedMods.find { it.name == 'tacz' }
+    from(configurations.installedMods) { exclude "${tacz.projectId}-${tacz.versionId}.jar" }
+    from configurations.optionalGunMods_pointblank
+    from tasks.named('jar')
+    from coreQaJar
+    into layout.buildDirectory.dir('optional-gun-qa/pointblank_no_tacz/mods')
+}
 tasks.register('stageOptionalGunQaMods') {
     group = 'verification'
     description = 'Stages one installed-server mods folder per optional gun mod.'
-    dependsOn stageOptionalSets
+    dependsOn stageOptionalSets, stageNoTaczQaMods
 }
 
 apply from: 'gradle/neoforge-resources.gradle'

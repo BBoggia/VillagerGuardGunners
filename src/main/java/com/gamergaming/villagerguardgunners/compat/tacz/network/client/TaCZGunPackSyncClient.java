@@ -15,11 +15,10 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 
-/** Client-only atomic publication for a completed chunked TaCZ cache. */
-@net.neoforged.fml.common.EventBusSubscriber(
-        modid = VillagerGuardGunners.MODID,
-        bus = net.neoforged.fml.common.EventBusSubscriber.Bus.GAME,
-        value = Dist.CLIENT)
+/**
+ * Client-only atomic publication for a completed chunked TaCZ cache.
+ * Registered by the TaCZ bootstrap on the client, so it loads only with TaCZ.
+ */
 public final class TaCZGunPackSyncClient {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final TaCZGunPackSyncAssembly ASSEMBLY = new TaCZGunPackSyncAssembly();

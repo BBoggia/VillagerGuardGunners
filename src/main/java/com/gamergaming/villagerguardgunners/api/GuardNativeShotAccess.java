@@ -3,12 +3,17 @@ package com.gamergaming.villagerguardgunners.api;
 import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import tallestegg.guardvillagers.common.entities.Guard;
 
-/** Entity-owned controller reference; never stored in a global entity map or NBT. */
-public interface GuardNativeShotAccess {
-    NativeGunController villagerGuardGunners$getShotController();
-    void villagerGuardGunners$setShotController(NativeGunController controller);
+/** TaCZ-side view of the guard's shot controller. Only TaCZ code may use this class. */
+public final class GuardNativeShotAccess {
+    private GuardNativeShotAccess() {
+    }
 
-    static NativeGunController controller(Guard guard) {
-        return ((GuardNativeShotAccess) guard).villagerGuardGunners$getShotController();
+    public static NativeGunController controller(Guard guard) {
+        return ((GuardShotControllerHolder) guard).villagerGuardGunners$getShotController()
+                instanceof NativeGunController controller ? controller : null;
+    }
+
+    public static void bind(Guard guard, NativeGunController controller) {
+        ((GuardShotControllerHolder) guard).villagerGuardGunners$setShotController(controller);
     }
 }

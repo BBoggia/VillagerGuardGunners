@@ -24,14 +24,17 @@ public abstract class GuardSteveModelMixin {
             float headPitch,
             CallbackInfo ci) {
         GuardSteveModel model = (GuardSteveModel) (Object) this;
-        GuardThirdPersonAnimation.reapply(
-                guard,
-                model.rightArm,
-                model.leftArm,
-                model.body,
-                model.head,
-                limbSwingAmount,
-                ageInTicks);
+        // TaCZ's own animation classes exist only when TaCZ is installed.
+        if (com.gamergaming.villagerguardgunners.client.GuardGunPoseGate.TACZ_INSTALLED) {
+            GuardThirdPersonAnimation.reapply(
+                    guard,
+                    model.rightArm,
+                    model.leftArm,
+                    model.body,
+                    model.head,
+                    limbSwingAmount,
+                    ageInTicks);
+        }
         // Gun mods without their own pose for non-player models get a shared one.
         com.gamergaming.villagerguardgunners.client.GuardGenericGunPose.apply(
                 guard, model.rightArm, model.leftArm, model.head);

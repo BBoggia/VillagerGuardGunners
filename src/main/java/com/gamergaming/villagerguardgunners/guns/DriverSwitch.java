@@ -11,7 +11,7 @@ import java.util.function.Function;
  *
  * <p>Each provider gets at most one driver per guard, created the first time
  * one of its guns is held and kept afterwards. A stack that no provider claims
- * leaves the current driver in place, so an empty hand keeps reporting through
+ * deactivates but retains the current driver, so an empty hand keeps reporting through
  * the driver that last owned a gun.</p>
  */
 final class DriverSwitch {
@@ -32,18 +32,22 @@ final class DriverSwitch {
     }
 
     /**
-     * Makes the claiming provider's driver current. The outgoing driver stops
-     * aiming first, so it cannot keep trigger work queued against a stack it no
+     * Makes the claiming provider's driver current. The outgoing driver deactivates
+     * first, so it cannot keep trigger work queued against a stack it no
      * longer owns.
      */
     WeaponDriver select(Optional<GunProvider> claimed) {
         GunProvider next = claimed.orElse(null);
-        if (next == null || next.id().equals(currentProviderId)) {
+        if (next == null) {
+            current.deactivate();
+            return current;
+        }
+        if (next.id().equals(currentProviderId)) {
             return current;
         }
         // Create before releasing the old driver: a failed creation changes nothing.
         WeaponDriver selected = driverFor(next);
-        current.stopAiming();
+        current.deactivate();
         current = selected;
         currentProviderId = next.id();
         return current;
@@ -56,6 +60,10 @@ final class DriverSwitch {
             }
         }
         return Optional.empty();
+    }
+
+    java.util.Collection<WeaponDriver> created() {
+        return java.util.List.copyOf(drivers.values());
     }
 
     /** The driver already created for a provider, if any. Never creates one. */

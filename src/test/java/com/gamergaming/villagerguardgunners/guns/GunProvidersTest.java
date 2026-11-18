@@ -53,7 +53,10 @@ final class GunProvidersTest {
     void emptyRegistryHasNoFallbackAndClaimsNothing() {
         GunProviders.Registry registry = new GunProviders.Registry();
 
-        assertThrows(IllegalStateException.class, registry::fallback);
+        // With no gun mod installed, guards get a provider that owns nothing and never fires.
+        assertEquals("none", registry.fallback().id());
+        assertFalse(registry.fallback().isGun(null));
+        assertTrue(registry.all().isEmpty(), "The stand-in is never listed as a registered provider");
         assertTrue(registry.find(null).isEmpty());
         assertFalse(registry.isAmmo(null));
     }

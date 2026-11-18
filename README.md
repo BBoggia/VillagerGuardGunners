@@ -64,7 +64,7 @@ The server controls `ammunition.infiniteAmmoMode` in `guard_gunners.toml`:
 | `OFF` | Normal ammo use. Default. |
 | `WITH_RELOADING` | Unlimited reserves for all guards; normal magazine reloads. |
 | `WITHOUT_RELOADING` | Unlimited reserves and supplied magazines for all guards; no magazine reloads. |
-| `CREATIVE_AMMO_BOX` | New gun loadouts include compatible creative ammo boxes. Equip existing guards manually. |
+| `CREATIVE_AMMO_BOX` | New TaCZ gun loadouts include compatible creative ammo boxes. Other supported gun mods keep ordinary ammo. Equip existing guards manually. |
 
 Virtual modes leave carried supplies untouched. Action cycling, firing delays,
 heat and friendly-fire checks remain active. Changing modes does not remove

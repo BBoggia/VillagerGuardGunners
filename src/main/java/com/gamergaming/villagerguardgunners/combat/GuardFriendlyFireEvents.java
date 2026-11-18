@@ -1,6 +1,5 @@
 package com.gamergaming.villagerguardgunners.combat;
 
-import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
@@ -14,8 +13,10 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import tallestegg.guardvillagers.common.entities.Guard;
 
-/** Final server-side backstops for shots that reach a protected entity. */
-@net.neoforged.fml.common.EventBusSubscriber(modid = VillagerGuardGunners.MODID, bus = net.neoforged.fml.common.EventBusSubscriber.Bus.GAME)
+/**
+ * Final server-side backstops for TaCZ shots that reach a protected entity.
+ * Registered by the TaCZ bootstrap, so this class loads only when TaCZ is installed.
+ */
 public final class GuardFriendlyFireEvents {
     private GuardFriendlyFireEvents() {
     }

@@ -29,7 +29,7 @@ final class NeoForgeBuildContractTest {
         try (var jar = new ZipFile(System.getProperty("villagerguardgunners.artifact"))) {
             String metadata = new String(jar.getInputStream(jar.getEntry("META-INF/neoforge.mods.toml")).readAllBytes(), StandardCharsets.UTF_8);
             assertFalse(metadata.contains("${"));
-            // Six required dependencies and two optional gun mods.
+            // Five required dependencies and three optional gun mods.
             assertEquals(8, metadata.split("\\[\\[dependencies\\.villagerguardgunners]]", -1).length - 1);
             assertTrue(metadata.contains("modId=\"pointblank\"\ntype=\"optional\""));
             // The Point Blank mixins sit in their own optional config and both builds' adapters are packaged.
@@ -41,7 +41,15 @@ final class NeoForgeBuildContractTest {
                 assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/compat/pointblank/mixin/" + mixin.getAsString() + ".class"), mixin.toString());
             for (String adapter : new String[]{"vpb/VpbAccess", "pbj/PbjAccess"})
                 assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/compat/pointblank/" + adapter + ".class"), adapter);
-            assertEquals(6, metadata.split("type=\"required\"", -1).length - 1);
+            // No gun mod is required: Guard Villagers, Fzzy Config, Kotlin for Forge, NeoForge and Minecraft are.
+            assertEquals(5, metadata.split("type=\"required\"", -1).length - 1);
+            assertTrue(metadata.contains("modId=\"tacz\"\ntype=\"optional\""));
+            var taczMixins = JsonParser.parseString(new String(jar.getInputStream(jar.getEntry("mixins.villagerguardgunners.tacz.json")).readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();
+            assertTrue(taczMixins.get("required").getAsBoolean());
+            assertEquals("com.gamergaming.villagerguardgunners.guns.InstalledTargetMixinPlugin", taczMixins.get("plugin").getAsString());
+            assertEquals(4, taczMixins.getAsJsonArray("mixins").size());
+            for (var mixin : taczMixins.getAsJsonArray("mixins"))
+                assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/mixin/" + mixin.getAsString() + ".class"), mixin.toString());
             assertTrue(metadata.contains("modId=\"cgm\"\ntype=\"optional\""));
             assertNull(jar.getEntry("META-INF/mods.toml"));
             var mixins = JsonParser.parseString(new String(jar.getInputStream(jar.getEntry("mixins.villagerguardgunners.json")).readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();

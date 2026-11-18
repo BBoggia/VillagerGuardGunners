@@ -12,6 +12,10 @@ description='''${mod_description}'''
 [[mixins]]
 config="mixins.${mod_id}.json"
 
+# Applies only when Timeless and Classics Zero is installed.
+[[mixins]]
+config="mixins.${mod_id}.tacz.json"
+
 # Applies only when a Point Blank build is installed.
 [[mixins]]
 config="mixins.${mod_id}.pointblank.json"
@@ -37,12 +41,6 @@ versionRange="${guard_villager_version_range}"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.${mod_id}]]
-modId="tacz"
-type="required"
-versionRange="${tacz_version_range}"
-ordering="AFTER"
-side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="fzzy_config"
@@ -58,7 +56,14 @@ versionRange="${kotlin_for_forge_version_range}"
 ordering="NONE"
 side="BOTH"
 
-# Optional gun mods. Guards can use their guns when they are installed.
+# Supported gun mods. Guards use the guns of whichever are installed; none is required.
+[[dependencies.${mod_id}]]
+modId="tacz"
+type="optional"
+versionRange="${tacz_version_range}"
+ordering="AFTER"
+side="BOTH"
+
 [[dependencies.${mod_id}]]
 modId="cgm"
 type="optional"

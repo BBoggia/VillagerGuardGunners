@@ -16,9 +16,14 @@ import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.entity.shooter.ShooterDataHolder;
 import com.tacz.guns.resource.modifier.AttachmentCacheProperty;
 import com.tacz.guns.resource.pojo.data.gun.GunData;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutCompatibilityAnalyzer;
+import com.tacz.guns.api.item.builder.AmmoItemBuilder;
+import com.tacz.guns.api.item.builder.GunItemBuilder;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import tallestegg.guardvillagers.common.entities.Guard;
@@ -35,6 +40,11 @@ public final class TaczGunProvider implements GunProvider {
     @Override
     public boolean isGun(ItemStack stack) {
         return stack.getItem() instanceof IGun;
+    }
+
+    /** True for item classes TaCZ treats as loose ammo or an ammo box. */
+    public static boolean isAmmoType(Class<?> itemType) {
+        return IAmmo.class.isAssignableFrom(itemType) || IAmmoBox.class.isAssignableFrom(itemType);
     }
 
     @Override
@@ -192,6 +202,11 @@ public final class TaczGunProvider implements GunProvider {
     }
 
     @Override
+    public boolean supportsCreativeSupply() {
+        return true;
+    }
+
+    @Override
     public Optional<ItemStack> creativeSupply(ItemStack gunStack) {
         return Optional.of(TaczInfiniteAmmo.creativeBox(gunStack));
     }
@@ -199,6 +214,61 @@ public final class TaczGunProvider implements GunProvider {
     @Override
     public WeaponDriver createDriver(Guard guard) {
         return new NativeGunController(guard);
+    }
+
+    @Override
+    public boolean knowsGunId(ResourceLocation gunId) {
+        return TimelessAPI.getCommonGunIndex(gunId).isPresent();
+    }
+
+    @Override
+    public boolean knowsAmmoId(ResourceLocation ammoId) {
+        return TimelessAPI.getCommonAmmoIndex(ammoId).isPresent();
+    }
+
+    @Override
+    public Optional<ItemStack> createGun(ResourceLocation gunId, @Nullable HolderLookup.Provider registries,
+            boolean loaded) {
+        var index = TimelessAPI.getCommonGunIndex(gunId).orElse(null);
+        if (index == null) {
+            return Optional.empty();
+        }
+        GunItemBuilder builder = GunItemBuilder.create().setId(gunId).setCount(1);
+        if (loaded) {
+            GunData data = index.getGunData();
+            builder.setFireMode(data.getFireModeSet().get(0))
+                    .setAmmoCount(data.getAmmoAmount())
+                    .setAmmoInBarrel(true)
+                    .setHeatData(data.hasHeatData());
+        } else {
+            builder.setAmmoCount(0).setAmmoInBarrel(false);
+        }
+        return Optional.of(builder.build(registries));
+    }
+
+    @Override
+    public Optional<ItemStack> createAmmo(ResourceLocation ammoId, int count) {
+        if (TimelessAPI.getCommonAmmoIndex(ammoId).isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(AmmoItemBuilder.create().setId(ammoId).setCount(count).build());
+    }
+
+    @Override
+    public boolean isDefined(ItemStack gunOrAmmo) {
+        if (gunOrAmmo.getItem() instanceof IGun gun) {
+            return TimelessAPI.getCommonGunIndex(gun.getGunId(gunOrAmmo)).isPresent();
+        }
+        if (gunOrAmmo.getItem() instanceof IAmmo ammo) {
+            return TimelessAPI.getCommonAmmoIndex(ammo.getAmmoId(gunOrAmmo)).isPresent();
+        }
+        return true;
+    }
+
+    @Override
+    public NaturalGuardLoadoutCompatibilityAnalyzer.Analysis analyzeLoadout(@Nullable LivingEntity context,
+            ResourceLocation gunId, NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy explosivePolicy) {
+        return TaczLoadoutAnalysis.analyze(context, gunId, explosivePolicy);
     }
 
     @Override

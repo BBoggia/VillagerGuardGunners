@@ -822,7 +822,7 @@ public final class VillagerGuardGunnersConfig extends Config {
     @Translation(prefix = ModConfigs.BASE_TRANSLATION_KEY + "guard_gunners.ammunition")
     public static final class AmmunitionSettings extends ConfigSection {
 
-        @Comment("OFF uses normal ammo. WITH_RELOADING gives all guards unlimited reserves with normal reloads. WITHOUT_RELOADING also keeps magazines supplied; action cycling, heat and firing safety still apply. CREATIVE_AMMO_BOX gives compatible creative boxes with new gun loadouts only; equip existing guards manually. Changing this setting never removes issued boxes.")
+        @Comment("OFF uses normal ammo. WITH_RELOADING gives all guards unlimited reserves with normal reloads. WITHOUT_RELOADING also keeps magazines supplied; action cycling, heat and firing safety still apply. CREATIVE_AMMO_BOX gives compatible creative boxes with new TaCZ gun loadouts only; gun mods without creative supplies keep ordinary ammo. Equip existing guards manually. Changing this setting never removes issued boxes.")
         public ValidatedEnum<InfiniteAmmoMode> infiniteAmmoMode =
                 new ValidatedEnum<>(InfiniteAmmoMode.OFF);
 

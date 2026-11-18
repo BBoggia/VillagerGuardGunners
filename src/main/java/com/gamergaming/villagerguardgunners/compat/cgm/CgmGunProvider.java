@@ -15,6 +15,8 @@ import com.mrcrayfish.guns.item.IAmmo;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -126,6 +128,7 @@ public final class CgmGunProvider implements GunProvider {
         ResourceLocation gunId = CgmGunBackend.itemId(gunStack);
         int loaded;
         int capacity;
+        boolean nativeInfinite;
         try {
             Gun gun = CgmGunBackend.modifiedGun(gunStack);
             if (gun == null) {
@@ -133,8 +136,14 @@ public final class CgmGunProvider implements GunProvider {
             }
             loaded = backend.loaded(gunStack);
             capacity = GunEnchantmentHelper.getAmmoCapacity(gunStack, gun);
+            nativeInfinite = CgmGunBackend.ignoresAmmo(gunStack);
         } catch (RuntimeException exception) {
             return GuardAmmoSummary.Snapshot.unavailable(GuardAmmoSummary.Status.UNREADABLE_GUN, gunId);
+        }
+        if (nativeInfinite) {
+            return GuardAmmoSummary.Snapshot.ready(gunId, FeedKind.MAGAZINE, loaded, capacity,
+                    false, false, 0L, true, GuardAmmoSummary.ReserveSource.NATIVE_INFINITE,
+                    0, 0, 0, true);
         }
         GuardAmmoSummary.ReserveScan reserve = GuardAmmoSummary.scanPhysicalReserve(gunStack, reserveHandler);
         return GuardAmmoSummary.Snapshot.ready(
@@ -146,13 +155,48 @@ public final class CgmGunProvider implements GunProvider {
                 false,
                 reserve.units(),
                 reserve.infinite(),
-                reserve.compatibleStacks() > 0
-                        ? GuardAmmoSummary.ReserveSource.PHYSICAL
-                        : GuardAmmoSummary.ReserveSource.NONE,
+                GuardAmmoSummary.ReserveSource.PHYSICAL,
                 reserve.compatibleStacks(),
                 reserve.incompatibleAmmoStacks(),
                 reserve.unknownAmmoStacks(),
                 reserve.complete());
+    }
+
+    @Override
+    public boolean knowsGunId(ResourceLocation gunId) {
+        return BuiltInRegistries.ITEM.getOptional(gunId).map(item -> isGun(new ItemStack(item))).orElse(false);
+    }
+
+    @Override
+    public boolean knowsAmmoId(ResourceLocation ammoId) {
+        return BuiltInRegistries.ITEM.getOptional(ammoId).map(item -> isAmmoItem(new ItemStack(item))).orElse(false);
+    }
+
+    @Override
+    public Optional<ItemStack> createGun(ResourceLocation gunId, @Nullable HolderLookup.Provider registries,
+            boolean loaded) {
+        if (!knowsGunId(gunId)) {
+            return Optional.empty();
+        }
+        ItemStack gun = new ItemStack(BuiltInRegistries.ITEM.get(gunId));
+        if (loaded) {
+            Gun definition = CgmGunBackend.modifiedGun(gun);
+            if (definition == null) {
+                return Optional.empty();
+            }
+            backend.setLoaded(gun, GunEnchantmentHelper.getAmmoCapacity(gun, definition));
+        }
+        return Optional.of(gun);
+    }
+
+    @Override
+    public Optional<ItemStack> createAmmo(ResourceLocation ammoId, int count) {
+        ItemStack ammo = knowsAmmoId(ammoId) ? new ItemStack(BuiltInRegistries.ITEM.get(ammoId)) : ItemStack.EMPTY;
+        if (ammo.isEmpty() || count < 1 || count > ammo.getMaxStackSize()) {
+            return Optional.empty();
+        }
+        ammo.setCount(count);
+        return Optional.of(ammo);
     }
 
     @Override

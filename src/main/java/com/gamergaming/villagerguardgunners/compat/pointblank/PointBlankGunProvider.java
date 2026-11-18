@@ -11,6 +11,7 @@ import com.gamergaming.villagerguardgunners.guns.managed.ManagedDrivers;
 import com.gamergaming.villagerguardgunners.guns.managed.ManagedWeaponDriver;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -137,13 +138,49 @@ public final class PointBlankGunProvider implements GunProvider {
                 false,
                 reserve.units(),
                 reserve.infinite(),
-                reserve.compatibleStacks() > 0
-                        ? GuardAmmoSummary.ReserveSource.PHYSICAL
-                        : GuardAmmoSummary.ReserveSource.NONE,
+                GuardAmmoSummary.ReserveSource.PHYSICAL,
                 reserve.compatibleStacks(),
                 reserve.incompatibleAmmoStacks(),
                 reserve.unknownAmmoStacks(),
                 reserve.complete());
+    }
+
+    @Override
+    public boolean knowsGunId(ResourceLocation gunId) {
+        return BuiltInRegistries.ITEM.getOptional(gunId).map(item -> isGun(new ItemStack(item))).orElse(false);
+    }
+
+    @Override
+    public boolean knowsAmmoId(ResourceLocation ammoId) {
+        return BuiltInRegistries.ITEM.getOptional(ammoId).map(item -> isAmmoItem(new ItemStack(item))).orElse(false);
+    }
+
+    @Override
+    public Optional<ItemStack> createGun(ResourceLocation gunId, @Nullable HolderLookup.Provider registries,
+            boolean loaded) {
+        if (!knowsGunId(gunId)) {
+            return Optional.empty();
+        }
+        ItemStack gun = new ItemStack(BuiltInRegistries.ITEM.get(gunId));
+        access.prepare(gun);
+        if (loaded) {
+            PointBlankAccess.Facts facts = access.facts(gun).orElse(null);
+            if (facts == null) {
+                return Optional.empty();
+            }
+            access.setLoaded(gun, facts.capacity());
+        }
+        return Optional.of(gun);
+    }
+
+    @Override
+    public Optional<ItemStack> createAmmo(ResourceLocation ammoId, int count) {
+        ItemStack ammo = knowsAmmoId(ammoId) ? new ItemStack(BuiltInRegistries.ITEM.get(ammoId)) : ItemStack.EMPTY;
+        if (ammo.isEmpty() || count < 1 || count > ammo.getMaxStackSize()) {
+            return Optional.empty();
+        }
+        ammo.setCount(count);
+        return Optional.of(ammo);
     }
 
     @Override

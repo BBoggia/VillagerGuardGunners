@@ -29,7 +29,6 @@ import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.EventPriority;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -38,8 +37,7 @@ import tallestegg.guardvillagers.GuardEntityType;
 import tallestegg.guardvillagers.common.entities.Guard;
 
 /** Drives the real guard goals and TaCZ scripts in an installed, packaged server. */
-@Mod("vgg_core_qa")
-public final class CoreGunAcceptance {
+final class CoreGunAcceptance {
     private static final Path EXPECTED = Path.of("core-qa-expected.nbt");
     private static final Case[] CASES = {
         new Case("loaded_semi", "glock_17", FireMode.SEMI, 8, 0, false),
@@ -58,21 +56,13 @@ public final class CoreGunAcceptance {
     private boolean aimed, reloaded, done, restoring;
     private CompoundTag expected;
 
-    public CoreGunAcceptance() {
+    CoreGunAcceptance() {
         if ("worldgen".equals(System.getProperty("vgg.qa.suite"))) {
             new WorldgenAcceptance();
             return;
         }
         if ("workflow".equals(System.getProperty("vgg.qa.suite"))) {
             new SupplyMedicalAcceptance();
-            return;
-        }
-        if ("pointblank".equals(System.getProperty("vgg.qa.suite")) || "jelly".equals(System.getProperty("vgg.qa.suite"))) {
-            new PointBlankGunAcceptance();
-            return;
-        }
-        if ("cgm".equals(System.getProperty("vgg.qa.suite"))) {
-            new CgmGunAcceptance();
             return;
         }
         if ("behavior".equals(System.getProperty("vgg.qa.suite"))) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -64,6 +65,35 @@ public final class GunProviders {
         }
         for (GunProvider provider : all()) {
             if (provider.isAmmoItem(stack)) {
+                return Optional.of(provider);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * The provider whose mod defines a gun with this ID. Data files name guns
+     * by ID alone; when two mods define the same ID, the earlier-registered one wins.
+     */
+    public static Optional<GunProvider> forGunId(ResourceLocation gunId) {
+        if (gunId == null) {
+            return Optional.empty();
+        }
+        for (GunProvider provider : all()) {
+            if (provider.knowsGunId(gunId)) {
+                return Optional.of(provider);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /** The provider whose mod defines ammo with this ID; the earlier-registered one wins a tie. */
+    public static Optional<GunProvider> forAmmoId(ResourceLocation ammoId) {
+        if (ammoId == null) {
+            return Optional.empty();
+        }
+        for (GunProvider provider : all()) {
+            if (provider.knowsAmmoId(ammoId)) {
                 return Optional.of(provider);
             }
         }
@@ -137,10 +167,8 @@ public final class GunProviders {
 
         GunProvider fallback() {
             List<GunProvider> current = providers;
-            if (current.isEmpty()) {
-                throw new IllegalStateException("No gun provider is registered");
-            }
-            return current.get(0);
+            // With no gun mod installed, guards get a driver that never fires.
+            return current.isEmpty() ? NoGunProvider.INSTANCE : current.get(0);
         }
     }
 }

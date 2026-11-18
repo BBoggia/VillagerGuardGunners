@@ -2,9 +2,13 @@ package com.gamergaming.villagerguardgunners.guns;
 
 import com.gamergaming.villagerguardgunners.ammunition.AmmoCompatibility;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
+import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutCompatibilityAnalyzer;
+import com.gamergaming.villagerguardgunners.spawn.ProviderLoadoutAnalysis;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import tallestegg.guardvillagers.common.entities.Guard;
@@ -88,9 +92,58 @@ public interface GunProvider {
      */
     GuardAmmoSummary.Snapshot captureAmmo(ItemStack gunStack, @Nullable IItemHandler reserveHandler);
 
-    /** A never-emptying ammo source for the gun, for mods that have one. */
+    /** Whether this provider implements transferable creative ammo supplies for loadouts. */
+    default boolean supportsCreativeSupply() {
+        return false;
+    }
+
+    /** A never-emptying ammo source. Empty means creation failed when support is advertised. */
     default Optional<ItemStack> creativeSupply(ItemStack gunStack) {
         return Optional.empty();
+    }
+
+    // Creating guns and ammo from the IDs that data files name
+
+    /** True when this provider's mod currently defines a gun with this ID. */
+    default boolean knowsGunId(ResourceLocation gunId) {
+        return false;
+    }
+
+    /** True when this provider's mod currently defines ammo with this ID. */
+    default boolean knowsAmmoId(ResourceLocation ammoId) {
+        return false;
+    }
+
+    /**
+     * Creates one gun. Empty when the ID is unknown. May throw for malformed definitions.
+     *
+     * @param loaded true for a gun with a full magazine, ready to fire; false for an empty one
+     */
+    default Optional<ItemStack> createGun(ResourceLocation gunId, @Nullable HolderLookup.Provider registries,
+            boolean loaded) {
+        return Optional.empty();
+    }
+
+    /** Creates a stack of loose ammo. Empty when the ID is unknown or the count does not fit one stack. */
+    default Optional<ItemStack> createAmmo(ResourceLocation ammoId, int count) {
+        return Optional.empty();
+    }
+
+    /**
+     * False when a gun or ammo stack names a definition its mod no longer has,
+     * for example after a gun pack was removed.
+     */
+    default boolean isDefined(ItemStack gunOrAmmo) {
+        return true;
+    }
+
+    /**
+     * Builds a loaded gun and a full stack of its ammo for a natural loadout,
+     * or reports why this gun cannot be issued. Never changes the world.
+     */
+    default NaturalGuardLoadoutCompatibilityAnalyzer.Analysis analyzeLoadout(@Nullable LivingEntity context,
+            ResourceLocation gunId, NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy explosivePolicy) {
+        return ProviderLoadoutAnalysis.analyze(this, context, gunId, explosivePolicy);
     }
 
     /**

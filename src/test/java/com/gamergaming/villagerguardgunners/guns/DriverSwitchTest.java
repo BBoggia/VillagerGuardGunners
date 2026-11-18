@@ -28,7 +28,7 @@ final class DriverSwitchTest {
     }
 
     @Test
-    void unclaimedStackKeepsTheCurrentDriver() {
+    void unclaimedStackDeactivatesButRetainsTheCurrentDriver() {
         Fixture fixture = new Fixture();
         DriverSwitch drivers = fixture.newSwitch();
         drivers.select(Optional.of(fixture.second));
@@ -37,7 +37,7 @@ final class DriverSwitchTest {
         WeaponDriver selected = drivers.select(Optional.empty());
 
         assertSame(fixture.driver("second"), selected);
-        assertTrue(fixture.events.isEmpty(), "An empty hand must not stop or recreate a driver");
+        assertEquals(List.of("deactivate:second"), fixture.events);
     }
 
     @Test
@@ -62,7 +62,7 @@ final class DriverSwitchTest {
 
         assertSame(fixture.driver("second"), selected);
         assertSame(selected, drivers.current());
-        assertEquals(List.of("create:second", "stopAiming:first"), fixture.events);
+        assertEquals(List.of("create:second", "deactivate:first"), fixture.events);
     }
 
     @Test
@@ -75,7 +75,7 @@ final class DriverSwitchTest {
 
         assertSame(firstDriver, drivers.select(Optional.of(fixture.first)));
         assertSame(secondDriver, drivers.select(Optional.of(fixture.second)));
-        assertEquals(List.of("stopAiming:second", "stopAiming:first"), fixture.events);
+        assertEquals(List.of("deactivate:second", "deactivate:first"), fixture.events);
     }
 
     @Test
@@ -137,8 +137,8 @@ final class DriverSwitchTest {
                     WeaponDriver.class.getClassLoader(),
                     new Class<?>[] {WeaponDriver.class},
                     (proxy, method, arguments) -> switch (method.getName()) {
-                        case "stopAiming" -> {
-                            events.add("stopAiming:" + providerId);
+                        case "deactivate" -> {
+                            events.add("deactivate:" + providerId);
                             yield null;
                         }
                         case "equals" -> proxy == arguments[0];

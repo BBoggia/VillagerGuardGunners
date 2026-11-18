@@ -36,8 +36,8 @@ import tallestegg.guardvillagers.common.entities.Guard;
 
 /**
  * Drives the real guard goals with MrCrayfish's Gun Mod guns in an installed,
- * packaged server. Written against item identifiers and the neutral gun seam
- * only, so it compiles without the gun mod.
+ * packaged server. Combat scenarios use the neutral gun seam; CgmSafetyChecks
+ * additionally exercises native projectiles and explosions.
  */
 final class CgmGunAcceptance {
     private static final Path EXPECTED = Path.of("cgm-qa-expected.nbt");
@@ -46,6 +46,8 @@ final class CgmGunAcceptance {
         new Case("reload_then_fire", "pistol", "basic_bullet", 32, 1, false, false),
         new Case("automatic_fire", "assault_rifle", "basic_bullet", 64, 1, false, false),
         new Case("shotgun_pellets", "shotgun", "shell", 8, 5, false, false),
+        new Case("canceled_projectile", "pistol", "basic_bullet", 32, 1, false, false),
+        new Case("partial_shotgun", "shotgun", "shell", 8, 2, false, false),
         new Case("dry", "assault_rifle", "basic_bullet", 0, 1, false, false),
         new Case("wrong_ammo", "rifle", "basic_bullet", 32, 1, true, false),
         new Case("ally_in_lane", "pistol", "basic_bullet", 32, 1, false, true)
@@ -57,7 +59,7 @@ final class CgmGunAcceptance {
     private Guard guard;
     private Husk target;
     private Villager ally;
-    private int index = -1, ticks, projectiles, initialTotal;
+    private int index = -1, ticks, projectiles, attemptedProjectiles, initialTotal;
     private boolean reloaded, dry, done, restoring;
     private CompoundTag expected;
 
@@ -84,7 +86,8 @@ final class CgmGunAcceptance {
                 level.setBlockAndUpdate(origin.offset(x, -1, z), Blocks.STONE.defaultBlockState());
                 for (int y = 0; y < 5; y++) level.setBlockAndUpdate(origin.offset(x, y, z), Blocks.AIR.defaultBlockState());
             }
-            next();
+            LogUtils.getLogger().info("VGG_CGM_QA_CASE_PASS case=shipped_data {}", OptionalGunDataChecks.run(level, PROVIDER));
+            // Let forced chunks become active before native explosion queries.
         } catch (Exception failure) { fail(failure); }
     }
 
@@ -95,7 +98,15 @@ final class CgmGunAcceptance {
     private void joined(EntityJoinLevelEvent event) {
         if (done || restoring || guard == null || event.getEntity() instanceof ItemEntity) return;
         ResourceLocation type = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType());
-        if (PROVIDER.equals(type.getNamespace())) projectiles++;
+        if (PROVIDER.equals(type.getNamespace())) {
+            int pellet = attemptedProjectiles++;
+            String name = CASES[index].name;
+            if (name.equals("canceled_projectile") || name.equals("partial_shotgun") && pellet % 5 >= 2) {
+                event.setCanceled(true);
+                return;
+            }
+            projectiles++;
+        }
     }
 
     private void tick(ServerTickEvent.Post event) {
@@ -118,6 +129,13 @@ final class CgmGunAcceptance {
                 } else require(ticks < 400, "Saved guard did not load after a real server restart");
                 return;
             }
+            if (index < 0) {
+                if (ticks < 40) return;
+                CgmSafetyChecks.run(level, origin.offset(0, 10, 0));
+                LogUtils.getLogger().info("VGG_CGM_QA_CASE_PASS case=explosion_and_radius_safety");
+                next();
+                return;
+            }
             GuardWeaponControl control = GuardWeaponControlAccess.control(guard).orElse(null);
             if (control != null) {
                 WeaponReadiness readiness = control.captureReadiness();
@@ -133,7 +151,11 @@ final class CgmGunAcceptance {
 
             require(control != null, test.name + ": the combat goal never created a weapon control");
             int remaining = total();
-            if (test.reserve == 0 || test.wrongAmmo) {
+            if (test.name.equals("canceled_projectile")) {
+                require(attemptedProjectiles > 0 && projectiles == 0, "Cancellation case never attempted a projectile");
+                require(target.getHealth() == target.getMaxHealth(), "Canceled projectile damaged its target");
+                require(remaining == initialTotal, "Canceled projectile spent ammo");
+            } else if (test.reserve == 0 || test.wrongAmmo) {
                 require(projectiles == 0, test.name + ": fired without usable ammo");
                 require(dry, test.name + ": the gun was never confirmed dry");
                 require(remaining == initialTotal, test.name + ": ammo changed without firing");
@@ -160,7 +182,7 @@ final class CgmGunAcceptance {
         if (target != null) target.discard();
         if (ally != null) ally.discard();
         guard = null; ally = null;
-        index++; ticks = projectiles = 0; reloaded = dry = false;
+        index++; ticks = projectiles = attemptedProjectiles = 0; reloaded = dry = false;
         if (index == CASES.length) {
             guard = newGuard("pistol", "basic_bullet", 23);
             guard.setNoAi(true);

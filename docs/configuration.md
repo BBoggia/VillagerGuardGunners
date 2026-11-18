@@ -460,7 +460,7 @@ The server controls the setting; client preferences cannot override it.
 | `OFF` | Normal ammo requirements. Default for new and upgraded configurations. |
 | `WITH_RELOADING` | Unlimited reserve ammo for every guard, with normal reloads. |
 | `WITHOUT_RELOADING` | Unlimited reserves and supplied magazines for every guard. Action cycling still applies. |
-| `CREATIVE_AMMO_BOX` | New gun loadouts receive a caliber-specific creative box for each weapon. Existing guards need boxes supplied manually. |
+| `CREATIVE_AMMO_BOX` | New TaCZ gun loadouts receive a caliber-specific creative box for each weapon. Providers without creative boxes keep ordinary ammo. Existing guards need boxes supplied manually. |
 
 The two virtual modes apply to existing guards immediately. Their carried ammo
 is not consumed. Guards do not seek ammo from Village Armories or request ammo

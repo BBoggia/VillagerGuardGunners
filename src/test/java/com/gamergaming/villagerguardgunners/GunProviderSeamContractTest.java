@@ -56,7 +56,7 @@ final class GunProviderSeamContractTest {
 
     @Test
     void taczIsRegisteredAsAProviderWhoseDriverIsTheNativeController() throws IOException {
-        String main = read(MAIN + "VillagerGuardGunners.java");
+        String main = read(MAIN + "compat/tacz/TaczBootstrap.java");
         String provider = read(MAIN + "compat/tacz/provider/TaczGunProvider.java");
         String controller = read(MAIN + "combat/NativeGunController.java");
 

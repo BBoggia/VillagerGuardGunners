@@ -89,13 +89,13 @@ import tallestegg.guardvillagers.common.entities.Guard;
 
 @Mixin(Guard.class)
 public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gamergaming.villagerguardgunners.api.GuardMedicAccess, com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess, com.gamergaming.villagerguardgunners.api.GuardMedicalAccess, com.gamergaming.villagerguardgunners.api.GuardCoverageAccess, GuardArmoryResupplyAccess,
-        GuardBurstSafetyAccess, com.gamergaming.villagerguardgunners.api.GuardNativeShotAccess,
+        GuardBurstSafetyAccess, com.gamergaming.villagerguardgunners.api.GuardShotControllerHolder,
         com.gamergaming.villagerguardgunners.guns.GuardWeaponControlAccess,
         GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardPostAccess, GuardPostAssignmentAccess,
         GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
         GuardSquadCommandAccess {
     @Unique
-    private com.gamergaming.villagerguardgunners.combat.NativeGunController villagerGuardGunners$shotController;
+    private Object villagerGuardGunners$shotController;
     @Unique
     private com.gamergaming.villagerguardgunners.guns.GuardWeaponControl villagerGuardGunners$weaponControl;
 
@@ -110,12 +110,12 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
     }
 
     @Override
-    public com.gamergaming.villagerguardgunners.combat.NativeGunController villagerGuardGunners$getShotController() {
+    public Object villagerGuardGunners$getShotController() {
         return villagerGuardGunners$shotController;
     }
 
     @Override
-    public void villagerGuardGunners$setShotController(com.gamergaming.villagerguardgunners.combat.NativeGunController controller) {
+    public void villagerGuardGunners$setShotController(Object controller) {
         villagerGuardGunners$shotController = controller;
     }
 

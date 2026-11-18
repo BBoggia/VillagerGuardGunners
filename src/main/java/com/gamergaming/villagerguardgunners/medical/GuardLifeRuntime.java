@@ -61,11 +61,9 @@ public final class GuardLifeRuntime {
         GuardLifeAccess.get(guard).finishDamage(damage.getNewDamage(), guard.level().getGameTime());
         damage.setNewDamage(0);
     }
-    public static void reload(com.tacz.guns.api.event.common.GunReloadEvent event) {
-        if (event.getEntity() instanceof Guard guard && (blocked(guard) || TransportRuntime.busy(guard))) event.setCanceled(true);
-    }
-    public static void melee(com.tacz.guns.api.event.common.GunMeleeEvent event) {
-        if (event.getShooter() instanceof Guard guard && (blocked(guard) || TransportRuntime.busy(guard))) event.setCanceled(true);
+    /** True while a casualty or a guard being carried must not start a reload or melee. */
+    public static boolean weaponActionsBlocked(Guard guard) {
+        return blocked(guard) || TransportRuntime.busy(guard);
     }
     public static void healed(LivingHealEvent event) {
         if (event.getEntity() instanceof Guard guard && casualty(guard) && TREATMENT_EVENT.get() != guard) event.setCanceled(true);

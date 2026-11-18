@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "package": "com.gamergaming.villagerguardgunners.mixin",
+  "plugin": "com.gamergaming.villagerguardgunners.guns.InstalledTargetMixinPlugin",
+  "mixins": [
+    "TaCZCommonAssetsManagerMixin",
+    "TaCZGuardShotMixin",
+    "TaCZGuardAmmoMixin",
+    "TaCZGuardProjectileMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

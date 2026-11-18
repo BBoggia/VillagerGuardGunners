@@ -1,4 +1,4 @@
-package com.gamergaming.villagerguardgunners.compat.pointblank;
+package com.gamergaming.villagerguardgunners.guns;
 
 import java.util.List;
 import java.util.Set;
@@ -6,8 +6,12 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-/** Applies each Point Blank mixin only when the build it targets is installed. */
-public final class PointBlankMixinPlugin implements IMixinConfigPlugin {
+/**
+ * Applies a mixin only when the class it targets is installed. Used by the
+ * mixin configs of the optional gun mods, which must stay silent when their
+ * mod is absent.
+ */
+public final class InstalledTargetMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         return getClass().getClassLoader().getResource(targetClassName.replace('.', '/') + ".class") != null;

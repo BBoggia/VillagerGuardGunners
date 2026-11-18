@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 import com.gamergaming.villagerguardgunners.combat.GuardShotSafety;
 import com.gamergaming.villagerguardgunners.combat.GuardCombatStatus;
-import com.gamergaming.villagerguardgunners.combat.NativeGunController;
+import com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
 import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngagement;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
@@ -238,7 +238,7 @@ public final class GuardGunCombatGoal extends Goal {
         if (sidearmController.isSidearmActive()) {
             gunController.prepareForSidearmTransition();
         }
-        gunController.stopAiming();
+        gunController.deactivate();
         navigation.stop();
         target = null;
         lastEngagementTarget = null;
@@ -767,7 +767,12 @@ public final class GuardGunCombatGoal extends Goal {
     }
 
     private AimError measureAimError(LivingEntity observedTarget) {
-        var point = gunController.intentionalAimPoint(observedTarget);
+        return measureAimError(observedTarget, gunController);
+    }
+
+    private AimError measureAimError(LivingEntity observedTarget,
+            com.gamergaming.villagerguardgunners.guns.WeaponDriver controller) {
+        var point = controller.intentionalAimPoint(observedTarget);
         double deltaX = point.x - guard.getX();
         double deltaY = point.y - guard.getEyeY();
         double deltaZ = point.z - guard.getZ();
@@ -786,21 +791,19 @@ public final class GuardGunCombatGoal extends Goal {
     public Diagnostics captureDiagnostics() {
         LivingEntity observedTarget = target != null ? target : guard.getTarget();
         boolean active = target != null;
-        // Administrator inspection still reports TaCZ's own state. The TaCZ driver
-        // exists for every guard while TaCZ is the fallback provider.
-        NativeGunController.Diagnostics nativeState = gunController.driver(NativeGunController.class)
-                .orElseThrow(() -> new IllegalStateException("Guard has no TaCZ weapon driver"))
-                .captureDiagnostics();
-        int requiredVisibleTicks = gunController.getRequiredVisibleTicks();
-        double aimToleranceDegrees = gunController.getAimToleranceDegrees();
+        // Read only: inspection must not switch providers or interrupt a reload.
+        var observedController = gunController.observedDriver();
+        WeaponControllerDiagnostics nativeState = gunController.controllerDiagnostics();
+        int requiredVisibleTicks = observedController.getRequiredVisibleTicks();
+        double aimToleranceDegrees = observedController.getAimToleranceDegrees();
         double distance = observedTarget == null
                 ? Double.NaN
                 : Math.sqrt(guard.distanceToSqr(observedTarget));
-        double preferredRange = gunController.getPreferredApproachDistance();
-        double retreatDistance = gunController.getRetreatDistance();
-        double minimumRange = gunController.getMinimumFiringRange();
-        float maximumRange = gunController.getMaximumFiringRange();
-        boolean validFiringWindow = gunController.hasValidFiringWindow();
+        double preferredRange = observedController.getPreferredApproachDistance();
+        double retreatDistance = observedController.getRetreatDistance();
+        double minimumRange = observedController.getMinimumFiringRange();
+        float maximumRange = observedController.getMaximumFiringRange();
+        boolean validFiringWindow = observedController.hasValidFiringWindow();
         boolean withinMaximumRange = observedTarget != null
                 && GuardCombatMovement.isWithinEngagementRange(
                         guard.distanceToSqr(observedTarget),
@@ -810,19 +813,19 @@ public final class GuardGunCombatGoal extends Goal {
                 && Double.isFinite(distance)
                 && distance < minimumRange;
         boolean withinFiringWindow = observedTarget != null
-                && gunController.canFireAtDistanceSquared(
+                && observedController.canFireAtDistanceSquared(
                         guard.distanceToSqr(observedTarget));
         AimError aimError = observedTarget == null
                 ? new AimError(Double.NaN, Double.NaN)
-                : measureAimError(observedTarget);
-        GuardShotSafety.Result safety = gunController.currentShotSafety(observedTarget);
+                : measureAimError(observedTarget, observedController);
+        GuardShotSafety.Result safety = observedController.currentShotSafety(observedTarget);
         float muzzleSafetyPadding = safety.envelope() == null ? Float.NaN : (float)safety.envelope().clearance();
         float projectileSafetyPadding = Float.NaN;
         float blastSafetyPadding = safety.envelope() == null ? Float.NaN
                 : (float)safety.envelope().ballistics().blastReach();
         GuardRulesOfEngagement.EngagementReason engagementReason =
                 GuardRulesOfEngagement.classify(guard, observedTarget);
-        boolean weaponAllowedByOrders = gunController.isWeaponAllowedByOrders();
+        boolean weaponAllowedByOrders = observedController.isWeaponAllowedByOrders();
         EngagementMode engagementMode = GuardRoleResolver.effectiveOrders(guard)
                 .resolveEngagementMode(config.engagement.mode.get());
         FireDecision decision = classifyDecision(
@@ -877,7 +880,7 @@ public final class GuardGunCombatGoal extends Goal {
             boolean belowMinimumRange,
             boolean withinMaximumRange,
             GuardShotSafety.Result safety,
-            NativeGunController.Diagnostics nativeState,
+            WeaponControllerDiagnostics nativeState,
             GuardRulesOfEngagement.EngagementReason engagementReason,
             boolean weaponAllowedByOrders) {
         if (!config.enabled.get()) {
@@ -1042,6 +1045,6 @@ public final class GuardGunCombatGoal extends Goal {
             GuardShotSafety.Result safety,
             EngagementMode engagementMode,
             GuardRulesOfEngagement.EngagementReason engagementReason,
-            NativeGunController.Diagnostics nativeState) {
+            WeaponControllerDiagnostics nativeState) {
     }
 }

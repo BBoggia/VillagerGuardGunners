@@ -14,6 +14,14 @@ public final class CgmBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("villagerguardgunners/cgm");
     private static boolean warnedImprovedHitboxes;
+    private static boolean warnedDischargeFailure;
+
+    static void warnDischargeFailureOnce(RuntimeException failure) {
+        if (!warnedDischargeFailure) {
+            warnedDischargeFailure = true;
+            LOGGER.warn("A CGM guard shot encountered an error after firing; accepted projectiles still consume one round", failure);
+        }
+    }
 
     private CgmBootstrap() {
     }
@@ -21,6 +29,8 @@ public final class CgmBootstrap {
     public static void register() {
         GunProviders.register(new CgmGunProvider());
         NeoForge.EVENT_BUS.addListener(CgmAllyProtection::onProjectileHit);
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.LOWEST,
+                CgmAllyProtection::onExplosionDetonate);
     }
 
     static void warnImprovedHitboxesOnce() {

@@ -6,6 +6,19 @@ in local development notes.
 
 ## Unreleased
 
+### Fixed
+
+- Restore ammo handoffs, pickup, sharing, Armory resupply, and Quartermaster ammo
+  requests for CGM and Point Blank guns with empty reserves.
+- Recognize CGM guns configured with native infinite ammo when planning supplies.
+- Protect allies from CGM guard explosions and honor the guard block-preservation setting.
+- Include CGM grenade damage modifiers in pre-fire blast safety checks.
+- Respect canceled CGM projectile spawns and account for partially accepted shotgun shots.
+- Release managed reloads when combat ends or a guard switches gun mods, while
+  allowing reloads to continue during tactical movement.
+- Keep ordinary ammo in creative-box loadouts for gun mods without compatible boxes.
+- Report the held gun's controller in guard diagnostics without changing combat state.
+
 ## 1.11-neoforge - 2026-11-10
 
 ### Compatibility

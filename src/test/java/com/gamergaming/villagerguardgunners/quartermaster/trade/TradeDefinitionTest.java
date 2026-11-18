@@ -51,15 +51,26 @@ class TradeDefinitionTest {
     }
     @Test void defaultsCoverAllLevelsWithoutAnEmeraldBuybackCycle() throws Exception {
         var levels=new int[6];int guns=0;
+        // Trades for the optional gun mods are counted apart: only an installed mod's trades are offered.
+        var optionalGuns=new java.util.HashMap<String,Integer>();var optionalAmmo=new java.util.HashMap<String,Integer>();
         try(var files=Files.list(Path.of("src/main/resources/data/villagerguardgunners/quartermaster_trades"))) {
             for(var path:files.toList()) {
                 var d=TradeDefinition.parse(JsonParser.parseString(Files.readString(path)).getAsJsonObject());
                 assertTrue(d.enabled());assertEquals(1,d.inputs().size());assertEquals("minecraft:emerald",d.inputs().get(0).id().toString());
                 assertNotEquals("minecraft:emerald",d.output().id().toString());
+                String mod=d.output().id().getNamespace();
+                if(mod.equals("cgm")||mod.equals("pointblank")) {
+                    assertNotEquals(TradeDefinition.Kind.ITEM,d.output().type(),"Guns and ammo must be declared as such");
+                    (d.output().type()==TradeDefinition.Kind.GUN?optionalGuns:optionalAmmo).merge(mod,1,Integer::sum);
+                    continue;
+                }
                 if(d.output().type()==TradeDefinition.Kind.GUN)guns++;else levels[d.level()]++;
             }
         }
         assertEquals(2,guns);for(int level=1;level<=5;level++)assertEquals(2,levels[level]);
+        // Each optional gun mod sells the same two kinds of gun as TaCZ, plus ammo for what guards are issued.
+        assertEquals(java.util.Map.of("cgm",2,"pointblank",2),optionalGuns);
+        assertEquals(java.util.Map.of("cgm",3,"pointblank",4),optionalAmmo);
     }
     @Test void distributedExampleUsesSupportedFormatAndBoundedTwoInputAmmoTrade() throws Exception {
         var root=Path.of("examples/quartermaster-trades");

@@ -124,7 +124,7 @@ public final class NativeGunController implements WeaponDriver {
         this.guard = guard;
         this.aimState = new GuardAimState(guard.getUUID().getMostSignificantBits()
                 ^ Long.rotateLeft(guard.getUUID().getLeastSignificantBits(), 17));
-        ((GuardNativeShotAccess) guard).villagerGuardGunners$setShotController(this);
+        GuardNativeShotAccess.bind(guard, this);
         this.operator = IGunOperator.fromLivingEntity(guard);
         this.config = ModConfigs.GUARD_GUNNERS;
         this.mainHandSupplier = guard::getMainHandItem;
@@ -143,6 +143,11 @@ public final class NativeGunController implements WeaponDriver {
     }
 
     /** Reads bound state only; never scans reserves or invokes property scripts. */
+    @Override
+    public java.util.Optional<WeaponControllerDiagnostics> captureControllerDiagnostics() {
+        return java.util.Optional.of(captureDiagnostics());
+    }
+
     public WeaponReadiness captureReadiness() {
         if (guard.getMainHandItem() != trackedStack || trackedGun == null) {
             return WeaponReadiness.UNBOUND;
@@ -788,7 +793,7 @@ public final class NativeGunController implements WeaponDriver {
      * Captures the controller's current state for an explicit administrator
      * inspection. This method is never called by the combat loop.
      */
-    public Diagnostics captureDiagnostics() {
+    public WeaponControllerDiagnostics captureDiagnostics() {
         ItemStack heldStack = guard.getMainHandItem();
         ResourceLocation heldGunId = null;
         FireMode heldFireMode = FireMode.UNKNOWN;
@@ -843,9 +848,9 @@ public final class NativeGunController implements WeaponDriver {
             // left one native accessor unreadable.
         }
 
-        return new Diagnostics(
+        return new WeaponControllerDiagnostics(
                 heldGunId,
-                heldFireMode,
+                String.valueOf(heldFireMode),
                 readableGunState,
                 heldStack == trackedStack && trackedGunId != null,
                 hasCurrentWeaponData(heldStack),
@@ -865,7 +870,7 @@ public final class NativeGunController implements WeaponDriver {
                 bolting,
                 aiming,
                 chargeProgress,
-                lastShootResult,
+                lastShootResult == null ? null : lastShootResult.name(),
                 lastAmmoSharingStatus,
                 lastAmmoSharedItems,
                 tactics.snapshot());
@@ -1618,33 +1623,6 @@ public final class NativeGunController implements WeaponDriver {
         return left + right;
     }
 
-    public record Diagnostics(
-            ResourceLocation gunId,
-            FireMode fireMode,
-            boolean readableGunState,
-            boolean controllerBound,
-            boolean weaponDataReady,
-            boolean suspended,
-            WeaponReadiness readiness,
-            boolean dryConfirmed,
-            long dryRetryTicks,
-            int loadedAmmo,
-            boolean chambered,
-            boolean inventoryFed,
-            int reserveItems,
-            int occupiedReserveSlots,
-            String reloadState,
-            boolean reloading,
-            long shootCooldownMillis,
-            long drawCooldownMillis,
-            boolean bolting,
-            boolean aiming,
-            float chargeProgress,
-            ShootResult lastShootResult,
-            GuardAmmoSharing.SharingStatus lastAmmoSharingStatus,
-            int lastAmmoSharedItems,
-            CachedTacticalState tacticalState) {
-    }
 
     private float resolveMaximumInaccuracy() {
         float maximum = 0.0F;

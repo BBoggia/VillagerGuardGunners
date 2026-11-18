@@ -44,6 +44,10 @@ final class CgmGunBackend implements ManagedGunBackend {
     private static final String AMMO_COUNT = "AmmoCount";
     private static final String IGNORE_AMMO = "IgnoreAmmo";
 
+    static boolean ignoresAmmo(ItemStack stack) {
+        return GunItemData.getTag(stack).getBoolean(IGNORE_AMMO);
+    }
+
     /** The gun as modified by the stack's attachments, or null when the stack is not one of the mod's guns. */
     static Gun modifiedGun(ItemStack stack) {
         return stack.getItem() instanceof GunItem item ? item.getModifiedGun(stack) : null;
@@ -84,6 +88,9 @@ final class CgmGunBackend implements ManagedGunBackend {
         double speed = GunModifierHelper.getModifiedProjectileSpeed(
                 stack, projectile.getSpeed() * GunEnchantmentHelper.getProjectileSpeedModifier(stack));
         int life = GunModifierHelper.getModifiedProjectileLife(stack, projectile.getLife());
+        if (general.getProjectileAmount() < 1 || life < 1 || projectile.getLife() < 1) {
+            return Optional.empty();
+        }
         double gravity = projectile.isGravity()
                 ? Math.abs(GunModifierHelper.getModifiedProjectileGravity(stack, BASE_GRAVITY))
                 : 0.0D;
@@ -95,7 +102,7 @@ final class CgmGunBackend implements ManagedGunBackend {
                 : ammoId.equals(ModItems.MISSILE.getId())
                         ? Config.COMMON.missiles.explosionRadius.get()
                         // A grenade's blast grows with its damage; see the mod's GrenadeEntity.
-                        : GunModifierHelper.getModifiedProjectileDamage(stack, projectile.getDamage()) / 5.0D;
+                        : grenadeRadius(stack, gun, life);
 
         GuardShotEnvelope.Ballistics ballistics = new GuardShotEnvelope.Ballistics(
                 speed,
@@ -119,6 +126,26 @@ final class CgmGunBackend implements ManagedGunBackend {
                 explosionRadius,
                 ballistics,
                 false));
+    }
+
+    /** Upper bound on ProjectileEntity.getDamage() / 5 across its entire lifetime. */
+    private static double grenadeRadius(ItemStack stack, Gun gun, int life) {
+        // The manually ticked first projectile can still have age zero. Damage falloff
+        // uses the definition's base life, while expiry uses attachment-modified life.
+        return Math.max(grenadeDamage(stack, gun, 0), grenadeDamage(stack, gun, life)) / 5.0D;
+    }
+
+    private static float grenadeDamage(ItemStack stack, Gun gun, int age) {
+        Gun.Projectile projectile = gun.getProjectile();
+        float damage = projectile.getDamage() + Gun.getAdditionalDamage(stack);
+        if (projectile.isDamageReduceOverLife()) {
+            damage *= (projectile.getLife() - (age - 1.0F)) / projectile.getLife();
+        }
+        damage /= gun.getGeneral().getProjectileAmount();
+        damage = GunModifierHelper.getModifiedDamage(stack, gun, damage);
+        damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
+        if (!Float.isFinite(damage)) throw new IllegalArgumentException("Non-finite CGM grenade damage");
+        return Math.max(0.0F, damage);
     }
 
     @Override
@@ -152,7 +179,7 @@ final class CgmGunBackend implements ManagedGunBackend {
         }
         Gun.Projectile projectile = gun.getProjectile();
         int count = Math.max(1, gun.getGeneral().getProjectileAmount());
-        ProjectileEntity[] spawned = new ProjectileEntity[count];
+        java.util.List<ProjectileEntity> spawned;
 
         // The mod aims a projectile by its shooter's rotation, and applies the gun's own spread around it.
         float bodyYaw = guard.getYRot();
@@ -163,29 +190,42 @@ final class CgmGunBackend implements ManagedGunBackend {
         guard.setXRot(aim.pitch());
         try {
             IProjectileFactory factory = ProjectileManager.getInstance().getFactory(projectile.getItem());
-            for (int index = 0; index < count; index++) {
+            spawned = CgmDischarge.fire(count, index -> {
                 ProjectileEntity entity = factory.create(level, guard, stack, item, gun);
                 entity.setWeapon(stack);
                 entity.setAdditionalDamage(Gun.getAdditionalDamage(stack));
-                level.addFreshEntity(entity);
-                spawned[index] = entity;
-                entity.tick();
-            }
+                return entity;
+            }, level::addFreshEntity, entity -> {
+                try {
+                    entity.tick();
+                } catch (RuntimeException failure) {
+                    entity.discard();
+                    throw failure;
+                }
+            }, CgmBootstrap::warnDischargeFailureOnce);
         } finally {
             guard.setYRot(bodyYaw);
             guard.setYHeadRot(headYaw);
             guard.setXRot(pitch);
         }
 
-        if (!projectile.isVisible()) {
-            double range = Config.COMMON.network.projectileTrackingRange.get();
-            S2CMessageBulletTrail trail = new S2CMessageBulletTrail(
-                    spawned, projectile, guard.getId(), GunEnchantmentHelper.getParticle(stack));
-            PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create(level, guard.getX(), guard.getY() + 1.0D, guard.getZ(), range), trail);
+        if (spawned.isEmpty()) return Outcome.FAILED;
+        // Once any pellet entered the world this round must consume ammo, even if
+        // a later pellet or cosmetic packet fails. An immediate impact may remove
+        // an accepted projectile; it still counts as a discharge.
+        try {
+            if (!projectile.isVisible()) {
+                double range = Config.COMMON.network.projectileTrackingRange.get();
+                S2CMessageBulletTrail trail = new S2CMessageBulletTrail(
+                        spawned.toArray(ProjectileEntity[]::new), projectile, guard.getId(), GunEnchantmentHelper.getParticle(stack));
+                PacketHandler.getPlayChannel().sendToNearbyPlayers(
+                        () -> LevelLocation.create(level, guard.getX(), guard.getY() + 1.0D, guard.getZ(), range), trail);
+            }
+            level.gameEvent(GameEvent.PROJECTILE_SHOOT, guard.position(), GameEvent.Context.of(guard));
+            playFireSound(guard, level, stack, gun);
+        } catch (RuntimeException failure) {
+            CgmBootstrap.warnDischargeFailureOnce(failure);
         }
-        level.gameEvent(GameEvent.PROJECTILE_SHOOT, guard.position(), GameEvent.Context.of(guard));
-        playFireSound(guard, level, stack, gun);
         return Outcome.FIRED;
     }
 

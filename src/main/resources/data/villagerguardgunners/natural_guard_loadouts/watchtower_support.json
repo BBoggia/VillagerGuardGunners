@@ -8,6 +8,18 @@
     {
       "gun": "tacz:rpk",
       "weight": 1
+    },
+    {
+      "gun": "cgm:mini_gun",
+      "weight": 3
+    },
+    {
+      "gun": "pointblank:m249",
+      "weight": 2
+    },
+    {
+      "gun": "pointblank:mk48",
+      "weight": 1
     }
   ]
 }

@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Stream;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -503,8 +504,9 @@ final class NaturalGuardLoadoutPoolsTest {
                                 .toList()));
     }
 
+    /** Every gun mod's share of a bundled pool follows the same progression, so mixed installs keep it. */
     @Test
-    void bundledDifficultyPoolsMatchTheConservativeProgression() throws IOException {
+    void bundledDifficultyPoolsMatchTheConservativeProgressionForEveryGunMod() throws IOException {
         NaturalGuardLoadoutPool easy = bundled("easy");
         NaturalGuardLoadoutPool normal = bundled("normal");
         NaturalGuardLoadoutPool hard = bundled("hard");
@@ -512,40 +514,66 @@ final class NaturalGuardLoadoutPoolsTest {
         NaturalGuardLoadoutPool support = bundled("watchtower_support");
         NaturalGuardLoadoutPool breacher = bundled("watchtower_breacher");
         NaturalGuardLoadoutPool demolitions = bundled("watchtower_demolitions");
+        List<NaturalGuardLoadoutPool> all =
+                List.of(easy, normal, hard, marksman, support, breacher, demolitions);
 
         assertAll(
                 () -> assertEquals(NaturalGuardLoadoutDefaults.EASY_POOL, easy.id()),
-                () -> assertEquals(10, easy.totalWeight()),
-                () -> assertEquals(3, easy.entries().size()),
-                () -> assertTrue(easy.entries().stream()
-                        .allMatch(entry -> entry.gunId().getPath().matches(
-                                "glock_17|m1911|p320"))),
                 () -> assertEquals(NaturalGuardLoadoutDefaults.NORMAL_POOL, normal.id()),
-                () -> assertEquals(8, normal.totalWeight()),
                 () -> assertEquals(NaturalGuardLoadoutDefaults.HARD_POOL, hard.id()),
-                () -> assertEquals(10, hard.totalWeight()),
-                () -> assertEquals(2, hard.entries().stream()
-                        .filter(entry -> entry.gunId().getPath().matches("ak47|m4a1"))
-                        .mapToInt(NaturalGuardLoadoutPool.Entry::weight)
-                        .sum()),
-                () -> assertTrue(marksman.entries().stream().allMatch(entry ->
-                        entry.gunId().getPath().matches("ai_awp|m700"))),
-                () -> assertTrue(support.entries().stream().allMatch(entry ->
-                        entry.gunId().getPath().matches("m249|rpk"))),
-                () -> assertTrue(List.of(breacher, demolitions).stream()
-                        .flatMap(pool -> pool.entries().stream())
-                        .allMatch(entry -> entry.gunId().getPath().matches("m870|aa12"))),
-                () -> assertTrue(List.of(
-                                easy,
-                                normal,
-                                hard,
-                                marksman,
-                                support,
-                                breacher,
-                                demolitions).stream()
-                        .flatMap(pool -> pool.entries().stream())
-                        .allMatch(entry -> entry.sidearmId() == null),
+                () -> assertEquals(3, guns(easy, "tacz").size()),
+                () -> assertTrue(guns(easy, "tacz").stream().allMatch(path -> path.matches("glock_17|m1911|p320"))),
+                () -> assertTrue(guns(marksman, "tacz").stream().allMatch(path -> path.matches("ai_awp|m700"))),
+                () -> assertTrue(guns(support, "tacz").stream().allMatch(path -> path.matches("m249|rpk"))),
+                () -> assertTrue(Stream.of(breacher, demolitions).flatMap(pool -> guns(pool, "tacz").stream())
+                        .allMatch(path -> path.matches("m870|aa12"))),
+                () -> assertTrue(guns(easy, "cgm").stream().allMatch(path -> path.equals("pistol"))),
+                () -> assertTrue(guns(easy, "pointblank").stream().allMatch(path -> path.matches("glock17|m1911a1"))),
+                () -> assertTrue(guns(marksman, "cgm").stream().allMatch(path -> path.equals("heavy_rifle"))),
+                () -> assertTrue(guns(marksman, "pointblank").stream().allMatch(path -> path.matches("l96a1|uar10"))),
+                () -> assertTrue(Stream.of(breacher, demolitions).flatMap(pool -> guns(pool, "cgm").stream())
+                        .allMatch(path -> path.equals("shotgun"))),
+                () -> assertTrue(Stream.of(breacher, demolitions).flatMap(pool -> guns(pool, "pointblank").stream())
+                        .allMatch(path -> path.matches("m870|aa12"))),
+                () -> assertTrue(all.stream().flatMap(pool -> pool.entries().stream())
+                                .allMatch(entry -> List.of("tacz", "cgm", "pointblank")
+                                        .contains(entry.gunId().getNamespace())),
+                        "Bundled pools may name only supported gun mods"),
+                () -> assertTrue(all.stream().flatMap(pool -> pool.entries().stream())
+                                .noneMatch(entry -> entry.gunId().getPath()
+                                        .matches("bazooka|grenade_launcher|at4|javelin|smaw|m32mgl")),
+                        "Bundled pools issue no explosive guns"),
+                () -> assertTrue(all.stream().flatMap(pool -> pool.entries().stream())
+                                .allMatch(entry -> entry.sidearmId() == null),
                         "Bundled format-1 pools must remain sidearm-free"));
+        for (String mod : List.of("tacz", "cgm", "pointblank")) {
+            assertAll(mod,
+                    () -> assertEquals(10, weight(easy, mod, ".*")),
+                    () -> assertEquals(8, weight(normal, mod, ".*")),
+                    () -> assertEquals(10, weight(hard, mod, ".*")),
+                    // Rifles stay one fifth of the hard pool whichever gun mods are installed.
+                    () -> assertEquals(2, weight(hard, mod, "ak47|m4a1|assault_rifle|rifle")),
+                    () -> assertEquals(0, weight(easy, mod, "ak47|m4a1|assault_rifle|rifle")),
+                    () -> assertEquals(0, weight(normal, mod, "ak47|m4a1|assault_rifle|rifle")));
+            for (NaturalGuardLoadoutPool watchtower : List.of(marksman, support, breacher, demolitions)) {
+                assertEquals(3, weight(watchtower, mod, ".*"), mod + " " + watchtower.id());
+            }
+        }
+    }
+
+    private static List<String> guns(NaturalGuardLoadoutPool pool, String namespace) {
+        return pool.entries().stream()
+                .filter(entry -> entry.gunId().getNamespace().equals(namespace))
+                .map(entry -> entry.gunId().getPath())
+                .toList();
+    }
+
+    private static int weight(NaturalGuardLoadoutPool pool, String namespace, String pathPattern) {
+        return pool.entries().stream()
+                .filter(entry -> entry.gunId().getNamespace().equals(namespace)
+                        && entry.gunId().getPath().matches(pathPattern))
+                .mapToInt(NaturalGuardLoadoutPool.Entry::weight)
+                .sum();
     }
 
     private static NaturalGuardLoadoutPool bundled(String name) throws IOException {

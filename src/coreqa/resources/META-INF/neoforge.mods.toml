@@ -28,7 +28,7 @@ side="BOTH"
 
 [[dependencies.vgg_core_qa]]
 modId="tacz"
-type="required"
+type="optional"
 versionRange="${tacz_version_range}"
 ordering="AFTER"
 side="BOTH"

@@ -68,10 +68,11 @@ final class ProjectCompatibilityContractTest {
     }
 
     @Test
-    void declaresGuardVillagersAndTaczAsRequiredRuntimeDependencies() {
+    void declaresGuardVillagersAsRequiredAndTaczAsAnOptionalReviewedVersion() {
         assertAll(
                 () -> assertDependency("guardvillagers", "[2.4.12]"),
-                () -> assertDependency("tacz", property("tacz_version_range")),
+                // TaCZ is one of several supported gun mods. When installed it must still be the reviewed version.
+                () -> assertDependency("tacz", property("tacz_version_range"), "optional"),
                 () -> assertDependency("fzzy_config", property("fzzy_config_version_range")),
                 () -> assertDependency("kotlinforforge", property("kotlin_for_forge_version_range")));
     }
@@ -99,6 +100,10 @@ final class ProjectCompatibilityContractTest {
     }
 
     private static void assertDependency(String modId, String versionRange) {
+        assertDependency(modId, versionRange, "required");
+    }
+
+    private static void assertDependency(String modId, String versionRange, String type) {
         int dependencyStart = modsToml.indexOf("modId=\"" + modId + "\"");
         assertTrue(dependencyStart >= 0, () -> "Missing required dependency metadata for " + modId);
 
@@ -108,8 +113,8 @@ final class ProjectCompatibilityContractTest {
                 : modsToml.substring(dependencyStart);
 
         assertAll(
-                () -> assertTrue(dependencyBlock.contains("type=\"required\""),
-                        () -> modId + " must remain mandatory"),
+                () -> assertTrue(dependencyBlock.contains("type=\"" + type + "\""),
+                        () -> modId + " must be declared " + type),
                 () -> assertTrue(dependencyBlock.contains("versionRange=\"" + versionRange + "\""),
                         () -> modId + " must use the reviewed version range " + versionRange),
                 () -> assertTrue(dependencyBlock.contains("side=\"BOTH\""),

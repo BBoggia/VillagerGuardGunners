@@ -94,6 +94,8 @@ public final class ManagedWeaponDriver implements WeaponDriver {
                 ^ Long.rotateLeft(guard.getUUID().getLeastSignificantBits(), 17));
     }
 
+    private int lastAmmoSharedItems;
+
     // Trigger
 
     @Override
@@ -169,6 +171,11 @@ public final class ManagedWeaponDriver implements WeaponDriver {
         cycle.releaseTrigger();
     }
 
+    @Override
+    public void deactivate() {
+        interrupt();
+    }
+
     /** True while reloading, waiting between rounds, or backing off after a declined round. */
     public boolean isBusy() {
         return cycle.isBusy(guard.level().getGameTime());
@@ -180,6 +187,80 @@ public final class ManagedWeaponDriver implements WeaponDriver {
 
     public GuardAmmoSharing.SharingStatus lastAmmoSharingStatus() {
         return lastAmmoSharingStatus;
+    }
+
+    /** State for an explicit administrator inspection. Never called by the combat loop. */
+    @Override
+    public Optional<com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics> captureControllerDiagnostics() {
+        Diagnostics state = captureDiagnostics();
+        int reserveItems = 0;
+        int occupiedSlots = 0;
+        var handler = GuardAmmoAccess.getAmmoHandler(guard);
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            ItemStack stack = handler.getStackInSlot(slot);
+            if (!stack.isEmpty()) {
+                reserveItems += stack.getCount();
+                occupiedSlots++;
+            }
+        }
+        return Optional.of(new com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics(
+                state.bound() ? state.gunId() : null, "MANAGED", state.bound() && state.loadedAmmo() >= 0,
+                state.bound(), state.weaponDataReady(), state.suspended(), state.readiness(),
+                state.dryConfirmed(), state.dryRetryTicks(), state.loadedAmmo(), false, false,
+                reserveItems, occupiedSlots, state.reloading() ? "RELOADING" : "IDLE", state.reloading(),
+                cycle.remainingCooldownMillis(guard.level().getGameTime()), 0L, false, state.aiming(), 0.0F,
+                null, state.lastAmmoSharingStatus(), lastAmmoSharedItems, state.tacticalState()));
+    }
+
+    public Diagnostics captureDiagnostics() {
+        boolean bound = guard.getMainHandItem() == trackedStack && trackedStackIsGun;
+        int loaded = -1;
+        if (bound) {
+            try {
+                loaded = backend.loaded(trackedStack);
+            } catch (RuntimeException ignored) {
+                // An unreadable magazine is reported as unknown, not as a failed command.
+            }
+        }
+        long gameTime = guard.level().getGameTime();
+        return new Diagnostics(
+                provider.id(),
+                gunId,
+                gunType,
+                bound,
+                bound && stats != null && !cycle.isSuspended(),
+                cycle.isSuspended(),
+                captureReadiness(),
+                loaded,
+                stats == null ? -1 : stats.magazineCapacity(),
+                cycle.isReloading(),
+                cycle.remainingCooldownMillis(gameTime) > 0L,
+                cycle.isDryConfirmed(),
+                cycle.remainingDryTicks(gameTime),
+                aiming,
+                lastAmmoSharingStatus,
+                successfulAimRounds,
+                tactics.snapshot());
+    }
+
+    public record Diagnostics(
+            String provider,
+            @javax.annotation.Nullable ResourceLocation gunId,
+            @javax.annotation.Nullable String gunType,
+            boolean bound,
+            boolean weaponDataReady,
+            boolean suspended,
+            WeaponReadiness readiness,
+            int loadedAmmo,
+            int magazineCapacity,
+            boolean reloading,
+            boolean coolingDown,
+            boolean dryConfirmed,
+            long dryRetryTicks,
+            boolean aiming,
+            GuardAmmoSharing.SharingStatus lastAmmoSharingStatus,
+            long roundsFired,
+            CachedTacticalState tacticalState) {
     }
 
     /** The cached tactical snapshot, for administrator inspection only. */
@@ -206,6 +287,7 @@ public final class ManagedWeaponDriver implements WeaponDriver {
             gunId = null;
             gunType = null;
             lastAmmoSharingStatus = GuardAmmoSharing.SharingStatus.NOT_ATTEMPTED;
+            lastAmmoSharedItems = 0;
             tactics.reset();
             nextStatsRefreshGameTick = Long.MIN_VALUE;
             cycle.resetForWeaponChange();
@@ -588,6 +670,7 @@ public final class ManagedWeaponDriver implements WeaponDriver {
     private boolean requestSharedAmmo() {
         GuardAmmoSharing.SharingResult sharing = GuardAmmoSharing.tryShare(guard);
         lastAmmoSharingStatus = sharing.status();
+        lastAmmoSharedItems = sharing.transferred();
         return sharing.shared();
     }
 

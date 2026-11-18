@@ -21,10 +21,12 @@ import tallestegg.guardvillagers.common.entities.Guard;
 public final class GuardWeaponControl implements WeaponDriver {
     private final Guard guard;
     private final DriverSwitch drivers;
+    private final WeaponDriver unboundDiagnostics;
     private ItemStack resolvedStack;
 
     public GuardWeaponControl(Guard guard) {
         this.guard = Objects.requireNonNull(guard, "guard");
+        this.unboundDiagnostics = NoGunProvider.INSTANCE.createDriver(guard);
         // The fallback driver exists from construction, as the goal's controller always has.
         this.drivers = new DriverSwitch(GunProviders.fallback(), provider -> provider.createDriver(guard));
         ((GuardWeaponControlAccess) guard).villagerGuardGunners$setWeaponControl(this);
@@ -39,8 +41,8 @@ public final class GuardWeaponControl implements WeaponDriver {
     public WeaponDriver active() {
         ItemStack held = guard.getMainHandItem();
         if (held != resolvedStack) {
-            resolvedStack = held;
             drivers.select(GunProviders.find(held));
+            resolvedStack = held;
         }
         return drivers.current();
     }
@@ -48,6 +50,24 @@ public final class GuardWeaponControl implements WeaponDriver {
     /** A driver this guard has already created, for callers that need one provider's own detail. */
     public <T extends WeaponDriver> Optional<T> driver(Class<T> type) {
         return drivers.driver(type);
+    }
+
+    /** Existing held-weapon driver only. Inspection must never select or create a driver. */
+    public WeaponDriver observedDriver() {
+        if (guard.getMainHandItem() != resolvedStack) return unboundDiagnostics;
+        return GunProviders.find(guard.getMainHandItem())
+                .flatMap(provider -> drivers.driver(provider.id())).orElse(unboundDiagnostics);
+    }
+
+    /** Common diagnostic state for the currently held weapon. */
+    public com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics controllerDiagnostics() {
+        return observedDriver().captureControllerDiagnostics()
+                .filter(com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics::controllerBound)
+                .orElseGet(() ->
+                com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics.unavailable(
+                com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticsState
+                        .forGuard(guard, com.gamergaming.villagerguardgunners.init.ModConfigs.GUARD_GUNNERS)
+                        .snapshot()));
     }
 
     /** The driver this guard has already created for a provider, for that provider's own lifecycle calls. */
@@ -63,6 +83,12 @@ public final class GuardWeaponControl implements WeaponDriver {
     @Override
     public void stopAiming() {
         active().stopAiming();
+    }
+
+    @Override
+    public void deactivate() {
+        // No selection here: a weapon may have been removed before the goal stops.
+        for (WeaponDriver driver : drivers.created()) driver.deactivate();
     }
 
     @Override

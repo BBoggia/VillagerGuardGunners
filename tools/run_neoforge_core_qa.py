@@ -23,8 +23,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--java-home', type=Path, default=Path(os.environ.get('JAVA_HOME', '/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home')))
 parser.add_argument('--accept-eula', action='store_true')
 parser.add_argument('--fresh', action='store_true', help='Delete only this runner’s previous test world and expected record')
-parser.add_argument('--suite', choices=('core', 'behavior', 'workflow', 'worldgen', 'cgm', 'pointblank', 'jelly'), default='core',
-                    help='cgm, pointblank, and jelly each add one optional gun mod; build first with ./gradlew stageOptionalGunQaMods')
+parser.add_argument('--suite', choices=('core', 'behavior', 'workflow', 'worldgen', 'cgm', 'pointblank', 'jelly', 'pointblank_no_tacz'), default='core',
+                    help='cgm, pointblank, and jelly each add one optional gun mod; pointblank_no_tacz also leaves TaCZ out; build first with ./gradlew stageOptionalGunQaMods')
 parser.add_argument('--start-case', help='Debug a behavior-suite suffix; the report marks this as a partial run')
 parser.add_argument('--worldgen-scenario', choices=('builtin', 'universal', 'providers', 'providers-baseline'), default='builtin')
 parser.add_argument('--neo-version', help='Test another 21.1.x loader in a separate installation without changing the build pin')
@@ -35,7 +35,7 @@ if args.neo_version and not re.fullmatch(r'21\.1\.\d+', args.neo_version):
     parser.error('--neo-version must name a Minecraft 1.21.1 NeoForge build (21.1.x)')
 runtime = ROOT / 'build/neoforge/installed-core-qa'
 results_root = ROOT / 'build/neoforge/core-qa/results'
-optional_guns = args.suite in ('cgm', 'pointblank', 'jelly')
+optional_guns = args.suite in ('cgm', 'pointblank', 'jelly', 'pointblank_no_tacz')
 if optional_guns:
     # One installation per gun mod: each writes its own content packs and config into the server
     # folder, and the two Point Blank builds cannot read each other's.
@@ -51,7 +51,7 @@ if args.suite == 'worldgen':
 world_name = args.suite + ('-' + scenario if args.suite == 'worldgen' else '') + '-world'
 expected_name = args.suite + ('-' + scenario if args.suite == 'worldgen' else '') + '-qa-expected.nbt'
 log_prefix = {'core': 'VGG_CORE_QA_', 'behavior': 'VGG_BEHAVIOR_QA_', 'workflow': 'VGG_WORKFLOW_QA_', 'worldgen': 'VGG_WORLDGEN_QA_', 'cgm': 'VGG_CGM_QA_',
-              'pointblank': 'VGG_PB_QA_', 'jelly': 'VGG_PB_QA_'}[args.suite]
+              'pointblank': 'VGG_PB_QA_', 'jelly': 'VGG_PB_QA_', 'pointblank_no_tacz': 'VGG_PB_QA_'}[args.suite]
 if baseline:
     log_prefix = 'VGG_PORT_'
 staged = ROOT / (f'build/neoforge/optional-gun-qa/{args.suite}/mods' if optional_guns else 'build/neoforge/core-qa/mods')

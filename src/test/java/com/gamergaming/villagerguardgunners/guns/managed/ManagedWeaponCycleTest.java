@@ -185,6 +185,20 @@ final class ManagedWeaponCycleTest {
     }
 
     @Test
+    void loweringAimDuringAnActiveReloadStillAllowsItToFinish() {
+        weapon.capacity = 5;
+        weapon.reserve = 7;
+        weapon.reloadTicks = 10;
+        tick(0, false);
+        cycle.releaseTrigger();
+        tick(10, false);
+        assertFalse(cycle.isReloading());
+        assertEquals(5, weapon.loaded);
+        assertEquals(2, weapon.reserve);
+        assertTrue(weapon.shotTicks.isEmpty());
+    }
+
+    @Test
     void emptyReserveAsksOtherGuardsBeforeGoingDry() {
         weapon.capacity = 5;
         weapon.sharedOnRequest = 5;

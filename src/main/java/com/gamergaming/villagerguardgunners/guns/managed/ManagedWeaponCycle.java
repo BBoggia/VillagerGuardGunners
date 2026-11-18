@@ -193,6 +193,14 @@ final class ManagedWeaponCycle {
         return coolingDown(gameTime * NativeFireCadence.SERVER_TICK_MILLIS);
     }
 
+    /** Read-only diagnostic clock; never resets state on a backwards time jump. */
+    long remainingCooldownMillis(long gameTime) {
+        long now = gameTime * NativeFireCadence.SERVER_TICK_MILLIS;
+        if (lastShotMillis == NONE || now < lastShotMillis) return 0L;
+        return Math.max(0L, lastShotIntervalMillis - NativeFireCadence.TACZ_COOLDOWN_TOLERANCE_MILLIS
+                - (now - lastShotMillis));
+    }
+
     /** True while a reload, a retry delay, or the gap between rounds is still running. */
     boolean isBusy(long gameTime) {
         return isReloading() || !trigger.canAttemptAction() || isCoolingDown(gameTime);

@@ -25,8 +25,11 @@ public final class GuardInfiniteAmmo {
     /** Called only during a new loadout's preparation, before its atomic commit. */
     public static ItemStack spawnSupply(ItemStack gunStack, ItemStack ordinaryAmmo) {
         if (mode() != InfiniteAmmoMode.CREATIVE_AMMO_BOX) return ordinaryAmmo;
-        return GunProviders.find(gunStack)
-                .flatMap(provider -> provider.creativeSupply(gunStack))
+        var provider = GunProviders.find(gunStack)
+                .orElseThrow(() -> new IllegalStateException("No provider for loadout gun"));
+        if (!provider.supportsCreativeSupply()) return ordinaryAmmo;
+        return provider.creativeSupply(gunStack)
+                .filter(stack -> !stack.isEmpty())
                 .orElseThrow(() -> new IllegalStateException("Could not prepare a compatible creative ammo box"));
     }
 }

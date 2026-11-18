@@ -86,6 +86,7 @@ final class PointBlankGunAcceptance {
                 level.setBlockAndUpdate(origin.offset(x, -1, z), Blocks.STONE.defaultBlockState());
                 for (int y = 0; y < 5; y++) level.setBlockAndUpdate(origin.offset(x, y, z), Blocks.AIR.defaultBlockState());
             }
+            LogUtils.getLogger().info("VGG_PB_QA_CASE_PASS case=shipped_data {}", OptionalGunDataChecks.run(level, PROVIDER));
             next();
         } catch (Exception failure) { fail(failure); }
     }

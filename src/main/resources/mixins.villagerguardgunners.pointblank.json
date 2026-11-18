@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_21",
   "package": "com.gamergaming.villagerguardgunners.compat.pointblank.mixin",
-  "plugin": "com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankMixinPlugin",
+  "plugin": "com.gamergaming.villagerguardgunners.guns.InstalledTargetMixinPlugin",
   "mixins": [
     "VpbHurtingItemMixin",
     "PbjHurtingItemMixin"

@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
+import com.gamergaming.villagerguardgunners.guns.OptionalGunMods;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutConditionSpec.RaidRequirement;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutConditionSpec.RegistrySelector;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutConditionSpec.SelectorGroup;
@@ -82,6 +83,11 @@ final class NaturalGuardLoadoutParser {
                     format >= NaturalGuardLoadoutFormat.CONDITIONAL_VERSION
                             ? optionalConditions(entryJson, location)
                             : NaturalGuardLoadoutConditionSpec.ANY;
+            // An entry for a supported gun mod that is not installed is validated, then left out.
+            if (OptionalGunMods.isAbsent(gunId.getNamespace())
+                    || sidearmId != null && OptionalGunMods.isAbsent(sidearmId.getNamespace())) {
+                continue;
+            }
             entries.add(new NaturalGuardLoadoutPool.Entry(
                     gunId, sidearmId, roleId, weight, conditions));
         }

@@ -1,10 +1,38 @@
 {
   "format": 1,
-  "primary": ["tacz:ak47", "tacz:m4a1"],
-  "sidearm": ["tacz:glock_17"],
-  "armor": {"head": ["minecraft:iron_helmet"], "chest": ["minecraft:iron_chestplate"], "legs": ["minecraft:iron_leggings"], "feet": ["minecraft:iron_boots"]},
+  "primary": [
+    "tacz:ak47",
+    "tacz:m4a1",
+    "cgm:assault_rifle",
+    "cgm:rifle",
+    "pointblank:ak47",
+    "pointblank:m4a1"
+  ],
+  "sidearm": [
+    "tacz:glock_17",
+    "cgm:pistol",
+    "pointblank:glock17"
+  ],
+  "armor": {
+    "head": [
+      "minecraft:iron_helmet"
+    ],
+    "chest": [
+      "minecraft:iron_chestplate"
+    ],
+    "legs": [
+      "minecraft:iron_leggings"
+    ],
+    "feet": [
+      "minecraft:iron_boots"
+    ]
+  },
   "ammo_reserve": 128,
-  "medical": ["villagerguardgunners:bandage"],
+  "medical": [
+    "villagerguardgunners:bandage"
+  ],
   "medical_reserve": 16,
-  "roles": ["villagerguardgunners:generalist"]
+  "roles": [
+    "villagerguardgunners:generalist"
+  ]
 }

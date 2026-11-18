@@ -96,7 +96,7 @@ Both versions have four options under **Ammo Quality of Life → Infinite Ammo**
 - **Off (default):** normal ammo use.
 - **Infinite Ammo with Reloading:** all guards have unlimited reserves and keep normal reload delays.
 - **Infinite Ammo without Reloading:** all guards keep their magazines supplied. Firing delays, action cycling, heat, and friendly-fire checks still apply.
-- **Infinite Ammo with Creative Ammo Box:** new gun loadouts include compatible creative ammo boxes. Existing guards can receive boxes manually.
+- **Infinite Ammo with Creative Ammo Box:** new TaCZ gun loadouts include compatible creative ammo boxes. Other supported gun mods keep ordinary ammo. Existing guards can receive boxes manually.
 
 Virtual modes leave carried supplies untouched. Changing the setting does not
 remove boxes already issued. Boxes can be removed and transferred like other

@@ -23,6 +23,11 @@ public interface WeaponDriver {
 
     void stopAiming();
 
+    /** Combat ended or this driver lost ownership. Native asynchronous maintenance may finish independently. */
+    default void deactivate() {
+        stopAiming();
+    }
+
     /**
      * Advances the weapon by one server tick. Maintenance such as reloading
      * continues without a target or an aimed pose.
@@ -40,6 +45,11 @@ public interface WeaponDriver {
 
     default void tick(LivingEntity target, boolean mayFire, BooleanSupplier safeToFire) {
         tick(target, mayFire, safeToFire, safeToFire);
+    }
+
+    /** Detailed controller state for an administrator inspection, for drivers that keep one. */
+    default java.util.Optional<com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics> captureControllerDiagnostics() {
+        return java.util.Optional.empty();
     }
 
     // Readiness

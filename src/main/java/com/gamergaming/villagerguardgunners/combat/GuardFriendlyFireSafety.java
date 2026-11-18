@@ -21,6 +21,18 @@ public final class GuardFriendlyFireSafety {
     }
 
     /**
+     * Extra bounds a gun mod uses when it tests hits, on top of the entity's
+     * own box. An installed gun mod replaces the default; the checked box only
+     * ever grows, so the ally check stays conservative for every mod.
+     */
+    private static volatile java.util.function.BiFunction<Entity, Entity, AABB> hitboxSource =
+            (entity, shooter) -> entity.getBoundingBox();
+
+    public static void setHitboxSource(java.util.function.BiFunction<Entity, Entity, AABB> source) {
+        hitboxSource = java.util.Objects.requireNonNull(source, "source");
+    }
+
+    /**
      * Proposed-shot path for the upcoming firing integration. Always checks current entities;
      * callers must not cache this result or use the legacy eye-line cache with it.
      * Diagnostics use this same function and never sample/commit aiming state.
@@ -69,7 +81,7 @@ public final class GuardFriendlyFireSafety {
                         bounds, entity -> entity != shooter && entity.isAlive() && !entity.isSpectator()
                                 && (entity.isPickable() || isProtected(shooter, entity)), found, limit);
                 return found.stream().map(entity -> new GuardShotSafety.Candidate(entity.getId(),
-                        entity.getBoundingBox().minmax(com.tacz.guns.util.HitboxHelper.getFixedBoundingBox(entity, shooter)),
+                        entity.getBoundingBox().minmax(hitboxSource.apply(entity, shooter)),
                         isProtected(shooter, entity))).toList();
             }
 

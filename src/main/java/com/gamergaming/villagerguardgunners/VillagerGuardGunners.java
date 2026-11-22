@@ -8,7 +8,6 @@ import com.gamergaming.villagerguardgunners.defense.VillageDefenseStateTicker;
 import com.gamergaming.villagerguardgunners.defense.VillageDefenseEventRuntime;
 import com.gamergaming.villagerguardgunners.defense.VillageDefenseEventSources;
 import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseStaffingRuntime;
-import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncNetwork;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyServerServices;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.init.ModBlockEntities;
@@ -41,6 +40,20 @@ public class VillagerGuardGunners {
         IEventBus modEventBus = context.getModEventBus();
 
         ModConfigs.init();
+        // Gun mods register before any guard exists; lookups follow this order.
+        if (net.minecraftforge.fml.ModList.get().isLoaded(
+                com.gamergaming.villagerguardgunners.guns.OptionalGunMods.TACZ)) {
+            com.gamergaming.villagerguardgunners.compat.tacz.TaczBootstrap.register();
+        }
+        // Optional gun mods: each bootstrap class is touched only when its mod is installed.
+        if (net.minecraftforge.fml.ModList.get().isLoaded(
+                com.gamergaming.villagerguardgunners.guns.OptionalGunMods.CGM)) {
+            com.gamergaming.villagerguardgunners.compat.cgm.CgmBootstrap.register();
+        }
+        if (net.minecraftforge.fml.ModList.get().isLoaded(
+                com.gamergaming.villagerguardgunners.guns.OptionalGunMods.POINT_BLANK)) {
+            com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankBootstrap.register();
+        }
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::onReload);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::started);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.trade.TradeDefinitions::stopped);
@@ -48,8 +61,6 @@ public class VillagerGuardGunners {
         modEventBus.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterProfession::register);
         MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::damaged);
         MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST, com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::healed);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::reload);
-        MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime::melee);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::left);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::travel);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.medical.TransportRuntime::mount);
@@ -75,7 +86,6 @@ public class VillagerGuardGunners {
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.OverviewRuntime::tick);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.management.OverviewRuntime::stopped);
         MinecraftForge.EVENT_BUS.addListener(com.gamergaming.villagerguardgunners.quartermaster.service.ServiceHistory::stopped);
-        TaCZGunPackSyncNetwork.init();
         com.gamergaming.villagerguardgunners.quartermaster.management.ManagementNetwork.init();
         MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.LOWEST,
                 com.gamergaming.villagerguardgunners.quartermaster.management.QuartermasterManagement::interact);

@@ -77,7 +77,10 @@ final class VillageWatchtowerStepFourteenContractTest {
                 () -> assertTrue(loot.contains("hasBoundedDefinition(")),
                 () -> assertTrue(loot.contains("instanceof ConstantValue")),
                 () -> assertTrue(loot.contains("instanceof LootItem")),
-                () -> assertTrue(loot.contains("TimelessAPI.getCommonAmmoIndex")),
+                () -> assertTrue(loot.contains("provider.isKnownUsableSupply(stack)")),
+                () -> assertTrue(Files.readString(PROJECT.resolve(
+                        "src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/provider/TaczGunProvider.java"))
+                        .contains("TimelessAPI.getCommonAmmoIndex")),
                 () -> assertTrue(armory.contains("initializeGenerated(")),
                 () -> assertTrue(armory.contains("queueGeneratedInitialization()")),
                 () -> assertTrue(armory.contains("generatedIdentity != null")),
@@ -99,8 +102,8 @@ final class VillageWatchtowerStepFourteenContractTest {
         String build = read("build.gradle");
 
         assertAll(
-                () -> assertTrue(serialized.contains("tacz:ammo")),
-                () -> assertTrue(serialized.contains("AmmoId")),
+                () -> assertTrue(serialized.contains("villagerguardgunners:guard_ammo")),
+                () -> assertTrue(serialized.contains("tacz:9mm")),
                 () -> assertFalse(serialized.contains("tacz:modern_kinetic_gun")),
                 () -> assertTrue(build.contains(
                         "data/villagerguardgunners/loot_tables/chests/watchtower_armory.json")),

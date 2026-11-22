@@ -449,6 +449,37 @@ or replace its equipment. A guard with disabled AI rejects the interaction, as
 does a gun whose TaCZ data selects dummy or native-infinite reserves that cannot
 consume physical inventory ammunition.
 
+## Infinite ammo
+
+Use **Ammo Quality of Life → Infinite Ammo** in Fzzy Config, or set
+`infiniteAmmoMode` under `[ammunition]` in `config/villagerguardgunners/guard_gunners.toml`.
+The server controls the setting; client preferences cannot override it.
+
+| Value | Effect |
+| --- | --- |
+| `OFF` | Normal ammo requirements. Default for new and upgraded configurations. |
+| `WITH_RELOADING` | Unlimited reserve ammo for every guard, with normal reloads. |
+| `WITHOUT_RELOADING` | Unlimited reserves and supplied magazines for every guard. Action cycling still applies. |
+| `CREATIVE_AMMO_BOX` | New TaCZ loadouts receive a caliber-specific creative box. CGM and Point Blank loadouts receive ordinary ammo. Existing guards need boxes supplied manually. |
+
+The two virtual modes apply to existing guards immediately. Their carried ammo
+is not consumed. Guards do not seek ammo from Village Armories or request ammo
+top-ups from Quartermasters while using virtual reserves. Automatic dropped-ammo
+pickup is also skipped; manual inventory access and supply handoffs still work.
+Equipment and medical service remain available.
+
+No-reload mode keeps magazines supplied up to their attachment-adjusted capacity.
+It does not bypass manual action cycling, firing delays, heat, or friendly-fire
+checks. A reload already underway can finish when the mode changes. When virtual
+ammo is disabled, loaded rounds remain and guards return to ordinary supply
+requirements. Inventory-fed guns follow their native behavior without a magazine
+reload in either virtual mode.
+
+Creative boxes are ordinary TaCZ items: players can remove or transfer them, and
+they remain usable after changing the mode. Removing a box does not remove rounds
+already loaded in the gun. This option does not change natural gun spawn chances,
+replace existing loadouts, or require a datapack.
+
 ## Rules of engagement
 
 Rules of engagement filter the guard's selected target, including replacements

@@ -122,8 +122,10 @@ public final class PackSafetyProbe {
         }
         // A low wall leaves eye-to-eye visibility clear while threatening the shot envelope.
         if(scene().equals("wall")) level.setBlockAndUpdate(WALL,Blocks.STONE_SLAB.defaultBlockState());
-        var goal=new GuardGunCombatGoal(guard); var field=GuardGunCombatGoal.class.getDeclaredField("gunController");
-        field.setAccessible(true); controller=(NativeGunController)field.get(goal); controller.startAiming(); initialAmmo=ammo();
+        controller = (NativeGunController) com.gamergaming.villagerguardgunners.guns.GuardWeaponControlAccess
+                .control(guard).orElseThrow().active();
+        controller.startAiming();
+        initialAmmo = ammo();
     }
     @SubscribeEvent(priority=EventPriority.HIGH,receiveCanceled=true) public static void fire(GunFireEvent event) {
         if(guard==null || event.getLogicalSide().isClient() || event.getShooter()!=guard) return;

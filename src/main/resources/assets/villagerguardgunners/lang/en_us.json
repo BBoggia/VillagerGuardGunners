@@ -1,4 +1,10 @@
 {
+  "config.villagerguardgunners.guard_gunners.ammunition.infiniteAmmoMode": "Infinite Ammo",
+  "config.villagerguardgunners.guard_gunners.ammunition.infiniteAmmoMode.desc": "Virtual modes apply to all guards and leave carried supplies untouched. Creative-box mode issues boxes with new gun loadouts; equip existing guards manually. Issued boxes remain usable after switching modes. Reload delays, action cycling, heat and firing safety follow the selected mode.",
+  "config.villagerguardgunners.infinite_ammo_mode.OFF": "Off",
+  "config.villagerguardgunners.infinite_ammo_mode.WITH_RELOADING": "Infinite Ammo with Reloading",
+  "config.villagerguardgunners.infinite_ammo_mode.WITHOUT_RELOADING": "Infinite Ammo without Reloading",
+  "config.villagerguardgunners.infinite_ammo_mode.CREATIVE_AMMO_BOX": "Infinite Ammo with Creative Ammo Box",
   "block.villagerguardgunners.armory": "Village Armory",
   "container.villagerguardgunners.armory": "Village Armory",
   "container.villagerguardgunners.armory.public": "Access: Public",

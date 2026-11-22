@@ -59,12 +59,14 @@ final class ProjectCompatibilityContractTest {
     }
 
     @Test
-    void declaresGuardVillagersAndTaczAsRequiredRuntimeDependencies() {
+    void declaresRequiredLibrariesAndOptionalGunMods() {
         assertAll(
-                () -> assertDependency("guardvillagers", "[1.20.1-1.6.19]"),
-                () -> assertDependency("tacz", property("tacz_version_range")),
-                () -> assertDependency("fzzy_config", property("fzzy_config_version_range")),
-                () -> assertDependency("kotlinforforge", property("kotlin_for_forge_version_range")));
+                () -> assertDependency(true, "guardvillagers", "[1.20.1-1.6.19]"),
+                () -> assertDependency(false, "cgm", "[0,)"),
+                () -> assertDependency(false, "pointblank", "[0,)"),
+                () -> assertDependency(false, "tacz", property("tacz_version_range")),
+                () -> assertDependency(true, "fzzy_config", property("fzzy_config_version_range")),
+                () -> assertDependency(true, "kotlinforforge", property("kotlin_for_forge_version_range")));
     }
 
     @Test
@@ -86,7 +88,7 @@ final class ProjectCompatibilityContractTest {
         return gradleProperties.getProperty(key);
     }
 
-    private static void assertDependency(String modId, String versionRange) {
+    private static void assertDependency(boolean mandatory, String modId, String versionRange) {
         int dependencyStart = modsToml.indexOf("modId=\"" + modId + "\"");
         assertTrue(dependencyStart >= 0, () -> "Missing required dependency metadata for " + modId);
 
@@ -96,8 +98,8 @@ final class ProjectCompatibilityContractTest {
                 : modsToml.substring(dependencyStart);
 
         assertAll(
-                () -> assertTrue(dependencyBlock.contains("mandatory=true"),
-                        () -> modId + " must remain mandatory"),
+                () -> assertTrue(dependencyBlock.contains("mandatory=" + mandatory),
+                        () -> modId + " has the wrong dependency type"),
                 () -> assertTrue(dependencyBlock.contains("versionRange=\"" + versionRange + "\""),
                         () -> modId + " must use the reviewed version range " + versionRange),
                 () -> assertTrue(dependencyBlock.contains("side=\"BOTH\""),

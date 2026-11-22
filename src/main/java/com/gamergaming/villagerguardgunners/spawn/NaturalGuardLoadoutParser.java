@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
+import com.gamergaming.villagerguardgunners.guns.OptionalGunMods;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutConditionSpec.RaidRequirement;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutConditionSpec.RegistrySelector;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutConditionSpec.SelectorGroup;
@@ -22,6 +23,7 @@ final class NaturalGuardLoadoutParser {
     private NaturalGuardLoadoutParser() {
     }
 
+    @javax.annotation.Nullable
     static NaturalGuardLoadoutPool parse(ResourceLocation id, JsonElement json) {
         if (id == null) {
             throw new NullPointerException("id");
@@ -82,9 +84,16 @@ final class NaturalGuardLoadoutParser {
                     format >= NaturalGuardLoadoutFormat.CONDITIONAL_VERSION
                             ? optionalConditions(entryJson, location)
                             : NaturalGuardLoadoutConditionSpec.ANY;
+            // An entry for a supported gun mod that is not installed is validated, then left out.
+            if (OptionalGunMods.isAbsent(gunId.getNamespace())
+                    || sidearmId != null && OptionalGunMods.isAbsent(sidearmId.getNamespace())) {
+                continue;
+            }
             entries.add(new NaturalGuardLoadoutPool.Entry(
                     gunId, sidearmId, roleId, weight, conditions));
         }
+        // A nonempty definition can be entirely conditional on absent gun mods.
+        if (entries.isEmpty() && !entriesJson.isEmpty()) return null;
         return new NaturalGuardLoadoutPool(id, format, entries);
     }
 

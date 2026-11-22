@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.entity;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoMaintenance;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
@@ -16,7 +17,6 @@ import com.gamergaming.villagerguardgunners.orders.GuardOrderPermissions;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmRuntimeAssessment;
 import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmRecovery;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
-import com.tacz.guns.api.item.IGun;
 import com.mojang.datafixers.util.Pair;
 import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
@@ -232,7 +232,7 @@ public class GuardGunnerContainer extends AbstractContainerMenu {
                         || stack == null
                         || stack.isEmpty()
                         || stack.getCount() != 1
-                        || !(stack.getItem() instanceof IGun)) {
+                        || !GunProviders.isGun(stack)) {
                     return false;
                 }
                 // Client prediction remains structural. The authoritative

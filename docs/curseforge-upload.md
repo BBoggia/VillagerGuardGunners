@@ -21,8 +21,7 @@ evergreen page copy changes.
 ## File
 
 - Display name: `Villager Guard Gunners <version>`
-- Release type: choose Release, Beta, or Alpha to match the version and tested
-  release status
+- Release type: use `mod_release_type` from `gradle.properties` for this file.
 - Game version: `Minecraft 1.20.1`
 - Mod loader: `Forge`
 - Java: `17`
@@ -45,11 +44,10 @@ the manual publication checks below.
 Mark each project as a required dependency on the CurseForge file:
 
 - Guard Villagers
-- Timeless and Classics Zero
 - Fzzy Config
 - Kotlin for Forge
 
-The dependencies are separate downloads and are not bundled in the mod JAR.
+Mark Timeless and Classics Zero (TaCZ), MrCrayfish’s Gun Mod (Unofficial), Vic’s Point Blank, and Point Blank: Jelly as optional dependencies.
 
 ## Final review
 
@@ -57,7 +55,7 @@ The dependencies are separate downloads and are not bundled in the mod JAR.
   exact candidate JAR.
 - Confirm the file is tagged for Minecraft 1.20.1 and Forge.
 - Confirm the release type matches the intended release channel.
-- Confirm all four required relations are present.
+- Confirm the three required mod relations and the optional gun mod relations are present.
 - Confirm the project license matches `LICENSE.txt`.
 - Confirm the uploaded JAR matches the recorded SHA-256 checksum.
 - Confirm the public description and release note match the uploaded version.

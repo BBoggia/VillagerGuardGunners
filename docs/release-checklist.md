@@ -6,19 +6,30 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: read `mod_version` in `gradle.properties`. The current candidate is `1.9.2`.
+- Version: use `mod_version` in `gradle.properties` and the matching file in `docs/releases/`.
 - Minecraft: `1.20.1`
 - Forge: `47.4.10` minimum; compatible 47.x releases
 - Guard Villagers: `1.20.1-1.6.19`
-- TaCZ runtime requirement: `1.1.8` or newer for Minecraft `1.20.1` (`[1.1.8,)`).
+- Optional TaCZ version: `1.1.8` or newer for Minecraft `1.20.1` (`[1.1.8,)`).
   The compile dependency remains pinned by `tacz_version`; the loader range is
   defined separately by `tacz_version_range` in `gradle.properties`.
-- Fzzy Config: `0.7.6+1.20.1`
+- Other optional gun mods: MrCrayfish’s Gun Mod (Unofficial) with Framework, or either Vic’s Point Blank or Point Blank: Jelly with GeckoLib.
+- Fzzy Config: `0.7.6+1.20.1` or `0.7.7+1.20.1`, Forge builds
 - Kotlin for Forge: `4.12.0`
 - Automated baseline gun pack: TaCZ Default Gun Pack bundled with TaCZ
   `1.1.8-hotfix`. Record additional tested pack versions with candidate evidence.
 - Candidate JAR SHA-256: use the checksum shipped with the candidate being tested.
-  Earlier release and development hashes do not identify the current 1.9.2 build.
+  Earlier release and development hashes do not identify this build.
+
+## Infinite ammo update scope
+
+Version 1.10 adds the four Infinite Ammo modes. Check the installed JAR with
+Fzzy Config 0.7.6 and 0.7.7, including a run with Arcana. Cover default finite
+ammo, ordinary reload delays, no-reload magazines, manual action cycling,
+bursts, shotguns, inventory-fed guns, canceled and unsafe shots, live mode
+changes, new primary/sidearm creative boxes, and removal of issued boxes.
+Carried finite supplies must remain unchanged in virtual modes. Record the
+exact JAR hash; these checks do not certify unrelated pending rows below.
 
 ## Arcana compatibility hotfix scope
 
@@ -56,7 +67,7 @@ results do not certify changed code merely because its version was unchanged.
 Use the checksum in the prepared candidate bundle's `SHA256SUMS.txt` to identify
 its exact files. Earlier development reports do not certify changed artifacts.
 The checked rows below are historical preparation results and apply only to
-their recorded artifact, not automatically to the current 1.9.2 JAR.
+their recorded artifact, not automatically to the current JAR.
 Current preparation results are recorded with the candidate review evidence;
 manual, multiplayer, upgrade, performance, and remote CI checks still require
 matching evidence before public release.

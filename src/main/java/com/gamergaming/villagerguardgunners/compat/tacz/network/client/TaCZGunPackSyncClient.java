@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.compat.tacz.network.client;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
+import com.gamergaming.villagerguardgunners.compat.tacz.TaCZRuntimeCompatibility;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncAssembly;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncPacket;
 import com.gamergaming.villagerguardgunners.compat.tacz.network.TaCZGunPackSyncProtocol;
@@ -14,11 +15,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
-/** Client-only atomic publication for a completed chunked TaCZ cache. */
-@Mod.EventBusSubscriber(
-        modid = VillagerGuardGunners.MODID,
-        bus = Mod.EventBusSubscriber.Bus.FORGE,
-        value = Dist.CLIENT)
+/**
+ * Client-only atomic publication for a completed chunked TaCZ cache.
+ * Registered by the TaCZ bootstrap on the client, so it loads only with TaCZ.
+ */
 public final class TaCZGunPackSyncClient {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final TaCZGunPackSyncAssembly ASSEMBLY = new TaCZGunPackSyncAssembly();
@@ -27,6 +27,11 @@ public final class TaCZGunPackSyncClient {
     }
 
     public static void accept(TaCZGunPackSyncPacket packet, boolean remoteConnection) {
+        if (TaCZRuntimeCompatibility.hasNativeChunkedSync()) {
+            // A legacy transfer must not overwrite a cache published by TaCZ 1.2.0.
+            ASSEMBLY.clear();
+            return;
+        }
         ASSEMBLY.accept(packet).ifPresent(encoded -> {
             try {
                 var cache = TaCZGunPackSyncProtocol.decodeCache(encoded);

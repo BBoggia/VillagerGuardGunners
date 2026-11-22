@@ -502,7 +502,7 @@ public class GuardGunnerInventoryScreen extends AbstractContainerScreen<GuardGun
             lastAmmoFingerprintTick = gameTime;
         }
         if (refreshDue || inventoryChanged) {
-            cachedAmmoSummary = GuardAmmoSummary.capture(guard.getMainHandItem(), taczInventory);
+            cachedAmmoSummary = GuardAmmoSummary.captureForGuard(guard, guard.getMainHandItem(), taczInventory);
             captureInventoryFingerprint();
             nextAmmoStatusRefreshTick = gameTime + AMMO_STATUS_REFRESH_TICKS;
             lastAmmoFingerprintTick = gameTime;

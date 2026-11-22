@@ -204,7 +204,8 @@ public final class NaturalGuardLoadoutPools
                 .forEach(entry -> {
                     ResourceLocation id = Objects.requireNonNull(entry.getKey(), "pool ID");
                     try {
-                        loaded.put(id, parsePool(id, entry.getValue()));
+                        var pool = parsePool(id, entry.getValue());
+                        if (pool != null) loaded.put(id, pool);
                     } catch (JsonParseException | IllegalArgumentException exception) {
                         rejected.add(new NaturalGuardLoadoutReloadSnapshot.RejectedPool(
                                 id,
@@ -214,6 +215,7 @@ public final class NaturalGuardLoadoutPools
         return new LoadResult(Map.copyOf(loaded), List.copyOf(rejected));
     }
 
+    @Nullable
     static NaturalGuardLoadoutPool parsePool(ResourceLocation id, JsonElement json) {
         return NaturalGuardLoadoutParser.parse(id, json);
     }

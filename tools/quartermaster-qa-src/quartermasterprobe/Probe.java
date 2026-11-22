@@ -117,6 +117,7 @@ public final class Probe {
         var state = GuardEquipmentServiceAccess.get(guard); var context = ServiceManagementPermissions.Context.of(station);
         var requested = settings(GuardServiceState.Policy.PROFILE, assignment());
         check("native-operator-and-poi-ready", ServiceEligibility.station(station)==ServiceStatus.READY);
+        CASES.addAll(AmmoServiceCases.run(level,station,owner));
         CASES.addAll(AssessmentCases.run(level,station,owner));
         CASES.addAll(ManagementCases.run(level,station,operator,owner));
         CASES.addAll(OverviewCases.run(level,station,owner));

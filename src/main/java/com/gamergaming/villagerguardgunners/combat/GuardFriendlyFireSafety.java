@@ -21,6 +21,18 @@ public final class GuardFriendlyFireSafety {
     }
 
     /**
+     * Extra bounds a gun mod uses when it tests hits, on top of the entity's
+     * own box. An installed gun mod replaces the default; the checked box only
+     * ever grows, so the ally check stays conservative for every mod.
+     */
+    private static volatile java.util.function.BiFunction<Entity, Entity, AABB> hitboxSource =
+            (entity, shooter) -> entity.getBoundingBox();
+
+    public static void setHitboxSource(java.util.function.BiFunction<Entity, Entity, AABB> source) {
+        hitboxSource = java.util.Objects.requireNonNull(source, "source");
+    }
+
+    /**
      * Proposed-shot path for the upcoming firing integration. Always checks current entities;
      * callers must not cache this result or use the legacy eye-line cache with it.
      * Diagnostics use this same function and never sample/commit aiming state.
@@ -28,6 +40,17 @@ public final class GuardFriendlyFireSafety {
     public static GuardShotSafety.Result diagnoseShot(
             Guard shooter, LivingEntity target, GuardShotAim aim,
             GuardShotEnvelope.Ballistics ballistics, double clearance) {
+        return diagnoseShot(shooter, target, aim, ballistics, clearance, true);
+    }
+
+    /**
+     * @param inheritsShooterMotion true when the gun mod adds the shooter's
+     *     motion to the projectile. The ballistics must then carry the
+     *     shooter's current motion, or the aim is reported stale.
+     */
+    public static GuardShotSafety.Result diagnoseShot(
+            Guard shooter, LivingEntity target, GuardShotAim aim,
+            GuardShotEnvelope.Ballistics ballistics, double clearance, boolean inheritsShooterMotion) {
         if (!(shooter.level() instanceof net.minecraft.server.level.ServerLevel level)
                 || target.level() != level || !target.isAlive() || !shooter.isAlive()) {
             return GuardShotSafety.result(GuardShotSafety.Status.INVALID_WORLD, -1, null, null);
@@ -47,7 +70,7 @@ public final class GuardFriendlyFireSafety {
         Vec3 motion = shooter.getDeltaMovement();
         Vec3 inherited = new Vec3(motion.x, shooter.onGround() ? 0 : motion.y, motion.z);
         if (aim.gameTick() != level.getGameTime() || origin.distanceToSqr(aim.projectileOrigin()) > 1.0E-10
-                || inherited.distanceToSqr(ballistics.inheritedVelocity()) > 1.0E-10) {
+                || inheritsShooterMotion && inherited.distanceToSqr(ballistics.inheritedVelocity()) > 1.0E-10) {
             return GuardShotSafety.result(GuardShotSafety.Status.STALE_AIM, -1, null, preparation.envelope());
         }
         return GuardShotSafety.check(preparation.envelope(), shooter.getBoundingBox(), new GuardShotSafety.Scene() {
@@ -58,7 +81,7 @@ public final class GuardFriendlyFireSafety {
                         bounds, entity -> entity != shooter && entity.isAlive() && !entity.isSpectator()
                                 && (entity.isPickable() || isProtected(shooter, entity)), found, limit);
                 return found.stream().map(entity -> new GuardShotSafety.Candidate(entity.getId(),
-                        entity.getBoundingBox().minmax(com.tacz.guns.util.HitboxHelper.getFixedBoundingBox(entity, shooter)),
+                        entity.getBoundingBox().minmax(hitboxSource.apply(entity, shooter)),
                         isProtected(shooter, entity))).toList();
             }
 

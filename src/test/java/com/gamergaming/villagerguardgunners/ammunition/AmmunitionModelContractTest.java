@@ -22,7 +22,10 @@ final class AmmunitionModelContractTest {
 
     @Test
     void compatibilityRemainsTaCZNativeAndFailSoft() throws IOException {
-        String compatibility = read("AmmoCompatibility.java");
+        String compatibility = Files.readString(projectDirectory.resolve(
+                "src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/provider/TaczAmmoCompatibility.java"),
+                StandardCharsets.UTF_8);
+        String neutral = read("AmmoCompatibility.java");
 
         assertAll(
                 () -> assertTrue(compatibility.contains("IAmmo looseAmmo")),
@@ -32,26 +35,34 @@ final class AmmunitionModelContractTest {
                 () -> assertTrue(compatibility.contains("ammoBox.getAmmoCount")),
                 () -> assertTrue(compatibility.contains("ammoBox.isCreative")),
                 () -> assertTrue(compatibility.contains("ammoBox.isAllTypeCreative")),
-                () -> assertTrue(compatibility.contains("Compatibility.UNKNOWN")),
+                () -> assertTrue(compatibility.contains("Assessment.unknown(")),
+                () -> assertTrue(neutral.contains("Compatibility.UNKNOWN")),
                 () -> assertTrue(compatibility.contains("gunStack.copy()")),
                 () -> assertTrue(compatibility.contains("candidate.copy()")),
-                () -> assertFalse(compatibility.contains("getRegistryName")));
+                () -> assertFalse(compatibility.contains("getRegistryName")),
+                () -> assertTrue(neutral.contains("provider.assessAmmo(gunStack, candidate)")),
+                () -> assertFalse(neutral.contains("com.tacz")));
     }
 
     @Test
     void summaryMirrorsTaCZCapacityChamberAndReserveRules() throws IOException {
-        String summary = read("GuardAmmoSummary.java");
+        String summary = Files.readString(projectDirectory.resolve(
+                "src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/provider/TaczAmmoSummary.java"),
+                StandardCharsets.UTF_8);
+        String neutralSummary = read("GuardAmmoSummary.java");
 
         assertAll(
                 () -> assertTrue(summary.contains("AttachmentDataUtils.getAmmoCountWithAttachment")),
                 () -> assertTrue(summary.contains("boolean supportsChamber = bolt != Bolt.OPEN_BOLT")),
-                () -> assertTrue(summary.contains("displayedCount(magazineCapacity, supportsChamber)")),
+                () -> assertTrue(neutralSummary.contains("displayedCount(magazineCapacity, supportsChamber)")),
+                () -> assertTrue(neutralSummary.contains("provider.captureAmmo(gunStack, reserveHandler)")),
+                () -> assertFalse(neutralSummary.contains("com.tacz")),
                 () -> assertTrue(summary.contains("reloadData.isInfinite()")),
                 () -> assertTrue(summary.contains("gun.useDummyAmmo")),
                 () -> assertTrue(summary.contains("ReserveSource.NATIVE_INFINITE")),
                 () -> assertTrue(summary.contains("ReserveSource.DUMMY")),
                 () -> assertTrue(summary.contains("ReserveSource.DUMMY,\n                        0,")),
-                () -> assertTrue(summary.contains("MAX_SCANNED_SLOTS")),
+                () -> assertTrue(neutralSummary.contains("MAX_SCANNED_SLOTS")),
                 () -> assertEquals(
                         Long.MAX_VALUE,
                         GuardAmmoSummary.saturatingAdd(Long.MAX_VALUE - 2L, 3L)));
@@ -79,7 +90,7 @@ final class AmmunitionModelContractTest {
 
         assertAll(
                 () -> assertTrue(maintenance.contains("isPotentialSupply(ItemStack stack)")),
-                () -> assertTrue(maintenance.contains("getAmmoCount(checkedBox) > 0")),
+                () -> assertTrue(maintenance.contains("provider.isSpentAmmoContainer(stack)")),
                 () -> assertTrue(maintenance.contains("isEmptyFiniteBox(original)")),
                 () -> assertTrue(maintenance.contains("guard.spawnAtLocation(extracted.copy())")),
                 () -> assertTrue(maintenance.contains("handler.setStackInSlot(slot, original)")),

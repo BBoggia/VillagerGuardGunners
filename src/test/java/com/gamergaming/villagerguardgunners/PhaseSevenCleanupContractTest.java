@@ -36,6 +36,9 @@ final class PhaseSevenCleanupContractTest {
                 "").replace(
                         read("src/main/java/com/gamergaming/villagerguardgunners/worldgen/post/GuardPostSpawner.java"),
                         "");
+        String infiniteAmmo = read("src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/provider/TaczInfiniteAmmo.java");
+        productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
+                infiniteAmmo, infiniteAmmo.replace("setCurrentAmmoCount(", "configuredMagazineRefill("));
         String recovery = read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/QuartermasterRecovery.java");
         // Item-entity recovery does not implement custom gun projectiles.
         productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
@@ -48,6 +51,15 @@ final class PhaseSevenCleanupContractTest {
         assertFalse(shotBridge.contains("new EntityKineticBullet"));
         productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
                 shotBridge, shotBridge.replace("addFreshEntity(", "nativeProjectileInsertion("));
+        // MrCrayfish's Gun Mod has no way for a non-player to fire, so its backend inserts the
+        // projectile that the mod's own factory built. It must never construct or tune one itself.
+        String cgmBackend = read("src/main/java/com/gamergaming/villagerguardgunners/compat/cgm/CgmGunBackend.java");
+        assertTrue(cgmBackend.contains("ProjectileEntity entity = factory.create(level, guard, stack, item, gun);"));
+        assertFalse(cgmBackend.contains("new ProjectileEntity("));
+        assertFalse(cgmBackend.contains("setDeltaMovement("));
+        assertEquals(1, countOccurrences(cgmBackend, "level::addFreshEntity"));
+        productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
+                cgmBackend, cgmBackend.replace("::addFreshEntity", "::modFactoryProjectileInsertion"));
         for (String file : List.of("VillagePopulationRuntime.java", "VillagePopulationPlacement.java")) {
             String population = read("src/main/java/com/gamergaming/villagerguardgunners/village/population/" + file);
             productionSourceWithoutNaturalConversionBridge = productionSourceWithoutNaturalConversionBridge.replace(
@@ -137,7 +149,12 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertTrue(properties.contains("fzzy_config_version=0.7.6+1.20.1")),
                 () -> assertTrue(metadata.contains("modId=\"fzzy_config\"")),
                 () -> assertTrue(metadata.contains("modId=\"kotlinforforge\"")),
-                () -> assertEquals(6, countOccurrences(metadata, "[[dependencies.${mod_id}]]")));
+                () -> assertTrue(build.contains("compileOnly fg.deobf('curse.maven:cgm-945471:")),
+                () -> assertTrue(build.contains("compileOnly fg.deobf('maven.modrinth:vics-point-blank:")),
+                () -> assertTrue(build.contains("compileOnly fg.deobf('maven.modrinth:pb-jelly:")),
+                () -> assertEquals(5, countOccurrences(metadata, "mandatory=true")),
+                () -> assertEquals(3, countOccurrences(metadata, "mandatory=false")),
+                () -> assertEquals(8, countOccurrences(metadata, "[[dependencies.${mod_id}]]")));
     }
 
     @Test
@@ -154,9 +171,12 @@ final class PhaseSevenCleanupContractTest {
                 () -> assertFalse(bootstrap.contains("ModEntities")),
                 () -> assertTrue(bootstrap.contains("ModConfigs.init();")),
                 () -> assertTrue(mixins.contains(
-                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardProjectileMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\",\"QuartermasterOfferMixin\",\"QuartermasterOffersMixin\",\"QuartermasterLevelTradesMixin\",\"QuartermasterResultSlotMixin\",\"QuartermasterMerchantMenuMixin\"]")),
+                        "\"mixins\":[\"GuardLifeMixin\",\"CasualtyMobMixin\",\"CasualtyHealingMixin\",\"BellBlockMixin\",\"GuardMixin\",\"TacticalPathNavigationMixin\",\"GuardDetourPathNavigationMixin\",\"GuardVillageReturnGoalMixin\",\"ItemEntityMixin\",\"PopulationStructureStartMixin\",\"VillageBuildingSelectionMixin\",\"VillageBuildingTerrainMixin\",\"RaidMixin\",\"RaiseShieldGoalMixin\",\"VillagerToGuardMixin\",\"WalkBackToCheckPointGoalMixin\",\"accessor.LootPoolAccessor\",\"accessor.LootPoolEntryAccessor\",\"accessor.TagEntryAccessor\",\"accessor.LootPoolSingletonAccessor\",\"accessor.LootTableAccessor\",\"accessor.RaidsAccessor\",\"accessor.StructureTemplatePoolAccessor\",\"accessor.VillagePoiStorageAccessor\",\"accessor.VillagePoolElementAccessor\",\"IntegratedVillageTagLoaderMixin\",\"QuartermasterOfferMixin\",\"QuartermasterOffersMixin\",\"QuartermasterLevelTradesMixin\",\"QuartermasterResultSlotMixin\",\"QuartermasterMerchantMenuMixin\"]")),
                 () -> assertTrue(mixins.contains(
                         "\"client\":[\"client.GuardModelMixin\",\"client.GuardSteveModelMixin\",\"client.CasualtyRendererMixin\",\"client.CotNameTagMixin\"]")),
+                () -> assertFalse(mixins.contains("TaCZ"), "TaCZ mixins apply only when TaCZ is installed"),
+                () -> assertTrue(read("src/main/resources/mixins.villagerguardgunners.tacz.json").replaceAll("\\s+", "").contains(
+                        "\"mixins\":[\"TaCZCommonAssetsManagerMixin\",\"TaCZGuardShotMixin\",\"TaCZGuardAmmoMixin\",\"TaCZGuardProjectileMixin\"]")),
                 () -> assertFalse(mixins.contains("GuardRendererMixin")));
     }
 
@@ -230,7 +250,18 @@ final class PhaseSevenCleanupContractTest {
         String medicalReload = read("src/main/java/com/gamergaming/villagerguardgunners/medical/TreatmentProfiles.java");
         String tradeRuntime = read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/trade/QuartermasterTrades.java");
         assertTrue(tradeRuntime.contains("if(WARNED.add(id))"));
+        String cgmBootstrap = read("src/main/java/com/gamergaming/villagerguardgunners/compat/cgm/CgmBootstrap.java");
+        // Operator warnings are each issued once, never on every shot.
+        assertEquals(2, countOccurrences(cgmBootstrap, "LOGGER."));
+        assertTrue(cgmBootstrap.contains("if (!warnedDischargeFailure) {"));
+        assertTrue(cgmBootstrap.contains("warnedDischargeFailure = true;"));
+        assertTrue(cgmBootstrap.contains("if (!warnedImprovedHitboxes) {"));
+        String pbBootstrap = read("src/main/java/com/gamergaming/villagerguardgunners/compat/pointblank/PointBlankBootstrap.java");
+        assertTrue(pbBootstrap.contains("if (!warnedAfterShot)"));
+        assertEquals(2, countOccurrences(pbBootstrap, "LOGGER.warn("));
         String performanceSensitiveSource = productionSource
+                .replace(pbBootstrap, "")
+                .replace(cgmBootstrap, "")
                 .replace(tradeRuntime, "")
                 .replace(read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/trade/TradeDefinitions.java"), "")
                 .replace(medicalReload, "")

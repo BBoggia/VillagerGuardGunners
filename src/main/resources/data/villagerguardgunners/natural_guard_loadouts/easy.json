@@ -12,6 +12,18 @@
     {
       "gun": "tacz:p320",
       "weight": 3
+    },
+    {
+      "gun": "cgm:pistol",
+      "weight": 10
+    },
+    {
+      "gun": "pointblank:glock17",
+      "weight": 6
+    },
+    {
+      "gun": "pointblank:m1911a1",
+      "weight": 4
     }
   ]
 }

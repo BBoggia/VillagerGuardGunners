@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.quartermaster.service;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -14,8 +15,9 @@ public final class ServiceHistory {
             var events=stations.computeIfAbsent(plan.placement(),ignored->new ArrayDeque<>());
             String item=net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(plan.replacement().getItem()).toString();
             try {
-                if(plan.replacement().getItem() instanceof com.tacz.guns.api.item.IGun gun)item=gun.getGunId(plan.replacement().copy()).toString();
-                else if(plan.replacement().getItem() instanceof com.tacz.guns.api.item.IAmmo ammo)item=ammo.getAmmoId(plan.replacement().copy()).toString();
+                var replacement=plan.replacement().copy(); var gunProvider=GunProviders.find(replacement).orElse(null);
+                if(gunProvider!=null)item=gunProvider.ref(replacement).map(ref->ref.id().toString()).orElse(item);
+                else if(GunProviders.isLooseAmmo(replacement))item=GunProviders.findAmmoOwner(replacement).flatMap(provider->provider.ammoId(replacement)).map(Object::toString).orElse(item);
             }catch(RuntimeException unavailable){/* Keep the base item identity. */}
             events.addFirst(new Entry(plan.guard().getUUID(),level.getGameTime(),item,amount));
             while(events.size()>16)events.removeLast();while(stations.size()>128)stations.remove(stations.keySet().iterator().next());

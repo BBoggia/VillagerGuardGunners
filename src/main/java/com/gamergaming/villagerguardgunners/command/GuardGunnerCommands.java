@@ -14,7 +14,6 @@ import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyDiagnostics;
 import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
 import com.gamergaming.villagerguardgunners.combat.GuardFriendlyFireSafety;
-import com.gamergaming.villagerguardgunners.combat.NativeGunController;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalEnvelope;
 import com.gamergaming.villagerguardgunners.defense.duty.GuardAutomaticDutyMovementController;
 import com.gamergaming.villagerguardgunners.defense.duty.GuardPatrolRouteMovementController;
@@ -94,7 +93,33 @@ public final class GuardGunnerCommands {
                 dutyGoal == null ? null : dutyGoal.captureDiagnostics();
         GuardPatrolRouteMovementController.RuntimeSnapshot patrolRoute =
                 dutyGoal == null ? null : dutyGoal.capturePatrolDiagnostics();
-        NativeGunController.Diagnostics nativeState = snapshot.nativeState();
+        com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics nativeState = snapshot.nativeState();
+        // A gun from a mod this mod fires itself is operated by a managed driver, not TaCZ's controller.
+        var heldGunMod = com.gamergaming.villagerguardgunners.guns.GunProviders.find(guard.getMainHandItem());
+        var managedState = heldGunMod
+                .flatMap(provider -> com.gamergaming.villagerguardgunners.guns.managed.ManagedDrivers.find(guard, provider.id()))
+                .map(com.gamergaming.villagerguardgunners.guns.managed.ManagedWeaponDriver::captureDiagnostics)
+                .orElse(null);
+        send(source, line("Gun mod", heldGunMod.map(provider -> provider.id()).orElse("none")
+                + (managedState == null ? "" : ", fired by Villager Guard Gunners"),
+                ChatFormatting.GRAY));
+        if (managedState != null) {
+            send(source, line("Managed weapon", (managedState.gunId() == null ? "none" : managedState.gunId().toString())
+                    + ", type=" + stringOrUnavailable(managedState.gunType())
+                    + ", bound=" + managedState.bound()
+                    + ", dataReady=" + managedState.weaponDataReady()
+                    + ", suspended=" + managedState.suspended()
+                    + ", readiness=" + managedState.readiness()
+                    + ", loaded=" + managedState.loadedAmmo() + "/" + managedState.magazineCapacity()
+                    + ", reloading=" + managedState.reloading()
+                    + ", coolingDown=" + managedState.coolingDown()
+                    + ", dry=" + managedState.dryConfirmed()
+                    + ", dryRetryTicks=" + managedState.dryRetryTicks()
+                    + ", aiming=" + managedState.aiming()
+                    + ", sharing=" + managedState.lastAmmoSharingStatus()
+                    + ", roundsFired=" + managedState.roundsFired(),
+                    managedState.suspended() ? ChatFormatting.YELLOW : ChatFormatting.GRAY));
+        }
         var tacticalController = gunGoal.tacticalController();
         var threat = tacticalController.assessment();
         var route = gunGoal.tacticalNavigation();
@@ -126,7 +151,7 @@ public final class GuardGunnerCommands {
                 + ", attempts=" + gunGoal.investigation().attempts(), ChatFormatting.GRAY));
         send(source, line("Tactical intent", tacticalController.decision().intent()
                 + ", reason=" + tacticalController.decision().reason()
-                + ", readiness=" + nativeState.readiness()
+                + ", readiness=" + (managedState == null ? nativeState.readiness() : managedState.readiness())
                 + ", enteredTicksAgo=" + Math.max(0, now - tacticalController.enteredAt())
                 + ", continuation=" + tacticalController.hasContinuation(), ChatFormatting.GRAY));
         send(source, line("Observed threats", "count=" + threat.threats()
@@ -286,7 +311,8 @@ public final class GuardGunnerCommands {
                         + ", dataReady=" + nativeState.weaponDataReady()
                         + ", suspended=" + nativeState.suspended(),
                 ChatFormatting.GRAY));
-        NativeGunController.CachedTacticalState tactical = nativeState.tacticalState();
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState tactical =
+                managedState == null ? nativeState.tacticalState() : managedState.tacticalState();
         TacticalEnvelope envelope = tactical.envelope();
         send(source, line(
                 "Cached tactics",
@@ -339,19 +365,21 @@ public final class GuardGunnerCommands {
                 armorySettings.validReserveThresholds()
                         ? ChatFormatting.GRAY
                         : ChatFormatting.RED));
-        send(source, line(
-                "TaCZ",
-                "aiming=" + nativeState.aiming()
-                        + ", reload=" + nativeState.reloadState()
-                        + ", bolting=" + nativeState.bolting()
-                        + ", drawCooldown=" + milliseconds(nativeState.drawCooldownMillis())
-                        + ", shootCooldown=" + milliseconds(nativeState.shootCooldownMillis())
-                        + ", charge=" + decimal(nativeState.chargeProgress())
-                        + ", lastResult="
-                        + (nativeState.lastShootResult() == null
-                                ? "none"
-                                : nativeState.lastShootResult().name()),
-                ChatFormatting.GRAY));
+        if (heldGunMod.map(provider -> provider.id().equals("tacz")).orElse(false)) {
+            send(source, line(
+                    "TaCZ",
+                    "aiming=" + nativeState.aiming()
+                            + ", reload=" + nativeState.reloadState()
+                            + ", bolting=" + nativeState.bolting()
+                            + ", drawCooldown=" + milliseconds(nativeState.drawCooldownMillis())
+                            + ", shootCooldown=" + milliseconds(nativeState.shootCooldownMillis())
+                            + ", charge=" + decimal(nativeState.chargeProgress())
+                            + ", lastResult="
+                            + (nativeState.lastShootResult() == null
+                                    ? "none"
+                                    : nativeState.lastShootResult()),
+                    ChatFormatting.GRAY));
+        }
         return 1;
     }
 
@@ -407,7 +435,7 @@ public final class GuardGunnerCommands {
     private static String ammunitionDetails(
             GuardAmmoSummary.Snapshot ammunition,
             boolean active,
-            NativeGunController.Diagnostics nativeState) {
+            com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics nativeState) {
         String activeState = ", active=" + active;
         if (!ammunition.isReady()) {
             return "status=" + ammunition.status()
@@ -437,7 +465,7 @@ public final class GuardGunnerCommands {
 
     private static String activeNativeDetails(
             boolean active,
-            NativeGunController.Diagnostics nativeState) {
+            com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics nativeState) {
         if (!active) {
             return "";
         }

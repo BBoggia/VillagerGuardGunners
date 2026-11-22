@@ -78,7 +78,7 @@ final class GuardGunnerDiagnosticsContractTest {
                 () -> assertTrue(goal.contains("public Diagnostics captureDiagnostics()")),
                 () -> assertTrue(goal.contains("gunController.lastShotSafety()")),
                 () -> assertTrue(safety.contains("public static DiagnosticResult diagnoseClearShot(")),
-                () -> assertTrue(controller.contains("public Diagnostics captureDiagnostics()")),
+                () -> assertTrue(controller.contains("public WeaponControllerDiagnostics captureDiagnostics()")),
                 () -> assertTrue(controller.contains("lastShootResult = result")),
                 () -> assertFalse(controller.substring(
                         controller.indexOf("private void tickSafely("),

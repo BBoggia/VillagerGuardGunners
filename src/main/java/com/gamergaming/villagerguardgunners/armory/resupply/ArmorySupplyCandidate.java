@@ -1,8 +1,8 @@
 package com.gamergaming.villagerguardgunners.armory.resupply;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.ammunition.AmmoCompatibility;
 import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
-import com.tacz.guns.api.item.IGun;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
@@ -149,14 +149,14 @@ public record ArmorySupplyCandidate(
     private static boolean matchesRequestedGun(
             ArmoryResupplyRequest request,
             ItemStack liveActiveGun) {
-        if (liveActiveGun.isEmpty() || !(liveActiveGun.getItem() instanceof IGun gun)) {
+        if (liveActiveGun.isEmpty()) {
             return false;
         }
-        try {
-            return request.gunId().equals(gun.getGunId(liveActiveGun.copy()));
-        } catch (RuntimeException exception) {
-            return false;
-        }
+        ItemStack checkedGun = liveActiveGun.copy();
+        return GunProviders.find(checkedGun)
+                .flatMap(provider -> provider.ref(checkedGun))
+                .map(ref -> request.gunId().equals(ref.id()))
+                .orElse(false);
     }
 
     public enum InspectionStatus {

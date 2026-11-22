@@ -22,8 +22,8 @@ final class ArmoryItemHandlerTest {
         // insertion, safe loading, capability access, and comparator behavior
         // are exercised by the live Forge GameTest instead of a partial mock.
         assertEquals(9, ArmoryItemHandler.SLOT_COUNT);
-        assertTrue(GuardAmmoHandler.isAmmoType(TestAmmoItem.class));
-        assertFalse(GuardAmmoHandler.isAmmoType(Item.class));
+        assertTrue(com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczGunProvider.isAmmoType(TestAmmoItem.class));
+        assertFalse(com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczGunProvider.isAmmoType(Item.class));
     }
 
     private static final class TestAmmoItem extends Item implements IAmmo {

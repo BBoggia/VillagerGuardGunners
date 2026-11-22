@@ -5,7 +5,7 @@ import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
-import com.tacz.guns.api.entity.IGunOperator;
+import com.gamergaming.villagerguardgunners.guns.GuardWeapons;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.LivingEntity;
 import tallestegg.guardvillagers.entities.Guard;
@@ -103,28 +103,8 @@ public final class ArmoryResupplyLiveGate {
                     && duty.source() == com.gamergaming.villagerguardgunners.ai.tactics.GuardCombatDuty.Source.PATROL_ROUTE)) {
             return ArmoryResupplyGate.GateStatus.PATROL_BOUND;
         }
-        return nativeWeaponBusy(guard)
+        return GuardWeapons.isWeaponBusy(guard)
                 ? ArmoryResupplyGate.GateStatus.NATIVE_WEAPON_BUSY
                 : ArmoryResupplyGate.GateStatus.READY;
-    }
-
-    /** Unreadable TaCZ state is busy so logistics never interrupts it. */
-    private static boolean nativeWeaponBusy(Guard guard) {
-        try {
-            IGunOperator operator = IGunOperator.fromLivingEntity(guard);
-            var data = operator.getDataHolder();
-            return data.reloadStateType == null
-                    || data.reloadStateType.isReloading()
-                    || data.isBolting
-                    || data.meleePrepTickCount >= 0
-                    || data.chargeProgress > 0.0F
-                    || operator.getSynReloadState().getStateType().isReloading()
-                    || operator.getSynIsBolting()
-                    || operator.getSynMeleeCoolDown() > 0L
-                    || operator.getSynDrawCoolDown() > 0L
-                    || operator.getSynShootCoolDown() > 0L;
-        } catch (RuntimeException exception) {
-            return true;
-        }
     }
 }

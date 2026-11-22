@@ -1,6 +1,6 @@
 package com.gamergaming.villagerguardgunners.worldgen.village;
 
-import com.gamergaming.villagerguardgunners.combat.NativeGunController;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostSpawner;
 import java.util.Objects;
@@ -88,7 +88,7 @@ public final class VillageWatchtowerGuardPlacement {
     }
 
     static boolean hasSupportedRangedWeapon(Guard guard) {
-        return NativeGunController.isGun(guard.getMainHandItem())
+        return GunProviders.isGun(guard.getMainHandItem())
                 || guard.getMainHandItem().is(Items.CROSSBOW)
                 || guard.getOffhandItem().is(Items.CROSSBOW);
     }

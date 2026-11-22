@@ -3069,7 +3069,7 @@ public final class GuardGunnerGameTests {
                 AmmoItemBuilder.create().setId(DEFAULT_AMMO).setCount(5).build());
 
         GuardAmmoSummary.Snapshot summary =
-                GuardAmmoSummary.capture(gunStack, gunIndex.getGunData(), reserves);
+                GuardAmmoSummary.capture(gunStack, reserves);
         AmmoCompatibility.Assessment wrongAmmo =
                 AmmoCompatibility.assess(gunStack, reserves.getStackInSlot(2));
         AmmoCompatibility.Assessment emptyBox =
@@ -3095,7 +3095,6 @@ public final class GuardGunnerGameTests {
         ItemStack emptyChamberGun = gun(GLOCK_17, FireMode.SEMI, 7, false);
         GuardAmmoSummary.Snapshot emptyChamberSummary = GuardAmmoSummary.capture(
                 emptyChamberGun,
-                gunIndex.getGunData(),
                 reserves);
         helper.assertFalse(emptyChamberSummary.chambered(),
                 "Empty closed-bolt chamber was reported as loaded");
@@ -3107,7 +3106,6 @@ public final class GuardGunnerGameTests {
         ((IGun) dummyGun.getItem()).setDummyAmmoAmount(dummyGun, 24);
         GuardAmmoSummary.Snapshot dummySummary = GuardAmmoSummary.capture(
                 dummyGun,
-                gunIndex.getGunData(),
                 reserves);
         helper.assertTrue(dummySummary.reserveSource() == GuardAmmoSummary.ReserveSource.DUMMY
                         && dummySummary.reserveUnits() == 24L,
@@ -3139,7 +3137,7 @@ public final class GuardGunnerGameTests {
         GuardAmmoHandler reserves = new GuardAmmoHandler();
         reserves.setStackInSlot(0, ammoBox(null, 0, true));
         GuardAmmoSummary.Snapshot summary =
-                GuardAmmoSummary.capture(gunStack, gunIndex.getGunData(), reserves);
+                GuardAmmoSummary.capture(gunStack, reserves);
 
         helper.assertFalse(summary.chambered(),
                 "Open-bolt gun incorrectly counted the stack's chamber flag");
@@ -3881,7 +3879,6 @@ public final class GuardGunnerGameTests {
 
         int magazineCapacity = GuardAmmoSummary.capture(
                         recipientGun,
-                        TimelessAPI.getCommonGunIndex(GLOCK_17).orElseThrow().getGunData(),
                         recipientReserves)
                 .magazineCapacity();
         helper.assertTrue(magazineCapacity > 0,
@@ -3919,7 +3916,7 @@ public final class GuardGunnerGameTests {
                     System.currentTimeMillis() - 10_000L;
             goal.tick();
 
-            NativeGunController.Diagnostics sharingDiagnostics =
+            var sharingDiagnostics =
                     goal.captureDiagnostics().nativeState();
             helper.assertTrue(
                     sharingDiagnostics.lastAmmoSharingStatus()
@@ -6766,7 +6763,7 @@ public final class GuardGunnerGameTests {
 
         guard.setItemSlot(EquipmentSlot.MAINHAND, gun(GLOCK_17, FireMode.SEMI, 1, true));
         controller.startAiming();
-        NativeGunController.CachedTacticalState pistol =
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState pistol =
                 controller.captureDiagnostics().tacticalState();
         helper.assertTrue(pistol.metadataReadable(),
                 "The Glock tactical metadata cache was not marked ready");
@@ -6804,7 +6801,7 @@ public final class GuardGunnerGameTests {
         helper.assertTrue(!controller.canFireAtDistanceSquared(4.0D * 4.0D),
                 "A changed guard order left the previous burst firing window live");
         controller.startAiming();
-        NativeGunController.CachedTacticalState orderedPistol =
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState orderedPistol =
                 controller.captureDiagnostics().tacticalState();
         helper.assertTrue(
                 orderedPistol.resolution().profile() == TacticalProfile.MARKSMAN
@@ -6825,7 +6822,7 @@ public final class GuardGunnerGameTests {
                         && !controller.canFireAtDistanceSquared(16.0D * 16.0D),
                 "A hand swap exposed the previous gun's stale tactical requirements");
         controller.startAiming();
-        NativeGunController.CachedTacticalState shotgun =
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState shotgun =
                 controller.captureDiagnostics().tacticalState();
         helper.assertTrue(shotgun.metadataReadable()
                         && shotgun.resolution().profile() == TacticalProfile.BREACHER
@@ -6835,7 +6832,7 @@ public final class GuardGunnerGameTests {
 
         guard.setItemSlot(EquipmentSlot.MAINHAND, gun(RPG_7, FireMode.SEMI, 1, true));
         controller.startAiming();
-        NativeGunController.CachedTacticalState launcher =
+        com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState launcher =
                 controller.captureDiagnostics().tacticalState();
         helper.assertTrue(launcher.metadataReadable()
                         && launcher.resolution().profile() == TacticalProfile.DEMOLITIONS
@@ -7016,7 +7013,7 @@ public final class GuardGunnerGameTests {
                     "The Marksman aim multiplier was not used by the live goal");
 
             if (state.visibleTicks() < state.requiredVisibleTicks()) {
-                helper.assertTrue(state.nativeState().lastShootResult() != ShootResult.SUCCESS
+                helper.assertTrue(!ShootResult.SUCCESS.name().equals(state.nativeState().lastShootResult())
                                 && state.nativeState().chambered(),
                         "The Marksman fired before satisfying its profile visibility requirement");
                 if (state.visibleTicks() > 0) {
@@ -7030,14 +7027,14 @@ public final class GuardGunnerGameTests {
                         "The test never observed the Marksman visibility gate");
                 helper.assertTrue(state.decision() == GuardGunCombatGoal.FireDecision.AIMING,
                         "The stricter Marksman tolerance did not hold an eight-degree aim error");
-                helper.assertTrue(state.nativeState().lastShootResult() != ShootResult.SUCCESS
+                helper.assertTrue(!ShootResult.SUCCESS.name().equals(state.nativeState().lastShootResult())
                                 && state.nativeState().chambered(),
                         "The Marksman fired despite exceeding its profile aim tolerance");
                 aimGateObserved[0] = true;
                 return;
             }
 
-            if (state.nativeState().lastShootResult() == ShootResult.SUCCESS
+            if (ShootResult.SUCCESS.name().equals(state.nativeState().lastShootResult())
                     && !state.nativeState().chambered()) {
                 helper.assertTrue(visibilityGateObserved[0] && aimGateObserved[0],
                         "The shot was accepted before both profile gates were exercised");
@@ -7207,12 +7204,12 @@ public final class GuardGunnerGameTests {
             if (testTick == 15L) {
                 helper.assertTrue(state.decision() == GuardGunCombatGoal.FireDecision.TOO_CLOSE
                                 && !state.withinFiringWindow()
-                                && state.nativeState().lastShootResult() != ShootResult.SUCCESS,
+                                && !ShootResult.SUCCESS.name().equals(state.nativeState().lastShootResult()),
                         "The RPG fired inside its explosive standoff distance");
                 standoffGateObserved[0] = true;
             }
             if (testTick >= 20L
-                    && state.nativeState().lastShootResult() == ShootResult.SUCCESS) {
+                    && ShootResult.SUCCESS.name().equals(state.nativeState().lastShootResult())) {
                 helper.assertTrue(standoffGateObserved[0]
                                 && state.withinFiringWindow()
                                 && state.distance() > state.minimumRange(),

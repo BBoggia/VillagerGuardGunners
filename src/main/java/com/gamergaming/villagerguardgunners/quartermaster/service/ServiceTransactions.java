@@ -35,6 +35,7 @@ public final class ServiceTransactions {
                 && (verify?ServiceJournal.get(((ServerLevel) guard.level()).getServer()).verify(source.receipt()):ServiceJournal.get(((ServerLevel) guard.level()).getServer()).matches(source.receipt()))
                 && ItemStack.matches(source.inventory().getStackInSlot(plan.sourceSlot()), plan.stockBefore())
                 && ServiceEquipment.same(guard, plan.guardBefore()) && ServiceEquipment.valid(guard, plan.targetSlot(), plan.replacement())
+                && (plan.targetSlot() < 6 || plan.targetSlot() >= 9 || ServiceAmmoDemand.deliveryNeeded(guard, plan.stockBefore()))
                 && (plan.returnSlot() < 0 || plan.station().inventory().getStackInSlot(plan.returnSlot()).isEmpty()
                     && plan.station().inventory().isItemValid(plan.returnSlot(), plan.guardBefore().get(plan.targetSlot())));
     }

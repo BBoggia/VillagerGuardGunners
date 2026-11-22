@@ -329,6 +329,7 @@ tasks.register('prepareReleaseCandidate', Sync) {
             'regionalTrainingYardIntegration', 'customBarracksIntegration',
             'customArmoryIntegration', 'customSentryPostIntegration',
             'customWatchtowerIntegration', 'customTrainingYardIntegration', 'skyVillageIntegration'
+    inputs.property('releaseType', mod_release_type)
     into layout.buildDirectory.dir("distributions/release-candidate/${mod_version}")
     from(tasks.named('jar', Jar).flatMap { it.archiveFile })
     from("docs/releases/${mod_version}.md") {
@@ -371,6 +372,7 @@ tasks.register('prepareReleaseCandidate', Sync) {
             }
         }
         new File(destinationDir, 'CANDIDATE-STATUS.txt').text =
+                "Release type: ${mod_release_type}\n" +
                 'Prepared for review; public release approval remains pending.\n' +
                 'The Gradle check and release identity gates passed when this bundle was staged.\n' +
                 'Manual playthrough, multiplayer, upgrade, performance, and clean-checkout CI\n' +

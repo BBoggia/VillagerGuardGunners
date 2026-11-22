@@ -1,10 +1,8 @@
 package com.gamergaming.villagerguardgunners.medical;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
-import com.tacz.guns.api.item.IGun;
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IAmmoBox;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +42,9 @@ public final class TreatmentProfiles extends SimplePreparableReloadListener<Trea
     }
     public static void validate(TreatmentProfile profile) {
         var item = BuiltInRegistries.ITEM.getOptional(profile.item()).orElseThrow(() -> new IllegalArgumentException("Unknown treatment item"));
-        if (item == Items.AIR || !item.canFitInsideContainerItems() || item instanceof IGun
-                || item instanceof IAmmo || item instanceof IAmmoBox) throw new IllegalArgumentException("Invalid medical item");
+        var probe = item.getDefaultInstance();
+        if (item == Items.AIR || !item.canFitInsideContainerItems() || GunProviders.isGun(probe)
+                || GunProviders.isAmmo(probe)) throw new IllegalArgumentException("Invalid medical item");
         if (item instanceof PotionItem) {
             if (item != Items.POTION || profile.potion() == null
                     || !(profile.potion().equals(BuiltInRegistries.POTION.getKey(Potions.HEALING))

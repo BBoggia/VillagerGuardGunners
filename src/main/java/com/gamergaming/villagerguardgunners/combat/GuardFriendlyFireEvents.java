@@ -1,6 +1,5 @@
 package com.gamergaming.villagerguardgunners.combat;
 
-import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent;
@@ -14,8 +13,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import tallestegg.guardvillagers.entities.Guard;
 
-/** Final server-side backstops for shots that reach a protected entity. */
-@Mod.EventBusSubscriber(modid = VillagerGuardGunners.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+/**
+ * Final server-side backstops for TaCZ shots that reach a protected entity.
+ * Registered by the TaCZ bootstrap, so this class loads only when TaCZ is installed.
+ */
 public final class GuardFriendlyFireEvents {
     private GuardFriendlyFireEvents() {
     }

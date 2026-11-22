@@ -1,7 +1,7 @@
 # Villager Guard Gunners
 
-Villager Guard Gunners lets you equip Guard Villagers with Timeless and
-Classics Zero (TaCZ) guns, ammo, and sidearms.
+Villager Guard Gunners lets guards use guns, ammo, and sidearms from Timeless and
+Classics Zero (TaCZ), MrCrayfish’s Gun Mod (CGM), and Point Blank.
 
 Guards can aim, move, fire, reload, use backup pistols, follow individual
 orders, join squads, restock from Village Armories, and protect their allies.
@@ -43,6 +43,15 @@ orders, join squads, restock from Village Armories, and protect their allies.
 - Friendly-fire, ally, and explosive-weapon protection.
 - Clear ammo and combat status in the guard inventory.
 
+## Infinite ammo
+
+In Fzzy Config, use **Ammo Quality of Life → Infinite Ammo**. Off is the default.
+Both virtual modes apply to existing and new guards. Choose normal reloads or
+supplied magazines without reloads. Creative-box mode gives new TaCZ loadouts
+compatible boxes and gives CGM and Point Blank loadouts ordinary ammo. You can
+equip existing guards manually. Issued boxes remain
+usable after changing modes. Firing safety, heat and action cycling stay active.
+
 ## Requirements
 
 The current build has these requirements:
@@ -52,14 +61,21 @@ The current build has these requirements:
 | Minecraft | 1.20.1 |
 | Forge | 47.4.10 or newer 47.x release |
 | Guard Villagers | 1.20.1-1.6.19 |
-| Timeless and Classics Zero (TaCZ) | 1.1.8 or newer for Minecraft 1.20.1 |
-| Fzzy Config | 0.7.6+1.20.1 |
+| Fzzy Config | 0.7.6+1.20.1 or 0.7.7+1.20.1 (Forge) |
 | Kotlin for Forge | 4.12.0 |
 | Java | 17 |
 
-Install Guard Villagers, TaCZ, Fzzy Config, Kotlin for Forge, and Villager Guard
-Gunners on both the client and server. Newer TaCZ versions are allowed to load;
-future API changes can still require an add-on update.
+Install Villager Guard Gunners and its required mods on both the client and server.
+Gun mods are optional. You can install more than one.
+
+| Forge gun mod | Supported equipment |
+| --- | --- |
+| TaCZ 1.1.8 or newer | TaCZ guns, compatible gun packs, loose ammo, and boxes |
+| MrCrayfish’s Gun Mod (Unofficial) with Framework | CGM guns and ammo, including launchers. Guards hold fire when CGM’s improved hitboxes setting is enabled. |
+| Vic’s Point Blank or Point Blank: Jelly with GeckoLib | Hitscan guns and matching ammo. Guards hold fire with projectile and explosive weapons. Install one Point Blank variant. |
+
+With no gun mod installed, guards keep their normal weapons. Village services
+and guard orders remain available.
 
 See [Quartermaster service](docs/quartermaster-service.md) for automatic
 equipment stocking and station setup.
@@ -71,7 +87,7 @@ inactive. Provider-specific and individual building packs remain alternatives.
 ## Getting Started
 
 1. Create a guard through normal Guard Villagers gameplay.
-2. Open the guard inventory and place a TaCZ gun in its main-hand slot.
+2. Open the guard inventory and place a supported gun in its main-hand slot.
 3. Add compatible loose ammo or ammo boxes to the dedicated ammo slots.
 4. You can also equip a valid pistol in the sidearm slot.
 5. Once the guard finds a valid target, it handles aiming, firing, reloading,
@@ -184,7 +200,7 @@ See [ammo quality of life](docs/ammunition-quality-of-life.md),
 
 ## Natural Loadouts and Village Structures
 
-Newly generated guards can receive a difficulty-scaled TaCZ gun and matching
+Newly generated guards can receive a difficulty-scaled gun from an installed mod and matching
 ammo. The defaults favor pistols on Easy, add SMGs on Normal,
 and allow occasional rifles on Hard. Server settings and datapacks control
 which spawn sources can receive loadouts, weapon pools, local population
@@ -293,7 +309,7 @@ These diagnostics do not issue equipment, locate structures, or load chunks.
 
 ## Documentation
 
-- [Version 1.9.2 release notes](docs/releases/1.9.2.md)
+- [Version 1.12 release notes](docs/releases/1.12.md)
 - [Current development changelog](CHANGELOG.md)
 - [CurseForge description](docs/curseforge-description.md)
 - [Configuration](docs/configuration.md)

@@ -1,6 +1,5 @@
 package com.gamergaming.villagerguardgunners.compat.tacz.network;
 
-import com.tacz.guns.network.message.ServerMessageSyncGunPack;
 import com.tacz.guns.resource.network.DataType;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.zip.CRC32;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-/** Pure bounded serialization, fragmentation, and reassembly for TaCZ's native cache format. */
+/** Bounded serialization and fragmentation for the legacy TaCZ 1.1.8 cache format. */
 public final class TaCZGunPackSyncProtocol {
     public static final int CURRENT_SCHEMA_VERSION = 1;
     public static final int MINECRAFT_CUSTOM_PAYLOAD_LIMIT = 1_048_576;
@@ -26,9 +25,11 @@ public final class TaCZGunPackSyncProtocol {
 
     public static byte[] encodeCache(
             Map<DataType, Map<ResourceLocation, String>> cache) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(256, MAXIMUM_TRANSFER_BYTES));
         try {
-            ServerMessageSyncGunPack.encode(new ServerMessageSyncGunPack(cache), buffer);
+            // Preserve our schema-1 wire format without the removed TaCZ packet constructor.
+            buffer.writeMap(cache, FriendlyByteBuf::writeEnum, (dataBuffer, entries) ->
+                    dataBuffer.writeMap(entries, FriendlyByteBuf::writeResourceLocation, FriendlyByteBuf::writeUtf));
             int length = buffer.readableBytes();
             if (length > MAXIMUM_TRANSFER_BYTES) {
                 throw new IllegalArgumentException("TaCZ common-data cache exceeds the chunked-sync bound");
@@ -47,11 +48,13 @@ public final class TaCZGunPackSyncProtocol {
         }
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(encoded));
         try {
-            ServerMessageSyncGunPack message = ServerMessageSyncGunPack.decode(buffer);
+            Map<DataType, Map<ResourceLocation, String>> cache = buffer.readMap(
+                    dataBuffer -> dataBuffer.readEnum(DataType.class),
+                    dataBuffer -> dataBuffer.readMap(FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::readUtf));
             if (buffer.isReadable()) {
                 throw new IllegalArgumentException("TaCZ common-data payload contains trailing bytes");
             }
-            return message.getCache();
+            return cache;
         } finally {
             buffer.release();
         }

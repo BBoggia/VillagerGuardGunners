@@ -56,7 +56,6 @@ import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentityCodec;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignment;
 import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignmentCodec;
-import com.tacz.guns.api.entity.IGunOperator;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -93,20 +92,33 @@ import tallestegg.guardvillagers.entities.Guard;
 
 @Mixin(Guard.class)
 public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gamergaming.villagerguardgunners.api.GuardMedicAccess, com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess, com.gamergaming.villagerguardgunners.api.GuardMedicalAccess, com.gamergaming.villagerguardgunners.api.GuardCoverageAccess, GuardArmoryResupplyAccess,
-        GuardBurstSafetyAccess, com.gamergaming.villagerguardgunners.api.GuardNativeShotAccess,
+        GuardBurstSafetyAccess, com.gamergaming.villagerguardgunners.api.GuardShotControllerHolder,
+        com.gamergaming.villagerguardgunners.guns.GuardWeaponControlAccess,
         GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardPostAccess, GuardPostAssignmentAccess,
         GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
         GuardSquadCommandAccess {
     @Unique
-    private com.gamergaming.villagerguardgunners.combat.NativeGunController villagerGuardGunners$shotController;
+    private Object villagerGuardGunners$shotController;
+    @Unique
+    private com.gamergaming.villagerguardgunners.guns.GuardWeaponControl villagerGuardGunners$weaponControl;
 
     @Override
-    public com.gamergaming.villagerguardgunners.combat.NativeGunController villagerGuardGunners$getShotController() {
+    public com.gamergaming.villagerguardgunners.guns.GuardWeaponControl villagerGuardGunners$getWeaponControl() {
+        return villagerGuardGunners$weaponControl;
+    }
+
+    @Override
+    public void villagerGuardGunners$setWeaponControl(com.gamergaming.villagerguardgunners.guns.GuardWeaponControl control) {
+        villagerGuardGunners$weaponControl = control;
+    }
+
+    @Override
+    public Object villagerGuardGunners$getShotController() {
         return villagerGuardGunners$shotController;
     }
 
     @Override
-    public void villagerGuardGunners$setShotController(com.gamergaming.villagerguardgunners.combat.NativeGunController controller) {
+    public void villagerGuardGunners$setShotController(Object controller) {
         villagerGuardGunners$shotController = controller;
     }
 
@@ -281,7 +293,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gam
         villagerGuardGunners$ensureAmmoStorage();
         villagerGuardGunners$ensureSidearmStorage();
         if (!level.isClientSide) {
-            IGunOperator.fromLivingEntity((Guard) (Object) this).initialData();
+            com.gamergaming.villagerguardgunners.guns.GuardWeapons.onGuardCreated((Guard) (Object) this);
         }
     }
 

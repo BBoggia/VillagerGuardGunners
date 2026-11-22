@@ -1,5 +1,6 @@
 package com.gamergaming.villagerguardgunners.ai;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.EnumSet;
 import com.gamergaming.villagerguardgunners.ai.tactics.GuardTacticalController;
 import com.gamergaming.villagerguardgunners.ai.tactics.CombatIntentPolicy;
@@ -10,10 +11,11 @@ import javax.annotation.Nullable;
 
 import com.gamergaming.villagerguardgunners.combat.GuardShotSafety;
 import com.gamergaming.villagerguardgunners.combat.GuardCombatStatus;
-import com.gamergaming.villagerguardgunners.combat.NativeGunController;
+import com.gamergaming.villagerguardgunners.combat.WeaponControllerDiagnostics;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
 import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngagement;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
+import com.gamergaming.villagerguardgunners.guns.GuardWeaponControl;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.orders.GuardOrders.MovementOrder;
 import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
@@ -33,14 +35,15 @@ import tallestegg.guardvillagers.entities.Guard;
  * Lightweight guard decision layer for TaCZ guns.
  *
  * <p>The goal controls looking, coarse navigation, and whether the trigger may
- * be pressed. All firearm behavior is delegated to {@link NativeGunController}
- * and, through it, TaCZ's {@code IGunOperator}.</p>
+ * be pressed. All firearm behavior is delegated through
+ * {@link GuardWeaponControl} to the held gun's driver: for TaCZ,
+ * {@link NativeGunController} and, through it, TaCZ's {@code IGunOperator}.</p>
  */
 public final class GuardGunCombatGoal extends Goal {
 
     private final Guard guard;
     private final PathNavigation navigation;
-    private final NativeGunController gunController;
+    private final GuardWeaponControl gunController;
     private final GuardTacticalController tactics;
     private final com.gamergaming.villagerguardgunners.ai.tactics.TacticalNavigationController tacticalNavigation;
     private final com.gamergaming.villagerguardgunners.ai.tactics.GuardTargetRanking targetRanking;
@@ -76,7 +79,7 @@ public final class GuardGunCombatGoal extends Goal {
     public GuardGunCombatGoal(Guard guard) {
         this.guard = guard;
         this.navigation = guard.getNavigation();
-        this.gunController = new NativeGunController(guard);
+        this.gunController = new GuardWeaponControl(guard);
         this.tactics = new GuardTacticalController(guard);
         this.targetRanking = new com.gamergaming.villagerguardgunners.ai.tactics.GuardTargetRanking(guard);
         this.investigation = new com.gamergaming.villagerguardgunners.ai.tactics.GuardInvestigationController(guard);
@@ -134,7 +137,7 @@ public final class GuardGunCombatGoal extends Goal {
             return true;
         }
         if (!config.enabled.get()
-                || !NativeGunController.isGun(guard.getMainHandItem())) {
+                || !GunProviders.isGun(guard.getMainHandItem())) {
             return false;
         }
         commandMovement.synchronize(true);
@@ -160,7 +163,7 @@ public final class GuardGunCombatGoal extends Goal {
             return true;
         }
         if (!config.enabled.get()
-                || !NativeGunController.isGun(guard.getMainHandItem())) {
+                || !GunProviders.isGun(guard.getMainHandItem())) {
             return false;
         }
         commandMovement.synchronize(true);
@@ -235,7 +238,7 @@ public final class GuardGunCombatGoal extends Goal {
         if (sidearmController.isSidearmActive()) {
             gunController.prepareForSidearmTransition();
         }
-        gunController.stopAiming();
+        gunController.deactivate();
         navigation.stop();
         target = null;
         lastEngagementTarget = null;
@@ -542,7 +545,7 @@ public final class GuardGunCombatGoal extends Goal {
         if (!config.enabled.get()) {
             return GuardCombatStatus.DISABLED;
         }
-        if (!NativeGunController.isGun(guard.getMainHandItem())) {
+        if (!GunProviders.isGun(guard.getMainHandItem())) {
             return GuardCombatStatus.UNARMED;
         }
 
@@ -764,7 +767,12 @@ public final class GuardGunCombatGoal extends Goal {
     }
 
     private AimError measureAimError(LivingEntity observedTarget) {
-        var point = gunController.intentionalAimPoint(observedTarget);
+        return measureAimError(observedTarget, gunController);
+    }
+
+    private AimError measureAimError(LivingEntity observedTarget,
+            com.gamergaming.villagerguardgunners.guns.WeaponDriver controller) {
+        var point = controller.intentionalAimPoint(observedTarget);
         double deltaX = point.x - guard.getX();
         double deltaY = point.y - guard.getEyeY();
         double deltaZ = point.z - guard.getZ();
@@ -783,17 +791,19 @@ public final class GuardGunCombatGoal extends Goal {
     public Diagnostics captureDiagnostics() {
         LivingEntity observedTarget = target != null ? target : guard.getTarget();
         boolean active = target != null;
-        NativeGunController.Diagnostics nativeState = gunController.captureDiagnostics();
-        int requiredVisibleTicks = gunController.getRequiredVisibleTicks();
-        double aimToleranceDegrees = gunController.getAimToleranceDegrees();
+        // Read only: inspection must not switch providers or interrupt a reload.
+        var observedController = gunController.observedDriver();
+        WeaponControllerDiagnostics nativeState = gunController.controllerDiagnostics();
+        int requiredVisibleTicks = observedController.getRequiredVisibleTicks();
+        double aimToleranceDegrees = observedController.getAimToleranceDegrees();
         double distance = observedTarget == null
                 ? Double.NaN
                 : Math.sqrt(guard.distanceToSqr(observedTarget));
-        double preferredRange = gunController.getPreferredApproachDistance();
-        double retreatDistance = gunController.getRetreatDistance();
-        double minimumRange = gunController.getMinimumFiringRange();
-        float maximumRange = gunController.getMaximumFiringRange();
-        boolean validFiringWindow = gunController.hasValidFiringWindow();
+        double preferredRange = observedController.getPreferredApproachDistance();
+        double retreatDistance = observedController.getRetreatDistance();
+        double minimumRange = observedController.getMinimumFiringRange();
+        float maximumRange = observedController.getMaximumFiringRange();
+        boolean validFiringWindow = observedController.hasValidFiringWindow();
         boolean withinMaximumRange = observedTarget != null
                 && GuardCombatMovement.isWithinEngagementRange(
                         guard.distanceToSqr(observedTarget),
@@ -803,19 +813,19 @@ public final class GuardGunCombatGoal extends Goal {
                 && Double.isFinite(distance)
                 && distance < minimumRange;
         boolean withinFiringWindow = observedTarget != null
-                && gunController.canFireAtDistanceSquared(
+                && observedController.canFireAtDistanceSquared(
                         guard.distanceToSqr(observedTarget));
         AimError aimError = observedTarget == null
                 ? new AimError(Double.NaN, Double.NaN)
-                : measureAimError(observedTarget);
-        GuardShotSafety.Result safety = gunController.currentShotSafety(observedTarget);
+                : measureAimError(observedTarget, observedController);
+        GuardShotSafety.Result safety = observedController.currentShotSafety(observedTarget);
         float muzzleSafetyPadding = safety.envelope() == null ? Float.NaN : (float)safety.envelope().clearance();
         float projectileSafetyPadding = Float.NaN;
         float blastSafetyPadding = safety.envelope() == null ? Float.NaN
                 : (float)safety.envelope().ballistics().blastReach();
         GuardRulesOfEngagement.EngagementReason engagementReason =
                 GuardRulesOfEngagement.classify(guard, observedTarget);
-        boolean weaponAllowedByOrders = gunController.isWeaponAllowedByOrders();
+        boolean weaponAllowedByOrders = observedController.isWeaponAllowedByOrders();
         EngagementMode engagementMode = GuardRoleResolver.effectiveOrders(guard)
                 .resolveEngagementMode(config.engagement.mode.get());
         FireDecision decision = classifyDecision(
@@ -870,7 +880,7 @@ public final class GuardGunCombatGoal extends Goal {
             boolean belowMinimumRange,
             boolean withinMaximumRange,
             GuardShotSafety.Result safety,
-            NativeGunController.Diagnostics nativeState,
+            WeaponControllerDiagnostics nativeState,
             GuardRulesOfEngagement.EngagementReason engagementReason,
             boolean weaponAllowedByOrders) {
         if (!config.enabled.get()) {
@@ -882,7 +892,7 @@ public final class GuardGunCombatGoal extends Goal {
         if (!observedTarget.isAlive()) {
             return FireDecision.TARGET_DEAD;
         }
-        if (!NativeGunController.isGun(guard.getMainHandItem())) {
+        if (!GunProviders.isGun(guard.getMainHandItem())) {
             return FireDecision.NO_GUN;
         }
         if (nativeState.suspended()) {
@@ -950,7 +960,7 @@ public final class GuardGunCombatGoal extends Goal {
                 || !expectedTarget.isAlive()
                 || !GuardRulesOfEngagement.mayEngage(guard, expectedTarget)
                 || !gunController.isWeaponAllowedByOrders()
-                || !NativeGunController.isGun(guard.getMainHandItem())) {
+                || !GunProviders.isGun(guard.getMainHandItem())) {
             return false;
         }
 
@@ -1035,6 +1045,6 @@ public final class GuardGunCombatGoal extends Goal {
             GuardShotSafety.Result safety,
             EngagementMode engagementMode,
             GuardRulesOfEngagement.EngagementReason engagementReason,
-            NativeGunController.Diagnostics nativeState) {
+            WeaponControllerDiagnostics nativeState) {
     }
 }

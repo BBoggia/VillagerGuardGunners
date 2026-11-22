@@ -1,5 +1,12 @@
 # Large TaCZ Gun-Pack Login Sync
 
+## TaCZ 1.2.0
+
+TaCZ 1.2.0 compresses and fragments its own gun-pack synchronization. The add-on
+yields before legacy encoding when that API is present, avoiding calls to the
+removed packet constructor. Older TaCZ versions retain the workaround below;
+the legacy packet codec now lives in the add-on.
+
 ## Problem
 
 TaCZ 1.1.8-hotfix serializes all common gun-pack data into one Forge login

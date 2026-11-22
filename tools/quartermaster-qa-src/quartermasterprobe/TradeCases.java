@@ -46,8 +46,12 @@ final class TradeCases {
         menu.getSlot(0).set(ItemStack.EMPTY);menu.getSlot(1).set(ItemStack.EMPTY);menu.setSelectionHint(v.getOffers().indexOf(offer));
         menu.getSlot(0).set(offer.getCostA().copy());if(!offer.getCostB().isEmpty())menu.getSlot(1).set(offer.getCostB().copy());
     }
+    private static java.util.Set<ResourceLocation> baselineTradeIds;
+
     static void run(ServerLevel level,QuartermasterBlockEntity station,Guard guard,Villager operator) throws Exception {
-        check("defaults-loaded-after-assets",TradeDefinitions.ready()&&TradeDefinitions.snapshot().size()==12);
+        baselineTradeIds = java.util.Set.copyOf(TradeDefinitions.snapshot().keySet());
+        check("defaults-loaded-after-assets", TradeDefinitions.ready() && baselineTradeIds.containsAll(
+                java.util.List.of(id("bandages"), id("pistol_ammo"), id("cgm_pistol_ammo"), id("pointblank_pistol_ammo"))));
         buyer=new FakePlayer(level,new com.mojang.authlib.GameProfile(UUID.randomUUID(),"TradeBuyer"));buyer.setPos(3.5,80,2.5);
         var settings=ModConfigs.GUARD_GUNNERS.quartermasterTrades;
         check("supply-on-guns-off-default",settings.suppliesEnabled.get()&&!settings.gunSalesEnabled.get());
@@ -134,7 +138,7 @@ final class TradeCases {
             reload=level.getServer().reloadResources(level.getServer().getPackRepository().getSelectedIds());reloadStage=2;return false;
         }
         if(reloadStage==2) {
-            check("malformed-reload-retains-whole-generation",TradeDefinitions.snapshot().size()==12&&!TradeDefinitions.snapshot().get(id("bandages")).enabled());
+            check("malformed-reload-retains-whole-generation",TradeDefinitions.snapshot().keySet().equals(baselineTradeIds)&&!TradeDefinitions.snapshot().get(id("bandages")).enabled());
             Files.writeString(pack.resolve("data/villagerguardgunners/quartermaster_trades/bandages.json"),
                     "{\"version\":1,\"level\":1,\"inputs\":[{\"type\":\"item\",\"id\":\"minecraft:emerald\",\"count\":7}],\"output\":{\"type\":\"item\",\"id\":\"villagerguardgunners:bandage\",\"count\":2},\"max_uses\":3,\"xp\":2,\"price_multiplier\":0.05}");
             Files.writeString(pack.resolve("data/villagerguardgunners/quartermaster_trades/absent_optional.json"),
@@ -145,7 +149,7 @@ final class TradeCases {
             check("price-reload-keeps-old-offer",reloadOffer.getBaseCostA().getCount()==2&&reloadOffer.getResult().getCount()==4&&reloadOffer.getMaxUses()==12);
             var newer=villager(level,1);var revised=offer(newer,"bandages");
             check("new-villager-uses-reloaded-definition",revised.getBaseCostA().getCount()==7&&revised.getResult().getCount()==2&&revised.getMaxUses()==3);
-            check("absent-optional-item-omitted",TradeDefinitions.snapshot().size()==13&&newer.getOffers().size()==2);
+            check("absent-optional-item-omitted",TradeDefinitions.snapshot().keySet().containsAll(baselineTradeIds)&&TradeDefinitions.snapshot().size()==baselineTradeIds.size()+1&&newer.getOffers().size()==2);
             Files.delete(pack.resolve("data/villagerguardgunners/quartermaster_trades/absent_optional.json"));
             Files.delete(pack.resolve("data/villagerguardgunners/quartermaster_trades/bandages.json"));
             reload=level.getServer().reloadResources(level.getServer().getPackRepository().getSelectedIds());reloadStage=4;return false;

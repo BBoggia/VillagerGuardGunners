@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.sidearm;
 
 import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
-import com.gamergaming.villagerguardgunners.combat.NativeGunController;
+import com.gamergaming.villagerguardgunners.guns.WeaponDriver;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,7 +36,7 @@ public final class GuardSidearmRuntimeController {
 
     public RuntimeOutcome evaluate(
             @Nullable LivingEntity target,
-            NativeGunController nativeController,
+            WeaponDriver nativeController,
             boolean featureEnabled,
             boolean targetMayEngage) {
         return evaluate(target, nativeController, featureEnabled, targetMayEngage, false);
@@ -44,7 +44,7 @@ public final class GuardSidearmRuntimeController {
 
     public RuntimeOutcome evaluate(
             @Nullable LivingEntity target,
-            NativeGunController nativeController,
+            WeaponDriver nativeController,
             boolean featureEnabled,
             boolean targetMayEngage,
             boolean continuingTargetGap) {
@@ -125,7 +125,7 @@ public final class GuardSidearmRuntimeController {
 
     private RuntimeOutcome evaluateActivation(
             @Nullable LivingEntity target,
-            NativeGunController nativeController,
+            WeaponDriver nativeController,
             boolean featureEnabled,
             boolean targetMayEngage,
             GuardSidearmStorage storage,
@@ -209,7 +209,7 @@ public final class GuardSidearmRuntimeController {
 
     private RuntimeOutcome evaluateReturn(
             @Nullable LivingEntity target,
-            NativeGunController nativeController,
+            WeaponDriver nativeController,
             boolean featureEnabled,
             boolean targetMayEngage,
             GuardSidearmStorage storage,

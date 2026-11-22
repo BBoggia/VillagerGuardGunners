@@ -3,9 +3,8 @@ package com.gamergaming.villagerguardgunners.quartermaster.trade;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterProfession;
 import com.mojang.logging.LogUtils;
-import com.tacz.guns.api.TimelessAPI;
-import com.tacz.guns.api.item.*;
-import com.tacz.guns.api.item.builder.*;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
+import com.gamergaming.villagerguardgunners.guns.OptionalGunMods;
 import java.util.*;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
@@ -24,22 +23,25 @@ public final class QuartermasterTrades {
     private static void unavailable(ResourceLocation id,String reason) {
         if(WARNED.add(id))LogUtils.getLogger().warn("Quartermaster trade {} omitted: {}",id,reason);
     }
+    /** A trade for a supported gun mod that is not installed is expected, not a mistake to warn about. */
+    static boolean forAbsentGunMod(TradeDefinition definition) {
+        if(OptionalGunMods.isAbsent(definition.output().id().getNamespace()))return true;
+        for(var input:definition.inputs())if(OptionalGunMods.isAbsent(input.id().getNamespace()))return true;
+        return false;
+    }
     public static ItemStack stack(TradeDefinition.Stack spec) {
         ItemStack stack;
         switch(spec.type()) {
-            case AMMO -> {
-                if(TimelessAPI.getCommonAmmoIndex(spec.id()).isEmpty())return ItemStack.EMPTY;
-                stack=AmmoItemBuilder.create().setId(spec.id()).setCount(spec.count()).build();
-            }
-            case GUN -> {
-                if(TimelessAPI.getCommonGunIndex(spec.id()).isEmpty())return ItemStack.EMPTY;
-                stack=GunItemBuilder.create().setId(spec.id()).setCount(1).setAmmoCount(0).setAmmoInBarrel(false).build();
-            }
+            // The gun mod that defines the ID builds the stack. Guns are sold unloaded.
+            case AMMO -> stack=GunProviders.forAmmoId(spec.id()).flatMap(provider->provider.createAmmo(spec.id(),spec.count())).orElse(ItemStack.EMPTY);
+            case GUN -> stack=GunProviders.forGunId(spec.id()).flatMap(provider->provider.createGun(spec.id(),null,false)).orElse(ItemStack.EMPTY);
             default -> {
                 if(!ForgeRegistries.ITEMS.containsKey(spec.id()))return ItemStack.EMPTY;
                 var item=ForgeRegistries.ITEMS.getValue(spec.id());
-                if(item==null||item==Items.AIR||item instanceof IGun||item instanceof IAmmo)return ItemStack.EMPTY;
+                if(item==null||item==Items.AIR)return ItemStack.EMPTY;
                 stack=new ItemStack(item,spec.count());
+                // Guns and ammo from any gun mod must be declared as such, so the gun-sales setting applies.
+                if(GunProviders.isGun(stack)||GunProviders.isAmmo(stack))return ItemStack.EMPTY;
             }
         }
         return stack.isEmpty()||stack.getCount()>stack.getMaxStackSize()?ItemStack.EMPTY:stack;
@@ -48,7 +50,10 @@ public final class QuartermasterTrades {
         if(!definition.enabled()||!enabled(definition.output().type()==TradeDefinition.Kind.GUN))return null;
         try {
             var a=stack(definition.inputs().get(0));var b=definition.inputs().size()==2?stack(definition.inputs().get(1)):ItemStack.EMPTY;var output=stack(definition.output());
-            if(a.isEmpty()||output.isEmpty()||definition.inputs().size()==2&&b.isEmpty()){unavailable(id,"missing item/gun/ammo definition, untyped TaCZ item, or invalid stack size");return null;}
+            if(a.isEmpty()||output.isEmpty()||definition.inputs().size()==2&&b.isEmpty()){
+                if(!forAbsentGunMod(definition))unavailable(id,"missing item/gun/ammo definition, gun or ammo declared as a plain item, or invalid stack size");
+                return null;
+            }
             var offer=new MerchantOffer(a,b,output,definition.maxUses(),definition.xp(),definition.multiplier());
             var tag=new CompoundTag();tag.putInt("Version",1);tag.putString("Id",id.toString());tag.putInt("Inputs",definition.inputs().size());
             ((TradeOfferAccess)offer).villagerGuardGunners$setTradeIdentity(tag);return offer;
@@ -87,9 +92,9 @@ public final class QuartermasterTrades {
     }
     private static boolean nativePresent(ItemStack stack) {
         if(stack.isEmpty())return true;
-        if(stack.getItem() instanceof IGun gun)return TimelessAPI.getCommonGunIndex(gun.getGunId(stack)).isPresent();
-        if(stack.getItem() instanceof IAmmo ammo)return TimelessAPI.getCommonAmmoIndex(ammo.getAmmoId(stack)).isPresent();
-        return true;
+        var gunOwner=GunProviders.find(stack);
+        if(gunOwner.isPresent())return gunOwner.get().isDefined(stack);
+        return GunProviders.findAmmoOwner(stack).map(provider->provider.isDefined(stack)).orElse(true);
     }
     /** Called before taking the result, never as a substitute for paying after items moved. */
     public static boolean allowed(MerchantOffer offer) {
@@ -98,7 +103,7 @@ public final class QuartermasterTrades {
         if(!TradeDefinitions.ready()||current==null||!current.enabled()||offer.getResult().isEmpty()||offer.getBaseCostA().isEmpty())return false;
         var identity=(CompoundTag)((TradeOfferAccess)offer).villagerGuardGunners$getTradeIdentity();
         if(identity.getInt("Inputs")==2&&offer.getCostB().isEmpty())return false;
-        boolean gun=offer.getResult().getItem() instanceof IGun||offer.getBaseCostA().getItem() instanceof IGun||offer.getCostB().getItem() instanceof IGun;
+        boolean gun=GunProviders.isGun(offer.getResult())||GunProviders.isGun(offer.getBaseCostA())||GunProviders.isGun(offer.getCostB());
         try{return enabled(gun)&&nativePresent(offer.getResult())&&nativePresent(offer.getBaseCostA())&&nativePresent(offer.getCostB());}
         catch(RuntimeException ex){return false;}
     }

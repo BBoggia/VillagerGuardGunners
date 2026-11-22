@@ -89,6 +89,7 @@ final class AmmunitionReleaseReadinessContractTest {
                     .filter(path -> path.toString().endsWith(".java"))
                     .filter(path -> !path.startsWith(productionRoot.resolve("client")))
                     .filter(path -> !path.startsWith(productionRoot.resolve("mixin/client")))
+                    .filter(path -> !path.startsWith(productionRoot.resolve("compat/pointblank/mixin/client")))
                     .filter(path -> contains(path, "net.minecraft.client"))
                     .toList();
         }

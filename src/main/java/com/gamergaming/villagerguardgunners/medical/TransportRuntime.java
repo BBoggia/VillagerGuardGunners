@@ -208,8 +208,7 @@ public final class TransportRuntime {
     }
     private static void stopEquipment(Guard carrier) {
         carrier.stopUsingItem(); carrier.setSprinting(false);
-        var operator = com.tacz.guns.api.entity.IGunOperator.fromLivingEntity(carrier);
-        operator.cancelReload(); operator.aim(false);
+        com.gamergaming.villagerguardgunners.guns.GuardWeapons.interrupt(carrier);
     }
     public static boolean onCot(Guard patient) {
         return CotRestRuntime.valid(patient);

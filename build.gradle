@@ -471,9 +471,16 @@ tasks.named('check').configure {
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
     config "mixins.${mod_id}.json"
+    config "mixins.${mod_id}.tacz.json"
+    config "mixins.${mod_id}.cgm.json"
+    config "mixins.${mod_id}.pointblank.json"
 }
 
 repositories {
+    maven {
+        url = 'https://www.cursemaven.com'
+        content { includeGroup 'curse.maven' }
+    }
     maven {
         name = 'Modrinth'
         url = 'https://api.modrinth.com/maven'
@@ -497,7 +504,22 @@ repositories {
     }
 }
 
-// Required TaCZ embeds Lua and MixinExtras. Compile against its exact APIs; Forge loads the bundled libraries.
+def pbjAdapterDirectory = layout.buildDirectory.dir('generated/sources/pointblank-jelly')
+def generatePbjAdapter = tasks.register('generatePbjAdapter', Copy) {
+    group = 'build'
+    description = "Generates the Point Blank: Jelly adapter from the Vic's Point Blank one."
+    from('src/main/java/com/gamergaming/villagerguardgunners/compat/pointblank/vpb') { include '*.java' }
+    into pbjAdapterDirectory.map { it.dir('com/gamergaming/villagerguardgunners/compat/pointblank/pbj') }
+    rename { it.replace('Vpb', 'Pbj') }
+    filter { line ->
+        line.replace('com.vicmatskiv.pointblank', 'mod.pbj')
+            .replace('compat.pointblank.vpb', 'compat.pointblank.pbj')
+            .replace('Vpb', 'Pbj')
+    }
+}
+sourceSets.main.java.srcDir(files(pbjAdapterDirectory).builtBy(generatePbjAdapter))
+
+// TaCZ embeds Lua and MixinExtras. Compile against its exact APIs; Forge loads the bundled libraries.
 configurations { taczEmbeddedApi }
 dependencies { taczEmbeddedApi("maven.modrinth:timeless-and-classics-zero:${tacz_version}") { transitive = false } }
 def extractedTaCZApis = layout.buildDirectory.dir('tacz-embedded-api')
@@ -530,6 +552,11 @@ def taczMixinExtrasApi = files(provider {
 }).builtBy(extractTaCZMixinExtras)
 
 dependencies {
+    compileOnly fg.deobf('curse.maven:cgm-945471:8399743')
+    compileOnly fg.deobf('curse.maven:framework-549225:7573740')
+    compileOnly fg.deobf('maven.modrinth:vics-point-blank:d1YyBgcz')
+    compileOnly fg.deobf('maven.modrinth:pb-jelly:mJMkYKoi')
+    compileOnly fg.deobf('maven.modrinth:geckolib:aC5KMoNg')
     compileOnly taczEmbeddedApis
     compileOnly taczMixinExtrasApi
     annotationProcessor taczMixinExtrasApi
@@ -609,7 +636,7 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Title'  : mod_name,
                 'Implementation-Version': project.jar.archiveVersion,
                 'Implementation-Vendor' : mod_authors,
-                'MixinConfigs'           : "mixins.${mod_id}.json"
+                'MixinConfigs'           : "mixins.${mod_id}.json,mixins.${mod_id}.tacz.json,mixins.${mod_id}.cgm.json,mixins.${mod_id}.pointblank.json"
         ])
     }
     finalizedBy 'reobfJar'
@@ -1025,6 +1052,8 @@ tasks.register('verifyReleaseArtifact') {
                     minecraft      : minecraft_version_range,
                     guardvillagers : "[1.20.1-${guard_villager_version}]",
                     tacz           : tacz_version_range,
+                    cgm            : "[0,)",
+                    pointblank     : "[0,)",
                     fzzy_config    : fzzy_config_version_range,
                     kotlinforforge : kotlin_for_forge_version_range
             ]
@@ -1119,13 +1148,11 @@ tasks.register('verifyReleaseArtifact') {
                         'VillageBuildingTerrainMixin',
                         'RaidMixin',
                         'RaiseShieldGoalMixin',
-                        'TaCZCommonAssetsManagerMixin',
-                        'TaCZGuardShotMixin',
-                        'TaCZGuardProjectileMixin',
                         'VillagerToGuardMixin',
                         'WalkBackToCheckPointGoalMixin',
                         'accessor.LootPoolAccessor',
                         'accessor.LootPoolEntryAccessor',
+                        'accessor.TagEntryAccessor',
                         'accessor.LootPoolSingletonAccessor',
                         'accessor.LootTableAccessor',
                         'accessor.RaidsAccessor',
@@ -1149,9 +1176,31 @@ tasks.register('verifyReleaseArtifact') {
                         'Release mixin metadata no longer isolates client-only model mixins')
             }
 
+            def optionalMixins = [
+                tacz: [mixins: ['TaCZCommonAssetsManagerMixin', 'TaCZGuardShotMixin',
+                                'TaCZGuardAmmoMixin', 'TaCZGuardProjectileMixin'], client: []],
+                cgm: [mixins: ['GunModFactoriesMixin'], client: []],
+                pointblank: [mixins: ['VpbHurtingItemMixin', 'PbjHurtingItemMixin'],
+                             client: ['client.HeldItemRendererMixin', 'VpbGunItemRendererMixin', 'PbjGunItemRendererMixin']]
+            ]
+            def mixinNames = new java.util.jar.Manifest(zip.getInputStream(zip.getEntry('META-INF/MANIFEST.MF')))
+                    .mainAttributes.getValue('MixinConfigs').split(',') as Set
+            optionalMixins.each { provider, expected ->
+                String config = "mixins.${mod_id}.${provider}.json"
+                def actual = new groovy.json.JsonSlurper().parseText(readEntry(config))
+                if (!mixinNames.contains(config) || actual.mixins != expected.mixins
+                        || (actual.client ?: []) != expected.client
+                        || actual.plugin != (provider == 'pointblank'
+                            ? 'com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankMixinPlugin'
+                            : 'com.gamergaming.villagerguardgunners.guns.InstalledTargetMixinPlugin')) {
+                    throw new GradleException("Invalid optional mixin registration in ${config}")
+                }
+            }
+
             String productionPackage = 'com/gamergaming/villagerguardgunners/'
             List<String> clientOnlyPrefixes = [
                     "${productionPackage}client/",
+                    "${productionPackage}compat/pointblank/mixin/client/",
                     "${productionPackage}mixin/client/"
             ]
             Set<String> commonClassesWithClientReferences = entries.findAll { entry ->

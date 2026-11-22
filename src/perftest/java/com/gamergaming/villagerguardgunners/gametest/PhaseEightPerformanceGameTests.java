@@ -1406,7 +1406,7 @@ public final class PhaseEightPerformanceGameTests {
                         "lastShootResult",
                         diagnostics.nativeState().lastShootResult() == null
                                 ? "NONE"
-                                : diagnostics.nativeState().lastShootResult().name());
+                                : diagnostics.nativeState().lastShootResult());
             } else {
                 state.addProperty("goalActive", false);
                 state.addProperty("decision", "GOAL_MISSING");

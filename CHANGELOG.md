@@ -6,6 +6,48 @@ in local development notes.
 
 ## Unreleased
 
+## 1.12 - 2026-11-18
+
+- Added support for MrCrayfish’s Gun Mod (Unofficial), Vic’s Point Blank, and Point Blank: Jelly. TaCZ is optional. Guard Orders, squads, patrols, and village services work without a gun mod.
+- Added CGM and Point Blank choices to natural guard loadouts, Rifleman and Medic equipment, and Quartermaster gun and ammo trades. Added a held-gun pose for guards using these mods.
+- Restored ammo handoffs, dropped ammo pickup, sharing, Armory resupply, and Quartermaster requests for CGM and Point Blank guns with empty reserves. CGM guns with native infinite ammo skip resupply.
+- CGM guard explosions protect allies and respect block protection. Safety checks include grenade damage modifiers. Canceled projectiles preserve ammo, and a partially fired shotgun blast costs one shell.
+- Guards can reload while moving tactically. Ending combat or switching gun mods clears interrupted reloads. Inspecting a guard reports its current gun without interrupting its aim.
+- Creative-box mode supplies ordinary matching ammo to CGM and Point Blank loadouts.
+- Newly generated Village Armories and Watchtowers stock ammo from the installed gun mods.
+- Quartermaster trade caps exclude offers for absent gun mods. Existing Quartermasters can recover after an invalid initial trade catalog is repaired and reloaded.
+- Guards recognize reassigned CGM grenade and missile projectiles and hold fire with unrecognized projectiles.
+- Point Blank guards use the selected fire mode and consume a round after firing even when a damage or sound callback fails. Incompatible older Point Blank builds no longer crash an equipped guard.
+- Corrected held-item rendering when a guard render is canceled or nested inside another draw.
+
+## 1.11 - 2026-11-10
+
+### Fixed
+
+- Fix the world-join crash with TaCZ 1.2.0 by using its native compressed,
+  chunked gun-pack synchronization; preserve the legacy workaround for older TaCZ.
+- Match guard firing and draw timing to TaCZ's clock when available.
+- Adapt per-shot safety hooks to TaCZ 1.2.0's callbacks and post-fire events
+  while retaining friendly-fire checks.
+
+## 1.10 - 2026-11-05
+
+### Added
+
+- Added four Infinite Ammo modes: Off (default), unlimited reserves with normal
+  reloads, supplied magazines without reloads, and creative ammo boxes issued
+  with new gun loadouts. Virtual modes apply to existing and new guards.
+- Virtual ammo leaves carried supplies untouched and is reflected in ammo
+  status, sidearm checks, Armory resupply, Quartermaster top-ups and ammo pickup.
+  Firing delays, heat, action cycling and friendly-fire protection remain active.
+
+
+### Fixed
+
+- Cancel pending Quartermaster ammo deliveries when virtual Infinite Ammo is enabled.
+- Recognize carried creative ammo boxes per weapon when planning Quartermaster
+  resupply, while preserving supplies for other weapons and medical care.
+
 ## 1.9.2 - 2026-10-22
 
 ### Fixed

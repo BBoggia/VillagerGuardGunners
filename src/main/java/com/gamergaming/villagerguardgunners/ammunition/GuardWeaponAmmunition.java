@@ -1,8 +1,8 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.sidearm.SidearmState;
-import com.tacz.guns.api.item.IGun;
 import java.util.Objects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -110,8 +110,8 @@ public final class GuardWeaponAmmunition {
         return new LoadoutSummary(
                 loadout.state(),
                 loadout.activeRole(),
-                GuardAmmoSummary.capture(loadout.primary(), reserveHandler),
-                GuardAmmoSummary.capture(loadout.sidearm(), reserveHandler));
+                GuardAmmoSummary.captureForGuard(guard, loadout.primary(), reserveHandler),
+                GuardAmmoSummary.captureForGuard(guard, loadout.sidearm(), reserveHandler));
     }
 
     /**
@@ -138,7 +138,7 @@ public final class GuardWeaponAmmunition {
         ItemStack[] weapons = {loadout.primary(), loadout.sidearm()};
         for (ItemStack weapon : weapons) {
             if (weapon.isEmpty()
-                    || !(weapon.getItem() instanceof IGun)
+                    || !GunProviders.isGun(weapon)
                     || !AmmoCompatibility.assess(weapon, candidate).isCompatible()) {
                 continue;
             }
@@ -175,7 +175,7 @@ public final class GuardWeaponAmmunition {
     private static WeaponAssessment assessWeapon(
             ItemStack weapon,
             ItemStack candidate) {
-        if (weapon.isEmpty() || !(weapon.getItem() instanceof IGun)) {
+        if (weapon.isEmpty() || !GunProviders.isGun(weapon)) {
             return WeaponAssessment.NO_GUN;
         }
         GuardAmmoSummary.Snapshot summary = GuardAmmoSummary.capture(weapon, null);

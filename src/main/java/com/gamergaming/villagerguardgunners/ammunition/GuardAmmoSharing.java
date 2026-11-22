@@ -1,12 +1,10 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IAmmoBox;
-import com.tacz.guns.api.item.IGun;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -33,7 +31,7 @@ public final class GuardAmmoSharing {
         }
         boolean serverSharingEnabled =
                 ModConfigs.GUARD_GUNNERS.ammunition.shareAmmoBetweenGuards.get();
-        if (!GuardRoleResolver.effectiveOrders(recipient)
+        if (GuardInfiniteAmmo.virtualReserve(recipient) || !GuardRoleResolver.effectiveOrders(recipient)
                 .permitsAmmoSharing(serverSharingEnabled)) {
             return SharingResult.failed(SharingStatus.DISABLED);
         }
@@ -47,14 +45,14 @@ public final class GuardAmmoSharing {
 
     private static SharingResult tryShareSafely(Guard recipient) {
         ItemStack recipientGun = recipient.getMainHandItem();
-        if (recipientGun.isEmpty() || !(recipientGun.getItem() instanceof IGun)) {
+        if (recipientGun.isEmpty() || !GunProviders.isGun(recipientGun)) {
             return SharingResult.failed(SharingStatus.INVALID_RECIPIENT);
         }
 
         GuardAmmoHandler destination = GuardAmmoAccess.getAmmoHandler(recipient);
         GuardAmmoMaintenance.ejectEmptyFiniteBoxes(recipient);
         GuardAmmoSummary.Snapshot recipientAmmo =
-                GuardAmmoSummary.capture(recipientGun.copy(), destination);
+                GuardAmmoSummary.captureForGuard(recipient, recipientGun.copy(), destination);
         if (!recipientAmmo.isReady()
                 || recipientAmmo.reserveSource() != GuardAmmoSummary.ReserveSource.PHYSICAL
                 || !recipientAmmo.reserveScanComplete()) {
@@ -232,8 +230,7 @@ public final class GuardAmmoSharing {
             long shareableUnits,
             ItemStack ammunitionTemplate) {
         if (candidate.isEmpty()
-                || !(candidate.getItem() instanceof IAmmo)
-                || candidate.getItem() instanceof IAmmoBox
+                || !GunProviders.isLooseAmmo(candidate)
                 || !ItemStack.isSameItemSameTags(candidate, ammunitionTemplate)
                 || !AmmoCompatibility.assess(recipientGun, candidate).isCompatible()) {
             return 0;

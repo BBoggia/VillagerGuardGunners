@@ -124,7 +124,10 @@ final class VillageBuildingBalanceContractTest {
             JsonArray entries = pool.getAsJsonArray("entries");
             assertEquals(1, entries.size());
             JsonObject entry = entries.get(0).getAsJsonObject();
-            assertEquals("tacz:ammo", entry.get("name").getAsString());
+            assertEquals("villagerguardgunners:guard_ammo", entry.get("type").getAsString());
+            var providers = new java.util.HashSet<String>();
+            entry.getAsJsonArray("choices").forEach(id -> providers.add(id.getAsString().split(":")[0]));
+            assertEquals(java.util.Set.of("tacz", "cgm", "pointblank"), providers);
             assertFalse(entry.toString().contains("tacz:modern_kinetic_gun"));
             for (JsonElement functionElement : entry.getAsJsonArray("functions")) {
                 JsonObject function = functionElement.getAsJsonObject();

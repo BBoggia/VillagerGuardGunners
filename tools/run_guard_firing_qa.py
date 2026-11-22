@@ -142,6 +142,13 @@ def run(args):
         test_guns(providers['tacz'], out)
     if args.mode == 'regression':
         regression_guns(providers['tacz'], out)
+    if args.mode == 'regression':
+        with zipfile.ZipFile(providers['tacz']) as archive:
+            data = json.loads(archive.read('assets/tacz/custom/tacz_default_gun/data/tacz/data/guns/glock_17_data.json'))
+        data['reload']['type'] = 'inventory'
+        fixture = out / 'tacz/guard_aim_qa/data/vgg_aim_qa'
+        (fixture / 'data/guns/inventory.json').write_text(json.dumps(data))
+        (fixture / 'index/guns/inventory.json').write_text(json.dumps(dict(name='Inventory ammo regression', display='tacz:glock_17_display', data='vgg_aim_qa:inventory', type='pistol')))
     (out / 'libraries').symlink_to(args.libraries.resolve(), target_is_directory=True)
     arguments = out / 'libraries/net/minecraftforge/forge/1.20.1-47.4.10/unix_args.txt'
     if not arguments.is_file():

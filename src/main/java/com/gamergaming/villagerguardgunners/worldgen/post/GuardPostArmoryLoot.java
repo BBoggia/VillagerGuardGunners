@@ -1,13 +1,11 @@
 package com.gamergaming.villagerguardgunners.worldgen.post;
 
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
 import com.gamergaming.villagerguardgunners.mixin.accessor.LootPoolAccessor;
 import com.gamergaming.villagerguardgunners.mixin.accessor.LootPoolEntryAccessor;
 import com.gamergaming.villagerguardgunners.mixin.accessor.LootPoolSingletonAccessor;
 import com.gamergaming.villagerguardgunners.mixin.accessor.LootTableAccessor;
-import com.tacz.guns.api.TimelessAPI;
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IAmmoBox;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +13,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
+import com.gamergaming.villagerguardgunners.mixin.accessor.TagEntryAccessor;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
@@ -116,7 +117,14 @@ public final class GuardPostArmoryLoot {
                 return false;
             }
             for (LootPoolEntryContainer entry : entries) {
-                if (!(entry instanceof LootItem) && !(entry instanceof EmptyLootItem)) {
+                // Optional gun items are represented by tags with zero or one member.
+                if (entry instanceof TagEntry tag) {
+                    var key = ((TagEntryAccessor) tag).villagerGuardGunners$getTag();
+                    if (BuiltInRegistries.ITEM.getTag(key).map(members -> members.size() > 1).orElse(false)) {
+                        return false;
+                    }
+                } else if (!(entry instanceof LootItem) && !(entry instanceof EmptyLootItem)
+                        && !(entry instanceof GuardAmmoLootEntry)) {
                     return false;
                 }
                 components += ((LootPoolEntryAccessor) entry)
@@ -147,21 +155,9 @@ public final class GuardPostArmoryLoot {
         if (stack == null || stack.isEmpty()) {
             return false;
         }
-        ResourceLocation ammoId;
-        if (stack.getItem() instanceof IAmmo ammo) {
-            ammoId = ammo.getAmmoId(stack);
-        } else if (stack.getItem() instanceof IAmmoBox box) {
-            if (box.isAllTypeCreative(stack)) {
-                return true;
-            }
-            if (!box.isCreative(stack) && box.getAmmoCount(stack) <= 0) {
-                return false;
-            }
-            ammoId = box.getAmmoId(stack);
-        } else {
-            return false;
-        }
-        return ammoId != null && TimelessAPI.getCommonAmmoIndex(ammoId).isPresent();
+        return GunProviders.findAmmoOwner(stack)
+                .map(provider -> provider.isKnownUsableSupply(stack))
+                .orElse(false);
     }
 
     /** Stackless singleton used only to abort loot-pool iteration at the cap. */

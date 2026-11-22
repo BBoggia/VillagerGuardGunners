@@ -1,0 +1,34 @@
+// Disposable loopback validation. Export launch commands before starting separate JVMs.
+allprojects { p ->
+    afterEvaluate {
+        def root = new File(p.projectDir, 'build/combat-client-qa')
+        def launchRoot = p.hasProperty('captureCombatLaunch') ? new File(root, 'launch-export') : root
+        def qa = sourceSets.create('combatQa') {
+            java.srcDir new File(p.projectDir, 'tools/combat-qa-src')
+            compileClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.main.output
+        }
+        configurations.combatQaImplementation.extendsFrom configurations.implementation
+        configurations.combatQaRuntimeOnly.extendsFrom configurations.runtimeOnly
+        minecraft.runs.client.workingDirectory = new File(launchRoot, 'client')
+        minecraft.runs.server.workingDirectory = new File(launchRoot, 'server')
+        [minecraft.runs.client, minecraft.runs.server].each { run ->
+            run.mods.villagerguardgunners.source qa
+            run.property 'combat.qa.dir', launchRoot.absolutePath
+            run.property 'fml.earlyprogresswindow', 'false'
+        }
+        minecraft.runs.client.args '--username', 'CombatObserverOne', '--quickPlayMultiplayer', '127.0.0.1:25575'
+        if (p.hasProperty('captureCombatLaunch')) {
+            tasks.configureEach {
+                if (name in ['runClient', 'runServer']) {
+                    doLast {
+                        root.mkdirs()
+                        def payload = [args: allJvmArgs + ['-cp', classpath.asPath, mainClass.get()] + args,
+                                       env: environment.findAll { key, value -> key in ['MOD_CLASSES', 'MCP_MAPPINGS'] }, cwd: workingDir.absolutePath]
+                        new File(root, name + '.json').text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(payload))
+                    }
+                }
+            }
+        }
+    }
+}

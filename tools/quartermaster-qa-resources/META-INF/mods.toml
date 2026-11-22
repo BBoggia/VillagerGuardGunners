@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+[[mods]]
+modId="vggquartermasterprobe"
+version="1.0"
+displayName="Local Quartermaster fixtures"
+[[dependencies.vggquartermasterprobe]]
+modId="villagerguardgunners"
+mandatory=true
+versionRange="[1.8,)"
+ordering="AFTER"
+side="BOTH"

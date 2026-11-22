@@ -1,0 +1,138 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "villagerguardgunners:guard_ammo",
+          "choices": [
+            "tacz:9mm",
+            "cgm:basic_bullet",
+            "pointblank:ammo9mm"
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "villagerguardgunners:guard_ammo",
+          "choices": [
+            "cgm:basic_bullet",
+            "pointblank:ammo9mm",
+            "tacz:45acp"
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "villagerguardgunners:guard_ammo",
+          "choices": [
+            "pointblank:ammo762",
+            "tacz:762x39",
+            "cgm:advanced_bullet"
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "villagerguardgunners:guard_ammo",
+          "choices": [
+            "tacz:556x45",
+            "cgm:advanced_bullet",
+            "pointblank:ammo556"
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "villagerguardgunners:guard_ammo",
+          "choices": [
+            "cgm:advanced_bullet",
+            "pointblank:ammo762",
+            "tacz:338"
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "villagerguardgunners:guard_ammo",
+          "choices": [
+            "pointblank:ammo556",
+            "tacz:30_06",
+            "cgm:advanced_bullet"
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "villagerguardgunners:guard_ammo",
+          "choices": [
+            "tacz:12g",
+            "cgm:shell",
+            "pointblank:ammo12gauge"
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 32
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

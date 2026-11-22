@@ -1,0 +1,16 @@
+{
+  "format": 4,
+  "entries": [
+    {
+      "gun": "tacz:m4a1",
+      "sidearm": "tacz:glock_17",
+      "role": "vgg_example:village_marksman",
+      "weight": 1,
+      "conditions": {
+        "difficulties": [
+          "hard"
+        ]
+      }
+    }
+  ]
+}

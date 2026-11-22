@@ -1,0 +1,1686 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:medium/village_plains_fortified"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "3ae1c3bcbbd919b46663f1451e56b6cb48536197785f7d18381e5cb5e71be18c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "796ecfe4971268d93841ab07cf4b03c696100298a7ac2bcd2eec5521ca52d51f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/cart": [
+      {
+        "kind": "decoration",
+        "sha256": "4592aa1e0c70aef321c8f634b74b3336c40cef20dfe112c97bf7cd2f03f4a68a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "ddd0ae4bd6ae62a3c11ece2d86d247ca426b54638a2b58e63c971cfa67459125",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/fountain": [
+      {
+        "kind": "decoration",
+        "sha256": "bbf6c2ff262072d3f25dcb65bab9c72923a5f2bd74b92014e1a4aeabafa35ccc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "f970f427e02b52a6228a67397963511e1026ddcab6dd667bfe22a43553ac6e46",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "5ac1db0e2017480e8953f85d4b4bb33bb46a41dfe7256c4a2b34432823c9f440",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1d85a525653ddac620bb5d46db61488c8aefccbfb98e70a0db0d9bea98f6340f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "df0fbc6738328f30368975b05ed103b1635a9bb57e606b9e206ef62aa8c09ce4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "4bcf0c1f41e3d1331a4d20b4ab2dd0ddae14cbc7f931602b82a044bc2c8297e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "13d92b75993a915bf83f1968d59afc93a79f04afbee45eca7e62a23db423a3ad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "97d51e3d9b858f38fcf31f042e43faee5d49cc75808a58e637c68814ed187ebe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/tree": [
+      {
+        "kind": "decoration",
+        "sha256": "54b765afe0803ccfb6c4bdfdc01c30f9262be3fbb9793268e2e9c908458bca15",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "73e4496b0b737fa4ab8080b933f359cd80de4fbdec7036bbb354602087fdc221",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/deco/well": [
+      {
+        "kind": "decoration",
+        "sha256": "4a07d835f2d7fcbdb494d0cc17b472b5fa17120c9bb037144f67d5036fcc177e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "538024685fe65635a69f5f1998f69432a40aeb2ecef99f48afaa550c7fe430d4",
+        "beds": [
+          [
+            2,
+            6,
+            2
+          ],
+          [
+            4,
+            6,
+            2
+          ],
+          [
+            6,
+            6,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/house/big_2": [
+      {
+        "kind": "residence",
+        "sha256": "8aff05db95a035b9bfc3a8bf63a2570a881b97fe5d6735866a4cbccf2641fa67",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            0,
+            0
+          ],
+          [
+            9,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/house/big_3": [
+      {
+        "kind": "residence",
+        "sha256": "797abc016ff5c1d22cbcd7281c7bf8d9bbfe1e57fccc5796c32b0962212769f6",
+        "beds": [
+          [
+            2,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "fe4082b643bbb900b4cdf7cacbdc5882d7814ed5ad36e69093daa60022960f09",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "787ec4de5bd82ec2066aff75648ca028c2987929cf57dcbb524fdc9b4237a0c9",
+        "beds": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "d6274f66f301a953336695ff228d28f35df69bd2fb43e3ed4af2bef2b5b755c2",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "76aff32eddb97974c1c7b0e02bb8b55eab70dcb991bd5c49ceaaf3683ef40847",
+        "beds": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "f5261473f97df2ac666ac77449cfc4e6c720d5be7a71eac8664cfaa98a01bd60",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/house/small_4": [
+      {
+        "kind": "residence",
+        "sha256": "d6f654f25a6738ff6aabddd9fd7ff6ef8ef4e537043c98fff1472b94fb1f2e4a",
+        "beds": [
+          [
+            2,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "635df93ae7057cb2e47073f1560776bafa7e7b161d97b120c6ea4b77dbbec720",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "7cfdefeebf2f8f6b70cbf1a1505f98870539623209e235b6207eb7b3323a9918",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "e28c88154adad10fe8028154c31636f15883c7cdb12d4582c3932dae83e2e437",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "d7efea927460e615dc30c3f3bd7a7f317970055f06e903c459a2e3486a739740",
+        "beds": [
+          [
+            7,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "faecf2dad735c0d0a78eafdc662822c857770e94c460d3f83ceb9957d1d9328c",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "e679984edc5cc1096a6162e3f372b02fed603935d087ca3a00bf68dfb253061c",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "b1c76b5b8fcb02b8e38bbd0da01722112401df2553d63cff477e7daa2973dd23",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "5a7f68d6bf4cbd2fd70b9132cd2fea3948cbce39baf356045d6fa0967f032a06",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "5e1be6a77020c528bae7fe6189a5946032df0006c6cf30a4f12fbc5402f3d449",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/cartographer": [
+      {
+        "kind": "service",
+        "sha256": "b4045c4ccd17480b08adb00b6f448bc5f79d2cc06be22104748f32587e2d83e2",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "2e470db2e95c2c422e8953d3df5d057fb50285edae6fe1006f2cbd23aef9f304",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "ebe10850bbc42dbe976d0490b24cfc9aaba8122e464a09e61b7a225faf8885e0",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "7d77e5f997551d92d2d04f9d46e4836afff666a125b8ffbe59a83dce74d41dca",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "ea4875c48da3599c9cdbe4d5bcf073365aa2270ca64df6d7273085868ca62871",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            9
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "90a8ca0c3cff1fc5bf8a0cec7f619f781339bd337ba55a123388a848004e446b",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            12
+          ],
+          [
+            6,
+            1,
+            14
+          ],
+          [
+            6,
+            2,
+            12
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "91eb312c6b116f2f16c51092f1ea6181f4a4f22920c5d0c48ead2510d5b1df50",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "9c9169458965339970148f468a49b844ff110d14e6adfda63169ec8611924014",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "42835da515f60d8d9fe16f8d29460df0da435dfe5788052cfd03579c32433dc9",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            4,
+            0
+          ],
+          [
+            5,
+            4,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "8972d584b21246ddf887ddfab760098930560009e5ea436bf7041938e7c7ada8",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "709f98970d41ec971621c37c67d4a2c632521298b2f88d9e7fd202debe66da17",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            9,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "867c3c4733e4999571e5b67eeba12878af5bdb6d9bd45bbe4b343096521a1113",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "c71396b5ce5e7765331af5443fba7ce31657b9d3605bb0672bd3530a161fdfe4",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "05c26dc0fdac5f16f8153db4da5ef4c34748b7ac4f7441c2a30e6ee1c8a2be71",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            2,
+            3
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/horticulturist": [
+      {
+        "kind": "service",
+        "sha256": "c45177b824a44499df013b40f01de3d88a99b65533522c80fd12c57c10951239",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "0b86ea8b6840e1cb9bc02a481aed1912855d34819d56be67ce6a3b54ec3a4cea",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "509fbb649aea044d1400e8e92defe31f6f9b9c5437ca1936ab30b4cbeb76e5d8",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "d6014de5be4da95d0a74b1a5390311149e8b02020eb2a6c691f2005305a4ff0f",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            7,
+            0,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "1acf4770e8af625fd4d3d9b3644044051aca1f7fbcc81e94d345be07030bf216",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "1b9177712fb6c43896f1e1d2bf69cf5f81d367f6e8f308b5fbe532cc49258d06",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "d3fcd16b55dc8441e8751940d11f1012fd86609e191e817a4d67839671d4defb",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "961443974b07a829eacae3bd2788ba2dc56bdc7c410c9dd7da6e76b17da99641",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/loomhouse": [
+      {
+        "kind": "service",
+        "sha256": "3d03da6da94a10b116145cb3974bf01338f4b4fc2d1f41d6f8d684037d302187",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            6
+          ],
+          [
+            3,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "710eb874dc303e506d7af9fa898996da524f34bd225919214cafe9f06b64dfff",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "93e0df546bd426e9cd589a5c0ffd37414e0a0137923f0531b5ad6ce02ff6fcfc",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "8316fcaa01dac0fad604fdb80ba8a26f754a6bc5ce626723298ba221881d8939",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "b4c0c8b2c89ffbf3311d5a31a1527a319cbd030eefbbc0282caf1fb780f5cd8a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            9
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "81c5a3240e78b30aac1e583223bb8f72757039c45e122fd2f782463526a577c8",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/pen": [
+      {
+        "kind": "service",
+        "sha256": "885dd319e781d60c964f4e106c947859e9b6d3b141914ea01b999b564fc05135",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "32dbd191761787874946f1fa705cebd96f13d96e89d92a435f9f87291cb63712",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            8,
+            6
+          ],
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            6,
+            3,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "9edf3fa1d3cd0c2a89036461799f444581844c3a03e968b0b4e0fc94d522523b",
+        "beds": [
+          [
+            2,
+            7,
+            8
+          ],
+          [
+            2,
+            7,
+            10
+          ],
+          [
+            2,
+            9,
+            8
+          ],
+          [
+            2,
+            9,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            12
+          ],
+          [
+            7,
+            2,
+            11
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "05d337e4dc96444b73e649f8339b1d72fc7015601e3f565c780ae0431d0a6607",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "5c79e3ecd5adcc0eda3b3b1bc5f647bc11959a7f13b887869cbf83a1de5472e0",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "aac475343b3b629847f46d8e70ce40e087f490653644bdaa9305cb04f0066e6f",
+        "beds": [
+          [
+            9,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "8323675e2f4ae6cc97c8927b79ab9dc1a2ed1c507936a0ba94b04fa42e4937fa",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "3bcd0bebcf5c135f6a44b0626256cd587d36e4042c22b29c2fc3ef1b22198940",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "222ba42b7dfe9601b5e28a04b0932abec3fcd84fdc84462e71132329f8ba7fea",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            6,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/tannery": [
+      {
+        "kind": "service",
+        "sha256": "d1c1f3c4a51c66db08b0c53856b709d61da3ef8b92df9177e1a41972caffa4b3",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "155a65deebd1b0dc836aab3ad63555c3242be77fa9d1153567b30265c589105e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            6,
+            7
+          ],
+          [
+            4,
+            5,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "77ca174372f445074a330d81bec920d43391e44392f69aba37bf09bb396b9619",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "d98effdb30c5689129aea3adbf4284b9a9213ab43dba805c06676b2d6175ba98",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "3250a581c9a4f6b2c95a8b246b3ad662e4aaf6d20d7729124380ef4cf32b49ee",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "e901c9233e2a46c4fe5be048a1416be4fbdb38970b35d8cee6738923291b7d2a",
+        "beds": [
+          [
+            3,
+            6,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "b0d14016936dc6c1fc4d39ddd8dbbf28f021cfe82e3a3405756dd57d383c4ba6",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains_fortified/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "59a6448b68ef765b0a2389cc0cb6ed19c40857235b8d44b7ea58c2e0a7fc35e2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "9d0c055303541c0dba7a1691019f3ed3eb4970f3d20d020d1aa0cc1189fbbd0c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "e2bc619d3e14523871b449566ded8d6d1d17d5809a5d42953f423822d9544ad7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "8f4b66b664b283078ed8345213669015df9a828eebe8eed092558447b5d0456d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "fdf70268e2473469d9a72b6b2c6ccd99c104143d0e5c08a36427122f3b67f842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "c9a7682d7ea4fe7a94299b595ba9165c3d4241058cdb4bcfa754fc15c8444538",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "90c173010b79d7c57f56c6c69a01fc65e395175512abe77ad3d64e8556c853d7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "e3a29a9c9e7f670f9beda17ac686be40fcf32a2122cb7922900ec653b18faea6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "1d08e4af3b0442dca01465ebf43f9cc4178e9f72f585ea0d2ba2c79c67dff48c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains_fortified/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "bacee9107b7c0d4390fded19f19f8eba7d84ce919febd94394edfb433812c8c9",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            11
+          ],
+          [
+            7,
+            6,
+            13
+          ],
+          [
+            11,
+            1,
+            16
+          ],
+          [
+            13,
+            6,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "medium"
+}

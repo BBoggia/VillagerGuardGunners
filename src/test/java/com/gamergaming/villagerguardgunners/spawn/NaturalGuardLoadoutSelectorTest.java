@@ -29,14 +29,12 @@ final class NaturalGuardLoadoutSelectorTest {
         NaturalGuardDifficultySettings hard = settings(NaturalGuardDifficulty.HARD);
 
         assertAll(
-                () -> assertEquals(Set.of(NaturalGuardSpawnSource.STRUCTURE), rules.enabledSources()),
+                () -> assertEquals(Set.of(NaturalGuardSpawnSource.STRUCTURE, NaturalGuardSpawnSource.SPAWN_EGG), rules.enabledSources()),
                 () -> assertTrue(rules.replaceCrossbowsOnly()),
                 () -> assertEquals(64.0D, rules.nearbyCapRadius()),
                 () -> assertFalse(rules.allowExplosiveWeapons()),
-                () -> assertFalse(peaceful.enabled()),
-                () -> assertEquals(0.0D, peaceful.upgradeChance()),
-                () -> assertEquals(0, peaceful.maximumNearby()),
-                () -> assertNull(peaceful.poolId()),
+                () -> assertTrue(peaceful.enabled()),
+                () -> assertEquals(easy, peaceful),
                 () -> assertEquals(0.35D, easy.upgradeChance()),
                 () -> assertEquals(1, easy.maximumNearby()),
                 () -> assertEquals(NaturalGuardLoadoutDefaults.EASY_POOL, easy.poolId()),
@@ -82,7 +80,8 @@ final class NaturalGuardLoadoutSelectorTest {
                         difficulty, pool, DecisionStatus.WEAPON_NOT_ELIGIBLE,
                         chanceCalls, nearbyCalls, weightCalls),
                 () -> assertRejected(
-                        validContext(), settings(NaturalGuardDifficulty.PEACEFUL), null,
+                        validContext(), new NaturalGuardDifficultySettings(0.0D, 1,
+                                NaturalGuardLoadoutDefaults.EASY_POOL), null,
                         DecisionStatus.DIFFICULTY_DISABLED,
                         chanceCalls, nearbyCalls, weightCalls));
 

@@ -13,7 +13,8 @@ so existing guards and worlds retain their previous behavior.
 ## Copying orders with an Orders Ledger
 
 The **Orders Ledger** is a reusable, single-stack item that copies the seven
-behavior orders shown in the Guard Orders panel. Craft one shapelessly from a
+behavior orders shown in the Guard Orders panel plus the guard's optional
+datapack role. Craft one shapelessly from a
 **Book and Quill** and an **Emerald**.
 
 1. Use a blank Orders Ledger on a guard to capture that guard's current raw
@@ -35,6 +36,9 @@ same server level and within eight blocks; spectators and a player currently
 targeted by that guard cannot use the ledger. An offhand ledger works when the
 main hand is empty, but it never takes priority over a non-empty main-hand
 interaction.
+
+Version-2 templates include the role assignment. Existing version-1 ledgers
+remain valid and leave the destination guard's role unchanged.
 
 Templates use a strict versioned format. Missing fields, unknown values,
 damaged data, and templates written by a newer unsupported format fail closed

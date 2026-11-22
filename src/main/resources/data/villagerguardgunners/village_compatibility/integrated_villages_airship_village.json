@@ -1,0 +1,557 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:airship_village"
+  ],
+  "templates": {
+    "integrated_villages:airship_village/intersection/airship_village_intersection1": [
+      {
+        "kind": "decoration",
+        "sha256": "abe926a68e24519b90378dd8ae11ad81169d6b2dcd9bfd371b470e2e2e3de517",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:airship_village/intersection/airship_village_intersection2": [
+      {
+        "kind": "decoration",
+        "sha256": "4f6f52a96f2724039193e44f7711d90fd8d8724cd0a87df84bca293981e0ce25",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:airship_village/mobs/airship_village_irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "4e51f809f1f591a0eda14591529d03bfb71203c744396df7717a57651d84a5fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:airship_village/mobs/airship_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "14a92d7dcb92f021f6c15ed360ee16412a4cdfa47cb5c8e1d8c2c2d4b8aead2f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:airship_village/mobs/airship_village_villager_guard": [
+      {
+        "kind": "decoration",
+        "sha256": "e4e95d2bf47db627a4c68c03e5b312b27adb0f1067a6d3a5e28d0bd3e7497617",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:airship_village/path/airship_village_path_mason": [
+      {
+        "kind": "road",
+        "sha256": "a959c3493e2a1919bd97287ff4393c84d1cea1bf8bec40bfb72223d7c9438d4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:airship_village/path/airship_village_path_ship_left": [
+      {
+        "kind": "road",
+        "sha256": "3f681839b00397f7b845950e159af1b1996519766633e3b79f06f4aac98d4b6d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:airship_village/path/airship_village_path_ship_right": [
+      {
+        "kind": "road",
+        "sha256": "daf54ae84a61c45986154f67a30c3b2c0850c89b10ec70503abff0e15541ae9b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:airship_village/ship/airship_village_cargo": [
+      {
+        "kind": "residence",
+        "sha256": "0780f6bb1051972a5af11376928650481562fc9f017adb5a344994a7de459c4a",
+        "beds": [
+          [
+            12,
+            22,
+            15
+          ]
+        ],
+        "entrances": [
+          [
+            18,
+            22,
+            16
+          ],
+          [
+            20,
+            22,
+            16
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:airship_village/ship/airship_village_cartographer": [
+      {
+        "kind": "residence",
+        "sha256": "dc3346519e656c470593931388856b5590e928ce7fbbf6d12aeca74805f488f0",
+        "beds": [
+          [
+            12,
+            9,
+            24
+          ],
+          [
+            12,
+            10,
+            24
+          ],
+          [
+            16,
+            9,
+            24
+          ],
+          [
+            16,
+            10,
+            24
+          ],
+          [
+            20,
+            9,
+            24
+          ],
+          [
+            20,
+            10,
+            24
+          ],
+          [
+            20,
+            11,
+            21
+          ],
+          [
+            21,
+            11,
+            21
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            9,
+            33
+          ],
+          [
+            12,
+            9,
+            33
+          ],
+          [
+            12,
+            11,
+            20
+          ],
+          [
+            15,
+            11,
+            19
+          ],
+          [
+            16,
+            11,
+            16
+          ],
+          [
+            17,
+            11,
+            19
+          ],
+          [
+            20,
+            9,
+            33
+          ],
+          [
+            21,
+            9,
+            33
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:airship_village/ship/airship_village_cleric": [
+      {
+        "kind": "residence",
+        "sha256": "28165855df8bed30d69048023ec47191ab1bd47d8bc03fad17905eb818b61c6d",
+        "beds": [
+          [
+            10,
+            18,
+            15
+          ],
+          [
+            10,
+            18,
+            16
+          ],
+          [
+            12,
+            10,
+            16
+          ],
+          [
+            12,
+            12,
+            16
+          ],
+          [
+            14,
+            10,
+            16
+          ],
+          [
+            14,
+            12,
+            16
+          ],
+          [
+            16,
+            10,
+            16
+          ],
+          [
+            16,
+            12,
+            16
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            10,
+            20
+          ],
+          [
+            13,
+            10,
+            29
+          ],
+          [
+            13,
+            18,
+            17
+          ],
+          [
+            14,
+            11,
+            49
+          ],
+          [
+            14,
+            18,
+            12
+          ],
+          [
+            15,
+            10,
+            29
+          ],
+          [
+            15,
+            18,
+            17
+          ],
+          [
+            16,
+            10,
+            20
+          ],
+          [
+            18,
+            10,
+            32
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:airship_village/ship/airship_village_farmhouse": [
+      {
+        "kind": "residence",
+        "sha256": "d3c8ae07f7ebcf1aec56c449a5f63f5a31237b23e99e89f6f8c7755bce6daa24",
+        "beds": [
+          [
+            8,
+            7,
+            19
+          ],
+          [
+            8,
+            8,
+            19
+          ],
+          [
+            9,
+            8,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            8,
+            10
+          ],
+          [
+            6,
+            8,
+            13
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:airship_village/ship/airship_village_fletcher": [
+      {
+        "kind": "residence",
+        "sha256": "a425fc55baafc4233117583131396b49b8804ad6b7a144f35f874bcee2825abf",
+        "beds": [
+          [
+            4,
+            5,
+            10
+          ],
+          [
+            4,
+            6,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            8,
+            8
+          ],
+          [
+            7,
+            8,
+            8
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:airship_village/ship/airship_village_leatherworker": [
+      {
+        "kind": "residence",
+        "sha256": "61dd6c627382b4d90b38854f191191aed7728100d15d1210b055020f7dd9838c",
+        "beds": [
+          [
+            9,
+            10,
+            13
+          ],
+          [
+            10,
+            10,
+            13
+          ],
+          [
+            17,
+            9,
+            16
+          ],
+          [
+            17,
+            9,
+            18
+          ],
+          [
+            17,
+            10,
+            16
+          ],
+          [
+            17,
+            10,
+            18
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            10,
+            11
+          ],
+          [
+            14,
+            10,
+            11
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:airship_village/ship/airship_village_library": [
+      {
+        "kind": "residence",
+        "sha256": "7652b117be6dcbf76d8adadded3cd2af0ffbdaf247fd966286e52d00a4f48437",
+        "beds": [
+          [
+            17,
+            6,
+            23
+          ],
+          [
+            17,
+            8,
+            23
+          ],
+          [
+            19,
+            6,
+            26
+          ],
+          [
+            19,
+            6,
+            28
+          ],
+          [
+            19,
+            6,
+            31
+          ],
+          [
+            19,
+            8,
+            26
+          ],
+          [
+            19,
+            8,
+            28
+          ],
+          [
+            19,
+            8,
+            31
+          ],
+          [
+            19,
+            13,
+            19
+          ]
+        ],
+        "entrances": [
+          [
+            14,
+            5,
+            32
+          ],
+          [
+            14,
+            12,
+            23
+          ],
+          [
+            16,
+            5,
+            32
+          ],
+          [
+            16,
+            12,
+            23
+          ],
+          [
+            17,
+            9,
+            47
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:airship_village/ship/airship_village_mason": [
+      {
+        "kind": "residence",
+        "sha256": "aa35fd46e79b9ff23a3084746733dc8ccf5dc245847982d22e9f38cc9fd65fa2",
+        "beds": [
+          [
+            10,
+            12,
+            15
+          ],
+          [
+            11,
+            8,
+            45
+          ],
+          [
+            11,
+            10,
+            45
+          ],
+          [
+            11,
+            12,
+            15
+          ],
+          [
+            14,
+            8,
+            45
+          ],
+          [
+            14,
+            8,
+            50
+          ],
+          [
+            14,
+            10,
+            45
+          ],
+          [
+            14,
+            10,
+            50
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            8,
+            44
+          ],
+          [
+            13,
+            8,
+            44
+          ],
+          [
+            14,
+            12,
+            14
+          ],
+          [
+            16,
+            12,
+            14
+          ]
+        ]
+      }
+    ]
+  },
+  "traversal_limits": [
+    "elevation"
+  ]
+}

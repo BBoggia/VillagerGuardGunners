@@ -6,29 +6,111 @@ the relevant manual rows pass against the exact files being distributed.
 
 ## Candidate identity
 
-- Version: `1.2`
+- Version: use `mod_version` in `gradle.properties` and the matching file in `docs/releases/`.
 - Minecraft: `1.20.1`
-- Forge: `47.4.23`
+- Forge: `47.4.10` minimum; compatible 47.x releases
 - Guard Villagers: `1.20.1-1.6.19`
-- TaCZ: `1.1.8-hotfix`
-- Fzzy Config: `0.7.6+1.20.1`
+- Optional TaCZ version: `1.1.8` or newer for Minecraft `1.20.1` (`[1.1.8,)`).
+  The compile dependency remains pinned by `tacz_version`; the loader range is
+  defined separately by `tacz_version_range` in `gradle.properties`.
+- Other optional gun mods: MrCrayfish’s Gun Mod (Unofficial) with Framework, or either Vic’s Point Blank or Point Blank: Jelly with GeckoLib.
+- Fzzy Config: `0.7.6+1.20.1` or `0.7.7+1.20.1`, Forge builds
 - Kotlin for Forge: `4.12.0`
-- Gun pack(s): record exact names and versions in the release notes
-- Current development JAR SHA-256: `9809fdaf10a7d34369d108383a6f41a3eba5a2fb7e60861a67f26c0373936c6a`
+- Automated baseline gun pack: TaCZ Default Gun Pack bundled with TaCZ
+  `1.1.8-hotfix`. Record additional tested pack versions with candidate evidence.
+- Candidate JAR SHA-256: use the checksum shipped with the candidate being tested.
+  Earlier release and development hashes do not identify this build.
+
+## Infinite ammo update scope
+
+Version 1.10 adds the four Infinite Ammo modes. Check the installed JAR with
+Fzzy Config 0.7.6 and 0.7.7, including a run with Arcana. Cover default finite
+ammo, ordinary reload delays, no-reload magazines, manual action cycling,
+bursts, shotguns, inventory-fed guns, canceled and unsafe shots, live mode
+changes, new primary/sidearm creative boxes, and removal of issued boxes.
+Carried finite supplies must remain unchanged in virtual modes. Record the
+exact JAR hash; these checks do not certify unrelated pending rows below.
+
+## Arcana compatibility hotfix scope
+
+Version 1.9.2 fixes a firing-hook conflict with TacZ:Arcana. Validate the exact
+candidate with and without Arcana 1.1.4 using installed Forge clients and
+servers with TaCZ 1.1.8-hotfix2. Check player and guard semi-auto, automatic,
+burst, and shotgun firing; firing after reload; per-round friendly-fire
+refusals; ammo preservation; and Arcana's projectile events. Retain the
+candidate hash and dependency versions with the results. Special Arcana ammo
+and altered projectile trajectories need separate validation. These targeted
+checks do not mark unrelated pending rows in the full release matrix complete.
+
+## Full update from 1.8
+
+The 1.9 release introduced the Quartermaster expansion, combat and navigation
+improvements, automatic-loadout changes, and the TaCZ compatibility update.
+The 1.8.1 patch contains only the TaCZ compatibility change and is not the
+baseline for certifying the additional gameplay features.
+
+Check the packaged Quartermaster journey, upgrade persistence, and concurrent
+management using [Quartermaster validation](quartermaster-validation.md).
+Check duty returns, local detours, passage waits, entrance selection, and coverage
+repairs using [guard navigation](guard-navigation.md). Preserve the published 1.8
+JAR and use a disposable copied world for upgrade checks.
+
+Use the [accuracy configuration guide](configuration.md#guard-accuracy-and-player-combat)
+and [validation results](guard-accuracy-validation.md) for accuracy coverage.
+Confirm zero-error/eye-level defaults, disabled player overrides, current dependency
+metadata, no observer classes in the production JAR, and packaged client/server
+smoke evidence. Identify which artifact produced every measurement; previous
+results do not certify changed code merely because its version was unchanged.
+
+## Candidate evidence
+
+Use the checksum in the prepared candidate bundle's `SHA256SUMS.txt` to identify
+its exact files. Earlier development reports do not certify changed artifacts.
+The checked rows below are historical preparation results and apply only to
+their recorded artifact, not automatically to the current JAR.
+Current preparation results are recorded with the candidate review evidence;
+manual, multiplayer, upgrade, performance, and remote CI checks still require
+matching evidence before public release.
+
+Build a local review bundle with `./gradlew prepareReleaseCandidate`. It contains
+the mod JAR, one universal datapack, 25 individual player datapacks, five all-buildings alternatives,
+release notes, documentation, and checksums under `build/distributions/release-candidate/<version>/`. This task
+runs `check` and release-identity verification. It does not mark pending manual
+rows complete or bypass the public `prepareCurseForgeRelease` gates.
+
+See [building pack installation](building-pack-installation.md) for selecting
+provider packs. Preview and QA packs are excluded from the review bundle.
 
 ## Automated gates
 
-- [x] `./gradlew check` after sidearm Step 8 release validation
-- [x] `./gradlew runGameTestServer` — all 73 required tests passed
-- [ ] Rerun `./gradlew runGameTestServer -Pphase8Performance=true` against
-  the current JAR — the spawn-timing fix does not execute in these fixtures,
-  but fresh captures showed non-repeatable lane/timing variance and are not
-  accepted as release evidence
-- [ ] Rerun `./gradlew verifyPhase8PerformanceReports` against a clean set of 17 passing JSON/JFR pairs
-- [ ] Rerun `./gradlew assembleReleaseCandidateEvidence` and inspect the deterministic manifest
-- [ ] Rerun `./gradlew verifyAmmunitionReleaseCandidate`
-- [x] Rebuild the final JAR and confirm its SHA-256 is reproducible
-- [ ] Confirm the CI build passes from a clean checkout
+- [x] Combined packs match all individual resources exactly. A copied 1.7
+  world passed migration from 25 individual packs to five combined packs,
+  CTOV lookup, reload, and full restart on ordinary packaged Forge.
+
+- [x] Packaged dedicated Forge startup, all nine village mods and 25 player
+  packs, CTOV structure lookup, datapack reload, and full process restart.
+  This covers loading and persistence, not multiplayer playthrough.
+
+- [x] `./gradlew cleanTest prepareReleaseCandidate` — Java tests, resource and
+  packaged-artifact checks, release identity, 25 individual pack builds, and
+  five combined pack builds.
+
+Run the [village expansion validation](village-expansion-validation.md) matrix.
+Its manifest records fresh counts and artifact identity; do not carry checked
+boxes forward from an older candidate.
+
+- [x] `python3 -m unittest discover -s tools/tests -v`
+- [ ] `python3 tools/validate_village_expansion.py` — JVM and artifact checks,
+  native correctness tests, integration probes, combined performance matrix,
+  and all seven report gates.
+- [ ] Verify the retained manifest against the current source tree and JAR.
+- [ ] Complete the combined village compatibility and playthrough matrix.
+- [ ] `./gradlew assembleVillageDefenseBuildingEvidence` — regenerate aggregate
+  release manifests for the final distribution candidate.
+- [ ] `./gradlew verifyAmmunitionReleaseCandidate verifyVillageDefenseBuildingsReleaseCandidate`
+  — validate aggregate release evidence for that candidate.
+- [x] Build the final versioned JAR and record its SHA-256.
+- [ ] Confirm the CI build passes from a clean checkout.
 
 The normal GameTest suite includes a native Glock firing case with a target
 beyond its profile-adjusted preferred range but within the configured maximum
@@ -145,7 +227,23 @@ Repeat synchronization-sensitive rows with a second observing client.
 | SQUAD-MOVE-01 | Issue Rally, Defend, Hold, and Fall Back before and during pistol, automatic, burst, sniper, and RPG combat. | Rally clears at arrival; Defend remains inside its radius; Hold returns to each unique anchor; Fall Back reaches and retains its point; every permitted guard continues using native TaCZ firing safely. | Not run | |
 | SQUAD-FOCUS-01 | Focus a hostile, protected villager, ally, excluded entity, dead/removed target, target that unloads, and target while Hold Fire is active. | Only the permitted loaded hostile is prioritized. Every denied or unavailable target clears the command without a shot, forced chunk, unsafe fallback, or ally damage. | Not run | |
 | SQUAD-RESUME-01 | Issue each positional command to patrolling, following, and stationary guards, then use Resume Orders and separately let each command expire across a chunk unload. | Navigation owned by the command stops and the exact pre-command Guard Villagers patrol/follow state resumes; no permanent patrol position is rewritten. | Not run | |
+| SQUAD-PATROL-01 | Bind a Squad Command Ledger, select Patrol Route Editor, add two or more valid waypoints, inspect the route, remove the last point, and clear it. Repeat invalid, distant, cross-dimension, blocked, and unloaded placements. | Valid edits persist and report the route state; invalid edits leave the previous route unchanged. Guards begin only after the second point and do not change equipment, orders, ownership, or Guard Villagers patrol data. | Not run | |
+| SQUAD-PATROL-02 | Observe a routed squad through combat, Rally, Hold, following, waypoint obstruction, and chunk unload/reload. | Higher-priority behavior interrupts safely; unreachable points are skipped after the configured attempts; a fully unloaded route yields movement without loading chunks and resumes when a route chunk returns. | Not run | |
 | SQUAD-PERF-01 | Dispatch to more guards than the configured and hard caps, then observe 10/25/50 commanded guards in mixed idle/combat states. | One bounded loaded-member query occurs per dispatch; active commands add no cohort scan or chunk load and path recalculations remain staggered. | Not run | |
+
+## Village defense readiness and duties
+
+Test a newly generated village containing several Village Defense Buildings.
+Repeat the lifecycle rows after a save, chunk unload, and server restart.
+
+| ID | Setup and action | Expected result | Result | Evidence and notes |
+| --- | --- | --- | --- | --- |
+| DUTY-STATE-01 | Ring a nearby bell, let Watch expire, damage and kill a defended entity with an external attacker, start and finish a raid, then wait through Recovery. | The connected defense network progresses through Watch, Alert, Siege, Recovery, and Peace without a lower-severity event clearing a current threat. | Not run | |
+| DUTY-STAFF-01 | Observe Peace, Watch, Alert, Siege, and Recovery with ranged, melee, unarmed, following, commanded, resupplying, and actively fighting guards. | Sentry, drill, overwatch, and muster positions activate at the documented readiness levels; ranged-only positions use ranged guards; higher-priority behavior retains movement. | Not run | |
+| DUTY-REPAIR-01 | Block a position's feet or head, remove its floor, add fluid, repair each case, and repeat while its chunk is unloaded. | A loaded invalid position releases its guard and returns after repair; an unloaded position remains saved and never loads its chunk. | Not run | |
+| DUTY-DATA-01 | Load valid custom duty positions, reload invalid and future-format definitions, rotate the building through every direction, and revisit an existing building after changing the datapack. | New buildings use the accepted rotation-aware positions; invalid data is rejected; existing buildings keep their saved layout. | Not run | |
+| DUTY-CONFIG-01 | Disable automatic duties and patrol execution independently, change readiness durations and movement settings, then restore both systems. | Each setting affects only its documented behavior; routes, buildings, Guard Orders, and saved readiness remain intact while execution is disabled. | Not run | |
+| DUTY-PERF-01 | Run the 100-guard automatic-duty performance workload with a maximum-size duty layout and unloaded patrol route. | Eligibility checks remain within the fixed guard, position, and waypoint bounds and do not add forced chunks. | Pass | 20,000 unloaded-route guard checks and 51,200 loaded-slot checks completed across 200 ticks; no route chunk was loaded. |
 
 ## Village armories
 
@@ -169,7 +267,7 @@ storage integration used by the target modpack.
 | NATURAL-LIFE-01 | Allow a structure guard to receive a natural gun, then unload/reload its chunk and restart the server before spawning another eligible guard inside the cap radius. | The original guard keeps its gun, ammunition, and identity; it still consumes exactly one nearby-cap slot after both reload boundaries. | Not run | |
 | NATURAL-LIFE-02 | Replace an issued gun with an unmarked copy of the same TaCZ gun, move the marked original to another guard, save, and reload both. | Neither guard is counted as a natural gunner: the source record is cleared and an item marker without the matching guard record is inert. No equipment is deleted. | Not run | |
 | NATURAL-DROP-01 | Exercise ordinary death, zombie conversion, and lightning conversion with naturally issued guns and partially used dedicated ammunition. | The gun follows Guard Villagers/Minecraft equipment behavior and appears at most once; dedicated ammunition follows the documented add-on path without loss or duplication. | Not run | |
-| NATURAL-DIFF-01 | At each difficulty, generate a documented sample of otherwise eligible structure guards with an isolated village and default config. | Peaceful issues none; Easy remains pistol-only and locally capped at one; Normal introduces SMGs and caps at two; Hard permits occasional rifles while retaining a cap of two. Results are treated as a random sample, not exact percentages. | Not run | |
+| NATURAL-DIFF-01 | At each difficulty, generate a documented sample of otherwise eligible structure guards with an isolated village and default config. Also test Peaceful with zero chance and zero nearby cap. | Peaceful and Easy use the pistol pool and cap at one; Normal introduces SMGs and caps at two; Hard permits occasional rifles while retaining a cap of two. Either zero setting disables Peaceful loadouts. Results are treated as a random sample, not exact percentages. | Not run | |
 | NATURAL-POOL-01 | Add a custom namespaced weighted pool, select it for one difficulty, run `/reload`, then replace it with an invalid document and reload again. | Valid entries are selected according to their integer weights; invalid pool data is reported and that pool becomes unavailable without retaining a stale pre-reload copy or affecting other pools. | Not run | |
 | NATURAL-SOURCE-01 | Exercise structure, villager conversion, spawn egg, command, and another finalized source with each source disabled and enabled. Repeat with a crossbow and non-crossbow starting weapon. | Only configured sources are eligible; crossbow-only replacement protects all other starting equipment unless explicitly disabled; each entity is attempted at most once. | Not run | |
 | NATURAL-AMMO-01 | Issue representative pistol, SMG, rifle, attachment-modified, dummy/infinite-reserve, and physical-ammo custom definitions. Fill all dedicated slots before one attempt. | Eligible physical guns receive a loaded native gun plus exactly one TaCZ-defined full loose-ammo stack; unsupported reserve models and insufficient capacity leave the original weapon and every slot unchanged. | Not run | |
@@ -232,9 +330,33 @@ notes. Detailed behavior and troubleshooting are documented in
 
 ## Packaging
 
-- [x] Update `gradle.properties`, `CHANGELOG.md`, and the mod-page release notes.
-- [x] Confirm `META-INF/mods.toml` contains the intended exact dependency ranges.
+- [ ] For Quartermaster changes, run the [packaged acceptance checks](quartermaster-validation.md)
+  against the candidate, including a copied-world upgrade, two-client management and
+  trading, reconnect conservation, and loaded 25/100-guard scale comparisons. Keep
+  the observer mod out of distribution artifacts and record any untested conditions.
+- [ ] Complete every `VBUILD-MANUAL-*` row and resolve every Partial or Manual
+  row in `docs/village-defense-buildings-release-matrix.md` against the exact
+  candidate JAR.
+- [ ] Run `./gradlew verifyVillageDefenseBuildingManualChecklist` after
+  recording evidence for the natural-terrain, old-world, dedicated-server,
+  frequency, and mixed-mod checks.
+- [x] Set the `1.7` candidate identity and add matching platform-neutral
+  release notes. This does not certify the pending gameplay checks.
+- [x] Finalize `gradle.properties`, `CHANGELOG.md`, and the evergreen mod-page description.
+- [x] Review all publication copy against the shared writing standard and run
+  `../Content&DocumentationStandards/scripts/check-writing.sh .` from this
+  repository.
+- [x] Confirm `META-INF/mods.toml` contains the intended dependency ranges.
 - [x] Confirm the release JAR contains no GameTests, legacy projectile/rebalance
   classes, local configuration, generated worlds, logs, or `.DS_Store` files.
 - [ ] Install the built JAR into an otherwise clean client and dedicated server.
 - [ ] Tag the exact tested commit only after every required row passes.
+
+- Run `verifyMedicAiPerformanceReport` with the other performance report gates.
+  Check Medic and Retreat controls, interrupted treatment, finite doses, and
+  Quartermaster medical supply service in the candidate build.
+- Run `verifyTransportPerformanceReport` after the combined performance matrix.
+  Exercise opt-in transport on the candidate's client and dedicated server:
+  clear and blocked cot routes, two observers, finite-dose revival, carrier
+  interruption, and saving during a carry. Confirm original patient identity,
+  equipment, and passenger visibility. See [casualty transport](casualty-transport.md).

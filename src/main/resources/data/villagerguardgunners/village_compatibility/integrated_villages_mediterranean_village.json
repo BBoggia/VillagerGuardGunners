@@ -1,0 +1,763 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:mediterranean_village"
+  ],
+  "templates": {
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_bakery": [
+      {
+        "kind": "residence",
+        "sha256": "95628cb7b6d89f41f41f85d684be5f13601e78d543d27c09eca09ccd7cf4945e",
+        "beds": [
+          [
+            9,
+            4,
+            12
+          ],
+          [
+            10,
+            4,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            0,
+            4
+          ],
+          [
+            8,
+            0,
+            5
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_bakery_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "a89b6a03b8bae965bda16bd08f70befb974df4fc7ee2924eed1e8998e381ca42",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_blacksmith": [
+      {
+        "kind": "residence",
+        "sha256": "c5425bfe24e587002ece923a36b830a427674b6b92b3965dccf1db99ba8719f7",
+        "beds": [
+          [
+            13,
+            8,
+            16
+          ],
+          [
+            14,
+            8,
+            16
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            0,
+            9
+          ],
+          [
+            12,
+            0,
+            12
+          ],
+          [
+            12,
+            0,
+            13
+          ],
+          [
+            13,
+            4,
+            7
+          ],
+          [
+            14,
+            4,
+            7
+          ],
+          [
+            16,
+            0,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_blacksmith_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "149539ede8d918161b0bf2738d77923f170886a7c90cf8cb9f9a19ef641ab646",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_butcher": [
+      {
+        "kind": "residence",
+        "sha256": "d5a9a2dfa56ac29f3e6f85b7e376c0bf6e328480026d701fce4442e154f1622d",
+        "beds": [
+          [
+            13,
+            5,
+            8
+          ],
+          [
+            14,
+            5,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            1,
+            5
+          ],
+          [
+            12,
+            1,
+            14
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_butcher_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "d85ef3ac073c274acefe36d025d352b0fff98c8572be75ce1d0014e28aaf872d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_cathedral": [
+      {
+        "kind": "residence",
+        "sha256": "a34a0f99a6c356bc74f45eb3c0999c7f139238a1e9be2d6b2ca2fdb5fdf641e2",
+        "beds": [
+          [
+            14,
+            0,
+            33
+          ],
+          [
+            14,
+            0,
+            36
+          ],
+          [
+            14,
+            4,
+            33
+          ],
+          [
+            14,
+            4,
+            36
+          ],
+          [
+            14,
+            8,
+            33
+          ],
+          [
+            14,
+            8,
+            36
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            0,
+            20
+          ],
+          [
+            9,
+            0,
+            21
+          ],
+          [
+            11,
+            0,
+            31
+          ],
+          [
+            11,
+            4,
+            29
+          ],
+          [
+            11,
+            10,
+            25
+          ],
+          [
+            12,
+            0,
+            31
+          ],
+          [
+            12,
+            10,
+            17
+          ],
+          [
+            13,
+            0,
+            28
+          ],
+          [
+            13,
+            7,
+            27
+          ],
+          [
+            14,
+            0,
+            16
+          ],
+          [
+            14,
+            0,
+            25
+          ],
+          [
+            14,
+            0,
+            31
+          ],
+          [
+            14,
+            8,
+            30
+          ],
+          [
+            17,
+            0,
+            31
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_cathedral_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "1b84eab990c21ecbfd3632c53487ce78de98af8f2a226f6f2a3cbda4184f4bdc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_farmhouse": [
+      {
+        "kind": "residence",
+        "sha256": "6f0a28c7171dd568ae68e8e72a36de0db295bbfc5a0351e78d951682321e1d30",
+        "beds": [
+          [
+            7,
+            7,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            0,
+            9
+          ],
+          [
+            2,
+            0,
+            10
+          ],
+          [
+            11,
+            0,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_farmhouse_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b9e382fde55c991433531270bf49cc847119a01a3c0bc13f4fc9eb3866aa40c6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_library": [
+      {
+        "kind": "residence",
+        "sha256": "b3bb85fab0ceb1cf33d23252452b176fd243a0332df0ab39ffed0e00edc12e4b",
+        "beds": [
+          [
+            21,
+            8,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            0,
+            12
+          ],
+          [
+            10,
+            0,
+            13
+          ],
+          [
+            13,
+            0,
+            4
+          ],
+          [
+            18,
+            0,
+            8
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_library_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "14c0f5719b25fbf09e396fceb3f3a70789f95df790f98d334cd345c43db3a48f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_mechanic": [
+      {
+        "kind": "residence",
+        "sha256": "2f8c2d942c2832fb2aae58d9415ae7ac9571242987e2c80c5bf0b9ed225bc3de",
+        "beds": [
+          [
+            12,
+            6,
+            7
+          ],
+          [
+            13,
+            6,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            0,
+            5
+          ],
+          [
+            7,
+            6,
+            13
+          ],
+          [
+            12,
+            1,
+            14
+          ],
+          [
+            12,
+            6,
+            12
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_mechanic_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "3847510db4adbea384d55e71297de3df9aa87c29af4a4fdde2ef405db73d6150",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_shepard": [
+      {
+        "kind": "residence",
+        "sha256": "694ca668f9cdace9d5c4a935daa5f09db5f04fe8afab82100d7785543f8a5596",
+        "beds": [
+          [
+            9,
+            6,
+            7
+          ],
+          [
+            10,
+            6,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            0,
+            9
+          ],
+          [
+            10,
+            1,
+            7
+          ],
+          [
+            11,
+            1,
+            9
+          ],
+          [
+            15,
+            0,
+            14
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_shepard_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b8755717bc49649c76f13427e15f1a6968e785ba1d5888509b4fab8a6d15f0af",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_windmill": [
+      {
+        "kind": "service",
+        "sha256": "c7dd54a5289e2140c9cb86e5b950ba7b84dd155f8c8f99b02fb4e2318319a862",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            0,
+            14
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:mediterranean_village/house/mediterranean_village_windmill_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "d0151c6470876c46f4c5cb59798923ca1956aa379cd942b380d108250adc9d73",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall1": [
+      {
+        "kind": "service",
+        "sha256": "dbc76f773c257cf443f12345ae401a3eed4fa7fd2e76db41f3dc0d06fdf51d29",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "8086834d505bd314064dff45467aa57584f50fbbe5bbb74556b99ed902b8605e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall2": [
+      {
+        "kind": "decoration",
+        "sha256": "6736877555ae571541914b3d05423426d383923c058ab40e1f9ecae6cf225ab9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "d7b53901e966c405dfdc750fb6b978c4169fb6ef21eb7dfa8c166719d4c0280a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall3": [
+      {
+        "kind": "service",
+        "sha256": "567ebde427b8bca9ca6dcb9df3fc3ae879bef50f2fc900849a46ab032653fc81",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "3435fa6d1868e7a689a8ce598556120e316ba6df6a6258c4b1f3c7dc089f8f13",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall4": [
+      {
+        "kind": "service",
+        "sha256": "71ab8991150060b279d7121203e8d2124a125a6233bb7335070f6c7083216357",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall4_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "7902a4646590c0407f157ec47911441f2d426ab258b83a0bdf39aba8ea4b93e1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall5": [
+      {
+        "kind": "service",
+        "sha256": "f977afcebf355ce66ab4f46ba81f5d6ccb0929c38ff7d42400a1f3e36a68db02",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall5_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "ff5b474d01d634f147f286f42ad49d242d7ed60ac56089d8be1db7a8dbadc3c2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall6": [
+      {
+        "kind": "service",
+        "sha256": "b7e8ddb82e7047c3c5f79fe6d2198188a0548924a87738bbd9f1d30ca307aa1c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall6_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b9faa072e9ac8a2ecbf8e3e795adc9ebb296e4aab330a5a14184353b544524a1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall7": [
+      {
+        "kind": "decoration",
+        "sha256": "c2358c8e2ec1eb713735c2deb33f5eadd8cd2127f70284baa2cc0769e595b7e8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall7_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "30a35fd41869ada58c1394536dbb45caaff7e10bd1f09ead58ead31083f68768",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall8": [
+      {
+        "kind": "decoration",
+        "sha256": "2753b8a19f11486d4d997c50f9c4fd7ec3f810c94fb2ed27182ddc2950d3e424",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/market/mediterranean_village_market_stall8_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f52f462c99e3d76bd2342cc3f1f239c65af14434674254edb1465618e0b9acda",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/mobs/mediterranean_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "39d6beb97c0df94942f39b296eef509556d4706f45a6ebdbea5d45c188cd24ee",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/mobs/mediterranean_village_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "feef1972f66b3a1ca0c011ae7f147f6fde0e8f3bf052d03017673b46a9c21e68",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/mobs/mediterranean_village_villager_guard": [
+      {
+        "kind": "decoration",
+        "sha256": "592736d713e03614741d43d3bef2ace45afd9bfed830b1886125eb6755d836cd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/mobs/mediterranean_village_villager_nitwit": [
+      {
+        "kind": "decoration",
+        "sha256": "7c29137c661bb4f46dabc0155515906e28548a9414f26fe3f98edfdfb3c5d0c9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_farmhouse1": [
+      {
+        "kind": "road",
+        "sha256": "8e1f92785b2be47f2eecab89e5547d6f720376df88ae4b63c113eaf0040f9ace",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_farmhouse2": [
+      {
+        "kind": "road",
+        "sha256": "e6e070d991c2a3d17854a1bfc42ac91434c017fcc6e06373eb30ae27ad52ddd9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_house1": [
+      {
+        "kind": "road",
+        "sha256": "b539907b45b74233c3f677e150c6c4c64294ff312a081d7c811b84d1b1898bc9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_house2": [
+      {
+        "kind": "road",
+        "sha256": "1e78fcc0c948c647aba318942647eee43a880bada29b92a74ac9c002de5c1fc4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_house3": [
+      {
+        "kind": "road",
+        "sha256": "b5a50c02d59e104676da7ec91e2225c526b568cf157ede2a9ac8c33f7a7abdd1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_house5": [
+      {
+        "kind": "road",
+        "sha256": "c16c65b067b20eb05652afead97019bc39344a78d66a1ecbf8edba86ef3d913d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "3019056c48008a6817734529ea06e9174c171489240aea14ff43376cf904de7c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "87d8ec64ea8e16f075b774d82d2f22b1db790a5add93a82682bdb68ee65afaf7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "db44900f28dc05ca5189fca19da8bd9b4aef32278c5f968b9241a7e45b533382",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "8a3e6da009acc99413e66d95a43fe26c82e6293c4c5cf9e34ce833a28da8eb6d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_large5": [
+      {
+        "kind": "road",
+        "sha256": "9fccee9488f5e8003452d6cff42c246a7b81cdc96775fe950ab997407612d03e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_library": [
+      {
+        "kind": "road",
+        "sha256": "f3eaa42b4292b6afc000c122fdb87964a6486400bf69a587dacf2ed5634e8f36",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_well": [
+      {
+        "kind": "road",
+        "sha256": "4e4dc9cdfb60547d1e5b9aa59884ca07a5b469322165a08764c1da94ef6c2089",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/path/mediterranean_village_path_windmill": [
+      {
+        "kind": "road",
+        "sha256": "770b3a5c1d1e2a1889ca58c4669c26b6ff6a97df09c2d134b67bc1f9543353cf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/well/mediterranean_village_well": [
+      {
+        "kind": "decoration",
+        "sha256": "8466b47b5d894fdead29f14ffa324374c2a574e1d2a757260427e290681f3e28",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:mediterranean_village/well/mediterranean_village_well_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "9e0d1e67a36266315975de3b4b4ee56f150a1f1f4fdceb84369a4dffa9fbad0f",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

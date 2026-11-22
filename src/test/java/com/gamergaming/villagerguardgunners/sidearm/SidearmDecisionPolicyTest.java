@@ -197,16 +197,27 @@ final class SidearmDecisionPolicyTest {
                 2.0D);
 
         assertEquals(SidearmReturnReason.FEATURE_DISABLED, disabled);
-        assertEquals(SidearmReturnReason.TARGET_CHANGED, changedTarget);
+        assertEquals(SidearmReturnReason.NONE, changedTarget);
         assertEquals(
                 SidearmDecision.DEFERRED_NATIVE_BUSY,
                 SidearmDecisionPolicy.returnDecision(disabled, false));
         assertEquals(
-                SidearmDecision.RETURN,
+                SidearmDecision.NO_TRANSITION,
                 SidearmDecisionPolicy.returnDecision(changedTarget, true));
         assertEquals(
                 SidearmDecision.NO_TRANSITION,
                 SidearmDecisionPolicy.returnDecision(SidearmReturnReason.NONE, true));
+    }
+
+    @Test
+    void explosiveBackupTargetReplacementStillReturnsThroughNativeSafety() {
+        SidearmReturnReason reason = returnReason(true, true, false,
+                SidearmActivationReason.EXPLOSIVE_STANDOFF, 0, true, true,
+                4.0D, 6.0D, 2.0D);
+        assertEquals(SidearmReturnReason.TARGET_CHANGED, reason);
+        assertEquals(SidearmDecision.DEFERRED_NATIVE_BUSY,
+                SidearmDecisionPolicy.returnDecision(reason, false));
+        assertEquals(SidearmDecision.RETURN, SidearmDecisionPolicy.returnDecision(reason, true));
     }
 
     @Test

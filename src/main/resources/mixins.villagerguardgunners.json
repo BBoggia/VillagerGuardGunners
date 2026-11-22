@@ -5,14 +5,43 @@
   "package": "com.gamergaming.villagerguardgunners.mixin",
   "refmap": "villagerguardgunners.refmap.json",
   "mixins": [
+    "GuardLifeMixin",
+    "CasualtyMobMixin",
+    "CasualtyHealingMixin",
+    "BellBlockMixin",
     "GuardMixin",
+    "TacticalPathNavigationMixin",
+    "GuardDetourPathNavigationMixin",
+    "GuardVillageReturnGoalMixin",
     "ItemEntityMixin",
+    "PopulationStructureStartMixin",
+    "VillageBuildingSelectionMixin",
+    "VillageBuildingTerrainMixin",
+    "RaidMixin",
     "RaiseShieldGoalMixin",
-    "VillagerToGuardMixin"
+    "VillagerToGuardMixin",
+    "WalkBackToCheckPointGoalMixin",
+    "accessor.LootPoolAccessor",
+    "accessor.LootPoolEntryAccessor",
+    "accessor.TagEntryAccessor",
+    "accessor.LootPoolSingletonAccessor",
+    "accessor.LootTableAccessor",
+    "accessor.RaidsAccessor",
+    "accessor.StructureTemplatePoolAccessor",
+    "accessor.VillagePoiStorageAccessor",
+    "accessor.VillagePoolElementAccessor",
+    "IntegratedVillageTagLoaderMixin",
+    "QuartermasterOfferMixin",
+    "QuartermasterOffersMixin",
+    "QuartermasterLevelTradesMixin",
+    "QuartermasterResultSlotMixin",
+    "QuartermasterMerchantMenuMixin"
   ],
   "client": [
     "client.GuardModelMixin",
-    "client.GuardSteveModelMixin"
+    "client.GuardSteveModelMixin",
+    "client.CasualtyRendererMixin",
+    "client.CotNameTagMixin"
   ],
   "injectors": {
     "defaultRequire": 1

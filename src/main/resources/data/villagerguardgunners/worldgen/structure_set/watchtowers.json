@@ -1,0 +1,15 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 17290527,
+    "separation": 12,
+    "spacing": 40,
+    "spread_type": "linear"
+  },
+  "structures": [
+    {
+      "structure": "villagerguardgunners:watchtower",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,1652 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:large/village_swamp_fortified"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/villager/swamp": [
+      {
+        "kind": "decoration",
+        "sha256": "d511108ec79660339034a251f1d6b5eca9c2b1096bdcdb10907a89edbe852592",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "8d20d62ee43ec19ebe527c96d433f13a95063ab337c3cf9e1d174f0239e98c86",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "2da26749c3722cdb1132dcfcd4a800d93ddbc20647634ca7b6adb6c8d9b9a837",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/bush": [
+      {
+        "kind": "decoration",
+        "sha256": "daff98cfabcfa81cb1475ab138b3a4999b5d89767baf74253f1f5b2a8256dfdc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "f94be8b541df7337ca23f6d86fb416a7ea5f377677628fa0b62e7b5b2090b330",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "617887b6032422c8a05dd89e6e299bbe6072a1c84f27c89eb1b7bb18d005bb0a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "62bcf4a6cc66069b66d0881c0f1b0bbdfcbdac0f5b096c524297b85fbe03fe10",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "eef10ca67bca59e3dd043df15f4c6e869ac45625f614ef977650f3f7bc82fd2e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "cafb4c2516eb95dfe1aa5a718c63ce88f0c913cca9ae9e49a5702b23e19838cb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "d2903888b4aa025c69edef393e1bbe74453c41f74fc365b9260fab8f486f33de",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "6fe77fc5fffd2c206db133d76326566d303971f37199f0089f505a0d9c99bcd6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/lamp_5": [
+      {
+        "kind": "decoration",
+        "sha256": "126209eece98d6a7a85007c341c3fcc6a754f35cca9f2149286db7989220688e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/orchid": [
+      {
+        "kind": "decoration",
+        "sha256": "ab02571a7fc70a06932a629696a9e1c6afde5c539f6d3d399279d1dec9cfc134",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "2547342938923bf7ab4364f5075bcc8dd43f425bbfe67edf452a21d7aaa34b05",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/tree": [
+      {
+        "kind": "decoration",
+        "sha256": "e9c0d2e82752de02f9707ac7c665be04886e81d988afc842f9551a0abb8d150b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "df3d82c667d64815a02f291e9c703418722435ebdfc3f59ff8a1fc6509a54bc9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "46d9bf7ff2aa8bddb97d9fc2de7f9de6a1523e3fd210e731755c59c5ba31a1f9",
+        "beds": [
+          [
+            14,
+            1,
+            3
+          ],
+          [
+            14,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            0,
+            0
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/house/big_2": [
+      {
+        "kind": "residence",
+        "sha256": "ef6a8f168d6bf2ad48e224bc33863485db509b9bb0d3785df182f19f6b4b9dd8",
+        "beds": [
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            5
+          ],
+          [
+            3,
+            5,
+            2
+          ],
+          [
+            5,
+            5,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            0,
+            0
+          ],
+          [
+            14,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "5054725894e9da56810d39bebaddaca5a8be7f6f44e347fd31d6de36dd3cf1a0",
+        "beds": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            5,
+            1,
+            8
+          ],
+          [
+            7,
+            1,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "069a6decc5bd89db8490dc0d9111a4fc53019863dbc50c70a97edd9611c07b78",
+        "beds": [
+          [
+            3,
+            5,
+            2
+          ],
+          [
+            5,
+            5,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/house/med_3": [
+      {
+        "kind": "residence",
+        "sha256": "d576f0a8df721ac5b53142d1215801c58f8186ec75d6a2c7fd0cacebdc8618ad",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/house/med_4": [
+      {
+        "kind": "residence",
+        "sha256": "27792eff0b9efe79049d786235759bf7e07824f05603c32fee017dc69b98713d",
+        "beds": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            4
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "c59a6181c8b7a905cf2a1c4ba0c5c402afb8258811dc78c0aefa0fb4182448bc",
+        "beds": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "f23b1380b5a09a4b94d6bf784cff572120dfd3d09be05abb41b1757801686ac2",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "8ea8e43a4b8bdddc0c7d96045bf99b5bb35b2365554c74a58a7798b83945a160",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            1
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "7a818e446061e5f782494058e2a9a059f531a3979a6f9218a6c39e449318db06",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "469bbe9ea218c454284c78a554bed6365159d6d562736850a84864f4314d11f5",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "1e33ed7cb8c9934486c0faf0f2f9e6b89106ab73b35801df8d76b41e4700474e",
+        "beds": [
+          [
+            2,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            1
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            7,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "6979ca99569357376fa98d4a651f4c838864e2fab791e11669e63250d6ac32ff",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            9
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "0ea1a0269d24b29765bc150bf82f29497f6a3e543803ee2a66d46c1411dfbeca",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "5def16971ba7b29962414bb0a01557c5b35dbd7578917a1f0162c8d3ff880714",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "db9cb0440928133e5a00b6ce03228ae893cf05b3d013b87149965983a93de2a8",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "de4fbe72c80eb95824a1d23369a64c39e65ea0fd245a7557b2033f12c414ccb2",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/cartographer": [
+      {
+        "kind": "service",
+        "sha256": "92c4a8643e5d131ea8f10a557aaa73d577697d589f43ac4df8967fa8402edde0",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "f642663712b76276385fa46ab9432648036d137f23dc26c5259e2853680b3dda",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "631a136bf3bddf2cf9814383890908d3cddefc98bd21ccdfe15f54b3fe253d02",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "04e3ad06502b62ba7fd1f447d7addc981106137cdb903e38d44a6019d77fb3e5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "ee41973d5ca483011e5b38f5054abcea889f44a2db0c9141eb4a393da8edf6c2",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            10
+          ],
+          [
+            5,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "f17c0334defe8610972dcaaab52ab70d6ba4dacec63af40ea78314022691108f",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            14
+          ],
+          [
+            7,
+            2,
+            12
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "0abf1626f8653e4a7b7bd526319ebe2218c5a2bdca33f5ddb6bbfc78901efd9d",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "292115ca3907ec3dbf3ae4f8a984552491768bea4a36a0c0d092988d3824a325",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            2,
+            0
+          ],
+          [
+            6,
+            3,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "03dd551906e4b667e7ec2ecbb3c7894c5b5b722f942003aab61c90905abc0905",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            3,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "2d994d7fdda6d4e69b64ebfd707467863abd83c348850c05f215b5960e819146",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "364fde24637fa83e66b75bb00e41047adfd9263e6a2827234344e76d8253209b",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            7,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "bfa394605c270275a2fe74528d0f5ef8c7b08e69a383014d5876564f10534986",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "3ee358576e202e7bc5e58233d4e44c67172ca7408dc3ef1b51e4b7d455abeabf",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "7cb10b99e6dbe51693b791f5cccb344748d3b65e53bd56e84d5c1778f02cf508",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/horticulturist": [
+      {
+        "kind": "service",
+        "sha256": "6ea8b83bd0bffe887376b5894afb2e1d1733b37a70d4d04485d35155e4a5aa95",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "e2f134fbfe8dee139e8fcc31f972dec26ad4e823e0516fa00427171291f10e81",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "ec22878022d03fa4facf21c03627765a9f726f3dfdd8aabf70662eda9f8e421d",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "429516aca41f4c385c0809f61b94fd113371cf80c2e1b37036868d93947e97dc",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "78a2c5abf268f7df0ae54490cc8ed44dcc6ddcf0a499cc89d1bb07d5c58ed65f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "d14fe337da662c1f42916cdddcbd7d8d8ae20b7f23787c3584a8c38dbf0846d9",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "e00483ca564314885b33ef1e217a94c0592d440c6e6403a3b9c1ca1c960b4718",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            9
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "20a774109bb98e47bd10d74929ad80c43424bef2679bb46f058be6b70685c11e",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/loomhouse": [
+      {
+        "kind": "service",
+        "sha256": "45846fc3bda05db4bc71c075c75e94237215edf23f68464662900e8944d554e2",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "fe21cef073ee6b2b9c84312a1b04af2c541c9de292d889ca13581f3cc8755aa3",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "000b9f1aaacc72a978a2f888cc4e644c2532cf2ddb3638061a49b9746e0042be",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            1
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "32aedf44a0596f75437c0ac3f9a938c66336527e63f08fba0f982a5f5abd8c1c",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "0b2f48abe8173fd05078a2124c5a4b5705c15a0cb695435887480e8708e87899",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "2ae4a2c9c491ea265fb5f260f639e0db01f214236568fa0046246fe006584cbf",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/pen": [
+      {
+        "kind": "service",
+        "sha256": "dd6fdc3b180ff72cea3e5b7f03ae72430b1a9ee581b31acf1f7707925dd3b850",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "c04100324a3cc8d16e1a1c0c09a782a7e2fd33043e20a53c561ec4489232cb71",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            1
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            7,
+            3,
+            2
+          ],
+          [
+            7,
+            3,
+            7
+          ],
+          [
+            8,
+            3,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "9a4586a21abbcc652ffd6734683eb93d6f9e69e3ec74b56375c6200f96789889",
+        "beds": [
+          [
+            9,
+            6,
+            9
+          ],
+          [
+            11,
+            6,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            6,
+            8
+          ],
+          [
+            6,
+            6,
+            9
+          ],
+          [
+            7,
+            1,
+            12
+          ],
+          [
+            10,
+            2,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "4f7c3a7350ec8fd1072572e081fc9e325e0ad294934df8b10b3e29b98ce76254",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "34bec9fd8b296c00b5a3954881fd628cc39701560f5cdfea44a682396715c34d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            9
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "b755e723d519ad10835c595f127af55ac242173a4af888d311f1d45216448144",
+        "beds": [
+          [
+            9,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "f32248094851d9cf68aaede12533fa0796db4a39faa5eeb2313e837ffb979a30",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "095a4df1925bbf61466c84f555dff66a308018b8768d7914a0d54e24768f2531",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "5115875d8d7f9d016c4e36f75e35b475361f4503a0d882e93a5b6e17f98d07f2",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/tannery": [
+      {
+        "kind": "service",
+        "sha256": "8b2d09e3dcfd475aa8bfb903349848ef5f3afa39b7c3669a09a5467f494fd0c4",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "1414253711d8f174963460ab7b8c6c6932db1576b0ca726013d497a0c7b37298",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            5,
+            10
+          ],
+          [
+            5,
+            6,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "3bdad745df8692cdb67cad6e88a06b6903a3d478641c40f44096f3e1a85e84f1",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "5fcda23caeec835cf8e0102037359c8a38853cc861dacb8ea94f3d8e8c9df2f0",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            5,
+            2,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "1e16eee055c25bc5f1f40d7634ee368e329b805ccb84451e4345ebafc291904b",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "2ce311e386dea9cf5e6f98c3391c662c8f5c50331362f82e74857eb6bd589eed",
+        "beds": [
+          [
+            4,
+            10,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "89c36a0f23fa4bb601971a3497b9cdac2716bcdbbabe3d968b36b8d06751118a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "de28a7d394055bafadab65771d6613f6216a50d6c1f750f952382bea2c8ca3d0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "c54d2ff8d0c31230ef74afae133b3c58528ad0662fc0dee9d611558e5160ef5f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "c5f0b5077e273d4cf3f0bee7cc437bf84dfcd18f40652343a64db91e7b7d72cc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "bc25a85d5a16ccb5cccfc8e8df16e5d328f9ff023f0c7ca7a00cad733cb3db93",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "bbe88cc036898c3766e6c222c58f490ad4ae30eb4548ee600ee8aaebbe72aa04",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "91df5cdc310ab271fb522b642c5a062326de8c6968a0e5b1dea0bfc88fa7941f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "4f6113a30ba829db4a105adfc4725a4a2c632e1a3ab5d695488c9431011637ea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "8a6313b147131e0f32ca05d73143a348c9f4e22025df8f4eb86919d94b3d5bf4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "82f46c693a0d43c7c90832c63d51ee1c78e68cce9b926472834b2cbfadf308cf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/swamp_fortified/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "c4f5b8d497961aa0e64ee44594845bfc2449b095046f892100bb94fde6f3a6b7",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            6,
+            1,
+            18
+          ],
+          [
+            14,
+            2,
+            12
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [
+    "water"
+  ],
+  "size_family": "large"
+}

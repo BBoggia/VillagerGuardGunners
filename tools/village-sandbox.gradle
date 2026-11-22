@@ -1,0 +1,21 @@
+// An interactive development playground. Never packaged into the mod JAR.
+allprojects { p ->
+    afterEvaluate {
+        def root = layout.buildDirectory.dir('village-sandbox').get().asFile
+        def sandbox = sourceSets.create('villageSandbox') {
+            java.srcDir new File(p.projectDir, 'tools/sandbox-src')
+            compileClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.main.output
+        }
+        configurations.villageSandboxImplementation.extendsFrom configurations.implementation
+        configurations.villageSandboxRuntimeOnly.extendsFrom configurations.runtimeOnly
+        minecraft.runs.client.workingDirectory = root
+        minecraft.runs.client.property 'fml.earlyprogresswindow', 'false'
+        minecraft.runs.client.property 'vgg.sandbox.dir', root.absolutePath
+        minecraft.runs.client.property 'vgg.sandbox.verify', p.findProperty('sandboxVerify') ?: 'false'
+        minecraft.runs.client.property 'vgg.sandbox.poseCheck', p.findProperty('sandboxPoseCheck') ?: 'false'
+        minecraft.runs.client.property 'vgg.sandbox.oneCot', p.findProperty('sandboxOneCot') ?: 'false'
+        minecraft.runs.client.args '--quickPlaySingleplayer', 'VillageDefensePlayground'
+        minecraft.runs.client.mods.villagerguardgunners.source sandbox
+    }
+}

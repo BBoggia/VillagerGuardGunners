@@ -27,7 +27,8 @@ final class PerGuardOrdersContractTest {
         String menu = source("entity/GuardGunnerContainer.java");
 
         assertAll(
-                () -> assertTrue(mixin.contains("implements GuardAmmoAccess, GuardBurstSafetyAccess")),
+                () -> assertTrue(mixin.contains("implements GuardAmmoAccess")),
+                () -> assertTrue(mixin.contains("GuardBurstSafetyAccess")),
                 () -> assertTrue(mixin.contains("GuardOrdersAccess")),
                 () -> assertTrue(mixin.contains("GuardNaturalLoadoutAccess")),
                 () -> assertTrue(mixin.contains("villagerguardgunners:orders")),
@@ -37,8 +38,11 @@ final class PerGuardOrdersContractTest {
                 () -> assertTrue(goal.contains("isWeaponAllowedByOrders()")),
                 () -> assertTrue(controller.contains("trackedOrdersRevision")),
                 () -> assertTrue(controller.contains("ordersRevisionIsCurrent()")),
-                () -> assertTrue(controller.contains("effectiveMaximumRange()")),
-                () -> assertTrue(controller.contains("tacticalProfileOverride()")),
+                () -> assertTrue(controller.contains("WeaponTacticsState.forGuard(guard, config)")),
+                () -> assertTrue(source("combat/tactics/WeaponTacticsState.java").contains(
+                        ".resolveMaximumRange(config.combat.maximumEngagementRange.get())")),
+                () -> assertTrue(source("combat/tactics/WeaponTacticsState.java").contains(
+                        "GuardRoleResolver.effectiveOrders(guard).tacticalProfileOverride()")),
                 () -> assertTrue(engagement.contains("resolveEngagementMode(")),
                 () -> assertTrue(pickup.contains("permitsAmmoPickup(true)")),
                 () -> assertTrue(sharing.contains("permitsAmmoSharing(true)")),

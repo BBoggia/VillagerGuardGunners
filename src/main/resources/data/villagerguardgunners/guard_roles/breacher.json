@@ -1,0 +1,10 @@
+{
+  "format": 1,
+  "inherits": [
+    "villagerguardgunners:rifleman"
+  ],
+  "orders": {
+    "tactics": "breacher",
+    "maximum_range": "blocks_16"
+  }
+}

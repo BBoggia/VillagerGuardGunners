@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "runtime": {
+    "minecraftDirectory": "~/Library/Application Support/minecraft",
+    "java": "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java",
+    "version": "1.20.1-forge-47.4.10",
+    "forgeVersion": "47.4.10"
+  },
+  "jarDirectories": [
+    "~/Downloads/mc_mods_to_add_compat",
+    "~/Library/Application Support/minecraft/mods"
+  ],
+  "mods": {
+    "villagerguardgunners": {
+      "path": "../../build/libs/villagerguardgunners-1.6.jar"
+    },
+    "vggcompatprobe": {
+      "path": "../../build/compatibility-qa/vgg-compatibility-probe.jar"
+    },
+    "libertyvillagers": {
+      "path": "~/Downloads/mc_mods_to_add_compat/libertyvillagers-2.0.0+forge+1.20.1.jar",
+      "sha256": "28f724532d9ecd1a5dcaae175b391c710198b57c30de8d88da4d943221b2e209"
+    },
+    "architectury": {
+      "path": "~/Downloads/mc_mods_to_add_compat/architectury-9.2.14-forge.jar",
+      "sha256": "218b471d0b8a1f6cda14cfc1beb9eeb0df54304500acc6c5613d9b88ec65d9af"
+    },
+    "cloth_config": {
+      "path": "~/Downloads/mc_mods_to_add_compat/cloth-config-11.1.136-forge.jar",
+      "sha256": "1e895e85cf5b1e1905ef3178ec155c8badfe22a1577b92c09143a5aa1f4ce0f2"
+    }
+  },
+  "cases": [
+    {
+      "name": "vanilla",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "mods": [],
+      "features": {
+        "managed": true,
+        "coverage": false,
+        "buildings": false
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.quartermasterClaimChecks.unclaimedRejected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.claimedReady",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.releasedRejected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.professionAndMemory",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.serviceWindow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.nativeSaveLoad",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.removedRejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "quartermasterClaimChecks": true
+    },
+    {
+      "name": "villagesandpillages",
+      "seed": 314159,
+      "structure": "villagesandpillages:village_witch",
+      "mods": [
+        "villagesandpillages"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": true,
+        "buildings": true
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.templateClassification.reloadErrors",
+          "op": "eq",
+          "value": []
+        },
+        {
+          "path": "result.templateClassification.intent",
+          "op": "eq",
+          "value": "HOSTILE"
+        },
+        {
+          "path": "result.diagnostics.issuance.planPresent",
+          "op": "eq",
+          "value": false
+        },
+        {
+          "path": "result.settled.guards",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "path": "result.diagnostics.requestedVillageRecord",
+          "op": "eq",
+          "value": "absent"
+        }
+      ]
+    },
+    {
+      "name": "libertyvillagers",
+      "seed": 314159,
+      "structure": "minecraft:village_plains",
+      "mods": [
+        "libertyvillagers"
+      ],
+      "features": {
+        "managed": true,
+        "coverage": false,
+        "buildings": false
+      },
+      "observationTicks": 500,
+      "timeoutSeconds": 420,
+      "expectations": [
+        {
+          "path": "result.quartermasterClaimChecks.unclaimedRejected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.claimedReady",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.releasedRejected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.professionAndMemory",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.serviceWindow",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.nativeSaveLoad",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "path": "result.quartermasterClaimChecks.removedRejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "quartermasterClaimChecks": true
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IAmmoBox;
+import com.gamergaming.villagerguardgunners.guns.GunProvider;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Fail-soft adapter around TaCZ's authoritative ammunition callbacks.
+ * Asks the owning gun mod whether a stack is ammo for a gun.
  * Compatibility is never inferred from registry IDs or item classes.
  */
 public final class AmmoCompatibility {
@@ -19,50 +19,18 @@ public final class AmmoCompatibility {
                 || candidate.isEmpty()) {
             return Assessment.notAmmunition();
         }
-
-        if (candidate.getItem() instanceof IAmmo looseAmmo) {
-            try {
-                // Third-party implementations receive defensive copies. A
-                // compatibility probe must never mutate the guard's gun or a
-                // live stack returned by its item handler.
-                if (looseAmmo.isAmmoOfGun(gunStack.copy(), candidate.copy())) {
-                    return new Assessment(
-                            Compatibility.COMPATIBLE,
-                            AmmoKind.LOOSE,
-                            candidate.getCount(),
-                            false);
-                }
-            } catch (RuntimeException exception) {
-                return Assessment.unknown(AmmoKind.LOOSE);
-            }
-
-            if (!(candidate.getItem() instanceof IAmmoBox)) {
-                return Assessment.incompatible(AmmoKind.LOOSE);
+        // The gun's provider decides. A stack no provider owns as a gun is still
+        // judged by the provider that owns the candidate as ammo, so its kind is reported.
+        for (GunProvider provider : GunProviders.all()) {
+            if (provider.isGun(gunStack)) {
+                return provider.assessAmmo(gunStack, candidate);
             }
         }
-
-        if (candidate.getItem() instanceof IAmmoBox ammoBox) {
-            try {
-                ItemStack checkedBox = candidate.copy();
-                boolean creative = ammoBox.isAllTypeCreative(checkedBox)
-                        || ammoBox.isCreative(checkedBox);
-                int units = creative ? 0 : ammoBox.getAmmoCount(checkedBox);
-                if (!creative && units <= 0) {
-                    return Assessment.incompatible(AmmoKind.BOX);
-                }
-                if (!ammoBox.isAmmoBoxOfGun(gunStack.copy(), checkedBox)) {
-                    return Assessment.incompatible(AmmoKind.BOX);
-                }
-                return new Assessment(
-                        Compatibility.COMPATIBLE,
-                        AmmoKind.BOX,
-                        units,
-                        creative);
-            } catch (RuntimeException exception) {
-                return Assessment.unknown(AmmoKind.BOX);
+        for (GunProvider provider : GunProviders.all()) {
+            if (provider.isAmmoItem(candidate)) {
+                return provider.assessAmmo(gunStack, candidate);
             }
         }
-
         return Assessment.notAmmunition();
     }
 
@@ -101,15 +69,15 @@ public final class AmmoCompatibility {
             return compatibility == Compatibility.COMPATIBLE;
         }
 
-        private static Assessment notAmmunition() {
+        public static Assessment notAmmunition() {
             return new Assessment(Compatibility.INCOMPATIBLE, AmmoKind.NONE, 0L, false);
         }
 
-        private static Assessment incompatible(AmmoKind kind) {
+        public static Assessment incompatible(AmmoKind kind) {
             return new Assessment(Compatibility.INCOMPATIBLE, kind, 0L, false);
         }
 
-        private static Assessment unknown(AmmoKind kind) {
+        public static Assessment unknown(AmmoKind kind) {
             return new Assessment(Compatibility.UNKNOWN, kind, 0L, false);
         }
     }

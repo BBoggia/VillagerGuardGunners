@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "villagerguardgunners:armory"
+    "villagerguardgunners:armory",
+    "villagerguardgunners:quartermaster"
   ]
 }

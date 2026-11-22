@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+[[mods]]
+modId="vgg_core_qa"
+version="1.0"
+displayName="Local guard gun provider tests"
+[[dependencies.vgg_core_qa]]
+modId="villagerguardgunners"
+mandatory=true
+versionRange="[1.7,)"
+ordering="AFTER"
+side="BOTH"

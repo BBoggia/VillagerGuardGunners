@@ -1,0 +1,1421 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:small/village_mushroom"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "283afd8025e879710d19f9178c54bbebca5cf19dbe35809ee6aef8c0043f2891",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "0f82af8da65b572bab7ba077016e0e153acaf4057f7b915f60aae053a46ec433",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "a115c4324c28d4ea1a230d9908b91bbedbf2e10cd15b077a9efaa07fef16733d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "27b2b7858d13bd047ad6216ad1f8ba8d599d26653e4b2e423ba7c8389c336f2c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "aeadf4efee6a4e8db8fe7b56aa2ddeedb9e0299dcdead154a709a843ce69e6bc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "03d2fabca88199a5dde6857c64a0c0316acc84f72e46b4afa2dc9a01c1b2ffb6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "03d0c3cc62ca8d52b8143ac438e9fd8853cfa4fd5817106761c08660a3b5a8b2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/decos/hay_bale": [
+      {
+        "kind": "decoration",
+        "sha256": "97bbddd22126d438fc4cc9624ff7537f4b6a428894c54667ff3c796cec9bc854",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/decos/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1d85a525653ddac620bb5d46db61488c8aefccbfb98e70a0db0d9bea98f6340f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/decos/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "df0fbc6738328f30368975b05ed103b1635a9bb57e606b9e206ef62aa8c09ce4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/decos/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "4bcf0c1f41e3d1331a4d20b4ab2dd0ddae14cbc7f931602b82a044bc2c8297e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/decos/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "13d92b75993a915bf83f1968d59afc93a79f04afbee45eca7e62a23db423a3ad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/decos/wagon": [
+      {
+        "kind": "decoration",
+        "sha256": "32ad3dd02b4a04b65ff9ea567e6fb2cc1966ce1c2aaeeef4f237d1d11ae3f95c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/decos/well": [
+      {
+        "kind": "decoration",
+        "sha256": "282a1bd44ba563f5754d37a0634e888b599939c8fa6b9cadb606d556a72463b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "d360e6f15459f3e255bc375c3bf6c19c6cd0e21632dbb0375fca0d9419c9c610",
+        "beds": [
+          [
+            10,
+            1,
+            2
+          ],
+          [
+            10,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "c2dca802f1f732beed4b8995ef6bb495116adc088218967c912ebcffd8cdc861",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "3f331d79b8489dfa644373d6b65cf96e3b3c06adb785013aa16df1d668e8453f",
+        "beds": [
+          [
+            4,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            0
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "92aeb2dc9e0df1276e1e480be4e11389ec9b7b1e3cd6081ffca6acd2d14b849e",
+        "beds": [
+          [
+            2,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "0646fadcf2407ddf80fb3a26849f65ec5d8cad3e933e762a89d7115ab3c8e182",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "ac42999e56566295dd003bc5c44899b3fec4040462b78b16d1b0c5d73e246034",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "c51359ea286a0c1147972182f20928b58cac6d36c421300917fdd0639887176b",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "cfb12e369ea96567a7e60d1a9c2379e13ef603dc37f7b7c31a41b366194f6a15",
+        "beds": [
+          [
+            8,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            7
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "bd13b4acfc14aeb14ab8c8727be448aa1dd23083cb6d57121b8ab01383dd1b8a",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "04432b44a3ada831fec36675a1638d464a5587c40a7675d4a8641b4df2832b28",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "ddc7b15a6d72bae47f4711129343b4fce97431a2ad5489d6c63927ada8511c61",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "4a11c7309259bf02d977fa0d99f9ae1499fe9ed5b812acea001eda0f42a497f0",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "ec6341e8e4a924f2f5c69de44aff992a5b20c65829996f2fb3bf6a65ee71f1ba",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/cartographer": [
+      {
+        "kind": "service",
+        "sha256": "35d02a258563b6c793b46972da31d48757f0be9f0c148bba27a157042cbdc523",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "37ad95bfddd7e51f06b86b889a8a2f51d30fcc486a1cfacaa3eb418fcd3e7d69",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "578b2d1bf75478ddea8966e5cae093c98e95293f4e0ea357ea85a51e067781d5",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "36679559a9b0c6f5667cfd6ae22a6c295b79a47bff1e1eced91eb6434bb9c78f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "733e928cdc2b4f4fe28de06802ae54685b4af67acacf1967dc5a967d41b0e39f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "09c2217c78a2a7f077e48c241a3bd8048824312a5db12d220ae574b259f947e7",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            7,
+            13
+          ],
+          [
+            7,
+            7,
+            14
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "ee0e1b89ec4cf4aa49b98a0df4eedb5c339904b9ab947b7e52d6c45aec695fbd",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "a4a4c42e0b28d808d81552451675e4d7eee34b25ae27ef058598578666bd5c87",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            2,
+            0
+          ],
+          [
+            8,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/fishing_house": [
+      {
+        "kind": "service",
+        "sha256": "6b92491a562e6b5938eafc560a2e9cdae76b70a815c339578cb38a894f952d1d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            0
+          ],
+          [
+            4,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "6439aad65a89ea3187549275ea6e9b78c4c49f3f3f719c46398616e9d37a3871",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "5eb16e4f854dd88876b57da6d232dd6e947f1f46ec2b5861d19fcf5866cc190d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            7,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "5289f09810b27c26378203655855104c484f883e86c42b28f913c32cd9d3ab7d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "ab8d93468639b7fe1842b60d5301183eaa559002d1403461ffe3b5ccca734b04",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "e7f1480e74bfcad38df762015e827093bb3a5521266f6e2a7b8971b48e76431e",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/horticulturalist": [
+      {
+        "kind": "service",
+        "sha256": "96d7f9ea7b7669f7c0a45d528e11dec38586ea0468d6d39db1238f19db4d7030",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "572e0e59f24dc1265fefb6583a966489336f44f548273d9936c37ddd4d6d021c",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "273ada369eb85b2035f8c172f5316fbfa18cadd2378f412d21eb2516537ef847",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "ee890ab58fa07c3f920e0e39d327cfac66e54c463daf90a44cd2fbdb1e745fdd",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "cf4bedf8bed21fa2234fd3e901711b63ea70d2c80bee306914e0735cd914c3ac",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "f973c74d627349744b333c238f7c75e98e785ea1921fb3f2d4e0be33bd99d987",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "43a299563a3dd425058c2991e611cec3d1e9fb49014c03e03cc5015622ee1cd6",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "41cad3b7562a98b190471e093a46ce932fdb9f8c5faf8e34263deb75c89fea47",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/loomhouse": [
+      {
+        "kind": "service",
+        "sha256": "3edf0b1ccec06ce0e7a67646d85a9767da5daaa68247a3595038ba86490280dc",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "57b3733d52e25490162d82590c8e6decbb268e2a980ebf1b8e46e088ddc3a0b3",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "76e7f63bb3dd708ee36a660e2c9415752cb860a39676b72fb38358e3ccb48c08",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "16e6e0d34687e6d94983c31e23ab36b169022bf539775ebf2b2d29254d4c2a51",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "0e42f5976843eeca955e6606500e827e6f2650793f0c22e6e7a7f84cc904428f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "0bc71860948391584332e195c4412640d3610c2e5c22c2a07d272e0580afd337",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "833659dad5bcc7b63ed10ace78a4f4a53379765d92eeef1424f821db084c5b86",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            2,
+            6
+          ],
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            6,
+            2,
+            2
+          ],
+          [
+            6,
+            3,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "4dc608e61e1648d1d05eb0bd0298e72397ea3e539325f82a4a49882bfb36576d",
+        "beds": [
+          [
+            4,
+            6,
+            7
+          ],
+          [
+            4,
+            6,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            6,
+            5
+          ],
+          [
+            7,
+            1,
+            12
+          ],
+          [
+            7,
+            1,
+            14
+          ],
+          [
+            7,
+            6,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "3530a3ad517a4e4942d0c86f07f0f7bb9bf91bf3071f6462d8b1b404cd940d38",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "0de6b5c76be939dd93001c5999b47a5980fc6cf0d9c9ed6711b38f0e59efcc63",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "0562421c42e6c42c91e9a9f794b1015236dc397eda2bc537645b41dfb6cc499a",
+        "beds": [
+          [
+            9,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "a164febd4bee2c566f7faf70f65b688484bea798bd9193c1a878fb99769d4564",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "6279c77c7a86e6cc06842b0376f5cb42155f03264254d22bd57377900c57ea08",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "cfbeabe2405ce40ba0af211c026e50592b3d414cc96e3cb77653698bc1484f1b",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/tannery": [
+      {
+        "kind": "service",
+        "sha256": "c58c1afb0b76948eed7d0c678cad0b7919ca8e1e8be67b807ef9b49fcf698d83",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "310e0cc511fb38adf375a07c4c362a0f50468f0f9217cc1356f8e61003342600",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            5,
+            9
+          ],
+          [
+            5,
+            5,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "4ad34c2e7223bbe9989d48b5873eb6cf5a56843d8f9c52954c7738b70b62e1cf",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            9
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "7a10f4c49d7ffec51b23f4140655ec473a809a6a9c86d95a4664a04d6bf430af",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            9
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "27d7c8633466ccabff14d0aaa809c01522d4ea8a689e26f6822db4dddfff1a33",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "81102a2713152e59abb9f3d8c2040e6558377aad169467fd1881848a9d58b1c0",
+        "beds": [
+          [
+            3,
+            5,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "97b53dbf05aafd685aaf7ca2324ed42804706386757694ebc4f161c3a3e7b150",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/mushroom/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "790e33605a22762838973b1e7be03b17aa2a78aabeaf418f5b2563d238760d9b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "78a450ece68191674b87cadfd1fa824d9c04fd9c785c8c3e8d205d3db85c76a1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "5375bd0f1a583d0ba7eb0a676efe20c56946114424bf2767678419bb5f1361a6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "3dd558d383196a22b6661fbad96b2c7c529a24554be1540abd23f994151a5502",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "056bf1c4bccc914ac7aabfd784d801aba1e27ee8533cd8db09e24b80e03a8956",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "6afe2a06912d9d97b298b3b0cacb273f0a1b8f8b4effeca13dca7e3fbe3a0dea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "16b40131cf85eae5ea80747030d65a01fa18a9b3b054d49b62003edc806e7b50",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "5352e402e54a8c027fbdcc1641cd66fc0b6d478000fe596d4e798c121c2d2ff5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "dd03dae1a902fd9b4396b186428d421c9a61cc04a07503c4009cc4cc9899311d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/mushroom/town_center": [
+      {
+        "kind": "residence",
+        "sha256": "c22e5adb74d703612e7c5d2ff414daa9e21d461212dccf218c885bb1c057119a",
+        "beds": [
+          [
+            7,
+            11,
+            5
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "small"
+}

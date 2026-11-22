@@ -1,0 +1,3238 @@
+{
+  "format": 2,
+  "mods": {},
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "minecraft:village_savanna"
+  ],
+  "templates": {
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_1": [
+      {
+        "kind": "decoration",
+        "sha256": "645d5899334b45a1cee4c0a4bc2f8a171e8b25703f67db3ad96c1bcef3dbf877",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_2": [
+      {
+        "kind": "decoration",
+        "sha256": "2a956d2b921f3345b8eba187f328efd4c7c23c63ed1274790482d6a125efd556",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_3": [
+      {
+        "kind": "decoration",
+        "sha256": "20b86e80231a3291673cf59669c78bc894d545199c8a9c2c6e6958bfc6206b18",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_4": [
+      {
+        "kind": "decoration",
+        "sha256": "d5fc411b7bb2a1024eec98e9c90e057761c84a2e45123830281d0509445f45f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_5": [
+      {
+        "kind": "decoration",
+        "sha256": "869ec27336f412201ba40286b1e0bbaee5fdb40d1467b14fe7e207dac377ce01",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/misc/cart3": [
+      {
+        "kind": "decoration",
+        "sha256": "c03464eb1f0993d73ae8a8b2988a8977321e5c30743e1daf0d9bb72df269a46f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_01": [
+      {
+        "kind": "decoration",
+        "sha256": "ae5012ceaefca85e21c1280135afba990260d1e237ab871f24177a26f7f734eb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ac4577e3e22670fe97a32a10085ae23b2bf541dc2ac6b1a8c47934a34b47f0cf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_02": [
+      {
+        "kind": "decoration",
+        "sha256": "277471ea07ea0c5e3fc6bc5c81d91a7d65a6b80ce10bb81ba62d7feab46b51c2",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "af212c192014edeec743451817e3ab47e40d14142a670b6c6eb62711ed6d4d28",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_03": [
+      {
+        "kind": "decoration",
+        "sha256": "e69f3cd4ff858971644b69dfe5eb45df924ebc68dacd8c4b0d7eac07bf20839b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ac5740bbd271e5d53bddcb1a28a5286a7846a03a0a662d044072d63704da0417",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_04": [
+      {
+        "kind": "decoration",
+        "sha256": "b2c988756589545a5fbbb56e02ca0f48cd47db62d41335e4eec940223f5ed29a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "8148f1a441a10cf74a253af4b75150417ec17999dbcd44f207797365a811a934",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_animal_pen_1": [
+      {
+        "kind": "decoration",
+        "sha256": "8060b9c187974962511710793b7db7fb4b156b54f95114a3064bc0edd234c409",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "50003212a8d24b9ad9795d53145182c11128d2c6fb1442b7832f766411917d8e",
+        "beds": [
+          [
+            16,
+            5,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            15,
+            5,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "6f9db47e9dea1ad02ef50dfb02026871555c9ab66b8db9bb5d698863be2a97fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_animal_pen_2": [
+      {
+        "kind": "decoration",
+        "sha256": "5a9c7aeeebc7ad583cd93c2d9dce5d00a89416ed18b10ead93bf0e0e16d3acd4",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "11312851fcb8bce550e61f470cd187982cc7480b6f23e16f58b634f3f81ca63c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "0a28a9230caa28c1ea45d1edce264c464f0b1416ce49e400b355f42a4a2c2715",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_animal_pen_3": [
+      {
+        "kind": "decoration",
+        "sha256": "6e08fabb1c3fed72e8299cbb8c98522ac1546a7dc66fcd11da14c093279193e0",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "847a09cb582ee8bb8afe80beed25dde935180d421c1d9f7bcdc9ccdaf8914340",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "5aa6b49309514fe3a948e5ccaaa436cc5067e91e8fd2117c227fbd81ea4a670d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_armorer_1": [
+      {
+        "kind": "service",
+        "sha256": "54546f9cce6c8cbe97cf015144d1586c275e606ad4c851a60703c210a9f189ef",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            21
+          ],
+          [
+            5,
+            2,
+            4
+          ],
+          [
+            5,
+            2,
+            5
+          ],
+          [
+            7,
+            2,
+            17
+          ],
+          [
+            7,
+            2,
+            18
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "f425b2c00fef6e307d99104d8a059aaf485a0e932b6a35c2aa6bd7ea88c575a0",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            2,
+            2,
+            5
+          ],
+          [
+            2,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "df325c47933e915ed693d1f1c3ea50dff54c428adddf0baccb9b3f8ee3a10dec",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_butchers_shop_1": [
+      {
+        "kind": "service",
+        "sha256": "3b2883392c4c17a5cfd33c58dba569a5aadb8f305d78c300cdc185212f7c7137",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            13
+          ],
+          [
+            8,
+            2,
+            8
+          ],
+          [
+            8,
+            2,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "ffb095a8435aba2909d0b1778b9c651bd86bd7732084b2eedb5f9dd4fc863941",
+        "beds": [
+          [
+            4,
+            7,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            2,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "44f6c1660d5efdc0430aa7db7d3618b719e222e06e8f42aac5d48ef148af1400",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            6
+          ],
+          [
+            1,
+            1,
+            4
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_butchers_shop_2": [
+      {
+        "kind": "service",
+        "sha256": "ea64fd337ffb5492a00594a430160c7fd9700ceed1cb2714ab58a77dc4dc3520",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            4
+          ],
+          [
+            6,
+            2,
+            4
+          ],
+          [
+            9,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "69bf1520f62d47002c95ac56fd0048a495eaab429f1bfd51f4f6fe30794c051c",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "3ff667b115c0200dfc4754541a06da95fa5db2ed44e35df1702fbd6c32283bf3",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            4,
+            4,
+            4
+          ],
+          [
+            7,
+            4,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_cartographer_1": [
+      {
+        "kind": "service",
+        "sha256": "a860b3f0ae8455164503b1a271a28f5a29d4de580e4b6c7170cb2b53791735ea",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            2,
+            12
+          ],
+          [
+            10,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "cd2c300ab72fb5799a7299b4a99a277b2cc39e26f6d4a3d059f180319cea4fcd",
+        "beds": [
+          [
+            7,
+            12,
+            10
+          ],
+          [
+            8,
+            12,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            2,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "46dca1adb4d3bc700e486b38fd1baca2406347e012d9083258293c55e3914b58",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            3,
+            3,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_fisher_cottage_1": [
+      {
+        "kind": "decoration",
+        "sha256": "ae53841173bc906ebb2e918d24093394c7492ed6f4954a904479067a69e7190e",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            5,
+            3
+          ],
+          [
+            7,
+            5,
+            3
+          ],
+          [
+            9,
+            5,
+            3
+          ],
+          [
+            10,
+            5,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "65a98d68e4131c4c71f26dec01e08c162f1587064a502efbf9812df6f2470704",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            6,
+            4
+          ],
+          [
+            10,
+            6,
+            18
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ec469ca3032f103f2f546d00a94ac906a8908d292aa85c9d6d3b299954d27429",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            6,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_fletcher_house_1": [
+      {
+        "kind": "service",
+        "sha256": "a498651c3c2f205cf44cf0a3c589c6701ffe122d414b9dfb2d4f9d53a5997981",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            5
+          ],
+          [
+            8,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "3b0c1916dba9c7762ca57bb818c2cf0a21d5ace7ab8f384a60780dd64bc5a160",
+        "beds": [
+          [
+            4,
+            6,
+            19
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            12
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "9d7c927809c0760fa780fe615a96c8eaaae879cbdc32431092a9fe73fd6afc15",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            7,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_large_farm_1": [
+      {
+        "kind": "service",
+        "sha256": "56c865edbff66713a65b4096117cef616f5caf1e52d979bb8edbef71957ba9d5",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            10,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "59d9cd7aa960964dacaa27ea3cbb78968dd1fedf8044811baeb5e55e12e10992",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_large_farm_2": [
+      {
+        "kind": "service",
+        "sha256": "f4397dc07506791d41e6c89e08c5e7e1c91a27891a8ca5d953608732db73469a",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "48b47c7beb9d81f7cafde5f65d18588134c1ffa1913ae0e9128fa86b3982ab97",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            0
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_library_1": [
+      {
+        "kind": "service",
+        "sha256": "e25b24849205f56092e9100577a305b49a6c1f099d006e80181ac63369e7a1a1",
+        "beds": [],
+        "entrances": [
+          [
+            11,
+            3,
+            14
+          ],
+          [
+            14,
+            2,
+            20
+          ],
+          [
+            17,
+            3,
+            14
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "27a0335ceb78065079e7ac80bd481c88892a1f3ae10f062fa19991fe20af8d33",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            3,
+            2
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            3,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "8e2e30410b66a2d30f303b78f232ceec54514cb2ee180d78b83c7aafb3cbbf82",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            3,
+            3
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            3,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_mason_1": [
+      {
+        "kind": "service",
+        "sha256": "6b6f811c0b7c43613e6d482306967e1773a517dbda46062ec4ce9e66d4b447e5",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            1,
+            10
+          ],
+          [
+            12,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "db031d488900b1434ecd8d9971e0b1b00c994b69a33afece35cd8b7c1349e4a7",
+        "beds": [
+          [
+            8,
+            12,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            2,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "2b755984fc9acc11e742a5b9cad13da80508dbb8e78b06197f672bd599f7c232",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            1,
+            4
+          ],
+          [
+            1,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "72338b0daed9b09a0576c12f1ccce7290e1c150af0ea95d01301a132b61f15db",
+        "beds": [
+          [
+            4,
+            2,
+            4
+          ],
+          [
+            4,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            1,
+            10
+          ],
+          [
+            14,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "40a1a9ecdd65c8e479c17d6cfbb77c03d47485a11344be8dbdca402d992d7615",
+        "beds": [
+          [
+            8,
+            7,
+            16
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            2,
+            2
+          ],
+          [
+            7,
+            7,
+            10
+          ],
+          [
+            8,
+            1,
+            0
+          ],
+          [
+            8,
+            2,
+            2
+          ],
+          [
+            8,
+            7,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "0813765441b928cefa314dc2a45dacb1548af7aefb7cee6a9fb70f1d188de7ed",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            11
+          ],
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "5f7ba325e943c3e7bc590068011b89a209219defd4d65108aa5f6c1de9b7e611",
+        "beds": [
+          [
+            5,
+            2,
+            17
+          ],
+          [
+            6,
+            2,
+            17
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            14
+          ],
+          [
+            7,
+            2,
+            4
+          ],
+          [
+            11,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "00c58c59e5a3cd7aebd2b129ff7ea6cd51c6d5f679dbaed3fa44b7a511ecc16c",
+        "beds": [
+          [
+            5,
+            7,
+            16
+          ],
+          [
+            6,
+            7,
+            16
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            7,
+            7,
+            10
+          ],
+          [
+            8,
+            7,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "085940210a1f51d24526087e5775ce7fdff57acdc811e45671005ba557bb958f",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_shepherd_1": [
+      {
+        "kind": "service",
+        "sha256": "fc11dc0685169975ca7f32571ac8843251461c8f016b5bf73744ee5957a2d5a3",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            1,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "64eaa10037bea4071ea87cb1011801a6c5b368e263d8ff1a55a9c0a21fb67075",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "4adb97eda91c9d9d91806a016a50d7fe70afd4ed2a890d820270f8695e9dc1b4",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            2,
+            5
+          ],
+          [
+            1,
+            2,
+            5
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_farm": [
+      {
+        "kind": "service",
+        "sha256": "db399e263258a1dfe079c5267f3e0bf9e77aecd8a2d037031ce4315c99ac7fd7",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            2,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "b2c1c4bfc0e195bcf097515036b5ed4c44dd85ad7898ac3879e9ca504319ee86",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            2,
+            0
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "f6a6f94ab0c0e5d4b1972eb91dd6ad29b7a74bcccc536099cb7c667960eac1f3",
+        "beds": [
+          [
+            3,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            2,
+            3
+          ],
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "eee2e5a859152ed68cc93564a85c63b16761e8d66ee8de25f309060db61afb5e",
+        "beds": [
+          [
+            6,
+            7,
+            6
+          ],
+          [
+            6,
+            7,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            14
+          ],
+          [
+            7,
+            2,
+            12
+          ],
+          [
+            11,
+            2,
+            12
+          ],
+          [
+            12,
+            2,
+            7
+          ],
+          [
+            12,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "f4e4a51d50340856541eee174f915c3befa1f464060624f0d2c5759f074d421c",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "a0b357659dca4c82fffb87a73082ee1d5528b6aeb3ab6957b028b5d4c3a85597",
+        "beds": [
+          [
+            4,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            3,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "6cf03eb8b4d45764d7c7ee54f45dda7d51192037d7e081d1ece633bd96e827cd",
+        "beds": [
+          [
+            9,
+            7,
+            12
+          ],
+          [
+            14,
+            7,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            16
+          ],
+          [
+            6,
+            2,
+            10
+          ],
+          [
+            6,
+            2,
+            11
+          ],
+          [
+            11,
+            2,
+            4
+          ],
+          [
+            12,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "863c5b6d821480b1d2289c1cebf1f838e131419ffe94e6a2d5a4ca9cc4732046",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "d81998b352705b3dd8eb4b9dad3ea39ee324db563a95c8d07366f850a2970483",
+        "beds": [
+          [
+            3,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "8c445a75f466636b5ec0bd3a03f9077b0beef91f002675dbd69e7df018584198",
+        "beds": [
+          [
+            5,
+            7,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            2,
+            2,
+            10
+          ],
+          [
+            2,
+            2,
+            11
+          ],
+          [
+            8,
+            2,
+            12
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "a726d2f88c13fba7d1a3a186136f0279aa6268a563109623bac60e525f0bec07",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "0517c3819dc774c689623b3415825dddd8c0faf0b6148b36b6ff66a7f72c31ae",
+        "beds": [
+          [
+            5,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "0ee1ba685a14422aab732c0a6cc15a1367b8fb19d47e49f05920e693c839c64f",
+        "beds": [
+          [
+            20,
+            7,
+            9
+          ],
+          [
+            20,
+            7,
+            10
+          ],
+          [
+            20,
+            7,
+            16
+          ],
+          [
+            20,
+            7,
+            17
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            12,
+            2,
+            9
+          ],
+          [
+            12,
+            2,
+            15
+          ],
+          [
+            13,
+            7,
+            15
+          ],
+          [
+            17,
+            12,
+            13
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "e949d7125f4fbefcddd7aa557183d511812c422101a7b8ed4d770440c09aac2a",
+        "beds": [
+          [
+            7,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            3
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "6c87cc887ea8dd5400211d08ea9a75ab4d0fb4b2a69db1366a2dc4a49c97f109",
+        "beds": [
+          [
+            4,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "c90c6253b51709fbe2605ba541c87c4e9c0858a28f65fdf642dc1db6a468cd24",
+        "beds": [
+          [
+            9,
+            6,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            6,
+            9
+          ],
+          [
+            14,
+            1,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "3ea63bb5371c401ff7d980caf879780590b2e0815aac6aa310cf516e11d1f207",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_house_6": [
+      {
+        "kind": "residence",
+        "sha256": "56892e12511c84481edc2b3e536d7f0e7ee21061e5f5497a7c360b30f40f9f3a",
+        "beds": [
+          [
+            3,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            7,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "f2aa96fe8f780d82c6386cfccdb720c8a5aa51c55bf780d24b6e49ad09a0591e",
+        "beds": [
+          [
+            5,
+            6,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            11,
+            6,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "a28c0431ae226884df1f797fbe8fba00903a8a44c12e9cead9d2ec9645261d00",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "825b9c54b42e1944bf799511a2b2812f78adc8e5367f6c846047f29e119077d3",
+        "beds": [
+          [
+            5,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "77e51633e997ea9eca29055986458a63b146b689665e916f6e41d812563736e5",
+        "beds": [
+          [
+            4,
+            7,
+            13
+          ],
+          [
+            4,
+            7,
+            14
+          ],
+          [
+            5,
+            7,
+            11
+          ],
+          [
+            10,
+            7,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            2,
+            2,
+            9
+          ],
+          [
+            2,
+            2,
+            15
+          ],
+          [
+            9,
+            2,
+            14
+          ],
+          [
+            11,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "e5aba761a8de53ef1c2df45b040e87e753f6a38aded21d5b225a4ad4a0142626",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "9357cc38a5603c5c4238a9c52b534149bf22b0d6b046bf0119e9c2a41447f51a",
+        "beds": [
+          [
+            5,
+            7,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "46e0403a42c1a2aacd55ef53418e67a79d08e0cd44088a92ff8239f4bce09aab",
+        "beds": [
+          [
+            4,
+            7,
+            8
+          ],
+          [
+            4,
+            7,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            2,
+            9
+          ],
+          [
+            14,
+            1,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "59e2e6539e2a0038f516bd2bda879907ac61ae8f3983e0c110f5ca0a5c8e859f",
+        "beds": [
+          [
+            3,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_tannery_1": [
+      {
+        "kind": "decoration",
+        "sha256": "347fdaeb83b51d3f7aaf5a6a2d2f0c8b5e7c1f618f00c883c6f7afbf4619d0dc",
+        "beds": [],
+        "entrances": [
+          [
+            10,
+            2,
+            13
+          ],
+          [
+            11,
+            2,
+            13
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "847a1778620c9e34bc4c83892e1b525c69bed174df0a0abcec909dccb11216b1",
+        "beds": [],
+        "entrances": [
+          [
+            15,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "15e56b808ca4518b5da8fea6f228f7f92dd3b9877d684beea743899c51936fd1",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_temple_1": [
+      {
+        "kind": "service",
+        "sha256": "849b4d706ecf5709dd56e621fa93c19969ea3a19c0d58753a14049a47cd7b0db",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "5685ecdbb8f35b098d5c007a22075c462278910fbbbc8822cef26f1b6fa5b63f",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "fbde3a21c0c08d831bf0ecdf6cbaf19af2f7009ca9d99629acb653c9290e694a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_temple_2": [
+      {
+        "kind": "service",
+        "sha256": "aeb2f98363aa2c391779ec61ca84426417ba4efc1eff597305dbbcc14185e386",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            1
+          ],
+          [
+            7,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "25af2de6916b20330fbd11725cafeb93d8f17ca90c3af86dc13f63f5369bc4ed",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "d108a6234c8193fab8fc02a5adf4df9bd086a911d2a3485bc9bd73cbb6593370",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_tool_smith_1": [
+      {
+        "kind": "service",
+        "sha256": "46ebfa7a5f7aa23b9ffd58eb95a782a394da3f3cdeb4f433bc6c2e99da131146",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            2,
+            9
+          ],
+          [
+            14,
+            1,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "9853b6445d4bd90d47c004c580d8ff03fc75d54705e636513055d3f1f86869e8",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "6481829bc56fd88fbb6401320711a5465954dcac95c7d6b43b4608ed7ba0446f",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_weaponsmith_1": [
+      {
+        "kind": "decoration",
+        "sha256": "3a6dfa2ab2e39feff1275608f9c6460f29f70d63a05cffe593407a3b2f0d9c9d",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "5a77051f017164e9b8f990d24fa71437e46c07e058a02f674b625f08046f1d39",
+        "beds": [],
+        "entrances": [
+          [
+            12,
+            2,
+            6
+          ],
+          [
+            12,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "be1d80f36670c9e16606112b8234e6b79da71dbacd1416faac819661372588bd",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/houses/savanna_weaponsmith_2": [
+      {
+        "kind": "service",
+        "sha256": "f1696e4420ebdcbf77ef3b98480efd74acb717540b05ab0647465ec938856dfd",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            21
+          ],
+          [
+            9,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "36f7390d232c6c3b40312488127f877ebc5102283a273d32dd18872b50d3c73f",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "5c9075daf8809b1a01a10b9b12f6c8fa69c98df5b3f3b638411942b0fa4c26da",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/savanna_lamp_post_01": [
+      {
+        "kind": "decoration",
+        "sha256": "192e89547b090fa920248643beabbf687233a0d1f2cf414abb139d681307a56e",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "8633fc02071974285257be9143d0ccc5bc72287bd6b3ea95fd9d73bbc57fda3b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "a2b0d0b01eff1fac6f271b97dc557c8558dd197ed85940c6b9545fca47dc6787",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "4dd2ba6e36431dd2860e3ddf3139190f5d35ef65393afea31f1997284a19ae4e",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "b28307a53194e21d525be3423e0f0cb29ea3bb03332a163b4663aac45e870c8e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "4166b36457210b3891e7b1b32e36ccea741677bfc2071ddf490b2385a9fdc5d7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "695238ca1d058a3b58fb225914f3a31d8413e343c6a1f370cbdc1a94204065dd",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "9747d742214b14058f9197f7e518d927865ce3c88e337ad2677e8d94257f68d9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "418efef24162da5623de14732907c5b2a84692ba5d001e9442a19490b4624edf",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "b25f74416e0c66a94011f0e5c8f7bf4db44d071194d43344343f78cd223cce35",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ba95078ce851543bf100c3d950fd4dee5a041b88aecb4262f4c3ef0a070712c5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "7ab61378e2362d2a2ce2754b110c9c1b05dc6aa394dabff3cc655678d2550505",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ced0819d1ddb747105ccc82dfdc424691767724fff5ca939d1884bb514fe30f9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c561a4992bb5b2dce93371d29eea1122dc7befa3b291235eb0e862ebdc1fe634",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "0fa5f4151e6fabbfab341d4ab2e1ac737b66aec662aa88bea00d5c1c507631f4",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "0fc9dc3866a7e86c1628c8dbfab9c75f10c8ea7251791bb96dafadafac44a23f",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "a9c653f7d0f4b646c308ceae4c18e29344d62147219113536cde02a35127315e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "0a77832fb2726ea5bdc403675be58f57926c6899ddbb73fe14f84a14655cba72",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "21db1544e19e78e862d438735a6757507e91b1dc22eb494ff5fa000bf6a2d00b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "55787933bd07f371420de417db120cee17fd0fe2cc1cc1913c664cea9fa8f407",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "228e68fac9008a3e230f0586273a65aeb673c8047b741564e850f38094eefc88",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "efb2e4a53cae8a1baa74061db4d865db4c6eca37e2da4df11efaa8ed2598a214",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "852c8e43fd3e63d9071a6a28eb0687e66a7ee207caff2603e10a20fd205e2a3c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/crossroad_07": [
+      {
+        "kind": "road",
+        "sha256": "87b1431f472779ea8781e6ed0454304e29b3e87e6d85cb820844c8f8895302dc",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "5226d46f681f3d63e0dbc5e5e3b001b2ca90d4266b42332df9d2cdfdcd6cb15f",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "de350f5e83b13f89b0f80ca3fa7cba7f97b48908481d6b523f35d01418907e62",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/lamp1": [
+      {
+        "kind": "road",
+        "sha256": "f7059221731ed4f05b77dfff4e565e82a2f2716b12eb91a3331a975ae3cc4323",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/lamp2": [
+      {
+        "kind": "road",
+        "sha256": "ce8ddd0c77e153c210f29bf550cf4a76bb88b40a02e119698ec26bd461b5fcc4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/lamp3": [
+      {
+        "kind": "road",
+        "sha256": "3ca69dcb994f821cd5d6913c1140408006f1e77f07828508a7e23d3510bbc2bb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/lamp4": [
+      {
+        "kind": "road",
+        "sha256": "09104ea78c5b2b944597e8b7a30f70645f4dea404713baf0183c8598746a0495",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/split_01": [
+      {
+        "kind": "road",
+        "sha256": "bebc185d89ee11d069bf3ae01b9627b4fdfcfac122d1554939e7e6ba76b29ea3",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c01364b623224e0546a4052982f054cf8adf5b2ac31b449db3e227bb64d12b24",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "5665bf74099823ab49f0aeb8618815782ab8bb9a918869d5c9af8312e2d7b3dd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/split_02": [
+      {
+        "kind": "road",
+        "sha256": "203c11cbef9794fa02c8eb92355886ebe9891ed76ad434c82f4257dde191683e",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "9c6c3924be4e93d9e5f4d8270d69b588efcadd9d17471917013054b57a6a11a7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "b8b5bb4ea78c9eaddc635a8a00fccf27fbc0c33f68dd8b932873a82b16f75a24",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "aac955004b2bfeba3e35d99bc5ea24937a23fd140809becfc66b3d46ba9767b4",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "762fdf165206eafb09e4537cf33a8c57eb6d42aa96bda895691b18b77f0064c1",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ee3e3ab1d0fdd7aa0a9f58af217eefe428dbcb2f4b153aef088053bb5533eb5e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "287fa8fd00edb12004e498b708542ee4089bb2e76400cc5024a27fbf9994ccd1",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "cc4530a7ff78ff5406b9ca6630bade7d7b4fa0a1cb86b02fd6f12ac559958ecc",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "70715a2bfeb23afb3e4f1bb65fb2fc26950c5f98430f06b74cfa92ad431e88c2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "43712a057e45f1a91ce5e6532822b39c622bba514ae5de0b3519a36817dcc7c6",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "74365ee89e051507d1b4316dc5c1d1974aade330c3a4b1501d3054d5bc5f866b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "3fbd47b2953fe5cf39e7a6fb35fc25e614f7f705c5cd7f7a9c619f9ade23daec",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "6584a743c35b5df62f7815eb5411a90fb2e191c6989a119d84e7d65ceb8530d7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "16a19ff11c78a9812d57e1a6e98db579d42e1800eb47ac9e52ec8481515dfcf9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "d3f0d5fc2ec3a94cb735a80db760fbf2b9a7eaac25d90bcf835bfa7cecbab11e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/straight_08": [
+      {
+        "kind": "road",
+        "sha256": "af80148ffab12aa16db3dfcc96d4fb288b8d3ce2c12ca9d454f9eb9830fcccb7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ee87440db61cb50b37f70e89eb33154049240f23dd62807622d32cce5869acce",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "fb7fdd3b7f358e7c95bc23d6e40ab7c2e8cc6e5ca62d62ef36ff201950de3cc8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/straight_09": [
+      {
+        "kind": "road",
+        "sha256": "2daee898b900be235c5bf9bd2e54908c02305bc0d84e0612cc9abb62cb36d359",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c1d330310d9bad670f8c468b6f58b78129072759e2602284a0cc19af69d750ac",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "80354247cca8292b27f2ff37d7e008dda7e06f2d6748f7ccdca3a19395087e68",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/straight_10": [
+      {
+        "kind": "road",
+        "sha256": "44e7f98a309a1f087c3aa1906f2fd4f35d14cde8477a13e97d6dabf2f6726fba",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "87766be24491e5b4f0a99e63f630dc0ef511637ec920e01b8ad8564c7fdbc394",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "51bd9503539064e8c1c3b82526b2d8fba4c95fbc06dbec872e4c4777423320c4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/straight_11": [
+      {
+        "kind": "road",
+        "sha256": "cece3ae6d4c02bb8896ac1a571302ed3d34bf0cef5fe58f144540f71f517748d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ec9e2ecef52e56e9c7895a2f2dffb613f9b98138a695a95911dd90427aa9e784",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "f56ec0cd6864380b55724600cc32e1894efe60e1631f540319106167d9d742b0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "ed52136bc45a37cd130f1f6452dce83e3f77821e72f4db7fb90774b3bc0e17bc",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "8b7806bd692b5b003e4b0579f95f179def8807ac7f6209d0b7816fb2a8b166e6",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "d8d897331bf3f290b29f924d688b298e5b568480e73ca32bfa3571b3ffe6d0d9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/terminators/terminator_05": [
+      {
+        "kind": "decoration",
+        "sha256": "d4d8f97329801a8a9038a68aae5a0fcbf7c61a315d99a299b330e99723d2d28c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ed013416af9e7280d3ecf62932f004c506846447d6119785bc1916f7fc7af4de",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/town_centers/savanna_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "f05b8780ec7da90d6d6d1413304702e41494fff0fa47027e16295cec86a18604",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "02d004f5e1537b9e3f007bafb10b43dadc9e04844ca3acb7b910ca0b2aee247f",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "60da05f364852d170b0a02ca5217b0ca0dbeed4ebb1d8ef9927d792eb627d692",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/town_centers/savanna_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "399310245869f8af9825a680e2e12f5fa991210a6ec36193898679c5a54fd5c7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "aab6f18751cc4dad0b99382a8fcdd6f99cf59af4b967de65d35023bb391d70e7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "b17a865ca0edbc883a8862abca4a21c7cfb52732c76c43e97e461023505b9979",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/town_centers/savanna_meeting_point_3": [
+      {
+        "kind": "gathering",
+        "sha256": "39cf34c59e04594af6f7446e377b00bc386d2c51d56b2db7b989505c78fe17a7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "eedb6b5209019f5d35204f25634e73b915043fdcacb88e167d78a523844b3f3b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "de5be3a036128cb9b4b3693f9538559c60cee51f8f5f144872f302751bcf2ec1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/town_centers/savanna_meeting_point_4": [
+      {
+        "kind": "gathering",
+        "sha256": "83c5edbeb43bc4edfc208960bf36e3ecefc55e3fdf6cf2e40ce1bd8156e9a57c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "d24eb81ee3601b87ab2f207acb14a96cd83f68758ad7b6d72b33914a3638aa1a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "d5a798c73d6b5e8aeb08a99a800ae15d4703e1a7686778c8d396e7b10ac441c3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "e6b4e5812c97932882341d3dc14ea238683bda3d7d5abde6af4a09342f875aa7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "edf9116c61f7cbea96c1d4961b03b192514a9f1952526dce3a1dc28bcd0ae9ca",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "0e3fe85cafe8a083a764991c95e30d7f6210586a6fdf09049eda89f3b00ec651",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_animal_pen_2": [
+      {
+        "kind": "decoration",
+        "sha256": "3a96f657a49b591becd8b48d7efac08029f935ec7bcded15fe4fbea74c031c6c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_animal_pen_3": [
+      {
+        "kind": "decoration",
+        "sha256": "93a90064fd31b5e413f5e4eb7181ea860ae942380a5c69d95dcf128bcc728fd4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_large_farm_2": [
+      {
+        "kind": "service",
+        "sha256": "676e858482fd4a17de2426eef3e638f1d2444a0e3e4b885292c9f0c8bbc5e8e9",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            0
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "5f1b41cb690c5f91b794a3e4bd2b7e7e1c2a489c923b4bc211516a04f5b22f90",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            11
+          ],
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "89788d4048d937cf1142e0b065e4117d5546347cdb1b34502692894e4b6e6fef",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "e523f740eb673e4b88312d839ff8610fb47ba02e9976bd9e82048555b1669371",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "9d5ff3b5ce493045881c38a41828b8fb6e833b15f756a1733e8b8712f664693b",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "69687d9e0f9685058b6d9127cc7c135c0a5aa1ca23aadf1db2b742a677fcafe5",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "b65fff8fe1c232b8692c6b745f1da8d54438cb5bcb1b6c9fab17a2979974fdc5",
+        "beds": [
+          [
+            7,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            3
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "478e7e27bc4ae10482d0be627092951c10ea1acbc01aba151431aab8e7632f9d",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_small_house_6": [
+      {
+        "kind": "residence",
+        "sha256": "cc0b3d43030534175c169d959469dabd7cfc28c652dd9208b82e394a85ec5c4b",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "32b2f434b29042275fcb4d7039d30599ab4ed19d9c0a00ffadfd484c74cf08ab",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/houses/savanna_small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "6de2b499227b791a9bc1236ee18f0298783f0dabea6e34231200f85df815dac5",
+        "beds": [
+          [
+            3,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "88f0581c8a3686d6cad27335ab27ed26834d5a0b34ae978b4e0ef53e9bdceba1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "bb0106ebe6e00d5c4ea9d0dfe5f941954b0fc2353be59a0f5bbe37d1567514f4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "b0b29994c79d8daaddfe337dfb4723c2ea4a8e479b76311c518a566fbf9cbaf5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "056ea2adca1acdc6cb1a59893f75c0572b6959af0506325bb24a0e1f44025b52",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "ca388311eb4dfb3bbc4691038d454440565c5c99f362402308fa1d88b67e000f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "dd5d9381a365e169b84ef399ef5e0b933de2202feede0ff9dca866725b452dfa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "e12316686e30baecc8296d28dfc7e6ca4083bb5614ef6200aa36c91b2c0f2aa4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/crossroad_07": [
+      {
+        "kind": "road",
+        "sha256": "cf4cc56ef6dd1d944a33fef5c49d1410230e0185c3759f1171a17ba2c39c413e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/split_01": [
+      {
+        "kind": "road",
+        "sha256": "278c465f73c22c90e80c7aa589ba6ec6871aa4f782571643d91ac499dd4830f8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/split_02": [
+      {
+        "kind": "road",
+        "sha256": "42945e7a093a07f4d0f89b2d19413dfff7028cb695ed13d1792933d8aeeae21a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "e0b16d810820c81ccc83f881962f1687fa2541c5b127bda0c194e17d85fc6a23",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "29512c969699bd759cef405b98d17fe1a3c968083c4009b85489395c53c996a0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "0d0aea5c0a2611fc4a7a1a592eb48b87f2ba27e71cc34b4bcac47a1e1173cc82",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "340a98ca842d43aa9dc966c12d0c8be7d3d9ae7f53e2d4bcb15ba4a410ed079a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/straight_08": [
+      {
+        "kind": "road",
+        "sha256": "69354c2c5bddc4346018a3cf5d3640b9faff94ec8ca7118e95bdfd1bac398176",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/straight_09": [
+      {
+        "kind": "road",
+        "sha256": "50e89f414d92e1cf20c08999fb6f07345ba321f97954660243f4d3160fc8ebeb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/straight_10": [
+      {
+        "kind": "road",
+        "sha256": "99a68427bbe53c911a21f8f6463ee5d122ea879170951decdfecd514cf6b7233",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/straight_11": [
+      {
+        "kind": "road",
+        "sha256": "24925fa172be82ea491accfaae07eeb159e03bb3b96f2dfa43fca872ab1178a5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "c5e49ea2c4eba9573d20221803c796fcc110bb7836858d164f2ccb5e4b6c1e51",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/terminators/terminator_05": [
+      {
+        "kind": "decoration",
+        "sha256": "a0f6b1986a984346f2351b619aeec865a765e3a2e85f58dc7e1873028c9a422e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/town_centers/savanna_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "b91c4581d710e2ffe53fe73bec6c0c030b5a7e975c5c8360937bcd29ad50ca37",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/town_centers/savanna_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "3d7ff672bad83b09b796c180e2341c4326278b0c32c6c705232a44a4b2d4b145",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/town_centers/savanna_meeting_point_3": [
+      {
+        "kind": "gathering",
+        "sha256": "e5ea973de5ba42f591d0f9ba95eaf4cb46b447886ce557727be7adbc41a0d481",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/town_centers/savanna_meeting_point_4": [
+      {
+        "kind": "gathering",
+        "sha256": "d8afc36238451c9f16aab91619a930a5cf4c67c258be02489cd93984ba53aafc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "1c1a8cb827cc1ad735443984987438992bd8780844e4efa498b3e0d096672b8a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/savanna/zombie/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "a8b97b14263e7656efcb250c2730f5c2291e0ccaff95f3b1f7c3dc6a716be375",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

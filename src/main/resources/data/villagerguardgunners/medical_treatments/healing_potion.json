@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "item": "minecraft:potion",
+  "healing": 4,
+  "cooldown_ticks": 40,
+  "potion": "minecraft:healing",
+  "return_item": "minecraft:glass_bottle"
+}

@@ -16,6 +16,30 @@
     {
       "gun": "tacz:hk_mp5a5",
       "weight": 1
+    },
+    {
+      "gun": "cgm:pistol",
+      "weight": 5
+    },
+    {
+      "gun": "cgm:machine_pistol",
+      "weight": 3
+    },
+    {
+      "gun": "pointblank:glock17",
+      "weight": 3
+    },
+    {
+      "gun": "pointblank:m1911a1",
+      "weight": 2
+    },
+    {
+      "gun": "pointblank:mp5",
+      "weight": 2
+    },
+    {
+      "gun": "pointblank:ump45",
+      "weight": 1
     }
   ]
 }

@@ -1,6 +1,19 @@
 package com.gamergaming.villagerguardgunners.combat;
 
+import com.gamergaming.villagerguardgunners.ammunition.GuardInfiniteAmmo;
+import com.gamergaming.villagerguardgunners.compat.tacz.TaCZRuntimeCompatibility;
+import com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczAmmoSummary;
+import com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczInfiniteAmmo;
 import java.util.Map;
+import com.gamergaming.villagerguardgunners.api.GuardNativeShotAccess;
+import com.gamergaming.villagerguardgunners.combat.aim.GuardAimPoint;
+import com.gamergaming.villagerguardgunners.combat.aim.GuardAimSettings;
+import com.gamergaming.villagerguardgunners.combat.aim.GuardAimState;
+import com.gamergaming.villagerguardgunners.combat.aim.GuardShotAim;
+import com.gamergaming.villagerguardgunners.combat.engagement.GuardRulesOfEngagement;
+import com.tacz.guns.resource.pojo.data.gun.BulletData;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -10,15 +23,13 @@ import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSharing;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoSummary;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
-import com.gamergaming.villagerguardgunners.combat.tactics.TacticalEnvelope;
-import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
-import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfileDefinition;
-import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticalResolver;
+import com.gamergaming.villagerguardgunners.combat.tactics.CachedTacticalState;
 import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticalTraits;
+import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticsState;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
+import com.gamergaming.villagerguardgunners.guns.WeaponDriver;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
-import com.gamergaming.villagerguardgunners.orders.GuardOrders;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.tacz.guns.api.GunProperties;
 import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.entity.IGunOperator;
@@ -45,7 +56,7 @@ import tallestegg.guardvillagers.entities.Guard;
  * Projectile creation, spread, recoil, sounds, fire modes, ammunition, heat,
  * reload scripts, and synchronization remain entirely owned by TaCZ.
  */
-public final class NativeGunController {
+public final class NativeGunController implements WeaponDriver {
     private static final int SHORT_RETRY_TICKS = 2;
     private static final int DRY_RETRY_TICKS = 20;
     private static final int OVERHEAT_RETRY_TICKS = 5;
@@ -54,14 +65,34 @@ public final class NativeGunController {
     private static final float MAX_SAFETY_PADDING = 32.0F;
     private static final long MAX_BURST_DURATION_MILLIS = 5_000L;
     private static final double VANILLA_SPREAD_COMPONENT_SCALE = 0.0172275D;
-    private static final float FALLBACK_ENGAGEMENT_RANGE = 16.0F;
-    private static final float MIN_ENGAGEMENT_RANGE = 8.0F;
-    private static final float DEFAULT_MAX_ENGAGEMENT_RANGE = 32.0F;
-    private static final double DEFAULT_RETREAT_DISTANCE = 4.0D;
-    private static final int DEFAULT_REQUIRED_VISIBLE_TICKS = 5;
-    private static final double DEFAULT_AIM_TOLERANCE_DEGREES = 10.0D;
 
     private final Guard guard;
+    private final GuardAimState aimState;
+    private long aimWeaponRevision;
+    private LivingEntity aimingTarget;
+    private ShotSession latestSession;
+    private ShotSession executingSession;
+    private GuardShotAim approvedAim;
+    private GuardShotProperties approvedProperties;
+    private PreparedRound preparedRound;
+    private ShotSession lastCheckedSession;
+    private long lastCheckedWeaponRevision;
+    private static final GuardShotSafety.Result UNCHECKED_SHOT =
+            new GuardShotSafety.Result(GuardShotSafety.Status.NOT_EVALUATED, -1, null, null);
+    private static final GuardShotSafety.Result UNAVAILABLE_SHOT =
+            new GuardShotSafety.Result(GuardShotSafety.Status.INVALID_WORLD, -1, null, null);
+
+    private record PreparedRound(GunData data, BulletData bullet, float speed, float spread) {}
+    private boolean projectileAdded;
+    private GuardShotSafety.Result lastShotSafety;
+    private LivingEntity lastShotTarget;
+    private long lastShotGameTick = Long.MIN_VALUE;
+    private long successfulAimRounds;
+
+    private record ShotSession(LivingEntity target, ItemStack stack, ResourceLocation gunId, FireMode mode,
+                               net.minecraft.world.level.Level level, int ordersRevision,
+                               GuardAimSettings settings, BooleanSupplier eligibility, long expiresAt) {}
+
     private final IGunOperator operator;
     private final NativeTriggerState triggerState = new NativeTriggerState();
     private final NativeWeaponState weaponState = new NativeWeaponState();
@@ -78,12 +109,10 @@ public final class NativeGunController {
     private GunData gunData;
     private FireMode fireMode = FireMode.UNKNOWN;
     private ChargeData chargeData;
-    private float engagementRange;
-    private CachedTacticalState cachedTacticalState;
+    private final WeaponTacticsState tactics;
     private long nextGunDataRefreshGameTick = Long.MIN_VALUE;
     private long nativeBurstSafetyUntilTimestamp = -1L;
     private int trackedOrdersRevision = Integer.MIN_VALUE;
-    private long dynamicExplosionRefreshGameTick = Long.MIN_VALUE;
     private float aimPitch;
     private float aimYaw;
     private ShootResult lastShootResult;
@@ -93,37 +122,61 @@ public final class NativeGunController {
 
     public NativeGunController(Guard guard) {
         this.guard = guard;
+        this.aimState = new GuardAimState(guard.getUUID().getMostSignificantBits()
+                ^ Long.rotateLeft(guard.getUUID().getLeastSignificantBits(), 17));
+        GuardNativeShotAccess.bind(guard, this);
         this.operator = IGunOperator.fromLivingEntity(guard);
         this.config = ModConfigs.GUARD_GUNNERS;
         this.mainHandSupplier = guard::getMainHandItem;
         this.pitchSupplier = () -> aimPitch;
         this.yawSupplier = () -> aimYaw;
-        this.engagementRange = configuredFallbackEngagementRange();
-        resetCachedTacticalState();
+        this.tactics = WeaponTacticsState.forGuard(guard, config);
     }
 
     public static boolean isGun(ItemStack stack) {
         return stack.getItem() instanceof IGun;
     }
 
-    /**
-     * Cheap goal-selector check. A changed stack is allowed through once so the
-     * controller can resolve its TaCZ gun data and clear old dry/suspended state.
-     */
+    /** Gun ownership is independent of native retry and metadata refresh timers. */
     public boolean canUseGunGoal(ItemStack heldStack) {
-        if (heldStack != trackedStack) {
-            return true;
-        }
+        return isGun(heldStack);
+    }
 
-        long gameTime = guard.level().getGameTime();
-        if (weaponState.isSuspended() || !hasValidFiringWindow()) {
-            // Let Guard Villagers' lower-priority combat goals run while this
-            // weapon has no coherent, readable firing window. Retry only in
-            // the existing low-frequency metadata slot so a broken datapack
-            // or contradictory explosive standoff cannot thrash the selector.
-            return gameTime >= nextGunDataRefreshGameTick;
+    /** Reads bound state only; never scans reserves or invokes property scripts. */
+    @Override
+    public java.util.Optional<WeaponControllerDiagnostics> captureControllerDiagnostics() {
+        return java.util.Optional.of(captureDiagnostics());
+    }
+
+    public WeaponReadiness captureReadiness() {
+        if (guard.getMainHandItem() != trackedStack || trackedGun == null) {
+            return WeaponReadiness.UNBOUND;
         }
-        return weaponState.mayEngage(gameTime);
+        if (weaponState.isSuspended() || gunData == null) {
+            return WeaponReadiness.SUSPENDED;
+        }
+        if (!hasValidFiringWindow()) {
+            return WeaponReadiness.INVALID_FIRING_WINDOW;
+        }
+        try {
+            var nativeData = operator.getDataHolder();
+            if (nativeData.reloadStateType.isReloading()
+                    || operator.getSynReloadState().getStateType().isReloading()) {
+                return WeaponReadiness.RELOADING;
+            }
+            if (weaponState.isDryConfirmed()) {
+                return WeaponReadiness.DRY;
+            }
+            if (nativeData.isBolting || operator.getSynIsBolting() || needsManualBolt(trackedStack)) {
+                return WeaponReadiness.CYCLING_ACTION;
+            }
+            if (hasLiveDrawCooldown(nativeData.drawTimestamp) || operator.getSynDrawCoolDown() > 0L) {
+                return WeaponReadiness.DRAWING;
+            }
+            return needsReload(trackedStack) ? WeaponReadiness.NEEDS_RELOAD : WeaponReadiness.READY;
+        } catch (RuntimeException ignored) {
+            return WeaponReadiness.SUSPENDED;
+        }
     }
 
     public void startAiming() {
@@ -135,6 +188,7 @@ public final class NativeGunController {
     }
 
     public void stopAiming() {
+        invalidateShotSession(true);
         try {
             operator.aim(false);
         } catch (RuntimeException exception) {
@@ -158,8 +212,14 @@ public final class NativeGunController {
             boolean mayFire,
             BooleanSupplier safeToFire,
             BooleanSupplier burstSafetyCheck) {
+        tick(target, mayFire, safeToFire, burstSafetyCheck, true);
+    }
+
+    /** Maintenance remains available without a target or an aimed firing pose. */
+    public void tick(LivingEntity target, boolean mayFire, BooleanSupplier safeToFire,
+            BooleanSupplier burstSafetyCheck, boolean aimAtTarget) {
         try {
-            tickSafely(target, mayFire, safeToFire, burstSafetyCheck);
+            tickSafely(target, mayFire && target != null && aimAtTarget, safeToFire, burstSafetyCheck, aimAtTarget);
         } catch (RuntimeException exception) {
             // Third-party gun definitions can run Lua/property hooks from most
             // TaCZ operations. A malformed script suspends this weapon instead
@@ -172,18 +232,23 @@ public final class NativeGunController {
             LivingEntity target,
             boolean mayFire,
             BooleanSupplier safeToFire,
-            BooleanSupplier burstSafetyCheck) {
+            BooleanSupplier burstSafetyCheck,
+            boolean aimAtTarget) {
+        if (!mayFire) invalidateShotSession(target == null || !config.enabled.get());
+        aimingTarget = target;
         if (guard.level().isClientSide || !synchronizeWeapon()) {
             return;
         }
 
+        TaczInfiniteAmmo.replenishMagazine(guard, trackedStack, gunData);
+        if (GuardInfiniteAmmo.virtualReserve(guard)) {
+            weaponState.clearDry();
+        }
         long nowTimestamp = currentRelativeTimestamp();
-        boolean weaponMayEngage = weaponState.mayEngage(guard.level().getGameTime());
-        updateNativeBurstSafety(nowTimestamp, mayFire && weaponMayEngage);
-        if (!weaponMayEngage) {
-            // HOLD_FIRE deliberately keeps the gun goal selected while dry.
-            // Preserve the normal retry cadence instead of issuing a rejected
-            // native reload request every server tick during that hold.
+        boolean mayAttemptAction = weaponState.mayAttemptAction(guard.level().getGameTime());
+        updateNativeBurstSafety(nowTimestamp, mayFire && mayAttemptAction);
+        if (!mayAttemptAction) {
+            // Retain defensive ownership while native reload retries are bounded.
             operator.aim(false);
             triggerState.reset();
             fireCadence.reset();
@@ -191,8 +256,20 @@ public final class NativeGunController {
         }
 
         triggerState.tick();
-        updateAim(target);
-        operator.aim(true);
+        if (weaponState.isDryConfirmed()) {
+            if (!trackedGun.useInventoryAmmo(trackedStack) && !needsReload(trackedStack)) {
+                // A player or service supplied a loaded stack in place.
+                weaponState.clearDry();
+            } else {
+                requestReload(trackedStack);
+                if (weaponState.isDryConfirmed()) {
+                    operator.aim(false);
+                    return;
+                }
+            }
+        }
+        if (aimAtTarget && target != null) updateAim(target);
+        operator.aim(aimAtTarget && target != null);
 
         if (!mayFire) {
             decayCharge();
@@ -338,6 +415,63 @@ public final class NativeGunController {
         }
     }
 
+    /**
+     * Snapshot for explicit proposed-shot evaluation. The caller must supply
+     * the inspected script's speed multiplier; arbitrary custom trajectories are unsupported.
+     * Resolve anew for each discharge, never from an administrator's read-only status query.
+     */
+    public Optional<GuardShotEnvelope.Ballistics> captureShotBallistics(float scriptSpeedMultiplier) {
+        if (trackedGun == null || gunData == null || gunData.getBulletData() == null
+                || guard.getMainHandItem() != trackedStack || !Float.isFinite(scriptSpeedMultiplier)
+                || scriptSpeedMultiplier <= 0) return Optional.empty();
+        try {
+            var bullet = gunData.getBulletData();
+            var cache = operator.getCacheProperty();
+            Float cachedSpeed = cache == null ? null : cache.getCache(GunProperties.AMMO_SPEED);
+            float speed = trackedGun.modifyProperty(operator.getDataHolder(), trackedStack, guard,
+                    GunProperties.AMMO_SPEED, Float.class, cachedSpeed == null ? bullet.getSpeed() : cachedSpeed);
+            // Preserve native float rounding and the global TaCZ speed setting.
+            speed = (float) (speed * com.tacz.guns.config.common.AmmoConfig.GLOBAL_BULLET_SPEED_MODIFIER.get());
+            speed = speed / 20.0F * scriptSpeedMultiplier;
+            return captureFlightProfile(gunData, bullet, speed, resolveShotInaccuracy());
+        } catch (RuntimeException exception) {
+            return Optional.empty();
+        }
+    }
+
+    private GuardShotProperties captureNativeProperties(GunData data, BulletData bullet) {
+        var cache = operator.getCacheProperty();
+        float seconds = trackedGun.modifyProperty(operator.getDataHolder(), trackedStack, guard,
+                "bullet_life", Float.class, bullet.getLifeSecond());
+        float gravity = trackedGun.modifyProperty(operator.getDataHolder(), trackedStack, guard,
+                "bullet_gravity", Float.class, bullet.getGravity());
+        float friction = trackedGun.modifyProperty(operator.getDataHolder(), trackedStack, guard,
+                "bullet_friction", Float.class, bullet.getFriction());
+        var explosion = TaCZExplosionResolver.resolve(guard, trackedStack, trackedGun, data, cache);
+        float delay = explosion.enabled()
+                ? trackedGun.modifyProperty(operator.getDataHolder(), trackedStack, guard,
+                    "explosion_delay", Float.class,
+                    TaCZExplosionResolver.resolveBaseExplosionFromGun(data, cache).getDelay())
+                : -1.0F;
+        return new GuardShotProperties(seconds, gravity, friction, explosion.enabled(), explosion.radius(), delay);
+    }
+
+    private Vec3 inheritedShotVelocity() {
+        Vec3 motion = guard.getDeltaMovement();
+        return new Vec3(motion.x, guard.onGround() ? 0 : motion.y, motion.z);
+    }
+
+    private Optional<GuardShotEnvelope.Ballistics> captureFlightProfile(
+            GunData data, BulletData bullet, float speed, float spread) {
+        try {
+            if (!Float.isFinite(speed) || !Float.isFinite(spread)) return Optional.empty();
+            return Optional.of(captureNativeProperties(data, bullet).ballistics(
+                    speed, spread + SCRIPT_SPREAD_MARGIN_DEGREES, inheritedShotVelocity()));
+        } catch (RuntimeException exception) {
+            return Optional.empty();
+        }
+    }
+
     /** Full direct-projectile clearance at the target distance. */
     public float getProjectileSafetyPadding(double shotDistance, float muzzlePadding) {
         if (!Float.isFinite(muzzlePadding)
@@ -377,7 +511,7 @@ public final class NativeGunController {
             if (!refreshDynamicExplosionTacticalState(true)) {
                 return Float.NaN;
             }
-            double explosionRadius = cachedTacticalState.traits().explosionRadius();
+            double explosionRadius = tactics.snapshot().traits().explosionRadius();
             double padding = projectilePadding + explosionRadius;
             return Double.isFinite(explosionRadius)
                             && explosionRadius >= 0.0F
@@ -397,48 +531,32 @@ public final class NativeGunController {
      * the previous bounded TaCZ effective-range behavior.
      */
     public double getPreferredApproachDistance() {
-        if (hasUsableCachedTacticalState()) {
-            return cachedTacticalState.envelope().preferredApproachDistance();
-        }
-        return getCompatibilityPreferredEngagementRange();
+        return tactics.preferredApproachDistance(weaponBound(), trackedGunId);
     }
 
     /** Returns the cached profile-adjusted distance at which retreat begins. */
     public double getRetreatDistance() {
-        if (hasUsableCachedTacticalState()) {
-            return cachedTacticalState.envelope().retreatDistance();
-        }
-        return configuredFallbackRetreatDistance();
+        return tactics.retreatDistance(weaponBound(), trackedGunId);
     }
 
     /** Returns the cached profile-adjusted continuous-visibility requirement. */
     public int getRequiredVisibleTicks() {
-        if (hasUsableCachedTacticalState()) {
-            return cachedTacticalState.envelope().requiredVisibleTicks();
-        }
-        return configuredFallbackRequiredVisibleTicks();
+        return tactics.requiredVisibleTicks(weaponBound(), trackedGunId);
     }
 
     /** Returns the cached profile-adjusted maximum yaw and pitch error. */
     public double getAimToleranceDegrees() {
-        if (hasUsableCachedTacticalState()) {
-            return cachedTacticalState.envelope().aimToleranceDegrees();
-        }
-        return configuredFallbackAimToleranceDegrees();
+        return tactics.aimToleranceDegrees(weaponBound(), trackedGunId);
     }
 
     /** Returns the cached lower firing bound, including explosive standoff. */
     public double getMinimumFiringRange() {
-        if (hasUsableCachedTacticalState()) {
-            return cachedTacticalState.envelope().minimumFiringDistance();
-        }
-        return 0.0D;
+        return tactics.minimumFiringRange(weaponBound(), trackedGunId);
     }
 
     /** True only when current, readable metadata produced a coherent window. */
     public boolean hasValidFiringWindow() {
-        return hasUsableCachedTacticalState()
-                && cachedTacticalState.envelope().validFiringWindow();
+        return tactics.hasValidFiringWindow(weaponBound(), trackedGunId);
     }
 
     /**
@@ -447,12 +565,11 @@ public final class NativeGunController {
      */
     public boolean canFireAtDistanceSquared(double distanceSquared) {
         return ordersRevisionIsCurrent()
-                && hasValidFiringWindow()
-                && cachedTacticalState.envelope().canFireAtDistanceSquared(distanceSquared);
+                && tactics.canFireAtDistanceSquared(weaponBound(), trackedGunId, distanceSquared);
     }
 
     private boolean ordersRevisionIsCurrent() {
-        return trackedOrdersRevision == GuardOrdersAccess.getRevision(guard);
+        return trackedOrdersRevision == GuardRoleResolver.effectiveRevision(guard);
     }
 
     /**
@@ -464,40 +581,24 @@ public final class NativeGunController {
         return (float) getPreferredApproachDistance();
     }
 
-    private float getCompatibilityPreferredEngagementRange() {
-        if (guard.getMainHandItem() != trackedStack
-                || gunData == null
-                || weaponState.isSuspended()) {
-            return configuredFallbackEngagementRange();
-        }
-        float maximumRange = (float) effectiveMaximumRange();
-        return Float.isFinite(maximumRange)
-                ? Math.min(engagementRange, maximumRange)
-                : engagementRange;
+    /** The held stack is the one last read, its definition loaded, and no error has suspended it. */
+    private boolean weaponBound() {
+        return guard.getMainHandItem() == trackedStack
+                && gunData != null
+                && !weaponState.isSuspended();
     }
 
     private boolean hasUsableCachedTacticalState() {
-        return guard.getMainHandItem() == trackedStack
-                && gunData != null
-                && !weaponState.isSuspended()
-                && cachedTacticalState.metadataReadable()
-                && cachedTacticalState.gunId() != null
-                && cachedTacticalState.gunId().equals(trackedGunId);
+        return weaponBound() && tactics.isReadableFor(trackedGunId);
     }
 
     /** Returns the cached profile cap, or the configured cap before metadata is ready. */
     public float getMaximumFiringRange() {
-        if (hasUsableCachedTacticalState()) {
-            return (float) cachedTacticalState.envelope().maximumFiringDistance();
-        }
-        return normalizeMaximumFiringRange(
-                (float) effectiveMaximumRange());
+        return tactics.maximumFiringRange(weaponBound(), trackedGunId);
     }
 
     static float normalizeMaximumFiringRange(float range) {
-        return Float.isFinite(range) && range >= MIN_ENGAGEMENT_RANGE
-                ? range
-                : DEFAULT_MAX_ENGAGEMENT_RANGE;
+        return WeaponTacticsState.normalizeMaximumFiringRange(range);
     }
 
     public boolean hasCurrentWeaponData(ItemStack heldStack) {
@@ -509,13 +610,35 @@ public final class NativeGunController {
     /** True only after TaCZ reload and guard-ammunition sharing both failed. */
     public boolean isCurrentWeaponDryConfirmed() {
         return guard.getMainHandItem() == trackedStack
-                && weaponState.remainingDryTicks(guard.level().getGameTime()) > 0L;
+                && weaponState.isDryConfirmed();
     }
 
     /** Reads the already-cached current tactical traits, refreshing scripts once this tick. */
     public boolean isCurrentWeaponExplosive() {
         return refreshDynamicExplosionTacticalState()
                 && currentWeaponIsExplosiveFromCache();
+    }
+
+    /** Movement gate that also sees queued burst/charge work after a combat goal exits. */
+    public boolean isEquipmentServiceSafe() {
+        try {
+            var data = operator.getDataHolder();
+            return isCoverageMovementSafe() && !hasLiveDrawCooldown(data.drawTimestamp)
+                    && !hasLiveShootCooldown(data.shootTimestamp);
+        } catch (RuntimeException exception) { return false; }
+    }
+
+    public boolean isCoverageMovementSafe() {
+        try {
+            var data = operator.getDataHolder();
+            if (isNativeBurstActive(currentRelativeTimestamp()) || !triggerState.canAttemptAction()
+                    || triggerState.getChargeProgress() > 0.0F || guard.isUsingItem()) return false;
+            // Removing a gun does not itself settle its pending native action.
+            return !data.reloadStateType.isReloading() && !data.isBolting && data.meleePrepTickCount < 0
+                    && !operator.getSynReloadState().getStateType().isReloading() && !operator.getSynIsBolting()
+                    && operator.getSynMeleeCoolDown() <= 0 && operator.getSynDrawCoolDown() <= 0
+                    && operator.getSynShootCoolDown() <= 0;
+        } catch (RuntimeException exception) { return false; }
     }
 
     /**
@@ -562,6 +685,7 @@ public final class NativeGunController {
 
     /** Stops new trigger work while a deferred lifecycle return settles. */
     public void prepareForSidearmTransition() {
+        invalidateShotSession(true);
         try {
             synchronizeWeapon();
             operator.aim(false);
@@ -590,7 +714,7 @@ public final class NativeGunController {
         if (!Float.isFinite(drawTimeSeconds) || drawTimeSeconds < 0.0F) {
             return true;
         }
-        long elapsed = System.currentTimeMillis() - drawTimestamp;
+        long elapsed = TaCZRuntimeCompatibility.gunTimeMillis() - drawTimestamp;
         if (elapsed < 0L) {
             return true;
         }
@@ -616,14 +740,12 @@ public final class NativeGunController {
             return false;
         }
         return !currentWeaponIsExplosiveFromCache()
-                || GuardOrdersAccess.getOrders(guard).permitsExplosiveWeapons();
+                || GuardRoleResolver.effectiveOrders(guard).permitsExplosiveWeapons();
     }
 
     private boolean currentWeaponIsExplosiveFromCache() {
         return guard.getMainHandItem() == trackedStack
-                && cachedTacticalState.gunId() != null
-                && cachedTacticalState.gunId().equals(trackedGunId)
-                && cachedTacticalState.traits().explosive();
+                && tactics.isExplosiveFor(trackedGunId);
     }
 
     /**
@@ -635,7 +757,7 @@ public final class NativeGunController {
         if (weaponState.isSuspended()) {
             return GuardCombatStatus.WeaponActivity.WEAPON_ERROR;
         }
-        if (weaponState.remainingDryTicks(guard.level().getGameTime()) > 0L) {
+        if (weaponState.isDryConfirmed()) {
             return GuardCombatStatus.WeaponActivity.OUT_OF_AMMO;
         }
         if (!hasCurrentWeaponData(guard.getMainHandItem())) {
@@ -671,7 +793,7 @@ public final class NativeGunController {
      * Captures the controller's current state for an explicit administrator
      * inspection. This method is never called by the combat loop.
      */
-    public Diagnostics captureDiagnostics() {
+    public WeaponControllerDiagnostics captureDiagnostics() {
         ItemStack heldStack = guard.getMainHandItem();
         ResourceLocation heldGunId = null;
         FireMode heldFireMode = FireMode.UNKNOWN;
@@ -726,13 +848,15 @@ public final class NativeGunController {
             // left one native accessor unreadable.
         }
 
-        return new Diagnostics(
+        return new WeaponControllerDiagnostics(
                 heldGunId,
-                heldFireMode,
+                String.valueOf(heldFireMode),
                 readableGunState,
                 heldStack == trackedStack && trackedGunId != null,
                 hasCurrentWeaponData(heldStack),
                 weaponState.isSuspended(),
+                captureReadiness(),
+                weaponState.isDryConfirmed(),
                 weaponState.remainingDryTicks(guard.level().getGameTime()),
                 loadedAmmo,
                 chambered,
@@ -746,20 +870,14 @@ public final class NativeGunController {
                 bolting,
                 aiming,
                 chargeProgress,
-                lastShootResult,
+                lastShootResult == null ? null : lastShootResult.name(),
                 lastAmmoSharingStatus,
                 lastAmmoSharedItems,
-                cachedTacticalState);
+                tactics.snapshot());
     }
 
     static float normalizeEngagementRange(float range, float maximumRange) {
-        float boundedMaximum = Float.isFinite(maximumRange) && maximumRange >= MIN_ENGAGEMENT_RANGE
-                ? maximumRange
-                : DEFAULT_MAX_ENGAGEMENT_RANGE;
-        if (!Float.isFinite(range) || range <= 0.0F) {
-            return Mth.clamp(FALLBACK_ENGAGEMENT_RANGE, MIN_ENGAGEMENT_RANGE, boundedMaximum);
-        }
-        return Mth.clamp(range, MIN_ENGAGEMENT_RANGE, boundedMaximum);
+        return WeaponTacticsState.normalizeEngagementRange(range, maximumRange);
     }
 
     static double calculateSpreadRadius(double shotDistance, float inaccuracy) {
@@ -796,7 +914,7 @@ public final class NativeGunController {
     }
 
     private boolean synchronizeWeapon() {
-        int ordersRevision = GuardOrdersAccess.getRevision(guard);
+        int ordersRevision = GuardRoleResolver.effectiveRevision(guard);
         if (ordersRevision != trackedOrdersRevision) {
             trackedOrdersRevision = ordersRevision;
             nextGunDataRefreshGameTick = Long.MIN_VALUE;
@@ -804,6 +922,8 @@ public final class NativeGunController {
 
         ItemStack heldStack = guard.getMainHandItem();
         if (heldStack != trackedStack) {
+            invalidateShotSession(true);
+            aimWeaponRevision++;
             operator.cancelReload();
             trackedStack = heldStack;
             trackedGun = heldStack.getItem() instanceof IGun gun ? gun : null;
@@ -815,9 +935,7 @@ public final class NativeGunController {
             lastShootResult = null;
             lastAmmoSharingStatus = GuardAmmoSharing.SharingStatus.NOT_ATTEMPTED;
             lastAmmoSharedItems = 0;
-            engagementRange = configuredFallbackEngagementRange();
-            resetCachedTacticalState();
-            dynamicExplosionRefreshGameTick = Long.MIN_VALUE;
+            tactics.reset();
             nextGunDataRefreshGameTick = Long.MIN_VALUE;
             nativeBurstSafetyUntilTimestamp = -1L;
             GuardBurstSafetyAccess.setSuppressed(guard, false);
@@ -855,8 +973,7 @@ public final class NativeGunController {
         if (refreshedData == null) {
             trackedGunId = gunId;
             gunData = null;
-            engagementRange = configuredFallbackEngagementRange();
-            resetCachedTacticalState();
+            tactics.reset();
             suspendInvalidWeapon();
             return false;
         }
@@ -869,6 +986,8 @@ public final class NativeGunController {
         weaponState.resume();
 
         if (definitionChanged || wasSuspended) {
+            invalidateShotSession(true);
+            aimWeaponRevision++;
             fireMode = FireMode.UNKNOWN;
             chargeData = null;
             triggerState.reset();
@@ -897,7 +1016,7 @@ public final class NativeGunController {
     private boolean refreshEngagementRange() {
         AttachmentCacheProperty cache = operator.getCacheProperty();
         if (cache == null || trackedGun == null) {
-            engagementRange = configuredFallbackEngagementRange();
+            tactics.useFallbackEngagementRange();
             return false;
         }
 
@@ -913,14 +1032,12 @@ public final class NativeGunController {
             boolean readable = resolvedRange != null
                     && Float.isFinite(resolvedRange)
                     && resolvedRange > 0.0F;
-            engagementRange = normalizeEngagementRange(
-                    resolvedRange,
-                    (float) effectiveMaximumRange());
+            tactics.setEngagementRange(resolvedRange);
             return readable;
         } catch (RuntimeException exception) {
             // A malformed third-party property must not crash guard AI or
             // silently widen an effective-range-limited tactical profile.
-            engagementRange = configuredFallbackEngagementRange();
+            tactics.useFallbackEngagementRange();
             return false;
         }
     }
@@ -944,52 +1061,7 @@ public final class NativeGunController {
             metadataReadable = false;
         }
 
-        cacheTacticalState(gunIndex.getType(), metadataReadable, traits);
-    }
-
-    private void cacheTacticalState(
-            String gunType,
-            boolean metadataReadable,
-            WeaponTacticalTraits traits) {
-
-        TacticalProfile guardOverride = GuardOrdersAccess.getOrders(guard)
-                .tacticalProfileOverride();
-        WeaponTacticalResolver.Resolution resolution;
-        try {
-            TacticalProfile gunOverride = config.tactics.gunOverrides.get().get(trackedGunId);
-            resolution = WeaponTacticalResolver.resolve(
-                    guardOverride,
-                    gunOverride,
-                    gunType,
-                    traits,
-                    config.tactics.typeProfiles.get());
-        } catch (RuntimeException exception) {
-            metadataReadable = false;
-            resolution = WeaponTacticalResolver.resolve(
-                    guardOverride,
-                    null,
-                    gunType,
-                    traits,
-                    WeaponTacticalResolver.DEFAULT_TYPE_PROFILES);
-        }
-
-        TacticalEnvelope envelope;
-        try {
-            envelope = resolveTacticalEnvelope(resolution.profile(), traits);
-        } catch (RuntimeException exception) {
-            metadataReadable = false;
-            envelope = resolveDefaultTacticalEnvelope(resolution.profile(), traits);
-        }
-        if (!metadataReadable) {
-            envelope = disableFiringWindow(envelope);
-        }
-        cachedTacticalState = new CachedTacticalState(
-                trackedGunId,
-                metadataReadable,
-                resolution,
-                traits,
-                envelope);
-        dynamicExplosionRefreshGameTick = guard.level().getGameTime();
+        tactics.cache(trackedGunId, gunIndex.getType(), metadataReadable, traits);
     }
 
     /**
@@ -1008,80 +1080,23 @@ public final class NativeGunController {
                 || trackedGunType == null
                 || gunData == null
                 || weaponState.isSuspended()) {
-            // Preserve first-use synchronization: canUseGunGoal will populate
-            // the native cache later in the same goal-selection pass.
+            // Preserve first-use synchronization: startAiming or tick will
+            // populate the native cache after goal selection.
             return true;
         }
 
-        long gameTime = guard.level().getGameTime();
-        if (!force && dynamicExplosionRefreshGameTick == gameTime) {
+        if (!tactics.beginExplosionRefresh(force)) {
             return hasUsableCachedTacticalState();
         }
-        dynamicExplosionRefreshGameTick = gameTime;
 
         try {
             TaCZExplosionResolver.Traits explosion = resolveCurrentExplosionTraits();
-            WeaponTacticalTraits previous = cachedTacticalState.traits();
-            if (previous.explosive() != explosion.enabled()
-                    || Double.compare(previous.explosionRadius(), explosion.radius()) != 0) {
-                WeaponTacticalTraits updated = new WeaponTacticalTraits(
-                        explosion.enabled(),
-                        previous.projectileCount(),
-                        explosion.radius());
-                cacheTacticalState(
-                        trackedGunType,
-                        cachedTacticalState.metadataReadable(),
-                        updated);
-            }
+            tactics.updateExplosion(trackedGunId, trackedGunType, explosion.enabled(), explosion.radius());
             return hasUsableCachedTacticalState();
         } catch (RuntimeException exception) {
             suspendInvalidWeapon();
             return false;
         }
-    }
-
-    private void resetCachedTacticalState() {
-        WeaponTacticalResolver.Resolution resolution = WeaponTacticalResolver.resolve(
-                null,
-                null,
-                WeaponTacticalTraits.NONE);
-        cachedTacticalState = new CachedTacticalState(
-                null,
-                false,
-                resolution,
-                WeaponTacticalTraits.NONE,
-                disableFiringWindow(resolveDefaultTacticalEnvelope(
-                        TacticalProfile.GENERALIST,
-                        WeaponTacticalTraits.NONE)));
-        dynamicExplosionRefreshGameTick = Long.MIN_VALUE;
-    }
-
-    private TacticalEnvelope resolveTacticalEnvelope(
-            TacticalProfile profile,
-            WeaponTacticalTraits traits) {
-        return TacticalEnvelope.resolve(
-                config.tactics.definition(profile),
-                traits,
-                config.safety.explosiveStandoffPolicy(),
-                engagementRange,
-                effectiveMaximumRange(),
-                config.combat.closeRangeDistance.get(),
-                config.combat.requiredVisibleTicks.get(),
-                config.combat.aimToleranceDegrees.get());
-    }
-
-    private TacticalEnvelope resolveDefaultTacticalEnvelope(
-            TacticalProfile profile,
-            WeaponTacticalTraits traits) {
-        return TacticalEnvelope.resolve(
-                TacticalProfileDefinition.defaultsFor(profile),
-                traits,
-                config.safety.explosiveStandoffPolicy(),
-                engagementRange,
-                effectiveMaximumRange(),
-                config.combat.closeRangeDistance.get(),
-                config.combat.requiredVisibleTicks.get(),
-                config.combat.aimToleranceDegrees.get());
     }
 
     private WeaponTacticalTraits resolveTacticalTraits() {
@@ -1110,19 +1125,6 @@ public final class NativeGunController {
             throw new IllegalStateException("TaCZ gun resolved an invalid projectile count");
         }
         return resolvedAmount;
-    }
-
-    private static TacticalEnvelope disableFiringWindow(TacticalEnvelope envelope) {
-        return new TacticalEnvelope(
-                envelope.profile(),
-                envelope.traits(),
-                envelope.minimumFiringDistance(),
-                envelope.retreatDistance(),
-                envelope.preferredApproachDistance(),
-                envelope.maximumFiringDistance(),
-                envelope.requiredVisibleTicks(),
-                envelope.aimToleranceDegrees(),
-                false);
     }
 
     private boolean synchronizeFireMode(ItemStack gunStack) {
@@ -1155,10 +1157,185 @@ public final class NativeGunController {
                                 data.getFireThreshold()));
     }
 
+    public Vec3 intentionalAimPoint(LivingEntity target) {
+        return aimSettings(target).aimPoint() == GuardAimPoint.CENTER_MASS
+                ? target.getBoundingBox().getCenter() : target.getEyePosition();
+    }
+
+    private GuardAimSettings aimSettings(LivingEntity target) {
+        return config.combat.aiming.resolve(target instanceof Player);
+    }
+
+    private void invalidateShotSession(boolean reset) {
+        latestSession = null;
+        if (reset) { lastShotSafety = null; lastShotTarget = null; lastCheckedSession = null; lastShotGameTick = Long.MIN_VALUE; }
+        if (reset) aimState.reset(); else aimState.invalidateProposal();
+    }
+
+    /** Binds the immutable trigger identity before TaCZ schedules its first or subsequent round. */
+    public BooleanSupplier bindNativeRounds(BooleanSupplier task, ItemStack stack) {
+        ShotSession session = latestSession;
+        if (session == null || session.stack != stack) return () -> false;
+        return () -> {
+            if (executingSession != null) return false;
+            boolean ownsRound = false;
+            try {
+                if (!sessionValid(session)) return false;
+                executingSession = session;
+                ownsRound = true;
+                approvedAim = null;
+                approvedProperties = null;
+                preparedRound = null;
+                projectileAdded = false;
+                return task.getAsBoolean();
+            } catch (RuntimeException exception) {
+                suspendInvalidWeapon();
+                return false;
+            } finally {
+                if (ownsRound) {
+                    if (projectileAdded && aimState.commit(approvedAim)) successfulAimRounds++;
+                    approvedAim = null;
+                    approvedProperties = null;
+                    preparedRound = null;
+                    executingSession = null;
+                    projectileAdded = false;
+                }
+            }
+        };
+    }
+
+    private boolean sessionValid(ShotSession session) {
+        return session != null && session == latestSession && GuardNativeShotAccess.controller(guard) == this
+                && config.enabled.get() && guard.isAlive() && !guard.isRemoved()
+                && session.level == guard.level() && session.target != null && session.target.isAlive()
+                && !GuardRulesOfEngagement.isNonCombatPlayer(session.target)
+                && session.target == guard.getTarget() && session.target.level() == guard.level()
+                && session.stack == guard.getMainHandItem() && session.stack == trackedStack
+                && trackedGun != null && session.gunId.equals(trackedGun.getGunId(trackedStack))
+                && session.mode == trackedGun.getFireMode(trackedStack)
+                && session.ordersRevision == GuardRoleResolver.effectiveRevision(guard)
+                && session.settings.equals(aimSettings(session.target))
+                && currentRelativeTimestamp() <= session.expiresAt;
+    }
+
+    private boolean roundEligible(ShotSession session) {
+        return sessionValid(session) && session.eligibility.getAsBoolean()
+                && !GuardBurstSafetyAccess.isSuppressed(guard) && guard.hasLineOfSight(session.target)
+                && !operator.getSynReloadState().getStateType().isReloading()
+                && !operator.getSynIsBolting() && operator.getSynDrawCoolDown() <= 0;
+    }
+
+    /** Pre-event eligibility only; final geometry and properties are evaluated after subscribers return. */
+    public boolean prepareNativeRound(ItemStack stack, GunData data, BulletData bullet, float speed, float spread) {
+        try {
+            ShotSession session = executingSession;
+            lastCheckedSession = session;
+            lastCheckedWeaponRevision = aimWeaponRevision;
+            lastShotTarget = session == null ? null : session.target;
+            lastShotGameTick = guard.level().getGameTime();
+            lastShotSafety = UNCHECKED_SHOT;
+            if (!roundEligible(session) || stack != session.stack || data != gunData) {
+                aimState.invalidateProposal();
+                return false;
+            }
+            var index = TimelessAPI.getCommonGunIndex(session.gunId).orElse(null);
+            if (index == null || index.getScript() != null && index.getScript().get("calcSpread").isfunction()) {
+                lastShotSafety = new GuardShotSafety.Result(GuardShotSafety.Status.UNSUPPORTED_TRAJECTORY, -1, null, null);
+                return false;
+            }
+            preparedRound = new PreparedRound(data, bullet, speed, spread);
+            return true;
+        } catch (RuntimeException exception) {
+            lastShotSafety = new GuardShotSafety.Result(GuardShotSafety.Status.INVALID_WORLD, -1, null, null);
+            return false;
+        }
+    }
+
+    /** Authoritative check after external fire-event callbacks and before native ammo/heat changes. */
+    public boolean preparedNativeRoundCurrent() {
+        try {
+            ShotSession session = executingSession;
+            PreparedRound round = preparedRound;
+            if (round == null || !roundEligible(session) || round.data != gunData) return false;
+            GuardShotProperties properties;
+            try {
+                properties = captureNativeProperties(round.data, round.bullet);
+            } catch (RuntimeException exception) {
+                lastShotSafety = new GuardShotSafety.Result(GuardShotSafety.Status.INVALID_BALLISTICS, -1, null, null);
+                return false;
+            }
+            // Property scripts can themselves change state. Do not approve an obsolete context.
+            if (!roundEligible(session)) return false;
+            var profile = properties.ballistics(round.speed, round.spread + SCRIPT_SPREAD_MARGIN_DEGREES,
+                    inheritedShotVelocity());
+            Vec3 origin = GuardFriendlyFireSafety.nativeProjectileOrigin(guard);
+            var proposal = aimState.prepare(new GuardAimState.Context(session.target.getUUID(), aimWeaponRevision,
+                            session.ordersRevision, session.settings), guard.level().getGameTime(),
+                    guard.getEyePosition(), origin, session.target.getBoundingBox(), session.target.getEyePosition());
+            if (proposal.isEmpty()) {
+                lastShotSafety = new GuardShotSafety.Result(GuardShotSafety.Status.INVALID_AIM, -1, null, null);
+                return false;
+            }
+            lastShotSafety = GuardFriendlyFireSafety.diagnoseShot(guard, session.target, proposal.get(),
+                    profile, config.safety.baseClearance.get());
+            if (!lastShotSafety.clear()) return false;
+            approvedProperties = properties;
+            approvedAim = proposal.get();
+            aimPitch = approvedAim.pitch();
+            aimYaw = approvedAim.yaw();
+            return true;
+        } catch (RuntimeException exception) {
+            aimState.invalidateProposal();
+            lastShotSafety = new GuardShotSafety.Result(GuardShotSafety.Status.INVALID_WORLD, -1, null, null);
+            return false;
+        }
+    }
+
+    /** Constructor-only override: every pellet consumes the properties checked for its enclosing round. */
+    public <T> T approvedNativeProperty(ResourceLocation gunId, String property, Class<T> type) {
+        if (executingSession == null || approvedAim == null || approvedProperties == null
+                || !executingSession.gunId.equals(gunId)) return null;
+        return approvedProperties.nativeValue(property, type);
+    }
+
+    /** Historical display only, never permission to fire. No world query or gun property callback. */
+    public GuardShotSafety.Result currentShotSafety(LivingEntity target) {
+        try {
+            ShotSession session = lastCheckedSession;
+            long age = guard.level().getGameTime() - lastShotGameTick;
+            if (session == null || target == null || target != lastShotTarget || target != guard.getTarget()
+                    || !target.isAlive() || GuardNativeShotAccess.controller(guard) != this
+                    || age < 0 || age > 20 || guard.level() != session.level || target.level() != session.level
+                    || lastCheckedWeaponRevision != aimWeaponRevision || session.stack != guard.getMainHandItem()
+                    || trackedGun == null || !session.gunId.equals(trackedGun.getGunId(session.stack))
+                    || session.mode != trackedGun.getFireMode(session.stack)
+                    || session.ordersRevision != GuardRoleResolver.effectiveRevision(guard)
+                    || !session.settings.equals(aimSettings(target))) return UNCHECKED_SHOT;
+            return lastShotSafety();
+        } catch (RuntimeException exception) {
+            // Malformed gun NBT or a broken third-party accessor must not crash a status read.
+            return UNAVAILABLE_SHOT;
+        }
+    }
+
+    /** Several pellets still commit just one aim sample when their enclosing native round returns. */
+    public void nativeProjectileAdded() {
+        if (executingSession != null && approvedAim != null) projectileAdded = true;
+    }
+
+    public GuardShotSafety.Result lastShotSafety() {
+        return lastShotSafety == null ? UNCHECKED_SHOT : lastShotSafety;
+    }
+    public LivingEntity lastShotTarget() { return lastShotTarget; }
+    public long lastShotGameTick() { return lastShotGameTick; }
+    public GuardShotAim approvedShotAim() { return approvedAim; }
+    public long successfulAimRounds() { return successfulAimRounds; }
+
     private void updateAim(LivingEntity target) {
-        double deltaX = target.getX() - guard.getX();
-        double deltaY = target.getEyeY() - guard.getEyeY();
-        double deltaZ = target.getZ() - guard.getZ();
+        Vec3 point = intentionalAimPoint(target);
+        double deltaX = point.x - guard.getX();
+        double deltaY = point.y - guard.getEyeY();
+        double deltaZ = point.z - guard.getZ();
         double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
 
         aimYaw = (float) (Mth.atan2(deltaZ, deltaX) * Mth.RAD_TO_DEG) - 90.0F;
@@ -1200,7 +1377,7 @@ public final class NativeGunController {
         // TaCZ deliberately leaves depleted finite ammo boxes in place. Make
         // room only when a reload is actually requested, preserving each box
         // as a nearby drop instead of scanning every guard on every tick.
-        GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard);
+        if (!GuardInfiniteAmmo.virtualReserve(guard)) GuardAmmoMaintenance.ejectEmptyFiniteBoxes(guard);
 
         boolean nativeCanReload = trackedGun instanceof AbstractGunItem gunItem
                 && (!operator.needCheckAmmo() || gunItem.canReload(guard, gunStack));
@@ -1213,12 +1390,17 @@ public final class NativeGunController {
             return;
         }
 
-        GuardAmmoSummary.Snapshot ammunition = GuardAmmoSummary.capture(
+        GuardAmmoSummary.Snapshot ammunition = TaczAmmoSummary.captureForGuard(guard,
                 gunStack.copy(),
                 gunData,
                 GuardAmmoAccess.getTaCZInventoryHandler(guard));
-        if (failedReloadHasUsableReserve(nativeCanReload, ammunition)) {
-            // An event or gun script may temporarily decline the request.
+        boolean inventoryFeedAvailable = trackedGun.useInventoryAmmo(gunStack)
+                && trackedGun.hasInventoryAmmo(guard, gunStack, operator.needCheckAmmo());
+        if (failedReloadHasUsableReserve(nativeCanReload, ammunition)
+                || failedReloadHasUsableReserve(inventoryFeedAvailable, ammunition)) {
+            // Inventory-fed guns never reload. A replenished native feed can
+            // resume; a magazine reload may instead be temporarily declined.
+            weaponState.clearDry();
             triggerState.defer(SHORT_RETRY_TICKS);
             return;
         }
@@ -1232,8 +1414,8 @@ public final class NativeGunController {
             return;
         }
 
-        // Usually no compatible ammunition. Yield this goal for about a second
-        // so Guard Villagers' normal lower-priority melee goal can take over.
+        // Exhaustion survives the timer. Retry supply checks without releasing
+        // MOVE/LOOK ownership or authorizing an offensive path.
         weaponState.markDry(guard.level().getGameTime(), DRY_RETRY_TICKS);
         operator.aim(false);
         triggerState.reset();
@@ -1311,16 +1493,19 @@ public final class NativeGunController {
     }
 
     private long currentRelativeTimestamp() {
-        return System.currentTimeMillis() - operator.getDataHolder().baseTimestamp;
+        return TaCZRuntimeCompatibility.gunTimeMillis() - operator.getDataHolder().baseTimestamp;
     }
 
     private ShootResult shoot(long timestamp, BooleanSupplier burstSafetyCheck) {
+        latestSession = new ShotSession(aimingTarget, trackedStack, trackedGunId, fireMode, guard.level(),
+                GuardRoleResolver.effectiveRevision(guard), aimSettings(aimingTarget), burstSafetyCheck,
+                saturatingAdd(timestamp, MAX_BURST_DURATION_MILLIS));
         boolean previousBurstSafetyArmed = hasNativeBurstSafetyState();
         boolean acceptedBurst = false;
 
         // Server execution is single-threaded here. Temporarily disarming the
-        // old latch allows only this initial shot, whose corridor was checked
-        // immediately before this method. Any later CycleTask round observes
+        // old latch allows this trigger to reach the native per-round hook,
+        // where its current geometry and eligibility are checked. Any later CycleTask round observes
         // the newly armed validator or the fail-closed exception path below.
         GuardBurstSafetyAccess.setSuppressed(guard, false);
         GuardBurstSafetyAccess.clearSafetyCheck(guard);
@@ -1401,6 +1586,7 @@ public final class NativeGunController {
     }
 
     private void suspendInvalidWeapon() {
+        invalidateShotSession(true);
         weaponState.suspend();
         nextGunDataRefreshGameTick = guard.level().getGameTime()
                 + config.performance.gunDataRefreshIntervalTicks.get();
@@ -1437,75 +1623,6 @@ public final class NativeGunController {
         return left + right;
     }
 
-    private float configuredFallbackEngagementRange() {
-        return normalizeEngagementRange(
-                FALLBACK_ENGAGEMENT_RANGE,
-                (float) effectiveMaximumRange());
-    }
-
-    private double effectiveMaximumRange() {
-        GuardOrders orders = GuardOrdersAccess.getOrders(guard);
-        return orders.resolveMaximumRange(config.combat.maximumEngagementRange.get());
-    }
-
-    private double configuredFallbackRetreatDistance() {
-        double retreatDistance = config.combat.closeRangeDistance.get();
-        return Double.isFinite(retreatDistance)
-                        && retreatDistance >= 1.0D
-                        && retreatDistance <= 8.0D
-                ? retreatDistance
-                : DEFAULT_RETREAT_DISTANCE;
-    }
-
-    private int configuredFallbackRequiredVisibleTicks() {
-        int requiredVisibleTicks = config.combat.requiredVisibleTicks.get();
-        return requiredVisibleTicks >= 0 && requiredVisibleTicks <= 40
-                ? requiredVisibleTicks
-                : DEFAULT_REQUIRED_VISIBLE_TICKS;
-    }
-
-    private double configuredFallbackAimToleranceDegrees() {
-        double aimToleranceDegrees = config.combat.aimToleranceDegrees.get();
-        return Double.isFinite(aimToleranceDegrees)
-                        && aimToleranceDegrees >= 1.0D
-                        && aimToleranceDegrees <= 45.0D
-                ? aimToleranceDegrees
-                : DEFAULT_AIM_TOLERANCE_DEGREES;
-    }
-
-    public record Diagnostics(
-            ResourceLocation gunId,
-            FireMode fireMode,
-            boolean readableGunState,
-            boolean controllerBound,
-            boolean weaponDataReady,
-            boolean suspended,
-            long dryRetryTicks,
-            int loadedAmmo,
-            boolean chambered,
-            boolean inventoryFed,
-            int reserveItems,
-            int occupiedReserveSlots,
-            String reloadState,
-            boolean reloading,
-            long shootCooldownMillis,
-            long drawCooldownMillis,
-            boolean bolting,
-            boolean aiming,
-            float chargeProgress,
-            ShootResult lastShootResult,
-            GuardAmmoSharing.SharingStatus lastAmmoSharingStatus,
-            int lastAmmoSharedItems,
-            CachedTacticalState tacticalState) {
-    }
-
-    public record CachedTacticalState(
-            ResourceLocation gunId,
-            boolean metadataReadable,
-            WeaponTacticalResolver.Resolution resolution,
-            WeaponTacticalTraits traits,
-            TacticalEnvelope envelope) {
-    }
 
     private float resolveMaximumInaccuracy() {
         float maximum = 0.0F;
@@ -1536,6 +1653,27 @@ public final class NativeGunController {
                 GunProperties.INACCURACY,
                 Float.class,
                 maximum));
+    }
+
+    /** Mirrors shootOnce's stance and heat inputs for one discharge, before its spread callback. */
+    private float resolveShotInaccuracy() {
+        var type = com.tacz.guns.resource.pojo.data.gun.InaccuracyType.getInaccuracyType(guard);
+        var cache = operator.getCacheProperty();
+        Map<com.tacz.guns.resource.pojo.data.gun.InaccuracyType, Float> values = cache == null
+                ? gunData.getInaccuracy() : cache.getCache(GunProperties.INACCURACY);
+        float inaccuracy = values.get(type);
+        var heat = gunData.getHeatData();
+        if (heat != null) {
+            float maximum = trackedGun.modifyProperty(operator.getDataHolder(), trackedStack, guard,
+                    "max_heat", Float.class, heat.getHeatMax());
+            float amount = trackedGun.getHeatAmount(trackedStack);
+            if (!Float.isFinite(maximum) || maximum <= 0 || !Float.isFinite(amount)) {
+                throw new IllegalStateException("Invalid native heat spread inputs");
+            }
+            inaccuracy *= Mth.lerp(amount / maximum, heat.getMinInaccuracy(), heat.getMaxInaccuracy());
+        }
+        return Math.max(0, trackedGun.modifyProperty(operator.getDataHolder(), trackedStack, guard,
+                GunProperties.INACCURACY, Float.class, inaccuracy));
     }
 
     private TaCZExplosionResolver.Traits resolveCurrentExplosionTraits() {

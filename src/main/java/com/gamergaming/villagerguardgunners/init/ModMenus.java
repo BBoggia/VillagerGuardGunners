@@ -5,6 +5,7 @@ import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
 import com.gamergaming.villagerguardgunners.menu.ArmoryMenu;
+import com.gamergaming.villagerguardgunners.menu.QuartermasterMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
@@ -47,9 +48,17 @@ public final class ModMenus {
                         "Armory menu opened for missing block entity at " + position);
             }));
 
+    public static final RegistryObject<MenuType<QuartermasterMenu>> QUARTERMASTER =
+            MENUS.register("quartermaster", () -> IForgeMenuType.create((id, inventory, data) ->
+                    new QuartermasterMenu(id, inventory, data.readBlockPos())));
+
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);
     }
+
+    public static final RegistryObject<MenuType<com.gamergaming.villagerguardgunners.menu.QuartermasterManagementMenu>> QUARTERMASTER_MANAGEMENT =
+            MENUS.register("quartermaster_management", () -> IForgeMenuType.create((id, inventory, data) ->
+                    new com.gamergaming.villagerguardgunners.menu.QuartermasterManagementMenu(id, inventory, data.readUUID())));
 
     private ModMenus() {}
 }

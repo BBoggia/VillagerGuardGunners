@@ -38,10 +38,11 @@ run-data
 libs
 /logs/
 tempCodeRunnerFile.*
-*.svg
-*.png
-*.json
-*.py
+
+# Python-generated caches (keep source scripts and mod assets tracked)
+__pycache__/
+*.py[cod]
+.pytest_cache/
 
 # Files from Forge MDK
 forge*changelog.txt

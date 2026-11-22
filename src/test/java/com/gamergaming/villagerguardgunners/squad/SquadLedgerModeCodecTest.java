@@ -35,6 +35,7 @@ final class SquadLedgerModeCodecTest {
                         SquadCommandType.HOLD,
                         SquadCommandType.FOCUS_TARGET,
                         SquadCommandType.FALL_BACK,
+                        SquadCommandType.PATROL_ROUTE_EDITOR,
                         SquadCommandType.RESUME_ORDERS,
                         SquadCommandType.RALLY),
                 List.of(
@@ -44,6 +45,7 @@ final class SquadLedgerModeCodecTest {
                         SquadCommandType.HOLD.next(),
                         SquadCommandType.FOCUS_TARGET.next(),
                         SquadCommandType.FALL_BACK.next(),
+                        SquadCommandType.PATROL_ROUTE_EDITOR.next(),
                         SquadCommandType.RESUME_ORDERS.next()));
     }
 
@@ -59,6 +61,13 @@ final class SquadLedgerModeCodecTest {
         modeTag(extended).putBoolean("Permanent", true);
         CompoundTag wrongOuter = new CompoundTag();
         wrongOuter.putString(SquadLedgerModeCodec.MODE_TAG, "HOLD");
+        CompoundTag legacy = valid.copy();
+        modeTag(legacy).putInt("Version", SquadLedgerModeCodec.LEGACY_DATA_VERSION);
+        CompoundTag impossibleLegacyEditor = valid.copy();
+        modeTag(impossibleLegacyEditor).putInt(
+                "Version", SquadLedgerModeCodec.LEGACY_DATA_VERSION);
+        modeTag(impossibleLegacyEditor).putString(
+                "Mode", SquadCommandType.PATROL_ROUTE_EDITOR.name());
 
         SquadLedgerModeCodec.DecodeResult blank =
                 SquadLedgerModeCodec.readFrom(new CompoundTag());
@@ -94,7 +103,13 @@ final class SquadLedgerModeCodecTest {
                         SquadLedgerModeCodec.readFrom(extended).status()),
                 () -> assertEquals(
                         SquadLedgerModeCodec.DecodeStatus.CORRUPT,
-                        SquadLedgerModeCodec.readFrom(wrongOuter).status()));
+                        SquadLedgerModeCodec.readFrom(wrongOuter).status()),
+                () -> assertEquals(
+                        SquadCommandType.HOLD,
+                        SquadLedgerModeCodec.readFrom(legacy).mode()),
+                () -> assertEquals(
+                        SquadLedgerModeCodec.DecodeStatus.CORRUPT,
+                        SquadLedgerModeCodec.readFrom(impossibleLegacyEditor).status()));
     }
 
     private static CompoundTag modeTag(CompoundTag itemTag) {

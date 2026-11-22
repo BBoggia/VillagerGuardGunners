@@ -1,0 +1,3686 @@
+{
+  "format": 2,
+  "mods": {},
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "minecraft:village_plains"
+  ],
+  "templates": {
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_1": [
+      {
+        "kind": "decoration",
+        "sha256": "645d5899334b45a1cee4c0a4bc2f8a171e8b25703f67db3ad96c1bcef3dbf877",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_2": [
+      {
+        "kind": "decoration",
+        "sha256": "2a956d2b921f3345b8eba187f328efd4c7c23c63ed1274790482d6a125efd556",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_3": [
+      {
+        "kind": "decoration",
+        "sha256": "20b86e80231a3291673cf59669c78bc894d545199c8a9c2c6e6958bfc6206b18",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_4": [
+      {
+        "kind": "decoration",
+        "sha256": "d5fc411b7bb2a1024eec98e9c90e057761c84a2e45123830281d0509445f45f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_5": [
+      {
+        "kind": "decoration",
+        "sha256": "869ec27336f412201ba40286b1e0bbaee5fdb40d1467b14fe7e207dac377ce01",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/well_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "a50f1400aac4e214af0deea2f0501cdb4cb74cd5379c782b3b729c995e8e21af",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/misc/cart1": [
+      {
+        "kind": "decoration",
+        "sha256": "411dfb98c836fd0fc9c6d929729348bf23a4b01a16fda7bd0f72d0d923b97ccd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/houses/plains_accessory_1": [
+      {
+        "kind": "decoration",
+        "sha256": "c50d5cbcd4918cdd3677bf23ab14d1cdc81ced5e47733d825e5d95c292de6be5",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "4eca5979c602948943d62829072018f0267925f32987e896dca09e3695c9c1ad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/houses/plains_animal_pen_1": [
+      {
+        "kind": "decoration",
+        "sha256": "21caeef31a5e41b6437739a023f6414528ef3c6721f3ff716657cd04acdb4ffd",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "c3bf2296ba77134812dcd6ce30d283b9ad577a32506eb9ecfdb847dae360c525",
+        "beds": [
+          [
+            5,
+            16,
+            9
+          ],
+          [
+            5,
+            17,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            11,
+            6
+          ],
+          [
+            4,
+            16,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "496125e6728a6829f1ac49657f553c1e6cc71b329cd27149584592f16cca2405",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/houses/plains_animal_pen_2": [
+      {
+        "kind": "decoration",
+        "sha256": "f4b6cdf7368ce6139f82334860ad2ee49d5cfc04865670de1071ea765655194a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "be528a8bc702cac8cc46eb5e7daf8d3a4cd9cf3ce8d3304e3f8b858f254d9bfe",
+        "beds": [
+          [
+            8,
+            2,
+            3
+          ],
+          [
+            9,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            9,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "8f1c7982d153f871c35b81fad656193c3f66d5e2d5b30a22af8d2dfec686d72e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/houses/plains_animal_pen_3": [
+      {
+        "kind": "decoration",
+        "sha256": "6800462f7594ecfb34a0eab5a4dd2a5281b362cca07eb5d021b322bb1623d294",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "4af1799e1029d221ab08a39e2a5c7499f2ed17f1840ea6ffe9a05ede5d3cd7f3",
+        "beds": [
+          [
+            11,
+            6,
+            3
+          ],
+          [
+            13,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            13,
+            6,
+            10
+          ],
+          [
+            14,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "4709c2938cf5b57ab6a72d98bbb48d43479616b62da8ec8ed2de3ed8684c6413",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/houses/plains_armorer_house_1": [
+      {
+        "kind": "service",
+        "sha256": "797074d0b8fa0380c348b97c7fcef793e378ff2813dd63236ce508e209d3463a",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            5
+          ],
+          [
+            10,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "998535b563c3b50bb0109ef255c4d28521c75cb26bb58ca3b1e04127fedfdf85",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "48228dc6ad376f948c1b09c44c0f6222912cbb6ed65a0dbce628b7736ca4ce57",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_big_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "7d9edc67cafdb5b3a1da3be59be9136edd8a50a0b389452b501a0bc1d4420400",
+        "beds": [
+          [
+            2,
+            7,
+            12
+          ],
+          [
+            2,
+            7,
+            13
+          ],
+          [
+            5,
+            2,
+            3
+          ],
+          [
+            5,
+            2,
+            23
+          ],
+          [
+            11,
+            2,
+            3
+          ],
+          [
+            11,
+            2,
+            23
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            2,
+            8
+          ],
+          [
+            6,
+            2,
+            18
+          ],
+          [
+            6,
+            7,
+            13
+          ],
+          [
+            8,
+            7,
+            10
+          ],
+          [
+            8,
+            7,
+            15
+          ],
+          [
+            20,
+            2,
+            13
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "ba2bd5a23578dd602acbd855fac40b97aab4707fe835f9504c86f1a5fee10728",
+        "beds": [
+          [
+            3,
+            2,
+            9
+          ],
+          [
+            3,
+            6,
+            5
+          ],
+          [
+            5,
+            6,
+            9
+          ],
+          [
+            6,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            2,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "ea92b9f92a711a3a21d22e886a761fa6e1d13d30220ed856e0ebb981d92eca87",
+        "beds": [
+          [
+            2,
+            1,
+            8
+          ],
+          [
+            2,
+            5,
+            2
+          ],
+          [
+            2,
+            5,
+            8
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_butcher_shop_1": [
+      {
+        "kind": "residence",
+        "sha256": "23a408eea11907ac56ab795cdc83e0fad43073dadf81c331daa56cc3f36cf17f",
+        "beds": [
+          [
+            10,
+            9,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            5
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "1807e194b361fb9448865a181abcb79f4194948caa1e6a5f286e470eb74d90d7",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            2,
+            2,
+            8
+          ],
+          [
+            6,
+            2,
+            8
+          ],
+          [
+            8,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "0891f6ea77a3c362f0751ab19bc324cec544062055c85fe205c63a05760fde3a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            4
+          ],
+          [
+            7,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_butcher_shop_2": [
+      {
+        "kind": "residence",
+        "sha256": "c530931bfa9b01314f11adbc5bd90c9f6162e154c8cc0320004439cca1ff3309",
+        "beds": [
+          [
+            11,
+            7,
+            7
+          ],
+          [
+            11,
+            7,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            2,
+            10
+          ],
+          [
+            17,
+            1,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "4f77e250538574665a70877d73fd4cd794579e5f5eda3a942c5f4a61f4e0855a",
+        "beds": [
+          [
+            5,
+            2,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            2,
+            2,
+            5
+          ],
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            4,
+            2,
+            8
+          ],
+          [
+            7,
+            2,
+            10
+          ],
+          [
+            7,
+            2,
+            16
+          ],
+          [
+            10,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "1a4c521919d084cb3a39ff5d7c227a23edc79e314193eb7417fa425dfb5d8b09",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_cartographer_1": [
+      {
+        "kind": "service",
+        "sha256": "1ca18e8dbf92b459e59cc7a7af23f7ddfbecf402447d2663f0fc59889d17ec83",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            2,
+            12
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "fc870be11df4f2ab51684e689c5c41304e0fca1c3392ae6cb00d16309f6ec657",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "0c4558b70377c37dd46eddba04416f1c1c893ac2d48eec1c2363655af5b16c8a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_fisher_cottage_1": [
+      {
+        "kind": "decoration",
+        "sha256": "2c4d6bd533286b773d79abd2f1b1ae4d417e2799d39230083d1b9a5914546cb4",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            5,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "160121954dbd32e91687505e94c0221d48436ab235ef895fdd370bbb1d8e3834",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            2,
+            5
+          ],
+          [
+            2,
+            3,
+            5
+          ],
+          [
+            12,
+            3,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "abb7ff92bec6891d80fda118efb0447bea05627be4a292cff8a48308efcf1180",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            5,
+            3,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_fletcher_house_1": [
+      {
+        "kind": "service",
+        "sha256": "43d0cd1e829ec6622cfbb42549f0b6d403870cd2eddc3ecaed2b02a6efb61159",
+        "beds": [],
+        "entrances": [
+          [
+            13,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "36da3b09cad5a457df4cc581409b327a882fc2a07acbc33592b0f6a2cedaa286",
+        "beds": [
+          [
+            8,
+            7,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            11
+          ],
+          [
+            2,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "c8c6ac4824d04c09ccd796e40c00d9c9cfad5ad117afefdca0ebd5dbf51e272e",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            2,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_large_farm_1": [
+      {
+        "kind": "service",
+        "sha256": "c0b99f741257d9447ea35d7d7ffc3bd18a6f4dd62e8eb309a13ac8a569835ae3",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "ebf18df94bd3b5372da22a8037bcefe73065b933128ad8e4cc0b69773f11c122",
+        "beds": [
+          [
+            6,
+            11,
+            9
+          ],
+          [
+            8,
+            2,
+            3
+          ],
+          [
+            8,
+            11,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            3,
+            2,
+            8
+          ],
+          [
+            8,
+            7,
+            10
+          ],
+          [
+            9,
+            7,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "88ad3e6cc852a03500d1f7b77b963f0d012cef22b1e58170b2773bcce9b86017",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_library_1": [
+      {
+        "kind": "residence",
+        "sha256": "7ab20b1d3a2d9cc869e6c912ad1c7cdbb51f97d364a8e16529c378735f435735",
+        "beds": [
+          [
+            8,
+            9,
+            17
+          ],
+          [
+            8,
+            9,
+            18
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            9,
+            5
+          ],
+          [
+            9,
+            9,
+            6
+          ],
+          [
+            14,
+            3,
+            11
+          ],
+          [
+            15,
+            3,
+            22
+          ],
+          [
+            20,
+            9,
+            5
+          ],
+          [
+            20,
+            9,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "9da46e3b826fc647428840756ff2cd1469ca45d49ba67e04d41890591e0d3a94",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            2,
+            2,
+            9
+          ],
+          [
+            4,
+            5,
+            8
+          ],
+          [
+            4,
+            5,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "8e10a21a97aa469561bdf9b54ce7fe15201d142b39be134a311f1a1104696942",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            8
+          ],
+          [
+            1,
+            1,
+            8
+          ],
+          [
+            3,
+            4,
+            7
+          ],
+          [
+            3,
+            4,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_library_2": [
+      {
+        "kind": "service",
+        "sha256": "22d7a55cc37fd35eb6f9a905ca912c3d786e95d0b55907fae465a65efb683201",
+        "beds": [],
+        "entrances": [
+          [
+            10,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "d88584aea4b58dfb3f6f84ee1cbf92d7c1ae1199489d36ca4e606a1dca7b35bf",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            2,
+            6,
+            4
+          ],
+          [
+            2,
+            6,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "0eec910c106ac0ac5f21925ca5eb2cd3158716ff8e2e8f58c8918705615b4924",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            5
+          ],
+          [
+            2,
+            5,
+            3
+          ],
+          [
+            2,
+            5,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_masons_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "d48bde7f1acdf152fad451ab6f3283dda5f2e8bb8a90a40df9fb9aafc6b455fb",
+        "beds": [
+          [
+            3,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            9,
+            2,
+            12
+          ],
+          [
+            9,
+            2,
+            13
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "eb592fd34d31a4f4b3c4ae7b2a40edc29cc8ccfc393c924f201fc00010c696e0",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            3,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "97ddb676b795b0e348fc00a6e498c034c3eb0fa958df727ff6a6ce805c8f24d7",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "ea0041bac2c03a0c39ebeacdd2168c5fe88d6ff9f7ea7424ba8a0ff4ca852bd7",
+        "beds": [
+          [
+            2,
+            2,
+            6
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            17,
+            2,
+            6
+          ],
+          [
+            18,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            1,
+            9
+          ],
+          [
+            10,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "9d4e984028c581e7e58e1c607e24481faef4d270246721124a30e0deca181158",
+        "beds": [
+          [
+            13,
+            2,
+            15
+          ],
+          [
+            14,
+            2,
+            5
+          ],
+          [
+            14,
+            2,
+            15
+          ],
+          [
+            18,
+            2,
+            5
+          ],
+          [
+            18,
+            2,
+            15
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "e257923a554cc472ed45aa13cddb8d45b58e4bd5ce0c278595ff8fdc7d58e012",
+        "beds": [
+          [
+            10,
+            2,
+            5
+          ],
+          [
+            10,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "b4a8408312a43b763d9d3004a3fb2026757cf5d72c479a596c0c30b95787b319",
+        "beds": [
+          [
+            4,
+            8,
+            5
+          ],
+          [
+            4,
+            8,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "6635df4beb7a731d504461b735a05e0bf4fa6909e5b0234c064afc662c6a489c",
+        "beds": [
+          [
+            8,
+            6,
+            3
+          ],
+          [
+            8,
+            6,
+            11
+          ],
+          [
+            12,
+            2,
+            3
+          ],
+          [
+            12,
+            2,
+            11
+          ],
+          [
+            12,
+            6,
+            3
+          ],
+          [
+            12,
+            6,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            2,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "133b5d3924536fb8e3a246c83a6eb5298749312ccb2148f22bbfc5210cb9c0e6",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            6
+          ],
+          [
+            1,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_meeting_point_4": [
+      {
+        "kind": "decoration",
+        "sha256": "9d9a8cbd9f1125fbc879a01be521f485cf8e7b236518837decef9432721e0b57",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "83dca547c343348bdc7a2e232e006e1086d499c52cff3510215be914ebcbd843",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "8e7b4f08450bbe2ab0c29a1308dcf58b7f0563647c6dcea5a0a8ab1456afb3ef",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/houses/plains_meeting_point_5": [
+      {
+        "kind": "decoration",
+        "sha256": "db73f250668d2b96c5eef5f322c02cf5d85846d36bc8938dae933bd3bf7604e8",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "cc011d17316455bbd8e397c995a71a5cb984b751bc10b92879f018ef725bc576",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "06f9d315be93c2aa0738c99f59686ff841cd586542d75871e9e85992e099766d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/houses/plains_shepherds_house_1": [
+      {
+        "kind": "service",
+        "sha256": "b5e10fcde9b9fd67d827d343eacf78188a8043c0bf63101851d8a3b0f7a4cea8",
+        "beds": [],
+        "entrances": [
+          [
+            20,
+            2,
+            10
+          ],
+          [
+            21,
+            1,
+            15
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "76f9264f691d0143c530ae7a9319d1cf9d1f0979e7022b0c501425661520bbed",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            5,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "8adcd7d79ddd827e3cc1060d4b7d7620f59dec258bc594f674c0a8a3e047d27e",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_farm_1": [
+      {
+        "kind": "service",
+        "sha256": "bb74cb50f18a1ce390cb14319d78034dcbdc5fb08ad1cfc80662ba97d096c086",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "ec7e4647a50d0815023f373f3620fdb50201ac3a23f6cc7363253107194a6afd",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            8,
+            2,
+            7
+          ],
+          [
+            11,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "d17d75e31473fd07174c5161f965a7110d912e0cc4fdfe143ed2484d556982c3",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "f10b2a10e4ebcb18a0bde15c478df0dc557c9f8dc7da5de891775c3894cf9c6a",
+        "beds": [
+          [
+            5,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "9ffea654d84891d93fa276dcf82b2ff133e3a7eb4ff769e222ed5243db2f9db1",
+        "beds": [
+          [
+            3,
+            2,
+            8
+          ],
+          [
+            3,
+            2,
+            9
+          ],
+          [
+            4,
+            6,
+            3
+          ],
+          [
+            5,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            8,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "98a7ee84e987d6d69758bcf845a6fc2415cc13f772b88f0838bf323f9b406d0a",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "4ce1979f80c339e51579db25e0439f49a5d31cc2ced8f20da30cbbe30bb091b9",
+        "beds": [
+          [
+            7,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "b38c81ffec052463754157e7a12e7e928e82851adbb6d212fcbd63e28fe2c982",
+        "beds": [
+          [
+            11,
+            2,
+            13
+          ],
+          [
+            12,
+            2,
+            13
+          ],
+          [
+            13,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "1053918548c7cde814979f3e92d7f7211b8ae15815e15f0f18b2a57dd2477b4c",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "018fbe7ad2d198f9c9e4e7a614791504930fb0123ff505ba0e3d98208d1d3b77",
+        "beds": [
+          [
+            5,
+            2,
+            3
+          ],
+          [
+            6,
+            7,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "49f2665978fc90eb994e65bfa8e0c08c765b37247beb241c02406fd1057acafc",
+        "beds": [
+          [
+            7,
+            5,
+            4
+          ],
+          [
+            7,
+            5,
+            12
+          ],
+          [
+            12,
+            2,
+            3
+          ],
+          [
+            12,
+            2,
+            13
+          ],
+          [
+            13,
+            5,
+            4
+          ],
+          [
+            13,
+            5,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            8
+          ],
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            2,
+            2,
+            12
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "dfd14a0c437534004038674c7be4dcdbed00de6cd3114aadaf56ef255626ab19",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "ea752e7c1088a5626782d6aa45de1179983f841b37baaf1c9facee80add5bb90",
+        "beds": [
+          [
+            6,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "fa54e37479346e57c181496a620e9e588a56033c8197518bcd748fd285878e66",
+        "beds": [
+          [
+            8,
+            2,
+            3
+          ],
+          [
+            12,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            2,
+            2,
+            9
+          ],
+          [
+            2,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "c177ac209f12d551d037beafac1ac28ff522e85d4b72e422c0beb0929763bf1a",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "e27714f3ab48d34500b114d4964664d044aa86eb31614ec3ec7ef2dc04115ead",
+        "beds": [
+          [
+            5,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ],
+          [
+            1,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "00d511fca26027599e542d2642ee35cf2abfff862694b0f3c632cc572de0de0e",
+        "beds": [
+          [
+            2,
+            2,
+            5
+          ],
+          [
+            9,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            1,
+            2,
+            8
+          ],
+          [
+            1,
+            2,
+            9
+          ],
+          [
+            4,
+            5,
+            5
+          ],
+          [
+            4,
+            5,
+            9
+          ],
+          [
+            10,
+            2,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "a7afdffdfaa24c970fd01cdad21c6cfe8490fddd3e90bf1be0d69cc19dffbf82",
+        "beds": [
+          [
+            6,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            5,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_house_6": [
+      {
+        "kind": "decoration",
+        "sha256": "8fddae73be387847813312d98712150d3be703d1b54023fa856c87934a1de977",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "cea6906eb189d3b0ef8569541acc23fae177f206bcb96b317c999b8735b37c65",
+        "beds": [
+          [
+            8,
+            2,
+            5
+          ],
+          [
+            8,
+            2,
+            9
+          ],
+          [
+            9,
+            6,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            2,
+            2,
+            10
+          ],
+          [
+            2,
+            2,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "b07e6d0e8b7483d293cc7b7831ec83a42f2a63c278836baa0ba14e319cb470c4",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "8e3a8ef33504c64b353f7225709233437ab1ef6e231a2ed16876851c35b96e83",
+        "beds": [
+          [
+            5,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            10
+          ],
+          [
+            4,
+            2,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "26e65a4275c5478a22f002a63c996607c578a0aa7ec90ad57b00a1a9a9b20a4c",
+        "beds": [
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            9,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            2,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "23e29d27b60983ccebf2ab3bd6027fe1e2750f99acce55ea03116732ff7a594e",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "59b2b2034b285d16f825350fcfa251c84b0bda9126156c91302b0f247526a5d9",
+        "beds": [
+          [
+            8,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            2,
+            9
+          ],
+          [
+            3,
+            2,
+            10
+          ],
+          [
+            6,
+            1,
+            12
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "b8e0e08977fd31f72bfad5261042a7d768df85271776b5252a91e9f87e9eef15",
+        "beds": [
+          [
+            3,
+            3,
+            8
+          ],
+          [
+            9,
+            3,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            2,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "4d77ebdfd9005acc92fd4b844be82d0c9b8daae8f619ee8e582a67c4c1fbc1de",
+        "beds": [
+          [
+            4,
+            3,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            2,
+            4
+          ],
+          [
+            1,
+            3,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_stable_1": [
+      {
+        "kind": "decoration",
+        "sha256": "f1807bfc2aeb72f6b65e9e3e873da5d1b96847d8dbea5856f8ad2b730986fec9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "12531734c5b79e8db2c83de9c4576a8392c437129d5e53a36dabee5dfce4555c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "2de009896cf94bef507271e929e130d89860cbe2e30a70a61505ff8253740886",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_stable_2": [
+      {
+        "kind": "decoration",
+        "sha256": "55181e58c56a09b24332ac2cdbd3bcafa7612a0a4261b9e3f2851d28dd30913b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "227f9f761b1b3042c522a17e3b2383abe64d182e1da003b690c0735878863b98",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "a494d648b80ac18774bdff0590a4dd632f27a8dade59918a205e494dec198258",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_tannery_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5655ebec0a7878436b01f924bcb59b75259e4f14faa3b82f8e001e30ca556b89",
+        "beds": [],
+        "entrances": [
+          [
+            10,
+            2,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "2c1c8b45d7887402f9ed29ea786e4a4868a44a77fbd8c19113d0c879b2596ba0",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "dc5a6644fe37805777c32d6220bfaec6f6b4fd025732eea75005d0e24d6523f2",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_temple_3": [
+      {
+        "kind": "service",
+        "sha256": "9847fedff8542ac7b1147e72cbf442009e8a8194d99049395b3afb9dbe4fe42f",
+        "beds": [],
+        "entrances": [
+          [
+            12,
+            2,
+            9
+          ],
+          [
+            16,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "43d82bee4bd9f2fb7004a733fd18cbe011ac0c93a031c65a37998844684fede0",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "625772c0f37984f3dced556fdbeaf059dd6b7ccbe18d411944d5f946e541f2df",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_temple_4": [
+      {
+        "kind": "service",
+        "sha256": "49e784500872a1ddf7389900187ae3df95bbe096165e8ebc8d4c298292d7fa35",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "f982be8b41c97e242c525408fef437b3013ac277366646e34f74c7cd062ac6d5",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "633a5718cf85e188059494fdb9380a824725631648c384513885c10c12a6c546",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            0,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_tool_smith_1": [
+      {
+        "kind": "service",
+        "sha256": "a634a8fd3d271bb5b65dcf27a30073402c43498f99a62d1c833a266cd42dc9d4",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            9
+          ],
+          [
+            12,
+            1,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "f2adeaedd71994b61d09b49e40c5b8c1017d038441fd33d8d299cfa008f47d73",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            11
+          ],
+          [
+            2,
+            2,
+            10
+          ],
+          [
+            2,
+            2,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "4c70e7954a155953c23a8336ac7bb4adfa9748cecf3efa821b20bfc4695ee48f",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            8
+          ],
+          [
+            2,
+            1,
+            8
+          ],
+          [
+            2,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/houses/plains_weaponsmith_1": [
+      {
+        "kind": "service",
+        "sha256": "58680cd101c6e57bbffe38ca634ade68c55c45d2f17ea5fe38d217bc5b3c00e8",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            10,
+            3
+          ],
+          [
+            13,
+            1,
+            14
+          ],
+          [
+            16,
+            2,
+            12
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "10c6a5e51e65728cb75638b96ff4f5d5ea346528856b1bc5b81716962d540873",
+        "beds": [
+          [
+            6,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            3,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "23f3478f3f8dd1b37e093085925d8361aad1af402f80e6c4b6cd549b7a69cc18",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/plains_lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "d7ee177e2efc746cab412a5b752fa5834c741c32de654fdb176869b9e8fa9017",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "89b2961374fe232784eb1bf77919a83dcddbcbd5a85644e09913f8ea091818f9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "7dd4080b450883526d418adee7f85fcd4b1a0ee699e970e523fbe3d31f5c8018",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "1ba7059f6199d008cf00543a1c187396699c79ec922abf994a966ddcbe1431ea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "82e019cff768712e33b44da7e1f1eb7b5b70a787e48540159b0767f7a954a692",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "5a648fa2f82cf6d5fbf0f2b316bb30787fa67ddb8aee0035fc2fcfd496c1d6fb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "3396e438d717491181f8f7364c3f31d039dab297eca14af40df1bd28722b2cdf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "475123a1b650bcb98373e5033e0fc86db44d48e9e1843e50987e4eff5a93dd22",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "22d59e281ef530e07a06a36af23896819c9534a56bf8b1257dd0224f36c97f58",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c1339d7012d12bc422f8b8bc79a1fffc9075d5a3b0c457571b6bd00e52737f10",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "22ec23824232dcebc800b6f671961012a0987225cf271738558dbdfe2c07ad31",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "2fb805f3e55d523c8e6504caca3e56699d2eda798b97c1cb7dce7db29f2cb77f",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "15f9c47d32761a3e7e7ddeb33e14ecb7df1e8f5aabe879b7f2ac06531b2c523f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "5d4c7d5512a9df22786f216898dffaa53bd4713baf2fb6b38f470c31bc965c62",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c926be5a1aaff373ba50fc8da35564983563ea68a4b5dd362828f0fa75c3d9c3",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "dd0a5d316d30571b68236174d32d2cc77bd1329e99407428777551a5e5c903c4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "c5074654865e4a703d7d7e10e90a024a17e2cbfc41dc186ec842ce71c3324303",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "be1b016e5cc55d35a921cb151b972eaa336af36f25dfa819f21bb92b9966dce4",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "29c8f44294478988133b50774abe7d79f20869db020cbf89675a02b32da8d579",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "8f12ba565bcf532da551f6b3cf679f589f420f1306693d9faccc0349f8ea9382",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "023367ee26f37ed81cd4a5b5f615ee034cc614d3184ed9c3c47de5a27c280168",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "0a6fda0ab40e3b0085d4de946fa63b89debc652de6ee267d1d9223e31384752e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "6811603f45f490c982a1299767a26d1d51080ed60b9c73512304dc1e141a8ac1",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "b58d4170d0fadf8e1543bf0afd5b6539ffa4e3de0fec0ff93adc988f3a95b794",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "40fe3b8783e363cdf7d2c5b93e54ab2496e5aebc5d2c5453f64a33a5380586f6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "014edb8220061d4421595079107b2ed79bcf914d93f013f5506cae24a70838b9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "a03e9894c4da17eaf308d66d8a752ad3490cbdcaea49c5a6246ffa14a544a19c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "a6f52f5bfa836e4caf79af1a6c53f5ad3b76871cd58ef737f08c02e0289d3d8f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/lamp1": [
+      {
+        "kind": "road",
+        "sha256": "856b34f7d620124897785d08628d923284d5d59153ac08afeb8fe9db227449e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/lamp2": [
+      {
+        "kind": "road",
+        "sha256": "a14cb81f61cf972cb356cdc024182c0d3fb55cccd939661d8cf51398e0b8dfd7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/lamp3": [
+      {
+        "kind": "road",
+        "sha256": "d77a7978c58126e9ca16b641b03d36a7e1513c0a8d18030f884a5f765bf6027c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/lamp4": [
+      {
+        "kind": "road",
+        "sha256": "bc81d65be492a6acf98706736514086b5e6d4f473a0e87399575dd88387c4811",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "0a4a2638a75ce6bbfc9c6992a6f4f052b6808883cd7024dc5a0a15c5196b03b9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "e3e8a4eb4a7f1aa98f1debc3e85b31aaec5fa607a14ea98393b43a1c3b8ba5d3",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "f4fb71f4e831fda4f34bacd61b47a4d89c03fe61a25355526c3f7b5edb5773e0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "c3f97cb982b458da71a0f3bdde2230457b25674a8ea48b85b527c46224cd8ffd",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "07cf1287f040448b35e9b77e66c531c40a19016109014b1175ab9dac209f0287",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "6fbdfb32451f26dab146b1bfab0c169f6632f190e228a238ab5c5bf0f4b982e1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "9f37c9942e986a3453986992fce9d4337cb41760591ae270cbac947f5d98a40a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "05fe694cd42258acd122120824921465ab49672c48b92c18f85ca6007f581aeb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "998b3d366e043c8f8b1d8dd97343ab62fd5a8cf079039f3f0404e2c8df339568",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "2238fea53327df763e378f436c568f856c89106a7c3d18b3ab2e9ab42f60aeac",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "3822719f5aacdb32927b5f023baab1172f393d46419df5d4551a0aaf1448d746",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "7464409ffe3f7d371a04b3ec4c1789317210d85436fbe4bb029a9ea407998a7b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "ee90e24117c8f7ae0c12ac33c824aa29c0be638fbdd4ef9fafeb4cd9fa898a21",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "87a93e27a154d25c58088822b143a1f888b4855dad861ea09e1cceeb3fda4682",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "195e11b56a923e4fc039bbac9dc23ea2e54acaed765478791b6dbe9b13904d40",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "5a016d65a39211401008ed2f564f4de4e8c366aed3ae97a2908d58ac0f3c442d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "2703e007091828ac613faea80500306d45f074d652eae6036cbf8b40757f211c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "b36c158361723cde0ee7014505b62f75b28cb8ed1bb20b10d569e50472ef6582",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "875c3e86cf005728646f0014646f61b517d5b1f335f17dceb6d2a9cdb201f442",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ba61a1359ad24ada3f7c44ff693fb53e8dfb3ea09cd7d9fe3822d9b5813df153",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "6d8dc0ef1c7f88d2093f0418f322af97e9793b3fea6f2aaebd4b56b9b7a0fa00",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_01": [
+      {
+        "kind": "decoration",
+        "sha256": "ae5012ceaefca85e21c1280135afba990260d1e237ab871f24177a26f7f734eb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ac4577e3e22670fe97a32a10085ae23b2bf541dc2ac6b1a8c47934a34b47f0cf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_02": [
+      {
+        "kind": "decoration",
+        "sha256": "277471ea07ea0c5e3fc6bc5c81d91a7d65a6b80ce10bb81ba62d7feab46b51c2",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "af212c192014edeec743451817e3ab47e40d14142a670b6c6eb62711ed6d4d28",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_03": [
+      {
+        "kind": "decoration",
+        "sha256": "e69f3cd4ff858971644b69dfe5eb45df924ebc68dacd8c4b0d7eac07bf20839b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ac5740bbd271e5d53bddcb1a28a5286a7846a03a0a662d044072d63704da0417",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_04": [
+      {
+        "kind": "decoration",
+        "sha256": "b2c988756589545a5fbbb56e02ca0f48cd47db62d41335e4eec940223f5ed29a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "8148f1a441a10cf74a253af4b75150417ec17999dbcd44f207797365a811a934",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/town_centers/plains_fountain_01": [
+      {
+        "kind": "gathering",
+        "sha256": "53d6d2863ae1f91b635101c7a25785c91aad30a280a390a53363cfe70159c31b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "f18e8a4199531b7a3e5b3468471216d49ac4213e8a4a7665742af9c6383cf3e9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "509901812b23c8954b65541efd6ede243a65b420d23a7ea2a900fd8ab681a294",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/town_centers/plains_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "d83e7f4f286e0960303ccbafbc5c210023d381ebf9ea316dce65a1f452b07d98",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "5a786402ea65371bb8bd830d2941ec618bdfdbe4ef0aefb57128f796360ed48b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "749a8e37057f4f574938a90231c49879c3679bc45f57a608eedfa24bb5a556c9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/town_centers/plains_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "de043ec201e55d5e5ac62b8fa175a2930d03cc7b21b7fcf631d766c6797e5af7",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            24
+          ]
+        ]
+      },
+      {
+        "kind": "gathering",
+        "sha256": "3c3319acbdaf82f8ae0e369bf1f0ca268678deff257a844a37981e875ace5990",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "271213fff3459e484f2b294bb4f4c42a3c31d8373d8989a0e75d444b08ae9c58",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/town_centers/plains_meeting_point_3": [
+      {
+        "kind": "gathering",
+        "sha256": "c8466ed51ee20d0ac6680ccaa9108f5c5071ceb7164d20f913e8b5c891b24ac2",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "eb0f2856687b65a54abfb0f207ed9b70b9560cfb862539d555960eb2d8e96870",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "74c006d558e43f3674fcc6feded371ec67e31ef9deb0c2a815eeb68c141ec2a0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_animal_pen_3": [
+      {
+        "kind": "decoration",
+        "sha256": "4eee2fc6d839f296a71e710c39f760cfe6879a3000fd1ffe283ec3eb04f24d70",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_big_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "03c7d3d3f49d895d0fd6a30421100d998e5d93f3e831f35f4b13658344964077",
+        "beds": [
+          [
+            2,
+            1,
+            8
+          ],
+          [
+            2,
+            5,
+            2
+          ],
+          [
+            2,
+            5,
+            8
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_butcher_shop_2": [
+      {
+        "kind": "service",
+        "sha256": "80873fa4c19c86bc5005c33fb0e6159d82a689d2cdf0de579ccbfb2d92c271cc",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_fletcher_house_1": [
+      {
+        "kind": "service",
+        "sha256": "0a2e52611b7933903ca514a0d3d8d749cc5c3694c24363746e03da7376f975fa",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            2,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "4c73710a133c79fe9ddb1a4ac08c09d91970c22b598200a8a178587bc8a7bdf1",
+        "beds": [
+          [
+            10,
+            2,
+            5
+          ],
+          [
+            10,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "3d7e0c99c527d15857d2629041afef8eadf19f2adfb17fea90eef5da29d87ca0",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            6
+          ],
+          [
+            1,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_meeting_point_4": [
+      {
+        "kind": "decoration",
+        "sha256": "12ab15d9e242d6855cf289aca626eaed4c04212af861008b21a6ce4456bc8de6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_meeting_point_5": [
+      {
+        "kind": "decoration",
+        "sha256": "cded23213d1ce46df824bbcf7c5eb2214cd15f772911f5193801645794ef0772",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_shepherds_house_1": [
+      {
+        "kind": "service",
+        "sha256": "6a1234aa2500dd4ff4aa141ac50f971c1cb8e38f8473789d36c0cd17b21e1f5e",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "4c093ca67e074c0a7916feb1edb5ffa0aee719cd25a9ba43c44e085c0fa9e21f",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "06870bf9825c861d3b73646a2da00b53cf00c42d0e6ae118af563eecadc6daa9",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "00ac78e0be2e72c78c3406515cafcc553b6257e4fea3b2521e48bb7797debfe8",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "4d559c5f38fddca0319e28c853d5fffa31c9d4e14f2bcbf95e137d34e759ea85",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "6468cbd3be06fcabc5a1124f1952d67af507a119fc51da8425e51442df4927ca",
+        "beds": [
+          [
+            6,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            5,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_small_house_6": [
+      {
+        "kind": "residence",
+        "sha256": "780a9f7dff1870c67df905094b4f84e47db7aa3f315eba3528efc0d9e7a4a3ad",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "178c4c48c37204348c2a117a788a0b048cafd941985028c9d55b0d3ebf699a6c",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "c93c3341ff15ab12dd2b398116711d1facf57a5fc233500d233e55750a50292b",
+        "beds": [
+          [
+            4,
+            3,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            2,
+            4
+          ],
+          [
+            1,
+            3,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/houses/plains_stable_1": [
+      {
+        "kind": "decoration",
+        "sha256": "55f281a86d48c0936906698e034d136cf3f286fd0911983e73a56091dd1ee60c",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "1c71e880e6e7abb8d5c3056242561cc9eaa83bfefc4ae8d8257002699cd7df1b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "2ba396e46374ece0e31f2e0d7f8550ce452b7c73b58a3e5a4cc29cdb7c769836",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "c7494744e5ffd14e6f26e4b7fedb6e4c36ddedad8ba86b58274c78bf130c4f20",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "f4be5ed96ca25ad244a2f808dae6eb0fe5b0e15a3f761b0d66e58f4c688e0718",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "3a82ce9924a776c4348068939efaa2c6f934253afd77685b9f951287681d8dce",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "8da2b5f29e67acce8076e522d6aeee6dbe1054e43b1c172c9b16f69fd00ac4e5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "258848408ced1bb5d3401cd476d99177a8c7486a3715221a9dbb56429096cb15",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "54883f5740ca26597b9408312ee8f5cfffeb4d32de2f0a50abe851ae215cbd2a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "4adaff3458a5bee9371ad2bb292b9bd10bf666ba0d3e40382bd3e7327b323726",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "8520f62100fa4e6682278c29fd63e270cf68beb6c898a7f9ea37c38c423ed448",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "05cc12a7f6a982058f9f143f98157270d6ad578ba90cd6cc0f195f1002dc9587",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "0e486160e3bf6d504e53d4d202e78d29881cb2ff78d6950051d468923e817704",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "ae58e89642096a400e4498781ff7e2f35853536b93cc55b59c8f3228cfe7bd2d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "77351835a65d0e7353dc773144d0618444d96791907fb74e042bbb41dfb73df5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "cd4a08e1a00904353701a34b82a10388de9746cb90f7b06352b8ae5a0596d5ec",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "946424aa0fd28cade0ced041afd3d16847832ffb7caaabbd0d9217dc98cd80fb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/town_centers/plains_fountain_01": [
+      {
+        "kind": "gathering",
+        "sha256": "f483cec94a5f85a8bb3a28e4681276c3db2fa4c8fc2379a91ec59f42a49c8354",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/town_centers/plains_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "a1f71f12dc603feb9977c03c7fd0bb8bcf76973f8664075309c08cae6b2f2456",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/town_centers/plains_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "028b3a9378d5d33703f2433b93f055430292efa63082dfb2029e2240e56f8a40",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/town_centers/plains_meeting_point_3": [
+      {
+        "kind": "gathering",
+        "sha256": "5e856e2e6910450c0528e293ac528b922c676a936e9225893a36b91b5e699b89",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "c9ac0b0d947faa26dfb4d414fbc2afa9edb813a8582684731240437cf283078b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/zombie/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "57fbcd5c066937064b26ac640b0a10d608c9162168e376e84d1326a162f92d13",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

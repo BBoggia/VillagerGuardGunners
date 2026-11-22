@@ -1,0 +1,278 @@
+{
+  "format": 2,
+  "mods": {
+    "skyvillages": "[1.0.4]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "skyvillages:skyvillage"
+  ],
+  "templates": {
+    "skyvillages:alchemist_1": [
+      {
+        "kind": "service",
+        "sha256": "10f2e9b2591b15cc0f7c1b45ac0d3b95911252f448ad1154fc671d15b6e001ed",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:bridge_1": [
+      {
+        "kind": "decoration",
+        "sha256": "af4e6190fbc693051482d7522e51f3a3feb1eb1375f1c5f753fbbcd8ea8f247a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:bridge_2": [
+      {
+        "kind": "decoration",
+        "sha256": "e36b04ced1e7fe429cc84a78f0e04d8672dbb859d2f34a4cf12426accfab48e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:bridge_3": [
+      {
+        "kind": "decoration",
+        "sha256": "56dd53957035b9ca7f98a5bb9160469a0b155a7b450de39a9c452b41e5e974b6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:bridge_4": [
+      {
+        "kind": "decoration",
+        "sha256": "13dee1ca5ce72cb4f4d758108d5ac4fc72cd77df7b3eb198ec9073414f913d8a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:bridge_5": [
+      {
+        "kind": "decoration",
+        "sha256": "4a9bdcc4eb8ee2e53b0d776429eb4c24a289d02ba6499b363f354762b0c1102d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:cartographer_1": [
+      {
+        "kind": "service",
+        "sha256": "2693c0cde0c95b4a4225ff4b6384abe22ad156204cfb9b64ae1dd6b69167bda2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:farm_1": [
+      {
+        "kind": "service",
+        "sha256": "44099564ffff02422c306c88c8021c9eec4971cd056e0632d7ec9c52b9fa8170",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:farm_2": [
+      {
+        "kind": "residence",
+        "sha256": "618ec53c34286b61e96a344892abbd1c2674a00277164b041fb4fd8ba57b2fab",
+        "beds": [
+          [
+            7,
+            13,
+            10
+          ],
+          [
+            8,
+            13,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            15,
+            9
+          ],
+          [
+            7,
+            13,
+            7
+          ]
+        ]
+      }
+    ],
+    "skyvillages:farm_3": [
+      {
+        "kind": "residence",
+        "sha256": "9ee4544ae9c7926047e40bba09b7344776118541f86a3faae11d209a172e6dcb",
+        "beds": [
+          [
+            12,
+            18,
+            2
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "skyvillages:fletcher_1": [
+      {
+        "kind": "service",
+        "sha256": "250e68bbf03b93adc535c68be848c92ab233236f3d0ee6af4047dc715e55d706",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:fountain": [
+      {
+        "kind": "decoration",
+        "sha256": "248fae013d490640ef520b36cdf7de452a154707bc603e77e296565f69ec3a78",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:house_1": [
+      {
+        "kind": "residence",
+        "sha256": "e0d018d691d339b3326f5a20c91bb0d8068955123cda3b6fc32b190972f8d04c",
+        "beds": [
+          [
+            6,
+            17,
+            11
+          ],
+          [
+            8,
+            17,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            17,
+            9
+          ]
+        ]
+      }
+    ],
+    "skyvillages:librarian_1": [
+      {
+        "kind": "service",
+        "sha256": "8d731e9cd0b4a6341b6f6d1bec3829c415babb8147d5ad482a7e143dee50d299",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:librarian_2": [
+      {
+        "kind": "residence",
+        "sha256": "3b3640734c21cbfb8e1bbc63545c5ccfec116441ecf3c87648a7bd256216d678",
+        "beds": [
+          [
+            4,
+            18,
+            10
+          ],
+          [
+            5,
+            18,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            18,
+            8
+          ],
+          [
+            6,
+            18,
+            5
+          ]
+        ]
+      }
+    ],
+    "skyvillages:loom_1": [
+      {
+        "kind": "service",
+        "sha256": "2f17375903302a47efc64dcbdc378c5df091c2e62cd9cac9b94cecbdd9f6d658",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:mason_1": [
+      {
+        "kind": "residence",
+        "sha256": "cf1a15b57a67dca9fe772d3018c4aa592d2ecbf22ce52e85a8904f3c5ae66518",
+        "beds": [
+          [
+            2,
+            17,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            17,
+            7
+          ]
+        ]
+      }
+    ],
+    "skyvillages:villager": [
+      {
+        "kind": "decoration",
+        "sha256": "0a822caa9a4562e390287b260e56ab6afb12a4be0dfd999950f23e6f25e91874",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:weaponsmith_1": [
+      {
+        "kind": "service",
+        "sha256": "a693331ef064b0e04510d0bb0c935cdc53217bac1247efbdc971cf1d67fc6a61",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "skyvillages:weaponsmith_2": [
+      {
+        "kind": "residence",
+        "sha256": "bce7070dd63b91856b59abdeee66b77dae520cc9e8da8c21eb61e83ea2fd6d57",
+        "beds": [
+          [
+            7,
+            18,
+            5
+          ],
+          [
+            8,
+            18,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            18,
+            10
+          ],
+          [
+            9,
+            18,
+            6
+          ]
+        ]
+      }
+    ]
+  },
+  "traversal_limits": [
+    "elevation"
+  ]
+}

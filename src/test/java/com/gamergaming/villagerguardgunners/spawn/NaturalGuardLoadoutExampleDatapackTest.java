@@ -53,6 +53,7 @@ final class NaturalGuardLoadoutExampleDatapackTest {
                 Set.of(
                         id("contextual_guards"),
                         id("migrated_normal"),
+                        id("role_marksmen"),
                         id("rifle_sidearms")),
                 pools.keySet());
         assertEquals(NaturalGuardLoadoutFormat.CONDITIONAL_VERSION,
@@ -61,6 +62,8 @@ final class NaturalGuardLoadoutExampleDatapackTest {
                 pools.get(id("migrated_normal")).format());
         assertEquals(NaturalGuardLoadoutFormat.SIDEARM_VERSION,
                 pools.get(id("rifle_sidearms")).format());
+        assertEquals(NaturalGuardLoadoutFormat.ROLE_VERSION,
+                pools.get(id("role_marksmen")).format());
     }
 
     @Test
@@ -131,6 +134,14 @@ final class NaturalGuardLoadoutExampleDatapackTest {
     }
 
     @Test
+    void formatFourExampleAssignsTheDocumentedRole() throws IOException {
+        NaturalGuardLoadoutPool pool = parseExamplePools().get(id("role_marksmen"));
+
+        assertEquals(NaturalGuardLoadoutFormat.ROLE_VERSION, pool.format());
+        assertEquals(id("village_marksman"), pool.entries().get(0).roleId());
+    }
+
+    @Test
     void supportingRegistryTagsUseCanonicalIdsAndExpectedDataPaths() throws IOException {
         Path tags = examplePack.resolve("data/vgg_example/tags/worldgen");
         List<Path> tagFiles;
@@ -180,6 +191,8 @@ final class NaturalGuardLoadoutExampleDatapackTest {
                 "/vgg loadouts validate vgg_example:contextual_guards"));
         assertTrue(exampleReadme.contains(
                 "/vgg loadouts validate vgg_example:rifle_sidearms"));
+        assertTrue(exampleReadme.contains(
+                "/vgg loadouts validate vgg_example:role_marksmen"));
     }
 
     private static Map<ResourceLocation, NaturalGuardLoadoutPool> parseExamplePools()

@@ -87,9 +87,9 @@ final class OrdersLedgerRegistrationContractTest {
         String readme = read("README.md");
         String changelog = read("CHANGELOG.md");
         String curseForgeDescription = read("docs/curseforge-description.md");
-        String releaseNotes = read("docs/curseforge-release-notes-1.1.md");
+        String releaseNotes = read("docs/releases/1.1.md");
         String checklist = read("docs/release-checklist.md");
-        String uploadGuide = read("docs/curseforge-upload-1.1.md");
+        String uploadGuide = read("docs/curseforge-upload.md");
 
         assertAll(
                 () -> assertTrue(guide.contains("Book and Quill")),
@@ -97,9 +97,9 @@ final class OrdersLedgerRegistrationContractTest {
                 () -> assertTrue(guide.contains("Sneak-use")),
                 () -> assertTrue(guide.contains("never copies or transfers weapons")),
                 () -> assertTrue(guide.contains("strict versioned format")),
-                () -> assertTrue(readme.contains("Craft an **Orders Ledger**")),
+                () -> assertTrue(readme.contains("An Orders Ledger can capture")),
                 () -> assertTrue(changelog.contains("A reusable Orders Ledger")),
-                () -> assertTrue(curseForgeDescription.contains("reusable Orders Ledger")),
+                () -> assertTrue(curseForgeDescription.replaceAll("\\s+", " ").contains("Copy behavior with an Orders Ledger")),
                 () -> assertTrue(releaseNotes.contains("A reusable Orders Ledger")),
                 () -> assertTrue(checklist.contains("ORDER-LEDGER-01")),
                 () -> assertTrue(checklist.contains("ORDER-LEDGER-02")),
@@ -107,7 +107,7 @@ final class OrdersLedgerRegistrationContractTest {
                 () -> assertTrue(checklist.contains("ORDER-LEDGER-04")),
                 () -> assertTrue(uploadGuide.contains("docs/curseforge-description.md")),
                 () -> assertTrue(uploadGuide.contains(
-                        "docs/curseforge-release-notes-1.1.md")),
+                        "docs/releases/<version>.md")),
                 () -> assertFalse(uploadGuide.contains("`DESCRIPTION.md`")),
                 () -> assertFalse(uploadGuide.contains("`CHANGELOG-1.1.md`")));
     }

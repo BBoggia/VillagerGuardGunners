@@ -1,0 +1,48 @@
+{
+  "format": 1,
+  "variants": [
+    {
+      "name": "easy_drill",
+      "weight": 1,
+      "difficulties": ["easy"],
+      "loadout_pool": "villagerguardgunners:easy",
+      "members": [
+        { "role": "villagerguardgunners:rifleman" },
+        {
+          "loadout_pool": "villagerguardgunners:watchtower_marksman",
+          "role": "villagerguardgunners:marksman",
+          "chance": 25
+        }
+      ]
+    },
+    {
+      "name": "normal_drill",
+      "weight": 1,
+      "difficulties": ["normal"],
+      "loadout_pool": "villagerguardgunners:normal",
+      "members": [
+        { "role": "villagerguardgunners:rifleman" },
+        {
+          "loadout_pool": "villagerguardgunners:watchtower_marksman",
+          "role": "villagerguardgunners:marksman"
+        }
+      ]
+    },
+    {
+      "name": "hard_drill",
+      "weight": 1,
+      "difficulties": ["hard"],
+      "loadout_pool": "villagerguardgunners:hard",
+      "members": [
+        {
+          "loadout_pool": "villagerguardgunners:watchtower_breacher",
+          "role": "villagerguardgunners:breacher"
+        },
+        {
+          "loadout_pool": "villagerguardgunners:watchtower_marksman",
+          "role": "villagerguardgunners:marksman"
+        }
+      ]
+    }
+  ]
+}

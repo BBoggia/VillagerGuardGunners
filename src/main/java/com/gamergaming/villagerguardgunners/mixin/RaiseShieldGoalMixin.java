@@ -7,8 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.tacz.guns.api.entity.IGunOperator;
-import com.tacz.guns.api.item.IGun;
+import com.gamergaming.villagerguardgunners.guns.GuardWeapons;
 
 import net.minecraft.world.InteractionHand;
 import tallestegg.guardvillagers.entities.Guard;
@@ -44,10 +43,7 @@ public abstract class RaiseShieldGoalMixin {
     @Unique
     private boolean villagerGuardGunners$isActivelyAimingGun() {
         Guard guard = villagerGuardGunners$getGuard();
-        return guard.getMainHandItem().getItem() instanceof IGun
-                // The synchronized accessor is updated after AI goals tick;
-                // the server-owned holder changes immediately in aim(...).
-                && IGunOperator.fromLivingEntity(guard).getDataHolder().isAiming;
+        return GuardWeapons.isAimingHeldGun(guard);
     }
 
     @Unique

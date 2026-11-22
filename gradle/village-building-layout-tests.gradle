@@ -1,0 +1,154 @@
+// Executes the real compiler against isolated source fixtures; nothing here joins processResources.
+tasks.register('testVillageBuildingLayouts') {
+    group = 'verification'
+    description = 'Checks independent village layouts, source validation, and unchanged legacy resources.'
+    inputs.files('src/main/templates/villagerguardgunners/village_buildings.json',
+            'src/templateTest/resources/layout-variants.json',
+            'gradle/village-building-layouts.gradle', 'gradle/village-building-templates.gradle',
+            'gradle/village-building-layout-tests.gradle')
+    outputs.dir layout.buildDirectory.dir('reports/village-layouts')
+    outputs.dir layout.buildDirectory.dir('generated/village-layout-fixture-pack')
+    doLast {
+        def json = new groovy.json.JsonSlurper()
+        def copy = { value -> json.parseText(groovy.json.JsonOutput.toJson(value)) }
+        Map base = json.parse(file('src/main/templates/villagerguardgunners/village_buildings.json')) as Map
+        base.remove('layoutVariants')
+        List variants = json.parse(file('src/templateTest/resources/layout-variants.json')) as List
+        Map source = copy(base)
+        source.layoutVariants = variants
+        // Native structure voids are omitted from NBT so terrain survives placement.
+        source.layoutVariants[0].layers[0][0] = 'V' + source.layoutVariants[0].layers[0][0].substring(1)
+        Map untouchedSource = copy(source)
+        File scratch = new File(temporaryDir, 'checks')
+        File baseline = new File(scratch, 'baseline')
+        File generated = new File(scratch, 'generated')
+        def baseJobs = generateVillageBuildingResources(base, baseline)
+        def jobs = generateVillageBuildingResources(source, generated)
+        assert baseJobs.size() == 25
+        assert jobs.size() == 28
+        assert jobs.findAll { !it.legacy }.collect { it.entryPath }.toSet() ==
+                ['barracks/plains/qa_compact', 'barracks/plains/qa_courtyard', 'barracks/taiga/qa_compact'].toSet()
+        fileTree(baseline).files.each { prior ->
+            File after = new File(generated, baseline.toPath().relativize(prior.toPath()).toString())
+            assert after.isFile() && Arrays.equals(prior.bytes, after.bytes): "Changed legacy resource ${prior.name}"
+        }
+
+        Closure payload
+        payload = { DataInputStream input, int type ->
+            switch (type) {
+                case 3: return input.readInt()
+                case 8: return input.readUTF()
+                case 9:
+                    int child = input.readUnsignedByte(), count = input.readInt()
+                    return (0..<count).collect { payload(input, child) }
+                case 10:
+                    Map value = [:]
+                    for (int child = input.readUnsignedByte(); child != 0; child = input.readUnsignedByte()) {
+                        String name = input.readUTF()
+                        value[name] = payload(input, child)
+                    }
+                    return value
+                default: throw new GradleException("Unexpected generated NBT tag ${type}")
+            }
+        }
+        jobs.findAll { !it.legacy }.each { job ->
+            File definition = new File(generated, "data/villagerguardgunners/village_buildings/${job.entryPath}.json")
+            Map decoded = json.parse(definition) as Map
+            assert decoded.template == "villagerguardgunners:${job.templatePath}"
+            assert decoded.duty_slots == job.definition.dutySlots
+            assert decoded.weight == job.definition.weight
+            File template = new File(generated, "data/villagerguardgunners/structures/${job.templatePath}.nbt")
+            template.withInputStream { raw ->
+                def input = new DataInputStream(new java.util.zip.GZIPInputStream(raw))
+                assert input.readUnsignedByte() == 10
+                input.readUTF()
+                Map nbt = payload(input, 10)
+                assert nbt.size == job.definition.size
+                assert nbt.palette.any { it.Name == job.definition.palette[0].name }
+                assert nbt.blocks.count { it.nbt?.metadata == 'village_anchor:barracks' } == 1
+                assert nbt.blocks.every { nbt.palette[it.state].Name != 'minecraft:structure_void' }
+                if (job.entryPath == 'barracks/plains/qa_compact') {
+                    assert nbt.blocks.size() == 7 * 5 * 7 - 1
+                    assert !nbt.blocks.any { it.pos == [0,0,0] }
+                }
+                assert nbt.entities.isEmpty()
+            }
+        }
+        // Overrides must not alter shared palettes or another layout's geometry.
+        assert source == untouchedSource
+        assert source.biomes == base.biomes && source.commonPalette == base.commonPalette
+        assert jobs.find { it.entryPath == 'barracks/plains/qa_compact' }.definition.size !=
+                jobs.find { it.entryPath == 'barracks/plains/qa_courtyard' }.definition.size
+
+        List<String> rejected = []
+        def rejects = { String name, Closure mutate ->
+            Map bad = copy(source)
+            mutate(bad)
+            try {
+                generateVillageBuildingResources(bad, new File(scratch, 'invalid'))
+                throw new AssertionError("Accepted invalid fixture: ${name}")
+            } catch (GradleException expected) { rejected.add(name) }
+        }
+        rejects('duplicate identity') { it.layoutVariants.add(copy(it.layoutVariants[0])) }
+        rejects('path traversal') { it.layoutVariants[0].layout = '../escape' }
+        rejects('unknown biome') { it.layoutVariants[0].biome = 'unknown' }
+        rejects('unknown field') { it.layoutVariants[0].weigth = 1 }
+        rejects('fractional size') { it.layoutVariants[0].size[0] = 7.5 }
+        rejects('oversized bounds') { it.layoutVariants[0].size[0] = 17 }
+        rejects('mismatched layers') { it.layoutVariants[0].layers.remove(0) }
+        rejects('zero weight') { it.layoutVariants[0].weight = 0 }
+        rejects('excessive weight') { it.layoutVariants[0].weight = 6 }
+        rejects('duplicate palette override') { it.layoutVariants[0].palette.add(copy(it.layoutVariants[0].palette[0])) }
+        rejects('reserved marker override') { it.layoutVariants[0].palette[0].symbol = 'A' }
+        rejects('missing custom duties') { it.layoutVariants[0].remove('dutySlots') }
+        rejects('duplicate duty key') { it.layoutVariants[0].dutySlots[1].key = 'center_muster' }
+        rejects('duplicate duty position') { it.layoutVariants[0].dutySlots[1].offset = [0,0,0] }
+        rejects('fractional duty offset') { it.layoutVariants[0].dutySlots[0].offset = [0.5,0,0] }
+        rejects('out-of-bounds duty') { it.layoutVariants[0].dutySlots[0].offset = [16,0,0] }
+        rejects('vertical facing') { it.layoutVariants[0].dutySlots[0].facing = 'up' }
+        rejects('unsupported spawn floor') { it.layoutVariants[0].layers[0][4] = 'PPP.PPP' }
+        rejects('obstructed spawn head') { it.layoutVariants[0].layers[2][4] = '...P...' }
+        rejects('wrong lantern count') { it.layoutVariants[0].lanternCount = 2 }
+        rejects('unbounded variant inventory') { it.layoutVariants = (0..<26).collect { n -> def v=copy(variants[0]);v.layout="extra_${n}";v } }
+        rejects('nested palette NBT') { it.layoutVariants[0].palette[0].nbt = [Items: []] }
+        rejects('lantern symbol repurposed') { it.layoutVariants[0].palette.add([symbol:'q',name:'minecraft:gold_block']) }
+
+        File published = new File(scratch, 'published')
+        publishVillageBuildingResources(source, published, new File(scratch, 'staged'))
+        Map before = fileTree(published).files.collectEntries { f ->
+            [(published.toPath().relativize(f.toPath()).toString()): Arrays.hashCode(f.bytes)]
+        }
+        Map invalid = copy(source)
+        invalid.layoutVariants[0].layers[2][4] = '...P...'
+        try {
+            publishVillageBuildingResources(invalid, published, new File(scratch, 'staged'))
+            throw new AssertionError('Invalid publication succeeded')
+        } catch (GradleException expected) { }
+        assert fileTree(published).files.collectEntries { f ->
+            [(published.toPath().relativize(f.toPath()).toString()): Arrays.hashCode(f.bytes)]
+        } == before
+        publishVillageBuildingResources(base, published, new File(scratch, 'staged'))
+        assert fileTree(published).files.size() == 50: 'Removed variants left stale output'
+
+        File pack = layout.buildDirectory.dir('generated/village-layout-fixture-pack').get().asFile
+        project.delete(pack)
+        jobs.findAll { !it.legacy }.each { job ->
+            ["data/villagerguardgunners/village_buildings/${job.entryPath}.json",
+             "data/villagerguardgunners/structures/${job.templatePath}.nbt"].each { path ->
+                File target = new File(pack, path)
+                target.parentFile.mkdirs()
+                target.bytes = new File(generated, path).bytes
+            }
+        }
+        new File(pack, 'pack.mcmeta').text = groovy.json.JsonOutput.toJson(
+                [pack:[pack_format:15, description:'Isolated layout-variant QA fixtures; not finished buildings']]) + '\n'
+        File report = layout.buildDirectory.file('reports/village-layouts/results.json').get().asFile
+        report.parentFile.mkdirs()
+        report.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
+                legacyResourcesCompared:50, generatedVariants:3, rejectedFixtures:rejected,
+                publicationPreservedOnFailure:true, removedVariantsCleaned:true])) + '\n'
+        logger.lifecycle("Village layout checks passed: 3 variants, ${rejected.size()} invalid fixtures, 50 unchanged legacy resources")
+    }
+}
+
+tasks.named('test').configure { dependsOn tasks.named('testVillageBuildingLayouts') }

@@ -1,0 +1,359 @@
+{
+  "format": 2,
+  "mods": {
+    "mr_tidal_towns": "[1.3.4]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "joshie:village_ocean"
+  ],
+  "templates": {
+    "joshie:village/ocean/centers/center": [
+      {
+        "kind": "gathering",
+        "sha256": "d51fd406424b3efcf97a7a884af816b08d3e032eb2a4463c2276a3f746c54146",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/decor/empty": [
+      {
+        "kind": "decoration",
+        "sha256": "8c79f7f46a77959884e797f981321b97d5641c77c3b119b327c15baa89b7605d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/houses/large_farm": [
+      {
+        "kind": "service",
+        "sha256": "09eebc53a44da24c9f496b7faa4adf9648bba0c01c47c982dde3ba57d8220fcf",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "joshie:village/ocean/houses/small_farm": [
+      {
+        "kind": "service",
+        "sha256": "943051984a0434583f2f15a8e8f6cae6f18c97e4165d780ac0885c3da0393350",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "joshie:village/ocean/houses/small_house1": [
+      {
+        "kind": "residence",
+        "sha256": "44040d3d0aa70f17c21e1593ac6395bb6549b34cd254ec5017aaf7d2ea8edfed",
+        "beds": [
+          [
+            3,
+            1,
+            10
+          ],
+          [
+            7,
+            1,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "joshie:village/ocean/houses/tower_1": [
+      {
+        "kind": "service",
+        "sha256": "074593615493b414bdb24cb47f178f8779d45b8bf624fc65da0a5d37d22314c9",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "joshie:village/ocean/houses/tower_2": [
+      {
+        "kind": "service",
+        "sha256": "a090b228d128996712726d39b55609462c3568817d28a7816a844bd8677e8b0d",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "joshie:village/ocean/houses/weaponsmith": [
+      {
+        "kind": "decoration",
+        "sha256": "7cd6bd59ea5d49028a7c581d0c1b93bfc277479404a91c94c1712e969a86481f",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "joshie:village/ocean/roads/corner1": [
+      {
+        "kind": "road",
+        "sha256": "316c09626b6d03be6d25f9650149c95692e16f503ed3b714d2f091903b18db4a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "7327010f901418fca3ebd52e23a16dddd8bfd8a5a9b1e3531b4365062a88c491",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/cross": [
+      {
+        "kind": "road",
+        "sha256": "421541ba0d6e0f4bc2093ce174bbc1d33fc6700d7e618eae28570d09d319e50b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "533fd1309e8fc0cabe363c757c0416ed20b0cbeba9996201f71757fe2dec2e33",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "cd65d9d3ce164a8f7377d969227fac72587f4ddfa4d2df7c27b30534003282b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "2cfefb8db6d5f1cd54c84e3c746cb7f6fdd7196bca557201ed6c73f6e7fd93de",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/straight5": [
+      {
+        "kind": "road",
+        "sha256": "e3ce04a209d30307fac71566742984a8c51eabdb2fa450b893d6417f7bec12c6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "be98c47867b19ed724a540ee2ff211152a545e2122c6d982ce160c6469713487",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "f68204f6ff40f32ef5aab286dccfead1d4c01c0d7e464a46316f02906dd8d5bb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "4a41c9f09e019155e2608101c2f393e2d26bd96f05b1d6b69922e1e87906f6a0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "f87987620cc7f42d42bb0211d6ab97bb85b7047da27c3bcb2e4d1d828c22460c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "f8943ae4073cacc642bc1a811818e96c9b1b02d491a9c0782cf5d6042f2d343b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "joshie:village/ocean/roads/wonky_1": [
+      {
+        "kind": "road",
+        "sha256": "4136476a6d531d3bc1c1cc20124bf912dd7c46cce84b82c8c0c42eb487073459",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [
+    "water"
+  ]
+}

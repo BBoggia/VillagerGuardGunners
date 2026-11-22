@@ -20,6 +20,42 @@
     {
       "gun": "tacz:m4a1",
       "weight": 1
+    },
+    {
+      "gun": "cgm:pistol",
+      "weight": 3
+    },
+    {
+      "gun": "cgm:machine_pistol",
+      "weight": 5
+    },
+    {
+      "gun": "cgm:assault_rifle",
+      "weight": 1
+    },
+    {
+      "gun": "cgm:rifle",
+      "weight": 1
+    },
+    {
+      "gun": "pointblank:glock17",
+      "weight": 3
+    },
+    {
+      "gun": "pointblank:mp5",
+      "weight": 3
+    },
+    {
+      "gun": "pointblank:ump45",
+      "weight": 2
+    },
+    {
+      "gun": "pointblank:ak47",
+      "weight": 1
+    },
+    {
+      "gun": "pointblank:m4a1",
+      "weight": 1
     }
   ]
 }

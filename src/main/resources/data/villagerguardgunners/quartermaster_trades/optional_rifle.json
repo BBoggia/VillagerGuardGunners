@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "level": 5,
+  "inputs": [
+    {
+      "type": "item",
+      "id": "minecraft:emerald",
+      "count": 48
+    }
+  ],
+  "output": {
+    "type": "gun",
+    "id": "tacz:ak47",
+    "count": 1
+  },
+  "max_uses": 1,
+  "xp": 30,
+  "price_multiplier": 0.05
+}

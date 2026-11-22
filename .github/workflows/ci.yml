@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      village_validation:
+        description: Run the complete village expansion validation matrix
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -31,8 +36,28 @@ jobs:
       - name: Set up Gradle cache
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Test release evidence validation
+        run: python3 -m unittest discover -s tools/tests -v
+
       - name: Run unit, source, build, and artifact gates
         run: ./gradlew --no-daemon clean check --warning-mode all
+
+      - name: Warm native performance dependencies
+        if: github.event_name == 'workflow_dispatch' && inputs.village_validation
+        run: ./gradlew --no-daemon compilePerformanceGameTestJava prepareRunGameTestServer -Pstep13Performance=true
+
+      - name: Validate village expansion
+        if: github.event_name == 'workflow_dispatch' && inputs.village_validation
+        run: python3 tools/validate_village_expansion.py
+
+      - name: Retain village validation evidence
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.village_validation
+        uses: actions/upload-artifact@v4
+        with:
+          name: village-validation-${{ github.sha }}
+          path: build/reports/village-expansion/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Verify release tag matches the embedded version
         if: startsWith(github.ref, 'refs/tags/v')
@@ -43,7 +68,7 @@ jobs:
 
       - name: Certify tagged or manually dispatched artifact
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        run: ./gradlew --no-daemon verifyReleaseArtifact --warning-mode all
+        run: ./gradlew --no-daemon prepareReleaseCandidate --warning-mode all
 
       - name: Record release checksum
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
@@ -58,4 +83,5 @@ jobs:
           path: |
             build/libs/villagerguardgunners-*.jar
             build/libs/SHA256SUMS.txt
+            build/distributions/release-candidate/
           if-no-files-found: error

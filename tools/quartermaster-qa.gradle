@@ -1,0 +1,16 @@
+// Isolated packaged-Forge fixture mod; never included in the production JAR.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    def probe = p.sourceSets.create('quartermasterProbe') {
+        java.srcDir p.file('tools/quartermaster-qa-src')
+        resources.srcDir p.file('tools/quartermaster-qa-resources')
+        compileClasspath += p.sourceSets.main.output + p.sourceSets.main.compileClasspath
+    }
+    p.tasks.register('quartermasterProbeJar', Jar) {
+        dependsOn p.tasks.named('quartermasterProbeClasses')
+        from probe.output
+        archiveFileName = 'vgg-quartermaster-probe.jar'
+        destinationDirectory = p.layout.buildDirectory.dir('quartermaster-qa')
+    }
+    p.reobf.create('quartermasterProbeJar')
+}

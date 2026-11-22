@@ -1,0 +1,3179 @@
+{
+  "format": 2,
+  "mods": {},
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "minecraft:village_taiga"
+  ],
+  "templates": {
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_1": [
+      {
+        "kind": "decoration",
+        "sha256": "645d5899334b45a1cee4c0a4bc2f8a171e8b25703f67db3ad96c1bcef3dbf877",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_2": [
+      {
+        "kind": "decoration",
+        "sha256": "2a956d2b921f3345b8eba187f328efd4c7c23c63ed1274790482d6a125efd556",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_3": [
+      {
+        "kind": "decoration",
+        "sha256": "20b86e80231a3291673cf59669c78bc894d545199c8a9c2c6e6958bfc6206b18",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_4": [
+      {
+        "kind": "decoration",
+        "sha256": "d5fc411b7bb2a1024eec98e9c90e057761c84a2e45123830281d0509445f45f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_5": [
+      {
+        "kind": "decoration",
+        "sha256": "869ec27336f412201ba40286b1e0bbaee5fdb40d1467b14fe7e207dac377ce01",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/misc/cart5": [
+      {
+        "kind": "decoration",
+        "sha256": "04e3fb8ede8bf46fa5766e8cae8bf7ac9d14d7bf69d7ec5ff596150538d5fcf4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_01": [
+      {
+        "kind": "decoration",
+        "sha256": "ae5012ceaefca85e21c1280135afba990260d1e237ab871f24177a26f7f734eb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ac4577e3e22670fe97a32a10085ae23b2bf541dc2ac6b1a8c47934a34b47f0cf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_02": [
+      {
+        "kind": "decoration",
+        "sha256": "277471ea07ea0c5e3fc6bc5c81d91a7d65a6b80ce10bb81ba62d7feab46b51c2",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "af212c192014edeec743451817e3ab47e40d14142a670b6c6eb62711ed6d4d28",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_03": [
+      {
+        "kind": "decoration",
+        "sha256": "e69f3cd4ff858971644b69dfe5eb45df924ebc68dacd8c4b0d7eac07bf20839b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ac5740bbd271e5d53bddcb1a28a5286a7846a03a0a662d044072d63704da0417",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/terminators/terminator_04": [
+      {
+        "kind": "decoration",
+        "sha256": "b2c988756589545a5fbbb56e02ca0f48cd47db62d41335e4eec940223f5ed29a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "8148f1a441a10cf74a253af4b75150417ec17999dbcd44f207797365a811a934",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_animal_pen_1": [
+      {
+        "kind": "decoration",
+        "sha256": "4713cf12fa6378d8f66da7c02ebed8ac53bacdd233263cbc673390484927b76c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "6d9fcfb6982a984e2553c9102f53fb56f8edbf77653494b670d1e7665bc2c858",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "3f504e302089c2a3791c233f1c62072fd47dea514e0188f956e6ff9a5984f444",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_armorer_2": [
+      {
+        "kind": "residence",
+        "sha256": "95057e2305452deca76b68b8d38b232e79ee52370b6b2fb5df6dfd989e50c873",
+        "beds": [
+          [
+            12,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "e628faabaa62a3e6b72977afa57c9596f666b4d1ea7acb5ad7b44d07df146c34",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "4b389656bed824fa206acc8650dcf013a22535fd1d7c36a73eb1d5aebcce6865",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_armorer_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "348aff5f715679d7c8f74b64f9ec880b60fb1012fa89fbb633e388a052e08ed3",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "793037314f0a6aafff713cdb137524f0bd9447d62b131561d5bec12917fcedc5",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "8adc44f4ca565455fa272978370066a94029540e1d26efa2faff19efaaf0df84",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_butcher_shop_1": [
+      {
+        "kind": "service",
+        "sha256": "2a913220558e12fa7541fcd38ff62ab007e4d6b66cb9b122ab38de833c5d1522",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            9,
+            1,
+            0
+          ],
+          [
+            17,
+            1,
+            13
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "4c35d0a75fc47e22c4dbe67fff286976ee6dce221d5358513cdc98ddb556c691",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "91f8e73c2b124e4e61b51ad5094057d9bd34f2d288027228790a72de1842a7d3",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_cartographer_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "68764f59bc28d582379131396632a2614c84a359d193f8a769ae652d6c39de72",
+        "beds": [
+          [
+            2,
+            1,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "a0e4dc6621aaeee477f9ce681b52cb285ffb4b3b0bd7c65d1c583ab54b7d071f",
+        "beds": [
+          [
+            4,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "1c8b585037bff59b0380696451f987bb19672cf1c21165a32efed127875f009e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_fisher_cottage_1": [
+      {
+        "kind": "decoration",
+        "sha256": "d3051ab2da789518689257ecd1c2e8c8524981129412133f95b722908c6c29f9",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            4,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "a3b3d76d9e3ffd7a617aeab90fb7c330ffaa00621b763ed3cdfe06e7f7357506",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "dad1038910d895005c03318bd8847d912e18231890305e87bac257697a85be73",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            5
+          ],
+          [
+            4,
+            2,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_fletcher_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "92c75a90699effe2a64a5c6d30bfdac194aaab637e86bda9443ffa760f51a262",
+        "beds": [
+          [
+            3,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "f3cada30e098d30cc332c1b012aa68c8d5f9df2108542a86a599548c741ce604",
+        "beds": [
+          [
+            5,
+            1,
+            13
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            7,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "bd1bd80c55c5a5b815ceae4e319a8f927c694f878ac3dc486ae2d6bec6e2c64b",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            5
+          ],
+          [
+            3,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_large_farm_1": [
+      {
+        "kind": "service",
+        "sha256": "4347cdbbbac755d147ec5a74225245d6a8ead68926e86e56dd7b049ccc835865",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "ead78e3563ebf0ae5b4252f09c478a75c2173ddb8178b1877ddd04948bf163a5",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "service",
+        "sha256": "49c65986b77bf2e2d6dd66db5cd4185d282aa9b870b72e6aa75805a84eeb3daf",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_large_farm_2": [
+      {
+        "kind": "service",
+        "sha256": "8cdbd1aec25a6654723950f9ea36b214733fd6d1bba32d6fdf745c5e59fe5027",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "5296df1efc7c6a6fab90ee17e64b84ebdfeb9027c90c1a0a98541cbbd0b99236",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "7ecbca8c5f22cd3a61a2e2f04f044b56456934abee0165087b1570465949167d",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_library_1": [
+      {
+        "kind": "residence",
+        "sha256": "4e1e5683bb6b29eddb757b47dd73d0a387b91c572ce3d415c06597eb3a87e441",
+        "beds": [
+          [
+            8,
+            9,
+            17
+          ],
+          [
+            8,
+            9,
+            18
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            9,
+            5
+          ],
+          [
+            9,
+            9,
+            6
+          ],
+          [
+            14,
+            3,
+            11
+          ],
+          [
+            14,
+            3,
+            22
+          ],
+          [
+            20,
+            9,
+            5
+          ],
+          [
+            20,
+            9,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "cbe78f06f8de60bc0cfcccdb0df2966e25555ec97b5f4553bfff2c833d0c4af4",
+        "beds": [],
+        "entrances": [
+          [
+            16,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "46b7d3aaeb5e51343ad8351a600d9e48ec6eb765d405c808cb49c3157623cceb",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_masons_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "6b6670b50575123597cef3fc4ccc637e3f94175c49b9da1c826965f32642ed76",
+        "beds": [
+          [
+            5,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            1,
+            0
+          ],
+          [
+            13,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "4981c292706d9ea42bd3e5f16f1111682861822da4507c2ae772035b7de6e74f",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "6b4f652566aafaf827de2b8ffb2337614288c3a986a31697dc4919718df1ba3d",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "569ecbc8247e7ae021b22c16e33c678b443acfbf5ba3f25096d4073626b7c0df",
+        "beds": [
+          [
+            8,
+            11,
+            8
+          ],
+          [
+            9,
+            6,
+            6
+          ],
+          [
+            13,
+            6,
+            8
+          ],
+          [
+            14,
+            6,
+            8
+          ],
+          [
+            15,
+            6,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            11,
+            4
+          ],
+          [
+            4,
+            11,
+            4
+          ],
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            15,
+            11,
+            4
+          ],
+          [
+            16,
+            11,
+            4
+          ],
+          [
+            18,
+            1,
+            5
+          ],
+          [
+            20,
+            1,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "ef549f460a34493846d5a44a744272d67a81b21c95a543d355a5f58748178164",
+        "beds": [],
+        "entrances": [
+          [
+            11,
+            1,
+            7
+          ],
+          [
+            14,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "4ef73763c1bb512c1f5882c2bcb573e89c9d673019445d75a86d33670da174d5",
+        "beds": [
+          [
+            2,
+            6,
+            4
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            3,
+            6,
+            1
+          ],
+          [
+            5,
+            3,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "d179b8cf9a29578b7328e87f080f7e2085021a8ae95c84c0d1983c66f46e7177",
+        "beds": [
+          [
+            3,
+            5,
+            28
+          ],
+          [
+            7,
+            5,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            16
+          ],
+          [
+            5,
+            1,
+            13
+          ],
+          [
+            5,
+            1,
+            18
+          ],
+          [
+            5,
+            5,
+            13
+          ],
+          [
+            5,
+            5,
+            18
+          ],
+          [
+            10,
+            1,
+            16
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "17731738d75db7d7a55a93d345b22c0d762a4978c58e53e6b3ede20306072cb6",
+        "beds": [
+          [
+            4,
+            1,
+            14
+          ],
+          [
+            6,
+            1,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            1,
+            7
+          ],
+          [
+            16,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "00498058b6eb4005dcb5a75107dc24fe699ab468461fa992cf3bee6f0796dc13",
+        "beds": [
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            4,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            5,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_medium_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "adb1e5fedd510b8b0b09b9ded7f49f192be10caa9e5bdc39e2c2610585540f8a",
+        "beds": [
+          [
+            3,
+            1,
+            15
+          ],
+          [
+            4,
+            1,
+            15
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            1
+          ],
+          [
+            7,
+            1,
+            17
+          ],
+          [
+            7,
+            1,
+            18
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "f806a63918813346e3462a7021a9ab3424dcd0d4df2b691a4fe4e447a3b0f388",
+        "beds": [
+          [
+            5,
+            1,
+            14
+          ],
+          [
+            6,
+            1,
+            14
+          ],
+          [
+            10,
+            1,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "00a556d184b80149a34a6010d0e1ee2d6aec6e8f79467ced53db85123dfe0aaa",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_medium_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "41128fa43c255ad6453b21f25e5e545ca3cb4f6b37da70b68d929fd5e44ea5eb",
+        "beds": [
+          [
+            2,
+            1,
+            7
+          ],
+          [
+            2,
+            1,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            14
+          ],
+          [
+            6,
+            1,
+            15
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "d7a9a0d2e86518bb584de71427f2af7b1a581bf81e13fc5ec23f3b86b3083935",
+        "beds": [
+          [
+            5,
+            1,
+            11
+          ],
+          [
+            7,
+            1,
+            11
+          ],
+          [
+            10,
+            1,
+            6
+          ],
+          [
+            10,
+            1,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "7a88a6c1fa682d8a9e313727e6e8eb0bd15cdfeb39944132adbbdcec7b1113c0",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_shepherds_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "2d8a17cb5ebd2defc444c9ddf2f645a70d7e3c1baebd25c06d1dd78d7b38b220",
+        "beds": [
+          [
+            5,
+            5,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "53a60dc42764b791a47af4ab3056c5f4f8cb79190e9fb12c67adfe694f8ee463",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "2d10a3968fa9c67fcc52fc0d847d213f420ebd65ac7b5e08c5a0b167154c1b3c",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_small_farm_1": [
+      {
+        "kind": "service",
+        "sha256": "713144b12322754608f30b0ef49ce3164a3fb567322842e498c839fc82371bcb",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "4752d10c0ea0d80c3183f855cb5853824b93318659255b9f6b55df68b0839a82",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "f3c59f4306179b142b46295efa146e48a097de713dc94e767b902fa151360936",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "96cd6404c68f578064d103e27eca527f624103b9fa10f7ef3073d5c17d4d43f0",
+        "beds": [
+          [
+            2,
+            1,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            8
+          ],
+          [
+            6,
+            1,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "8e51323758ee6a7bfdea4986f6294b57b923544459d5873b69e556a83c6bfef5",
+        "beds": [
+          [
+            11,
+            1,
+            7
+          ],
+          [
+            11,
+            1,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "ff6d75cdadc64e4a0a31c884a218244b9a377d76f2a43ece8ae1563f38a15e8d",
+        "beds": [
+          [
+            2,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "a4e9b707c7836bcb267d0175fa8183c261c3df318e397e41e778153df074ab19",
+        "beds": [
+          [
+            4,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "da309bf0a3c2cd0beb1388bb94717d7d2d330264c939936586f8db3965bb331d",
+        "beds": [
+          [
+            3,
+            1,
+            7
+          ],
+          [
+            3,
+            1,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "f4cbcb0e7f0d21d543fd6b825c2d962401e01e515741acbc837fbc5f1bb63d5b",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "5a0339ed0497afdba573f792ed8e1f208aeebe89a380e39499343af3d744cb95",
+        "beds": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            1,
+            7
+          ],
+          [
+            13,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "f4b91a11c402a166ca39b5a81e4f43ff6fc46b675e034da31fb9e913f20423e1",
+        "beds": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            2,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "07f0d0f745ff5d44513d7a31c8b09a7264c43e52034fa69243417878336be81f",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "cc7b21a597f82461051c6d999ba63d924e683ce1e57b0644e0ba1f945a2875ea",
+        "beds": [
+          [
+            8,
+            1,
+            7
+          ],
+          [
+            8,
+            1,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "26bb9bb920b72b7ae74558c2c95eea6e6b1da35cb96411541fa4343eff6212ee",
+        "beds": [
+          [
+            11,
+            1,
+            6
+          ],
+          [
+            11,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            7,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "fb75e164ec5a5c7e4eb5214c7edc21f9fa85b2f5fae3ad33f57cd19d08e1107b",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "705a23bfbfe5bcfc1840986a6346be9e21288182704582b8b248173dad19a94d",
+        "beds": [
+          [
+            8,
+            1,
+            5
+          ],
+          [
+            8,
+            1,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            5,
+            2,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "e12e39240f88cd7d8e2be6104b3b61830f653d81f9889212c9108100a34547b8",
+        "beds": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "9d9da0955ccf941db7dfbeb94434906414e650d589d56d2376973be51bb5a7ca",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            0,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_tannery_1": [
+      {
+        "kind": "residence",
+        "sha256": "088f49cc08d00fd8b099d6236c16272e45c60bf243ad70bdc9c6dccf562bab95",
+        "beds": [
+          [
+            13,
+            1,
+            14
+          ],
+          [
+            13,
+            1,
+            15
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            1,
+            0
+          ],
+          [
+            9,
+            1,
+            1
+          ],
+          [
+            14,
+            1,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "6ce19a05b0d253ec9f9eab70f8bf0c8152314cbbc3d22f950f3c4d1d364f2d13",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "1432ae312c3510e8b0f91b2aad06441428378b1d0707d3380de4bd1bccf7dc08",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_temple_1": [
+      {
+        "kind": "residence",
+        "sha256": "1197281a704d46b29c0622ac8ea2779761641ce93f9b98d92db0b8a879cf28cd",
+        "beds": [
+          [
+            9,
+            5,
+            17
+          ],
+          [
+            10,
+            5,
+            17
+          ],
+          [
+            11,
+            5,
+            17
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            14
+          ],
+          [
+            6,
+            1,
+            17
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "9dd7800ff256b457669f8b2e4f25067353a667e7273a3012649cb64412df058e",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "f6924eedbb1c1c9b091de6492a41767c9d377e3ddcaa07c197031cf838ad7df5",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            8
+          ],
+          [
+            6,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_tool_smith_1": [
+      {
+        "kind": "residence",
+        "sha256": "6c623a3d1991df7c25e0b62d718f3bd405709e41583ff55e81e62621bd00c300",
+        "beds": [
+          [
+            10,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "171c98e16f54ba500e2003b9ea53f99ba51cbd1ac968e204fb3060dde865dc5f",
+        "beds": [
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            1,
+            6
+          ],
+          [
+            14,
+            1,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "04ac6d7495b7b707ea8a2edcbe4887c043a59e7bb1f01cdf9c3488f9ab27ab77",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            4
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_weaponsmith_1": [
+      {
+        "kind": "residence",
+        "sha256": "95fd2af3ef931e8d3840dbc0350340da3cbe5461a6541dda4753aa186f39c9dd",
+        "beds": [
+          [
+            3,
+            6,
+            20
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            4
+          ],
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            7,
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "88955d230bbbde93880ce50aa349ec7602446c7cdb79cbd2fd862ff91c0a8c80",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "f6c9c13a8794ac096fbedd293d7db576b95cb358ad26b42d5a6f1c4da0fecf11",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/houses/taiga_weaponsmith_2": [
+      {
+        "kind": "decoration",
+        "sha256": "a3b72b885ca051041411b7091ab30629dd3da3e9b2fb58a406eec53efcfc59c8",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "bad2910fd7d6a272e45af34f8b837b507bcec4ae28ebc5081a6fddcc9cb1257b",
+        "beds": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            1,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "02ea2208c5d8d122ad344a04b6867cfb7f9612ae577ea93f94dcaf72130fe97b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "b52076fee4d462f17ecbf44541e0457703ae27bd051ab1191b7d025cc79480ce",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "1c0c9334d2c3f942ccf3f9abbd559dfe4cba1fa975a4a14b44e5afb174527b1d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "7e8d05206464b4db8c2c4fbaefaf452392664c9aa529fb7a36d1f20191a1588f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "8dc8978ff45979fed2a0359e62ea36dfad9cbcb3c8e346a8bcf8519f4c948bb0",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "89293ab8c3b027ead35b6cb7b609b29b726a746a1944432e1d226dd45a480409",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "2bae91c242029b8c059c63f47de03e069901696a5f8a876b8a012ebe5b11a0a0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "ed5ec353460ca0120f58b3231102e1384e372c8c4ab317d0bb2c6772d00aafd0",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "3d70992cca5144416f9b36a76698f50588326a4cc20da4ff2d59737b13bdd678",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "1920b4a7011909bc64f1934b012f99abf6ce5ae9d527ca889c8f24f71d3e716b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "ab610e5abb23a6db414fe6d308f88535a979e1a26e9591aefc553cfe827061c0",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "bcf19d253cfa11340c5e4aba2f9fddf3c6f18cd617f2d77e21b4c9ea749eeaca",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "42edf6558fdea3bc00a012b3bb20eefc8b064513092b5c6f289ef4ad19f94cc2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "2878900fcdc57288a0c0f593c0ce730de0810c5f8c64e1053df80cb58cb6e820",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "7f5b13ff806833884a330c2b50349abbb7d677008c6e7167bcb79237ace0b62d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "65f5627feefd521c5efcd4a6615d05fd25b26ab79b7119906a1844be208f980c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "8e7abcef7e12ea8e1179c7042b5183f6b2663652a2088658259d6f5f9852939f",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "e9a8f4c31e93487d4983b983331080cbd0818a9f0887fdc11ab082f9a3f3d563",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "8644c287b67b2706fbca62e9e519b8366ab8cba9bae1dbf66bfe563164ecd6c5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "623246c29428da3606d1daf387b4f60e8d061cd11190464b299b1e8588926686",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "9f6d87ff2c3a1cd566e8f2cfa370b6c7a54a6d2a0910c1372b992b065707ac24",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "3ca4027e5325cc63f62d5cc2c258b43ae66a91e2adc1de396f822b74a0d48a2f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "f971f2187ecb991bba50db6c8e393350db2398b8654b55153bf2e443c58e5fbc",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "2eb880bfe98bb4743f048c93546a85f14d72d34a4a9fb2341b5b07bdd59b52c3",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "ccd2738d499329928ec726a3962d3f6d6a1855657047d61e9e7608c7cb961876",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "6f66c8bdb62d0019588d1d9a62a6e27bf7716c107fc1b29faff3651b48932137",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "5189cd5bd38d7b35ea2ae93feb707dfab626be3683eaf23bb9c1ff979106fbea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/lamp1": [
+      {
+        "kind": "road",
+        "sha256": "5f02c18c89a553174711e02ea161bd98aa80850c63f34987b3498fad3f6c051b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/lamp2": [
+      {
+        "kind": "road",
+        "sha256": "96e96121cb947611a48ae03aa5ad054054aa286a6db6b3e119f9637518b98d71",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/lamp3": [
+      {
+        "kind": "road",
+        "sha256": "2d3b4bd11ed1bb45680d5269cc0c566550497a50ee32f174426640c8e27188ce",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/lamp4": [
+      {
+        "kind": "road",
+        "sha256": "2991c0aa6a4a9de05664c2c14c9be07459c589ecb1f125fab3b671ef8d3af638",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "422aebd90e5b4ed9dbca2bbe8600cb62681a82bd075dafe9dd47dac222dc15f5",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "8fcfac7cd4a9d17c6e329164fc71fd0253a9461157fd90e4fba53f1e81783a4a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "fcc7a4a356ee92ea5bdb50fee8277592636901075e7f7a37fb98f298b69be06e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "13305c5c537ed0818d804b3a77908b0034b2b4a6eaad5145e5fffef5be8e2757",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "d4aed9d64547b79a1f4d6153fa759b535f21b70e2c89e3072ab6bf1ad172cabc",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "2f64477eebf54cc2388c5bd0ea600b392ba287c9306af23c4be7bdd01967dee4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "22fd24fa8f1673b2018fc3cf0dcfca50ffea7d7688ea80536a6731b97d86ec78",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "cdc8a417fe9c81358f8e132bc3d14aa7edc53d4f417d43577be821cf149a0773",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "4f7bba9b805419df17be7d42ce676a45fbcbe0533be01fae86b1f6f8213bb023",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "713774eceb9b7d7b96404b94296d24906cafc6d8f2ecfa10156b51b8823690ad",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "d07da0cd39e1dcd72c1547af57f6ab815624ed2193b61227078f47da2108dd81",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "489e52d26017980d0fd30dd905142d58d312986bcfe04b0e1722782c7c98f212",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "81e23d19506d98578ec1b7aad186ed251abd29ef30be8174e7e6554742423954",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "b77ecb4ec90bd8d968e5f9d57b837d0964b8f0d1c085c9a46408be4317fc9a70",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "1e4e97ff52cc379d053363acc208a06e0761dcbf4e57ee77df39c4b13e8762ae",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "91658bbcf7c674c16eaf251456501f2c3d87bf7e06973b23536322fe8da53845",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "535e74045f8e354552b9c76b3a6f8860724038bd7b263e21a177ac01edc4720e",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "4face9361937b30f20cfaa08b7bf97e017a8e368724a23b4b017bb87f0c20cf2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "d7eb0d9733af46c7ab2308290c4ce53e08dda17a3f767ad1b3d1e38cdaa0e60a",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c8333adf139a79c6a71927681f762bccd2c69df4c322c0d9a2f18ded60928dff",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "4f83c588ea0cf4af2462cebf3a2d8e2d330d81ff2dde8505abbf38b7fda60ec9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/taiga_decoration_1": [
+      {
+        "kind": "decoration",
+        "sha256": "a4f9347cd6fb27790321e176373c9e46da76da43a0ef82de80a1ffd9e50fe5b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/taiga_decoration_2": [
+      {
+        "kind": "decoration",
+        "sha256": "39164c8b49c1436f5bc9788b7037170b74356ab10ff633af532540c4e53a39b7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/taiga_decoration_3": [
+      {
+        "kind": "decoration",
+        "sha256": "e6de09cb794ab2442607dcc6d0c3a3b4f963a19b65e0d377e8cb23114051a781",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/taiga_decoration_4": [
+      {
+        "kind": "decoration",
+        "sha256": "2a17099b4e64ac0dafdcf25382ff806724dda46f367524be4a187783c8be2330",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/taiga_decoration_5": [
+      {
+        "kind": "decoration",
+        "sha256": "ee7f068c5b2b0518a9baad3d185168c2944c88aa41ca786bf1a32037a9397e1f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/taiga_decoration_6": [
+      {
+        "kind": "decoration",
+        "sha256": "14d42b10546b3610310f0e33259d39f2f4f2da5829eb2004abf9943480ee48d9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/taiga_lamp_post_1": [
+      {
+        "kind": "decoration",
+        "sha256": "2d7f2a41e2aaf215a5fbb4838ef1b8c673635e5e55bf60333fd2e24fbb28d5ca",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/town_centers/taiga_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "fb3d708aa5e75127bfb9c8dd7d4068e3a6b523f3704247342cf18b3af7f101b7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "13f18c53ba318eb17b95785150ca26f8d0f9dab9b84096c356e2febedbb793e3",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "c940e07cf964e88474889d2bb1bafe41db9c9e9379a657f9aac1f20003e8869a",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            6
+          ],
+          [
+            7,
+            1,
+            6
+          ],
+          [
+            11,
+            1,
+            3
+          ],
+          [
+            11,
+            1,
+            4
+          ],
+          [
+            11,
+            1,
+            5
+          ],
+          [
+            11,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/town_centers/taiga_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "84fe8f3563ba7c77b45142f20b7ee7a37c2bbcf0f8f7e0a9720e614376154ee0",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "4fba2b57cdb32f34ce9b3b0976ad40f1bb7f3bcb0ec361a895957c4291a400fb",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "4a31d8673051e10f220263403ed8a8799fa0f9d04df9dcd882055a0174847c4f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "b370cbf5b332e322571a911cd74e05bbbfc8f6c18cfcd4f996b999a215b3493a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "db96c95a62fda81b9366cf61086dfc78655c875b418b7e64ec00bbeb701e64c9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "275183d9e98a8094e1ce3afadefb43ab84058ac8c2edc5cd923aa5117f73b855",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_cartographer_house_1": [
+      {
+        "kind": "service",
+        "sha256": "d849f6bc42568e07e74cd8760fc68fd9a5c9d716c24e99afdefbeea7c5e26fd4",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_fisher_cottage_1": [
+      {
+        "kind": "decoration",
+        "sha256": "3476992f73683be54f6411d4d8d8da230c2d6a5c014cdad0315824213873f42c",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            2,
+            5
+          ],
+          [
+            4,
+            2,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_large_farm_2": [
+      {
+        "kind": "service",
+        "sha256": "af03fdd9e0908c9af56056f3d61b66cdb6c6a1daf08cbbe6255802ed5ee57319",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_library_1": [
+      {
+        "kind": "service",
+        "sha256": "1894ffd6f95603fff8ede2d4aadd48fc7d03481f311de9a51194ba150db86305",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "8b4b3d2fc56c3dc00e45984fec92a50bc1b5f2137db37c865b5efb6cbafbdc18",
+        "beds": [
+          [
+            2,
+            6,
+            4
+          ],
+          [
+            4,
+            0,
+            0
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            3,
+            6,
+            1
+          ],
+          [
+            5,
+            3,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "65dc1d5fb6c88dd48a5d3c6211df5ec35ef74ab8cea3c6fa0f87ea71592a87c1",
+        "beds": [
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            4,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            5,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_medium_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "60bfdb1de3543ff6d08a1a9840ff84737e88c214a196f69555e49a32a102a725",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            6
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_medium_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "1c41c65046e2b95f6288b895cee40c7333a718abad8dc3cf30a1435a557a148a",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            7
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_shepherds_house_1": [
+      {
+        "kind": "service",
+        "sha256": "f1f6b5630312518489b5d9d2f3526181c12e641066980c73471d2b943a06f880",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "0a5c3fe12e393f6947c8c0ea50fb982717c10c55ce82ed73a5198a3d80ac94d4",
+        "beds": [
+          [
+            2,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "b2c207704f14e614c8bb389b66ac1c1b86555bdc56ce3563a6112482977dbab3",
+        "beds": [
+          [
+            4,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "a615de9a676817cb3c6fccb61f95bb7898f615df8508ca1b78ff3d7836887555",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "8517deb773ad90973693ae36c1ce26c58dfc9c087b2614c778d80f0d856b304b",
+        "beds": [
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "21eb2c3c39ad8d934051928409af2d40b40e320db0ce110d7ed474a78f62ad61",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            0,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_temple_1": [
+      {
+        "kind": "service",
+        "sha256": "f6924eedbb1c1c9b091de6492a41767c9d377e3ddcaa07c197031cf838ad7df5",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            8
+          ],
+          [
+            6,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_tool_smith_1": [
+      {
+        "kind": "service",
+        "sha256": "70be4768d1af911a01811fce40aa6a5f52e7e8af2ebfa7efdde7ab86b83e8c6e",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            4
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/houses/taiga_weaponsmith_2": [
+      {
+        "kind": "decoration",
+        "sha256": "727dce824dc4a5445003dae6507f02e00d3ffc250323f7714193be33de558525",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "945b2325d1647b777258d359d49991f3c5140e3b9ba0f04d91e83256a19befa1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "7dfe37c436bc537f2ce48f5d3f1f73d0ec8749b76d844a333d68ebb5369ae66a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "0eef8d1569a9549aea8939d2b04f3e9226b991ec48170682181352524fd104e0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "9caff7cf5ce216b1b095c04789f6f6848f4919891a4f96f6140f623c89bf6cc1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "e40b6de3dd23df4d8e8145550f185f4090ea9d780347de8d7b88668b5fc7e9a7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "d32b6cba673b84f024bd3f5bda0492e069dfc1af289c4c25fd470ee3f935b229",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "d68190323f52ef2ee243023c494da6e17dd5732dcbc209a7164e06ecb8e0127e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "d84a5b4d669f3b717fbf0e2316a3607865b92dbd910567fbbef1a88c26be7483",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "7dee82d9ce64a4a6cce2583435a100502481baa956a8052fa430ab31f5b09ea0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "2df4a86a9677cade2f30185fb673a6b9d3de261edb3df8747a7d788ab6079647",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "4bbdfe6be01567f8647fe04774524fe547ba6cd4e6596d1e20db7338c5a2a7a0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "069ec4f06336d0e178a181653b0a0dcaf44ecb47e83e71802081b2668284e630",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "90c624ae66c055ae634d5f962d4798b782e284efa1c2eb317b02e0a87e5714bc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "2e9c7079fa130b596cc504b4a2b0e70d58cf5ef301d539e5eb876cd4bcd84ca3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "e4386820e6040aec38f6cccf6eb5c76f2fa883db74e342587ab3e2c8e695889a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "97e5c60ecdc5a3a189e6c335522722ab626d8959ea071f10e7bed23108d26896",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/town_centers/taiga_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "9fe4ab7a85e48d821eb1b53e2d0755fdd9e43b36fa5b9a0f67fe42a24f69dce8",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            6
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            6
+          ],
+          [
+            7,
+            1,
+            6
+          ],
+          [
+            11,
+            1,
+            3
+          ],
+          [
+            11,
+            1,
+            4
+          ],
+          [
+            11,
+            1,
+            5
+          ],
+          [
+            11,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/taiga/zombie/town_centers/taiga_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "1da59810fbd42203dafaf368c81e24a7d07a209d229dca6fb97ee363e7344e73",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "660c65d1e10c3575ffe1db456dcf5949c5c0c96dc34d9c475eec082b5c2174d5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/taiga/zombie/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "890467e2f4aa777a759b4b19e338920863b3123f129f18c24726d96df5c54ad1",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

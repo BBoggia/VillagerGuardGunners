@@ -1,6 +1,6 @@
 package com.gamergaming.villagerguardgunners.sidearm;
 
-import com.tacz.guns.api.item.IGun;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -82,7 +82,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
                 && stack != null
                 && !stack.isEmpty()
                 && stack.getCount() == 1
-                && stack.getItem() instanceof IGun;
+                && GunProviders.isGun(stack);
     }
 
     @Override
@@ -526,7 +526,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
         ItemStack stack = ItemStack.of(encoded.getCompound(key));
         if (stack.isEmpty()
                 || stack.getCount() != 1
-                || !(stack.getItem() instanceof IGun)) {
+                || !GunProviders.isGun(stack)) {
             throw new IllegalArgumentException("Stored weapon is not one TaCZ gun");
         }
         return stack.copy();
@@ -595,7 +595,7 @@ public final class GuardSidearmStorage extends ItemStackHandler {
         return stack != null
                 && !stack.isEmpty()
                 && stack.getCount() == 1
-                && stack.getItem() instanceof IGun;
+                && GunProviders.isGun(stack);
     }
 
     private static boolean stacksMatch(ItemStack first, ItemStack second) {

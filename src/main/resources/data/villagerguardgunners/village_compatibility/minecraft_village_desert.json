@@ -1,0 +1,2948 @@
+{
+  "format": 2,
+  "mods": {},
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "minecraft:village_desert"
+  ],
+  "templates": {
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_1": [
+      {
+        "kind": "decoration",
+        "sha256": "645d5899334b45a1cee4c0a4bc2f8a171e8b25703f67db3ad96c1bcef3dbf877",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_2": [
+      {
+        "kind": "decoration",
+        "sha256": "2a956d2b921f3345b8eba187f328efd4c7c23c63ed1274790482d6a125efd556",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_3": [
+      {
+        "kind": "decoration",
+        "sha256": "20b86e80231a3291673cf59669c78bc894d545199c8a9c2c6e6958bfc6206b18",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_4": [
+      {
+        "kind": "decoration",
+        "sha256": "d5fc411b7bb2a1024eec98e9c90e057761c84a2e45123830281d0509445f45f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_5": [
+      {
+        "kind": "decoration",
+        "sha256": "869ec27336f412201ba40286b1e0bbaee5fdb40d1467b14fe7e207dac377ce01",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/camel_spawn": [
+      {
+        "kind": "decoration",
+        "sha256": "b86c6a72779416021fd563f428cf292fc482a6846249a9954b867f3e9576729b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/desert_lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5225786d60be90e9b82a4f7c929a3495a048c0937ecfcfd06bd6580f335325bc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/houses/desert_animal_pen_1": [
+      {
+        "kind": "decoration",
+        "sha256": "dd4e2cbe2868271b9b36ceb2579e5493d17a5193d738dab01c6b5de52113c070",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "e1813f30773c8b01bb1878f29231801e98c4b2d4a8d3b28beb5315e5a130927c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "0c42b925aa422f2a4a39f30c5cb54db37479c6d16c0f6b0b6e2212ec75ae4603",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/houses/desert_animal_pen_2": [
+      {
+        "kind": "decoration",
+        "sha256": "33ea8dd715cc5c3b0e2d422cf47280318eb1ffa94605d6a83d34b9149f28372e",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "5e77333cf28df8d5477583415f757816882949d2d0ce1f91b07e5d8692e6eb19",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "25284be4968c6a6d54a9809c307a4a20607de0e3473cfe9b3d5d60fa56e5804f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/houses/desert_armorer_1": [
+      {
+        "kind": "service",
+        "sha256": "e4178246ac5855768310a3ff4726f269b3e1bad4f1927dfdbe3914ae9add9fd1",
+        "beds": [],
+        "entrances": [
+          [
+            18,
+            2,
+            4
+          ],
+          [
+            19,
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "9fea0ec5a311c9bbd4fb85623aefd0150c714e52784a27b3e77d402af56d93ad",
+        "beds": [
+          [
+            10,
+            1,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            0
+          ],
+          [
+            4,
+            2,
+            2
+          ],
+          [
+            10,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "ac13ade67bb2c102428f1890ae2c08fcd34be17beeb2280bfd4861a50014f1b7",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_butcher_shop_1": [
+      {
+        "kind": "service",
+        "sha256": "166d3017613ac7120aaea6128fc2f21948590277cdd4dbaea9a73469071d1ab0",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            1,
+            12
+          ],
+          [
+            11,
+            2,
+            11
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "a43f11c9f488e63043b98307112d36287c16b1df2dc443a21094f0b741fd94bb",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            3
+          ],
+          [
+            4,
+            1,
+            4
+          ],
+          [
+            7,
+            1,
+            5
+          ],
+          [
+            9,
+            1,
+            8
+          ],
+          [
+            11,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "813268d7f942c21aedaf8958a1e8b845f89f6bc016d471dc64e36406b4e5982c",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_cartographer_house_1": [
+      {
+        "kind": "service",
+        "sha256": "9f85b0d4be8632455322c4cd51f76c088291cbff9490ad054fdd00204308db80",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "9c724a071ca17fdece9e855f93935e2c6788fa6f938b5af3f73053a0102cd8c7",
+        "beds": [
+          [
+            7,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            4,
+            7
+          ],
+          [
+            5,
+            4,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "3bec544f849c32b7afe409e54ad0b70ee4e967679fafb5c6e4c0907582097fdf",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            5
+          ],
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            3,
+            3,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_farm_1": [
+      {
+        "kind": "service",
+        "sha256": "3fa76ad204312e740fbb6f2c6ec29f4606040aaba59c8b4d77a558a4e75a9220",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "2f3aa484424b68394eb003f7fdc65293c7332e5e016af9b6ef34529e77452bfe",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "a986dcedeac60b691a0de3b7f201786ee89fb22d035634ad8acd59e97227a605",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_farm_2": [
+      {
+        "kind": "service",
+        "sha256": "017e25ab8c2bc5a2432b2f2ad20236537be1381c980f11006a265e785e9b4ad3",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "d9ada18b637cbfae2b6daa10593bdbfe2abba39dfb80acc5d0f80a6a799407e6",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "84d4c893a3991d628d159f088bc9b43cf22a9cd468f9ac70e8012eb42a1eca5f",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_fisher_1": [
+      {
+        "kind": "decoration",
+        "sha256": "8e987ebd2fc08229e8d9704f9002368fa6b75508453150ce1e6c2f35f9729675",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            5,
+            2
+          ],
+          [
+            8,
+            5,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "a3df708941f37400bcaf223e7480a93564536769019e4dfd87159721e8a3fb17",
+        "beds": [
+          [
+            9,
+            3,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            3,
+            12
+          ],
+          [
+            2,
+            3,
+            12
+          ],
+          [
+            2,
+            3,
+            13
+          ],
+          [
+            3,
+            3,
+            10
+          ],
+          [
+            4,
+            3,
+            10
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "33307b1d38607e7c6a6c8a0ef2ff4b7a1eae043b3f73af2368c8aec4f32243c2",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_fletcher_house_1": [
+      {
+        "kind": "service",
+        "sha256": "ac7cba2266a18393782f9aba1d504c50dd19689638cbc6d148e5a8f625e1c4b0",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            7,
+            2,
+            12
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "88386c90043977566d21797e1f424152cb9cc444401ffaf4f5896baae1b20840",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            13
+          ],
+          [
+            3,
+            7,
+            15
+          ],
+          [
+            5,
+            1,
+            20
+          ],
+          [
+            5,
+            1,
+            22
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "32b502cece7f851c3c9d7d3778583a9ac001b245e5eab39fa4941860f7794fda",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_large_farm_1": [
+      {
+        "kind": "service",
+        "sha256": "daf623baf09a35106240eaf13db5625a0ee3ca7e91d104551aa89727434efef6",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "08227d6e12ad7205467b4634eda0d74ea996d5beac1ab413004e9b941725f44c",
+        "beds": [
+          [
+            14,
+            1,
+            11
+          ],
+          [
+            16,
+            1,
+            19
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            7,
+            13
+          ],
+          [
+            13,
+            1,
+            15
+          ],
+          [
+            14,
+            1,
+            28
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "c58ca3221cc0669fa8ce818dc236dcce9a9554afbe017568eb86b17f14f19ced",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            2,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_library_1": [
+      {
+        "kind": "service",
+        "sha256": "ed6345b9b9ae40d5662ec68b1bcc476ddf59c78f622777e92154898d80f14449",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            9,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "74f7cca6fef4b6916ac4be118890ce63588646b28120309f7a5482009edab457",
+        "beds": [
+          [
+            8,
+            7,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            7,
+            6
+          ],
+          [
+            11,
+            7,
+            8
+          ],
+          [
+            12,
+            1,
+            3
+          ],
+          [
+            14,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "352eba213bbd390f7d8a6f24255044d04e959849769f49d09b307e17111ec0de",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_mason_1": [
+      {
+        "kind": "service",
+        "sha256": "e47834b25935b83bfd0ffc8ddc352d41e81212338d23ef0c5d675420287c6522",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            8,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "7a57abd863f9366ccc8a64dc5ee9db99e3c2a14d762fa87b77c6d4510bbd5f41",
+        "beds": [
+          [
+            4,
+            6,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            6,
+            13
+          ],
+          [
+            5,
+            6,
+            3
+          ],
+          [
+            5,
+            6,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "df5da5e38de9df4b622d64e94b56a667ea23fea79a4accd4f770926d6193c3a7",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "bf25b6d62040f367a4753d43f2b361142ddd986e2ab5b9248791c89903db7e70",
+        "beds": [
+          [
+            5,
+            2,
+            3
+          ],
+          [
+            6,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            10,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "0ea37a03461841c3dbe5fffe72dbb2099a212d1f90b60ad93a3a64830d52d066",
+        "beds": [
+          [
+            4,
+            1,
+            9
+          ],
+          [
+            4,
+            2,
+            9
+          ],
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            5,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "c0caee450a77b7d09b2dec6c1fb6b64d32c9f6553c4ea4d79b0b67baed2bbaee",
+        "beds": [
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "c71048ac24d560292e07c5cedbc264972878ccdaf347014814c4c46fb4470503",
+        "beds": [
+          [
+            5,
+            2,
+            10
+          ],
+          [
+            6,
+            2,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            17,
+            2,
+            5
+          ],
+          [
+            18,
+            1,
+            9
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "75100b23e62978c73d40950faf28199adbf131fc5a292d9cc64e772823c3ad3c",
+        "beds": [
+          [
+            2,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "71272c661d2d7bc689637a57938a6bf20ea1621717157ec4db158429d14c29ab",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            6,
+            3,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            4,
+            3
+          ],
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            7,
+            3,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_shepherd_house_1": [
+      {
+        "kind": "service",
+        "sha256": "e139b05f382ac3c06600f832a486edc3b6730377d700efab54df464fee05e44b",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            2,
+            7
+          ],
+          [
+            7,
+            1,
+            0
+          ],
+          [
+            9,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "c22210a06d22acab1d00426ed07ed1d55c92222385d61e169de7d84d6ef59b45",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            7,
+            0,
+            0
+          ],
+          [
+            10,
+            1,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "756b054527fb148d6732c9f9464db5447edb4368aaa58fd0ddac45b3b43cff37",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            4
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "05dedfd44f5c85c2f6358fb47958a9b3e87af4b57edd99e531d5558323061806",
+        "beds": [
+          [
+            6,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "3cf0bd290be36935f0657dc6778f5e4106a70ddaabe4b5db591b79247f45b782",
+        "beds": [
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            4
+          ],
+          [
+            8,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "8dad9e3adf0408f3f7252863811d9b3463935c31c54d45b3fc4bb86da4a6bdf2",
+        "beds": [
+          [
+            4,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "62990924c0739e959b1fa92a084ac10277112cda7141fd398f629e314a63aa72",
+        "beds": [
+          [
+            3,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            2,
+            6
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "eb5555825947ff7bad2cba6d03e20cd7e3c4ac02411a53d9fd9965c7dc619ea1",
+        "beds": [
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            6
+          ],
+          [
+            8,
+            1,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "44fc63a964cd23907fb184b22df6de0be83ea7dec2026fc4b1cc535f1be0b33a",
+        "beds": [
+          [
+            5,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "3fca520445bbbfe27fc2d16d58ad4f8a498b7d7cbb7796a015cdf715b1d68e3d",
+        "beds": [
+          [
+            3,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            10
+          ],
+          [
+            7,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "02a45a9c12bd5f87fdeb33444bc525a3fd26e361f1ab393482b52203e9005a2d",
+        "beds": [
+          [
+            3,
+            1,
+            4
+          ],
+          [
+            3,
+            2,
+            4
+          ],
+          [
+            8,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            1,
+            4
+          ],
+          [
+            12,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "01b571e6ac128ab4e8e8986606698ea4f1c7492814b28564ef3fc921d73c7409",
+        "beds": [
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "f4ea1b6440e7695d30ce246e7bb9b1148de48c85082a6d8253f4b8a8ae4e42ea",
+        "beds": [
+          [
+            4,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "b8649122981f663f9cce4b6b97d2c29cd1e5a24ae20806f7db183881ebce3e0b",
+        "beds": [
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            5,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            4
+          ],
+          [
+            8,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "baa086b446b1294d1012b1628a073148913d90350cb357e8e9e602f64bacd53b",
+        "beds": [
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            3,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "b539cd7abed33969bada573fc05075f54d06f95ae40d355be66e1371fd79c245",
+        "beds": [
+          [
+            2,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "08aa8d681e0e8930ad0c15ce45a1d3ffda56c150b1cc60dcf90236bfbfcfe878",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "5ed0b68c0e4c0215a14b19496b16302ed9042a67ba8d17b7c5e69eba0f6d34aa",
+        "beds": [
+          [
+            1,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            2,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_small_house_6": [
+      {
+        "kind": "residence",
+        "sha256": "fead59f63b5d6593235ebb990cccd64d517aea0366f82c48567c9a17fecc7329",
+        "beds": [
+          [
+            2,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "d92a830b93fcc7bd0495e102be7dc1f8a28a02bc425396f11afc39e5c39cd67b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "d2b25b4a2be1ec42d0277e0f6352801236311089cdfad7c6ef406d33ea356a3f",
+        "beds": [
+          [
+            3,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "71713dd6d3d5fcca59707b74adf4d2dd96d58819c79f6b1841516a263f423ef8",
+        "beds": [
+          [
+            3,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "d4ffa724cf8f3dce210e5995b55df548c541d40c4693e9aedb4733f7b19bd2b2",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "2f6595b778a56c5f5c19c8f2dc7fc47fc58057bdf292457911c19884ef7819fc",
+        "beds": [
+          [
+            6,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "f014fb501c395d7e559d87d42ef73adbcc9d7c6edd4f933775f7c30798521827",
+        "beds": [
+          [
+            7,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "b09304df9886444df49f4823fa5f87bba0403fb97e9ea415e669267d55764820",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "cdca719fa636f0f2c9b7b574e41358f531abc74be0d03d7ca81043e021c26f8e",
+        "beds": [
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_tannery_1": [
+      {
+        "kind": "decoration",
+        "sha256": "24244c8f4fd0b08bf85fab5a7afc5aa5058151609dd4ebd978a5c6faef100bb0",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            2,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "8cc2dce7388da9c2740cd26a06384a9befebe736363a7b86156b7b458756a5be",
+        "beds": [
+          [
+            6,
+            2,
+            9
+          ],
+          [
+            12,
+            2,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            17
+          ],
+          [
+            5,
+            2,
+            12
+          ],
+          [
+            8,
+            2,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "537c4ecde498096c9ddf55aeabdd26d37ebe582781b528f5c57d1f12306887ef",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            2,
+            2
+          ],
+          [
+            2,
+            5,
+            2
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            4,
+            5,
+            2
+          ],
+          [
+            5,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_temple_1": [
+      {
+        "kind": "service",
+        "sha256": "066da8ff418e4ff6cf96d5ea20558d72e241a21d3c7bbe97c4d0285e7c3ec849",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "81d8c791de1b1cc6ac395ff6244e43e62881fa5eeed2190cd358f44846eea212",
+        "beds": [
+          [
+            3,
+            6,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            6,
+            2
+          ],
+          [
+            7,
+            1,
+            4
+          ],
+          [
+            9,
+            1,
+            4
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "b890df66acc4f008ef7aefc359164b740f60fc5447db365242ab23e3bb7b106a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_temple_2": [
+      {
+        "kind": "service",
+        "sha256": "ffbd5572ba69b96803de71dd97bf71691b30532fcf0c2e1109527a264c79cd65",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            6,
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "62d9038c676d4a3441c4b9c2f08f8703069f3048f25f3fb8ec0f700310606635",
+        "beds": [],
+        "entrances": [
+          [
+            1,
+            1,
+            6
+          ],
+          [
+            1,
+            1,
+            7
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            1,
+            1
+          ],
+          [
+            12,
+            1,
+            6
+          ],
+          [
+            12,
+            1,
+            7
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "95050d05e7e9cc9344267bc23c58130925a5c3617a39aeec8eb684706569dc1a",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_tool_smith_1": [
+      {
+        "kind": "service",
+        "sha256": "397ec3f13bfe3fcd479aaa47f2042e02e0f5125705bd06ec2f9c1779ccc59169",
+        "beds": [],
+        "entrances": [
+          [
+            10,
+            2,
+            3
+          ],
+          [
+            11,
+            1,
+            5
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "f81f52ea047453e388e3398809ca44136027df5043d61324b8931047536510e7",
+        "beds": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            18,
+            6,
+            7
+          ],
+          [
+            18,
+            6,
+            10
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            21
+          ],
+          [
+            3,
+            1,
+            21
+          ],
+          [
+            6,
+            1,
+            4
+          ],
+          [
+            8,
+            1,
+            21
+          ],
+          [
+            9,
+            1,
+            21
+          ],
+          [
+            10,
+            1,
+            0
+          ],
+          [
+            11,
+            2,
+            16
+          ],
+          [
+            13,
+            6,
+            4
+          ],
+          [
+            16,
+            6,
+            11
+          ],
+          [
+            19,
+            2,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "service",
+        "sha256": "c42c180226228be99981fdf7ebd77f94f9a1ce66278aeffc0658aae2685349e2",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            3,
+            5
+          ],
+          [
+            3,
+            3,
+            6
+          ],
+          [
+            3,
+            5,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/houses/desert_weaponsmith_1": [
+      {
+        "kind": "decoration",
+        "sha256": "cfafd299454c4d838d68666f50a5f98f55f334f13e68a912572c82a919c056c1",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            14
+          ]
+        ]
+      },
+      {
+        "kind": "residence",
+        "sha256": "6aaf8d21a646f32b60e5734273d80b0376f025ee0e2dcf3f4c900ea8b314f3f6",
+        "beds": [
+          [
+            5,
+            1,
+            9
+          ],
+          [
+            5,
+            1,
+            12
+          ],
+          [
+            5,
+            1,
+            15
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            20
+          ],
+          [
+            4,
+            1,
+            20
+          ],
+          [
+            8,
+            7,
+            6
+          ],
+          [
+            12,
+            6,
+            14
+          ],
+          [
+            12,
+            7,
+            8
+          ],
+          [
+            13,
+            1,
+            3
+          ],
+          [
+            13,
+            1,
+            4
+          ],
+          [
+            18,
+            1,
+            3
+          ]
+        ]
+      },
+      {
+        "kind": "decoration",
+        "sha256": "dd868e86b34c4330d33604dfb287105596143f2d839dda96c0675ee357bc9600",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "bec8dfe67c240c6ca1869b639dfc962d4a6e04bc473fc340ddd805080b964077",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "a99d5da7e9be76519a1868416b31b34924420f26ccbb13c073e62b6d037277c2",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "600e7f0a5bde538c8e1319ecdf9b1364b42abe5f9e1186fa4c6d84c34316395a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "bb79b763cd486952303dbb1563de7ccd4d75c3568a270d9178b62c09706a270d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "07a704094ff72d8a3664fb6bb2efffe3b17b716453b43f53f71ff5afa82cd715",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "22a220b151cc960a5f0b81e7656690e10907dda34124f202497f15988b56d19d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "ca7d83dd4363d0be0c01ad6b1938fecd7bbeca7039f58eed0a3d12870a46a784",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "543b4fa68f2a77e137a8c83c2b26d169daf83bd5beee21245738ad4f11092a13",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "e70d4e1541101258a710966c60f70e8a96bda38934db87a4081c6781750a5a0e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "9bfcfa95772a4c800d1add6c0d6b2aaa1754b16f38f00b6c9481bf7761669de5",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "950f3a470e4d1e0d336352c0bf7681330c6bcd24824678f6e65aea28e6eaf808",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "e485acd7e461db21e2e8c34aba9b1143ab5daf287e034c922705dca1e15a5f09",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "269a952a0885a0c38bd0135d17c063ca34ada8b62617e907726e565e0ca62dbf",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "fa49074c5bcf310b8ee825840e871ea62de90f7ec4c5358648747e9c4038539c",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "07972b7e4e67382286be19bc8009928efed39e42741e868481187e23b2798817",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/lamp1": [
+      {
+        "kind": "road",
+        "sha256": "072ccf3fe04c69492e77a62cbde7d96f48190bac49cdee569aa9e16158ca575f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/lamp2": [
+      {
+        "kind": "road",
+        "sha256": "852a2162f623a74d0f7b3f8adc23c258ef4ffc022ddd72c10eeda0cc3d89735b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/lamp3": [
+      {
+        "kind": "road",
+        "sha256": "e14bf95aab4b1f138b88e599700a596d3c5ba891f7b670a04c854d626942e891",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/lamp4": [
+      {
+        "kind": "road",
+        "sha256": "c0a8a7cce34c49e2ba089267e0997fafea96f04086a7022c03467cb39e24a70d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/square_01": [
+      {
+        "kind": "road",
+        "sha256": "40926cd488f451325cdb40f98b1eaad25f5bf81b9e99284a02d6f2d78b0b801d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "50619c359b1bbe0f1c41f51971eaa32294e52e5ddaeaedb4bbdb1299c6aa4599",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "23829ad90000826e8289fb2d2b1946756b045ba0270270b80b28525c336678d8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/square_02": [
+      {
+        "kind": "road",
+        "sha256": "8b2b9674439ffa9b8b99a8ecbc7a1c9e0746f317042983ab59ec2702143ce464",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "0622978dc14f6218d120771ba2dd257519a8712cc27f0f1254a077ed72ef491f",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "01f3fe2e62b7d92c20b05b9540a16a85b992f4d43e1fe6203478de2a11899eea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "1f52d15b630e0841c137714be6060143e05a09f13d4470fe5e2ec2d471be8cad",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "f61aac08c1158d1fc186ca1acdc392e816c8d7052de40c43435dbf41caf4c91b",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "f6c78d4f2bb44af2dbaff9608e1a4a2f7cc3ca42f9c8fd9ff00223a7914981ea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "eb352bd1e82fc1e20d81d39df96867b1459f62c7c705f6e715598bb927bd1bdf",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "8e1e68fabe1c91984db96b88f655ee284f6dfaeb9ba2ff4a19feb56fb742fa57",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "865185d1c8b4fc3e81ae2d5041c85fa036f1d31a963cf3b8f9e2e2d8dacf9127",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "b763666c6eac04af8c840a403043c40c12550a697167d34504b7fdb5a1307c53",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "8af234d38d3c0112250e18e295c00fbc057eb5c98423f2ac1a29f8d85b951507",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "c10acd226e33a006e7ce5fa87728566c3f51cee17558ab8e04b572eddf36ece8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "5bdf8a00d941645b062787416711b03581b6f54badf6eb4e849ffa10391197c7",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "90476249c0192c3fa70b4da1b96ff023737a29c3d9c2a03fd148977403fd32f0",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "road",
+        "sha256": "78500754238af7a734737fcd63b2d31bac88ba7f749423c3e4d4baf33a4a998c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/terminators/terminator_01": [
+      {
+        "kind": "decoration",
+        "sha256": "d3d5c7f866564dc7425d2dc22615fdd29c9d3067322b4b171dd7589ebbfcc787",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "c2d885fa4a69e582eb614d40982bd8ac1951e457ead03fd776cb4e114c58f279",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "9d322c2ed92d1cfbfdf71c0a3d6096a2d4d1511638b5569ec2603fe348bef7e7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/terminators/terminator_02": [
+      {
+        "kind": "decoration",
+        "sha256": "6115ff9d5376da5fbcb10cb2617288322f3933c1af6bff5797ca45e29c5b1498",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "d57d2cb8036551d3b10f492cc102374ca6242c4fdc981f9d6fb130a5b3c16336",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "decoration",
+        "sha256": "0517e19a79551e18457171f51c44b87f62be5af400fe8d3d5a12c12c7139ef5f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/town_centers/desert_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "3bbc485455938b92abea869cc28e2eb02b3d89e3611d487408e0196d857b0e8d",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "5c6c576ae718001417aaaab9b7975ecea4f22b726dc280d1229a43b7d03228d0",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "399e98e8d79f9c260f3ade8d7429baba26c18efd87abd4a836d110eaaa991cbb",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            2
+          ],
+          [
+            7,
+            1,
+            3
+          ],
+          [
+            7,
+            1,
+            4
+          ],
+          [
+            7,
+            1,
+            5
+          ],
+          [
+            7,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/town_centers/desert_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "982fb1fb99bbbb8061a254e9336563f6db3431bc93ebbb4275708f7f5872af63",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "061e09a78a950472c4e7d279a1479bfb07bf546150b8cd8e1000cdd16bf01cf9",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "gathering",
+        "sha256": "4f07f2f53ee7df713d23f14984f82750dcb9ee7c86705e1f5da0dd007256e703",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/town_centers/desert_meeting_point_3": [
+      {
+        "kind": "gathering",
+        "sha256": "f1dbb673486c77cffcde7a98a97f692e109db01300eb0df51db44c844735b934",
+        "beds": [],
+        "entrances": []
+      },
+      {
+        "kind": "residence",
+        "sha256": "4fc1052861bd487e11d92fde54eec59cebbb576309e7c3b71091bf6620d0d219",
+        "beds": [
+          [
+            21,
+            2,
+            13
+          ],
+          [
+            21,
+            2,
+            19
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            4
+          ],
+          [
+            5,
+            2,
+            6
+          ],
+          [
+            10,
+            8,
+            4
+          ],
+          [
+            12,
+            2,
+            9
+          ],
+          [
+            18,
+            2,
+            6
+          ],
+          [
+            18,
+            2,
+            14
+          ],
+          [
+            20,
+            8,
+            6
+          ]
+        ]
+      },
+      {
+        "kind": "gathering",
+        "sha256": "d18d2df628dc4fbdcfbc18d43c91689273076627d8897bdbe684234a2499c0ab",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "51498c4f5b07357eb709b52c2fb37a5a3f7ff1295749d9505fc235fdcdf55977",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "ba69be4e86e254ffcde34330bdc2382ffe5123371607ab679270d45c79e62ffe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "e88bf4fff7041107588b4cee6123adf907c3999674be7086cbcafbfc07482f1f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "b3c267fe36541c81ad2397c45d51d1d38183d7091b1373af206873b735181863",
+        "beds": [
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "e721f0829f5d39ee146b9f89b19e37c3f45a037f91cbaa4625d97b79b155dd01",
+        "beds": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            6,
+            3,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            4,
+            3
+          ],
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            7,
+            3,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "f2797f1d3d445903aacde02b1964b6a0a2ebaaa04b12c401935e2640ad3b8298",
+        "beds": [
+          [
+            4,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_small_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "66c3b1256945e4d256332524049342b57c6146e481797a844a795f212607ebef",
+        "beds": [
+          [
+            5,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "fd10c51d1c3b01e6738ba3e5ddaf8336907e52ec32320bb208140953ac5923d4",
+        "beds": [
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "9adfbfe458f39ae9e8e18b585b110bbf312a6c597368fdde23387541e75cec64",
+        "beds": [
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            3,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "12346fa0a6086f90db7742e81afa82efb7e952215ab3f219e9e2ded1a8857e23",
+        "beds": [
+          [
+            1,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            2,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_small_house_6": [
+      {
+        "kind": "residence",
+        "sha256": "ce576d74b511ab1abd81136a757e4fc51eba0205e902367c60e1b7c7ff060540",
+        "beds": [
+          [
+            2,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_small_house_7": [
+      {
+        "kind": "residence",
+        "sha256": "2dbebcbb3f2175f5ce7d56f6ab60fdccc49b5fdfc9502ead4a2d4a59b7e7d149",
+        "beds": [
+          [
+            6,
+            1,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/houses/desert_small_house_8": [
+      {
+        "kind": "residence",
+        "sha256": "0a34697dfc8b9a972aecce7fe7621804352d0937bb3ca9fa524b887d8c40cf72",
+        "beds": [
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "37c5d1ca1a75d5d49a7272180cb8743879842859bacb7e2e5478aa4a3995767f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "3c5b7b25590c5c178707089096570dadc6021c988f3c2398f7b22fee47dee5cb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "e75e5a53b447e418bfb1e88e977587b9be2c018984e572aa072473862b3c53a2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "833261f1d0f28af3ee9ca775ffbc4a39d3e03fb8ea00a5c06101a372ae817a8d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "58f94e1080bbec267f2345d7fb0709205e28b42993930db20a13b73009ff72c4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/square_01": [
+      {
+        "kind": "road",
+        "sha256": "ea05e668523ead4f266204650f3aaee340f631a6830f038162a979ea1033a851",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/square_02": [
+      {
+        "kind": "road",
+        "sha256": "13f7abbed304a71a3378bd282b9f8000e243dd46bda994015b90936942a2f830",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "bf35d80e80f7ae5af419fa190a57931b75e042614254266885530f31f4f27cbd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "2aa893b4b88b1a7ec04b8087d39bf9887f1d0d0960c86b1ff2df792aea3dfdc3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "ca1b6ceb6ee9be3a81a5c45d1da3cb4c1397d5b8f6be45f5a0f6df47f344516c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "75c259b440385b46d36e478d564e2a52a8fd6869106360e01378401d4049610b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/terminators/terminator_02": [
+      {
+        "kind": "decoration",
+        "sha256": "0648771f2cbeab0949cadb8b8e838997c6b6f1a9d76ce0f5465b2b27702ff845",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/town_centers/desert_meeting_point_1": [
+      {
+        "kind": "gathering",
+        "sha256": "e88895e376bb5159aa5bea07f684b6775da73e99d17293bc945b9db4edba152f",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            1,
+            2
+          ],
+          [
+            7,
+            1,
+            3
+          ],
+          [
+            7,
+            1,
+            4
+          ],
+          [
+            7,
+            1,
+            5
+          ],
+          [
+            7,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "minecraft:village/desert/zombie/town_centers/desert_meeting_point_2": [
+      {
+        "kind": "gathering",
+        "sha256": "8a1a77ae66ff7ee2843286b0acec0e84db1afbcf931d965122a521c7446b9f0f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/town_centers/desert_meeting_point_3": [
+      {
+        "kind": "gathering",
+        "sha256": "4ed4c4b1eb9de38450848ff1df6e97c395e642d39b33a10a5ffe4b510050b1d5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "0503c5c1d97176e4824b809003dc259c5bda7f11a5f650c7af9b5e1badbd95bd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/desert/zombie/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "8dec8909986386d43ce661f663a28980fd0f483a6d20ffd24032f17472c5b3c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/misc/cart2": [
+      {
+        "kind": "decoration",
+        "sha256": "297d8946f0b7c59a97c63d2a6d60281280927aa0ffe6156cab6c0cbc540bdb4d",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

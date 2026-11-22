@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.ammunition;
 
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import java.util.List;
@@ -50,7 +50,7 @@ public final class GuardDroppedAmmoPickup {
         List<Guard> nearbyGuards = droppedAmmo.level().getEntitiesOfClass(
                 Guard.class,
                 searchBounds,
-                guard -> guard.isAlive() && guard.isEffectiveAi());
+                guard -> !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard) && guard.isAlive() && guard.isEffectiveAi());
 
         Guard recipient = null;
         GuardAmmoHandler destination = null;
@@ -59,8 +59,8 @@ public final class GuardDroppedAmmoPickup {
 
         for (Guard guard : nearbyGuards) {
             double distanceSquared = guard.distanceToSqr(droppedAmmo);
-            if (distanceSquared > radiusSquared
-                    || !GuardOrdersAccess.getOrders(guard).permitsAmmoPickup(true)
+            if (GuardInfiniteAmmo.virtualReserve(guard) || distanceSquared > radiusSquared
+                    || !GuardRoleResolver.effectiveOrders(guard).permitsAmmoPickup(true)
                     || (recipient != null
                     && (distanceSquared > nearestDistanceSquared
                     || (distanceSquared == nearestDistanceSquared

@@ -14,6 +14,7 @@ public record NaturalGuardLoadoutCandidate(
         ResourceLocation poolId,
         ResourceLocation gunId,
         @Nullable ResourceLocation sidearmId,
+        @Nullable ResourceLocation roleId,
         NaturalGuardDifficulty difficulty,
         NaturalGuardSpawnSource spawnSource) {
 
@@ -22,7 +23,16 @@ public record NaturalGuardLoadoutCandidate(
             ResourceLocation gunId,
             NaturalGuardDifficulty difficulty,
             NaturalGuardSpawnSource spawnSource) {
-        this(poolId, gunId, null, difficulty, spawnSource);
+        this(poolId, gunId, null, null, difficulty, spawnSource);
+    }
+
+    public NaturalGuardLoadoutCandidate(
+            ResourceLocation poolId,
+            ResourceLocation gunId,
+            @Nullable ResourceLocation sidearmId,
+            NaturalGuardDifficulty difficulty,
+            NaturalGuardSpawnSource spawnSource) {
+        this(poolId, gunId, sidearmId, null, difficulty, spawnSource);
     }
 
     public NaturalGuardLoadoutCandidate {

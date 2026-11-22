@@ -1,0 +1,1036 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:marketstead_village"
+  ],
+  "templates": {
+    "integrated_villages:cabin_village/path/cabin_village_intersection3_bottom": [
+      {
+        "kind": "road",
+        "sha256": "6f33bafbefb4e48ccecae741d48c4c3ae01147fb57c12662d0fa25da0b733ee3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_farm1": [
+      {
+        "kind": "service",
+        "sha256": "4e3ac4c6d7d7924d92392ef0dd5687c1caefba4a0e34f62c6c18b1a127eb4fbd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_farm2": [
+      {
+        "kind": "service",
+        "sha256": "f8015df619d568adc81389d17834c8ce108955ba23e2c2d19af53828e2d66631",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_farm3": [
+      {
+        "kind": "service",
+        "sha256": "d8d28971aab29ea005f503078eea8430206a465b15471d82b2dc6d4ceb5917c3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_market1": [
+      {
+        "kind": "decoration",
+        "sha256": "7b6afb4bb017ad9230d7591341830632f7385ad5817d08823e2922a40910caa2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_market1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "bff48dd6b1ff0a32c01e63f6176feea0ad8dfed952e1c91a3d90a890cb46e221",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_market2": [
+      {
+        "kind": "service",
+        "sha256": "326f99ae4a5fde4badcef4eed08270f3adb945a1fb621c3e94886012c41bff86",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_market2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "101bc2cac8c1b46dc167e7ce4ea170a951847a4ce7337407c08696609bbc46b9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_market3": [
+      {
+        "kind": "service",
+        "sha256": "5ba384a5bcbabba34b43aba9a169b306168830f7c4e0afbf0291293eed2be1ea",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_market3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "9924263e4023764b2587b2b3a54bfc8061e772f05494bda7f47e42e0ad37ce3a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_pen1": [
+      {
+        "kind": "decoration",
+        "sha256": "0fbd685aacc5e49a31319fdb1ea1e4a7b3e66d73c9220390adfeba040e2b9d51",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_pen2": [
+      {
+        "kind": "decoration",
+        "sha256": "e0c908cf3c3bcd6e1cd3ef8ea75cae9a4a7f002b8d5f3f6f22ede3020e4e7bdd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/deco/marketstead_village_pen3": [
+      {
+        "kind": "decoration",
+        "sha256": "68240415a5f498534467c71ea58d46774195fd3917fc0ad14afb425986026e9e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_basichouse1": [
+      {
+        "kind": "residence",
+        "sha256": "134d7b98fae0b31b03d2feb5f8c8c62a9cbfdb777c333fe11bb1497275e55956",
+        "beds": [
+          [
+            8,
+            0,
+            13
+          ],
+          [
+            8,
+            0,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            10
+          ],
+          [
+            4,
+            0,
+            15
+          ],
+          [
+            5,
+            0,
+            15
+          ],
+          [
+            9,
+            0,
+            9
+          ],
+          [
+            9,
+            0,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_basichouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "235b53201418c4acef282a6c9dbd324955fed5458fff7665b0fc26c8e0c6e8aa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_basichouse2": [
+      {
+        "kind": "decoration",
+        "sha256": "f68d0f21cba2681cffc7df275923e7c7e6d12234fa178cd02b126324967c1166",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            0,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_basichouse2_bottom": [
+      {
+        "kind": "residence",
+        "sha256": "62da88efa38f0b7ea05d882d45f64088fd2f873b8fd060df62188898f62937ed",
+        "beds": [
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            4,
+            2,
+            2
+          ],
+          [
+            6,
+            2,
+            2
+          ],
+          [
+            7,
+            2,
+            2
+          ],
+          [
+            8,
+            2,
+            16
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            17
+          ],
+          [
+            3,
+            2,
+            18
+          ],
+          [
+            5,
+            2,
+            15
+          ],
+          [
+            7,
+            2,
+            8
+          ],
+          [
+            8,
+            2,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_beastery": [
+      {
+        "kind": "decoration",
+        "sha256": "d36075857a4d06b5b450b91b3bf9408df9cfb0492199269bb3d80287192de934",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            0,
+            8
+          ],
+          [
+            11,
+            0,
+            8
+          ],
+          [
+            12,
+            0,
+            7
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_beastery_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "4f6239711f38942aa2df7eca0dfa3ff7c5936277c998e4a6bc110673a5e9eef7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_blacksmith": [
+      {
+        "kind": "residence",
+        "sha256": "80a267bfc84ef7ebbeba8f32effb62186cfa3aa5d9bce1112da00b233043e111",
+        "beds": [
+          [
+            9,
+            4,
+            13
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            4,
+            15
+          ],
+          [
+            6,
+            4,
+            13
+          ],
+          [
+            10,
+            0,
+            13
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_blacksmith_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "31f148feedf9682502db4ea84724518458ea7b04425306df927ccb1c1a766456",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_botanist": [
+      {
+        "kind": "decoration",
+        "sha256": "5bf85a3ab4650ca462c1a4cff6697802b16e186148165a2e3417286fba82b47b",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            0,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_botanist_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "65c712b97a28d87fa4ca53760742f094e7f2e3b37e9b7de3cdc47023ae55061d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_butcher": [
+      {
+        "kind": "residence",
+        "sha256": "dbc297c27cf3ed75e60da4544d8d933cf04bd5cd8ee5017537b5a202813d37dd",
+        "beds": [
+          [
+            9,
+            7,
+            5
+          ],
+          [
+            9,
+            7,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            4
+          ],
+          [
+            8,
+            1,
+            8
+          ],
+          [
+            8,
+            1,
+            15
+          ],
+          [
+            12,
+            1,
+            13
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_butcher_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f9cbe0fa778895aa5f73b3337a3a9a97e11db389ddb3b73de64e3e0bea917ba8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_cathedral": [
+      {
+        "kind": "decoration",
+        "sha256": "85b9a5dbb96584cef307b075be83ca465a9a5e8dbe14425cba83497edb1e96fc",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            13
+          ],
+          [
+            7,
+            0,
+            16
+          ],
+          [
+            23,
+            0,
+            20
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_cathedral_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "0dbf114a81fb1bf7b8ec10804c15cee6bb32b88832b1f6cb2a23d2bdd60d712b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_cleric": [
+      {
+        "kind": "residence",
+        "sha256": "d8a93a0672c7c68fd5d5dfc108141d87a1c4cbfab37355bd58e160d0f5317a1f",
+        "beds": [
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            4,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            0,
+            4
+          ],
+          [
+            10,
+            0,
+            8
+          ],
+          [
+            13,
+            0,
+            11
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_cleric_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "c60449741383cf15aa1c5cb1230ec9c1fa09244f528be2f4e675ef3e2a254f2d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_engineer": [
+      {
+        "kind": "residence",
+        "sha256": "44376fc58cda4e828862ddc5b47c849c2d8352b9dd9c402cae5173e0223d4c23",
+        "beds": [
+          [
+            7,
+            4,
+            10
+          ],
+          [
+            7,
+            4,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            4,
+            8
+          ],
+          [
+            7,
+            0,
+            12
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_engineer_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "689e1ffb7fe2772aad29c584cfab0224812d19192182dd44c01945356c6c954d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_farmhouse": [
+      {
+        "kind": "residence",
+        "sha256": "d087c3895d181378ba4d5cf050c0241a71a80f54a02f3f0d2ae18696942d0985",
+        "beds": [
+          [
+            4,
+            0,
+            12
+          ],
+          [
+            4,
+            0,
+            13
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            0,
+            7
+          ],
+          [
+            8,
+            0,
+            14
+          ],
+          [
+            11,
+            0,
+            13
+          ],
+          [
+            11,
+            0,
+            14
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_farmhouse_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "21af1e9c66e895bf181a218aba157175d81689c88fafee4a8a12441894e21355",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_fisherman": [
+      {
+        "kind": "residence",
+        "sha256": "f25791a9d4ee9ccc4c7209f37f85d4838a0efbf550874a5ccfaee3e8055221b9",
+        "beds": [
+          [
+            28,
+            5,
+            11
+          ],
+          [
+            28,
+            5,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            20,
+            2,
+            9
+          ],
+          [
+            23,
+            0,
+            14
+          ],
+          [
+            24,
+            5,
+            13
+          ],
+          [
+            27,
+            0,
+            16
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_fisherman_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "154cf701c5f5ca94093e3cbdea2a1bcadd12943b7a61623492509360ebf8afb3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_fletcher": [
+      {
+        "kind": "residence",
+        "sha256": "bad209f22c13ca6cd4b8288b163a8153ab8e793d17953b3446697d5f83a22b17",
+        "beds": [
+          [
+            8,
+            4,
+            17
+          ],
+          [
+            8,
+            4,
+            18
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            13
+          ],
+          [
+            12,
+            0,
+            17
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_fletcher_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "006b0a5a272d1728c47e656711ee877f187581e23627dc8645c211ff5308954e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_leatherworker": [
+      {
+        "kind": "residence",
+        "sha256": "a0b89c6d1e451149dc5771738e1969713449eaf38613ef74102ee6963d8a0a1f",
+        "beds": [
+          [
+            4,
+            0,
+            18
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            16
+          ],
+          [
+            9,
+            0,
+            15
+          ],
+          [
+            12,
+            0,
+            7
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_leatherworker_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "9fff352ac6062715c466e6da9b4184e935f67d4b1b4d1c4ca488e80531bfba39",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_library": [
+      {
+        "kind": "residence",
+        "sha256": "f53564c21f50e90316aed305614615acca00314bdfe54e77ef8017f8335166c0",
+        "beds": [
+          [
+            12,
+            0,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            0,
+            9
+          ],
+          [
+            11,
+            0,
+            7
+          ],
+          [
+            14,
+            0,
+            12
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_library_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "6343e252c6f53dc14443d2e8fe6b6c2fc34ccc3744d2603e200ebb977c93338c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_mason": [
+      {
+        "kind": "residence",
+        "sha256": "0a606611a673fa1bfd05442329de238e823a67c1a21e6effefcea225b4a14ac7",
+        "beds": [
+          [
+            8,
+            4,
+            16
+          ],
+          [
+            8,
+            4,
+            17
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            7
+          ],
+          [
+            9,
+            0,
+            17
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_mason_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "8ea62d0adc8414a9aa71334009d0412b4d0459e7dbcf0ec015d661919ceb7d8e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/house/marketstead_village_stables": [
+      {
+        "kind": "service",
+        "sha256": "c79782f2c4abe783f0a59f9219764357f2e40892948ec25b7135293db17aad71",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/mobs/marketstead_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "746e3175cd15390270fb6a86ec5252c4d7597fe06d439e7537701ede3b4674cc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/mobs/marketstead_village_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "4c8da778e8f14b35f4f267061d96da54fafcbf02ffb1dc6db22b0b2923321d22",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_intersection1": [
+      {
+        "kind": "road",
+        "sha256": "3d1f5343d1ea2bd630052914acfa681d14a33f36fa47b5c92ade314955aa44f2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_intersection1_bottom": [
+      {
+        "kind": "road",
+        "sha256": "d4da88c4c3bc7296db5e5250ac16ef9322719b828dd89e7ca6574f0bcfee7f4b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_intersection2": [
+      {
+        "kind": "road",
+        "sha256": "6cb992a959d8c51c30d7b8d3c75e9b7ba9b02f6353ecaf516b94ee707d6ed38f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_intersection2_bottom": [
+      {
+        "kind": "road",
+        "sha256": "0c562418b06d3fe82b25ff9bc72a9795c7722133aa3a258af1356f7db3e6f043",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_intersection3": [
+      {
+        "kind": "road",
+        "sha256": "0da057117e1388172f916ab6f2c40ffe46f9643e2d58e04cbc4617a1966af4c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path1": [
+      {
+        "kind": "road",
+        "sha256": "40e1649220a377ee64ba10710704837f4b0b7b8195d0920320e18f69504c9194",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path10": [
+      {
+        "kind": "road",
+        "sha256": "87ebc7087d6673c34b90fd958f60a049f40fe98f8609c62b5db137cb8faaaead",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path2": [
+      {
+        "kind": "road",
+        "sha256": "7c0b0710a56a7bc9a6997c858641951ebcd2783bd308cb303af9a94e873c9ac0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path3": [
+      {
+        "kind": "road",
+        "sha256": "488e4a17486de41f1a7a7a258c5fab91cae0b7346915c4e5f54eb82038729149",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path4": [
+      {
+        "kind": "road",
+        "sha256": "ee0d952172dd4fcc6204a07ce55a5f3fb4c2abd1080833a6f5115b633c7c3934",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path5": [
+      {
+        "kind": "road",
+        "sha256": "db3f02da1c55eb22a0668557bf3d59a8d3215738734514bc205e4048af74d9a2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path6": [
+      {
+        "kind": "road",
+        "sha256": "0e82b694a6d5b68e46e6c17a24d2efa11c182e19098572d1f38b2854e29746e1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path7": [
+      {
+        "kind": "road",
+        "sha256": "949d9f90833be1f10da15fae5f8a38ee4b0bddf738c9b87b4ae5248052993730",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path8": [
+      {
+        "kind": "road",
+        "sha256": "bbca0efe1c355f1a07aff3afeb72d0428bdf2f94b0541f5389a8f9df24813c7e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path9": [
+      {
+        "kind": "road",
+        "sha256": "28a8a82d50b0b6270d9482670e6ba6fdaea33b3d326a99aaab98f243a3fcd21f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path_cathedral": [
+      {
+        "kind": "road",
+        "sha256": "5b2c4a8d39289d739f44d279f37f42d3daad280aca2ffc490aec3ccfca44aa2d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "711e01ffce3d0e999672263a20d9445904e3baa990416c75f2d04fe79bb959bb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "847f75f79607838d8b1ac703ab883e07ff594f82d266afae935e654718ad5004",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "d95b7a65e50247d6b5eeda09c6d5389c851f1f426c1b5bb9b261fc9cf23b14eb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "05e5385f5610b9f9ba0643f21cb7f75908868b773872f8911396a0409d3051e7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path_large5": [
+      {
+        "kind": "road",
+        "sha256": "77aee6f77ec1ed2261d35b687b677e5b2d9021ba5b9152d5d3cab2b64de55978",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:marketstead_village/path/marketstead_village_path_large6": [
+      {
+        "kind": "road",
+        "sha256": "0c1553b9dd5c71ab02148347ef9525155de3cc3955a7ee318c1f7dbcd4ee1726",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

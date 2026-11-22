@@ -1,7 +1,7 @@
 package com.gamergaming.villagerguardgunners.sidearm;
 
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
-import com.gamergaming.villagerguardgunners.combat.NativeGunController;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
+import com.gamergaming.villagerguardgunners.guns.WeaponDriver;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,9 +36,18 @@ public final class GuardSidearmRuntimeController {
 
     public RuntimeOutcome evaluate(
             @Nullable LivingEntity target,
-            NativeGunController nativeController,
+            WeaponDriver nativeController,
             boolean featureEnabled,
             boolean targetMayEngage) {
+        return evaluate(target, nativeController, featureEnabled, targetMayEngage, false);
+    }
+
+    public RuntimeOutcome evaluate(
+            @Nullable LivingEntity target,
+            WeaponDriver nativeController,
+            boolean featureEnabled,
+            boolean targetMayEngage,
+            boolean continuingTargetGap) {
         Objects.requireNonNull(nativeController, "nativeController");
         long gameTick = guard.level().getGameTime();
         if (guard.level().isClientSide
@@ -55,6 +64,13 @@ public final class GuardSidearmRuntimeController {
         SidearmState state = storage.stateAgainst(guard.getMainHandItem());
         if (state == SidearmState.RECOVERY_REQUIRED) {
             lastEvaluationOutcome = RuntimeOutcome.RECOVERY_REQUIRED;
+            return lastEvaluationOutcome;
+        }
+        if (state == SidearmState.SIDEARM_ACTIVE && featureEnabled && continuingTargetGap
+                && (target == null || !target.isAlive())
+                && storage.getActivationReason() == SidearmActivationReason.PRIMARY_DRY
+                && nativeController.isCurrentWeaponSidearmCompatible()) {
+            lastEvaluationOutcome = RuntimeOutcome.NO_TRANSITION;
             return lastEvaluationOutcome;
         }
         lastEvaluationOutcome = state == SidearmState.SIDEARM_ACTIVE
@@ -87,7 +103,8 @@ public final class GuardSidearmRuntimeController {
                 || !targetMayEngage
                 || target == null
                 || !target.isAlive()
-                || !target.getUUID().equals(storage.getActivationTargetId());
+                || (storage.getActivationReason() != SidearmActivationReason.PRIMARY_DRY
+                        && !target.getUUID().equals(storage.getActivationTargetId()));
     }
 
     public boolean isSidearmActive() {
@@ -108,7 +125,7 @@ public final class GuardSidearmRuntimeController {
 
     private RuntimeOutcome evaluateActivation(
             @Nullable LivingEntity target,
-            NativeGunController nativeController,
+            WeaponDriver nativeController,
             boolean featureEnabled,
             boolean targetMayEngage,
             GuardSidearmStorage storage,
@@ -192,7 +209,7 @@ public final class GuardSidearmRuntimeController {
 
     private RuntimeOutcome evaluateReturn(
             @Nullable LivingEntity target,
-            NativeGunController nativeController,
+            WeaponDriver nativeController,
             boolean featureEnabled,
             boolean targetMayEngage,
             GuardSidearmStorage storage,
@@ -210,7 +227,7 @@ public final class GuardSidearmRuntimeController {
         boolean explosivePrimary = activationReason
                 == SidearmActivationReason.EXPLOSIVE_DISALLOWED
                 || activationReason == SidearmActivationReason.EXPLOSIVE_STANDOFF;
-        boolean primaryAllowed = GuardOrdersAccess.getOrders(guard).permitsExplosiveWeapons();
+        boolean primaryAllowed = GuardRoleResolver.effectiveOrders(guard).permitsExplosiveWeapons();
         SidearmReturnReason reason = SidearmDecisionPolicy.returnReason(
                 featureEnabled,
                 targetActive,

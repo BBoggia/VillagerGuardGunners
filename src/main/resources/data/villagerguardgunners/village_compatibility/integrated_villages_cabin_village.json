@@ -1,0 +1,643 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:cabin_village"
+  ],
+  "templates": {
+    "integrated_villages:cabin_village/house/cabin_village_armorer": [
+      {
+        "kind": "service",
+        "sha256": "b38776c258a48aeeaa2e5f5158e2e5068b6439d3b8e95165748414dbde787ce4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_basichouse1": [
+      {
+        "kind": "residence",
+        "sha256": "ab85db91ff098d4dbe5956fbdec180726bced614cb70a74eba01c134f4fdf5da",
+        "beds": [
+          [
+            1,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_basichouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "4c355be50f4490d074fe3ec431c857ca68d4660c703437218ddeebf4c4af63fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_basichouse2": [
+      {
+        "kind": "residence",
+        "sha256": "e32e638d625f8272f63299ce148dad585162adbf29d55ae73864a883c08a1308",
+        "beds": [
+          [
+            3,
+            0,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            0,
+            5
+          ],
+          [
+            8,
+            0,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_basichouse2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "62d2a6878082be37076f5d50ea4ff1e6875bcb0390639ef8cfa2132e7b7770a2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_butcher": [
+      {
+        "kind": "residence",
+        "sha256": "1643cab1d4f887915df2e12d71be638ba3298ed227db91e986e26402e22e1510",
+        "beds": [
+          [
+            5,
+            0,
+            23
+          ],
+          [
+            9,
+            0,
+            23
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            20
+          ],
+          [
+            9,
+            2,
+            12
+          ],
+          [
+            10,
+            2,
+            12
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_butcher_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "78112c751dd29eb78bb6195b8bd582c9245d2584ada6db077bf750195875a155",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_cleric": [
+      {
+        "kind": "service",
+        "sha256": "d0409fa863f07c9522b36fe5ebc211a76b81da7ff0ea62e7ef1c1db7dba6709e",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_cleric_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "16638f0284147d58404762fb6fdb76cbe3ccb72847dade8067e0f38d301a3642",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_farmer": [
+      {
+        "kind": "service",
+        "sha256": "3fcd1b31686f4844158a593271aaa1b2f0e2c18d15227d941ffc72565b1f457f",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_farmer_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "8e8e3ae19cb80ba5c2978f900f5dfab942e656a61d3b708b7f980ac94e0e73df",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_fisherman": [
+      {
+        "kind": "residence",
+        "sha256": "690f7a5eb53df31a23e00e6bc50583f3793efe7e77d6dff24c0f20f7e4c692e2",
+        "beds": [
+          [
+            4,
+            0,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            0,
+            5
+          ],
+          [
+            11,
+            0,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_fisherman_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f26cc6b5cf4fc86a03839b3466a09a99af5d5b1bc0bafc5f21e400a4e0d38f5b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_fletcher": [
+      {
+        "kind": "decoration",
+        "sha256": "c48ed8114dd32fe4196a79d65cd98406845132538f8598ddece2738df9ce7c2b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_fletcher_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "8b5de6e8f604103b8bc315e2dcc9ef23859bf4ebe4345414c20bdd15fd3165b0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_leatherworker": [
+      {
+        "kind": "decoration",
+        "sha256": "45a7cd81912088a478fd3f154c160cc38e48c02fbe008b03f9fb357ca94c1880",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_leatherworker_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "8d573fe8fbae850cf2654282abdc687b623c981b1fb9e70cf0c87f1c421cb567",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_mason": [
+      {
+        "kind": "decoration",
+        "sha256": "fc54cac05ead56363da4a8c25f8beb5420ec306f6b54505980d95ddc6283d9d1",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_mason_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "168151fc67de5bd3ad4031a862b0a7337554c4da4586a36965dfe5d4a3ba4235",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_toolsmith": [
+      {
+        "kind": "decoration",
+        "sha256": "a329234accba56c3a3cc9eb195a074f156d5152851f4d2be7899e27d1d986bfe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_weaponsmith": [
+      {
+        "kind": "residence",
+        "sha256": "0ea69758b21cdec7633c75732a6d447c1ea23bcab213acb7e44de3cbe5e06476",
+        "beds": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            9
+          ],
+          [
+            3,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:cabin_village/house/cabin_village_weaponsmith_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "c6a266498dda9dacda508785b2c5074a4a7ea2099cdf1cadb901e2328145b4a5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/mobs/cabin_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "dee560d043f611a4bcaaa06752b891a0adb1c272bf6d90fb8f568877bf2493e6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/mobs/cabin_village_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "2b985e4ee91c467544846fda6fd97c4c3572ea09336cc8b1143124bcb0b3f524",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/mobs/cabin_village_villager_nitwit": [
+      {
+        "kind": "decoration",
+        "sha256": "01c299083a5ea7417e1b7a7f38d3a7c538e240f13e37033274fedfa315c1b131",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_intersection1": [
+      {
+        "kind": "road",
+        "sha256": "475b494a34e8abcf143ee58e0c8d75a9a1ab8325d756bb2b831ecad43b27d577",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_intersection1_bottom": [
+      {
+        "kind": "road",
+        "sha256": "0c562418b06d3fe82b25ff9bc72a9795c7722133aa3a258af1356f7db3e6f043",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_intersection2": [
+      {
+        "kind": "road",
+        "sha256": "9849b51802776c1f148291c0af7d3680f5c5bea19eaf6fabf0c4c87dec6267c8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_intersection2_bottom": [
+      {
+        "kind": "road",
+        "sha256": "079f10c1408868c48145a00f8d2d6c3e0e85986996bba9c761a2f7ee00cda153",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_intersection3": [
+      {
+        "kind": "road",
+        "sha256": "06d1bf4247c94b18fa6a147deb4ac8e7499100f7770d5ce116564eda6e3736dc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_intersection3_bottom": [
+      {
+        "kind": "road",
+        "sha256": "6f33bafbefb4e48ccecae741d48c4c3ae01147fb57c12662d0fa25da0b733ee3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path1": [
+      {
+        "kind": "road",
+        "sha256": "1d8485d46b1312f38d4bad07bcb1bfc56f8c9d6955ac45e7d91effb03b8d90cb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path10": [
+      {
+        "kind": "road",
+        "sha256": "2b94f34cc3ce44573b3d07896d3376a6cf2f700d49193117f428e267b7b9cf9c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path2": [
+      {
+        "kind": "road",
+        "sha256": "5484920a75456438246ae178ee68171ed87ba56cba07b493fe038db83f48c3b5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path3": [
+      {
+        "kind": "road",
+        "sha256": "b51777396b97860e9391d86f2005e4e92eed67c38e8cbe3a19559a5153d7d7e8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path4": [
+      {
+        "kind": "road",
+        "sha256": "af3367697361b90f66c5a26ba24f72ea86d2af43acdcc62a1488f237c4839669",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path5": [
+      {
+        "kind": "road",
+        "sha256": "9997070c6e6a68a4a071377da70a73a122f87f9c87a49f4b164e20c5a54cdcc6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path6": [
+      {
+        "kind": "road",
+        "sha256": "17d2294cce4de1b33a53e381af49450e79b5f4eca34bd153a4f717cf3d5eaa95",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path7": [
+      {
+        "kind": "road",
+        "sha256": "d7023e0ae95425b56cf31e8c2321c0caf582ce108cb9f10cea337b2eba06ce98",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path8": [
+      {
+        "kind": "road",
+        "sha256": "88b2d36814f0372d9b66a1597136e496b47c3fa5cb935a9ae7adff3f4171537d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path9": [
+      {
+        "kind": "road",
+        "sha256": "d6f65a026201a9c927cda5ee13a2ef08d2f5ff24b1d8792b0c15fd7d72244a09",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "707cba571d343b9a8e33bc1bd44e4abab1cd258bc2966f6df990c08ec5cb77f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "d937aa084f0364f1e5e14b588ea9f1c881a8fe378e5fa3339d6d704fbf441080",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "57ee01b41f10e1bf61507fe07e99c8d7e42814ce3e5e9caaa7e2004f6898bf6a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "967fa63d2e470ff46842c7537c0cf0a940bfb663016586cfe087a50daba3c24c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path_large5": [
+      {
+        "kind": "road",
+        "sha256": "fc56b337827322a4041af0e5e9d76ce08790dbb5264938f9718ea392777ff135",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:cabin_village/path/cabin_village_path_large6": [
+      {
+        "kind": "road",
+        "sha256": "f4fce5113b2e3b9e0d2425208d3a23479cdc612b0491d54f136ef75896c1881f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:kutcha_village/path/kutcha_village_path_flax": [
+      {
+        "kind": "road",
+        "sha256": "bfcaceeac46dcb43dc1392455cba23027399947d80fe78fc97c71af3efff6de1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:kutcha_village/path/kutcha_village_path_flowers": [
+      {
+        "kind": "road",
+        "sha256": "59d0712e66a8c182ecb7df25fe9a85eeb3822b50c4192536d7ccfb2844211766",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:kutcha_village/path/kutcha_village_path_fodder": [
+      {
+        "kind": "road",
+        "sha256": "a522a7391f570fbcd999c0d36bc56c7c520140f3ef2726713fb27ca8f9878b4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:kutcha_village/path/kutcha_village_path_sugarcane": [
+      {
+        "kind": "road",
+        "sha256": "eb5335e57692de4924d22e28b54b6b6e0739c4e414d8c731abf17efec4a24a8f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:kutcha_village/path/kutcha_village_path_wagon": [
+      {
+        "kind": "road",
+        "sha256": "76a2560766ee26d54aa0a19c05e611c5f4b8da23a0d5d424d9a2fe55e6bd1e72",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": []
+}

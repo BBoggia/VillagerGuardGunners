@@ -51,7 +51,15 @@ final class NaturalGuardLoadoutDatapackContractTest {
         assertAll(
                 () -> assertTrue(Files.isRegularFile(pools.resolve("easy.json"))),
                 () -> assertTrue(Files.isRegularFile(pools.resolve("normal.json"))),
-                () -> assertTrue(Files.isRegularFile(pools.resolve("hard.json"))));
+                () -> assertTrue(Files.isRegularFile(pools.resolve("hard.json"))),
+                () -> assertTrue(Files.isRegularFile(
+                        pools.resolve("watchtower_marksman.json"))),
+                () -> assertTrue(Files.isRegularFile(
+                        pools.resolve("watchtower_support.json"))),
+                () -> assertTrue(Files.isRegularFile(
+                        pools.resolve("watchtower_breacher.json"))),
+                () -> assertTrue(Files.isRegularFile(
+                        pools.resolve("watchtower_demolitions.json"))));
     }
 
     private static String read(String relativePath) throws IOException {

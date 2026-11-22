@@ -7,13 +7,14 @@ import java.util.Set;
  *
  * <p>All versions are accepted by the reload parser. Format 1 preserves its
  * legacy selection behavior, format 2 adds immutable one-shot spawn
- * conditions, and format 3 may additionally issue one explicitly configured
- * sidearm.</p>
+ * conditions, format 3 may additionally issue one explicitly configured
+ * sidearm, and format 4 may assign one item-neutral guard role.</p>
  */
 public final class NaturalGuardLoadoutFormat {
     public static final int LEGACY_VERSION = 1;
     public static final int CONDITIONAL_VERSION = 2;
     public static final int SIDEARM_VERSION = 3;
+    public static final int ROLE_VERSION = 4;
 
     /** Prevents one spawn decision from becoming an unbounded server-thread pass. */
     public static final int MAX_ENTRIES_PER_POOL = 256;
@@ -30,6 +31,8 @@ public final class NaturalGuardLoadoutFormat {
             Set.of("gun", "weight", "conditions");
     public static final Set<String> VERSION_3_ENTRY_FIELDS =
             Set.of("gun", "sidearm", "weight", "conditions");
+    public static final Set<String> VERSION_4_ENTRY_FIELDS =
+            Set.of("gun", "sidearm", "role", "weight", "conditions");
     public static final Set<String> CONDITION_FIELDS = Set.of(
             "dimensions",
             "biomes",

@@ -1,0 +1,928 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:clockwork_village"
+  ],
+  "templates": {
+    "integrated_villages:clockwork_village/deco/clockwork_village_hay": [
+      {
+        "kind": "decoration",
+        "sha256": "613642fd09b44d1e65ab5659ebb3d2d1316e759c2d21d8bb5177e24fecc87ced",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_hay_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "d462d1f7bd9e270debb41b334e1b3b2c42e6cb31d987b84f33c4e54f2cacf519",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_tank": [
+      {
+        "kind": "decoration",
+        "sha256": "87cb6010cf6d96b95c8cd061afc27e6f5d30e88b5c80900d107acd5a0562becc",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_tank_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "87bbfd466dc6bef4b8c6b8d8db64b6a5aa8cfedfc75be6c5cc535bcaa364dfc4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_tree_small": [
+      {
+        "kind": "decoration",
+        "sha256": "9e1223d6b2761124960ee7bc65611cfa935b68c627bdcd9ba3f3fa15676026c6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_tree_small_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "ef9e9b6f0484058ece213402f81f19050c8a703656d46a6e32906d73ec9085f9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_wagon": [
+      {
+        "kind": "decoration",
+        "sha256": "cce4599f0b5d85420281153a5c82045dc82efb0fd88c2ed647829662ddd0dd49",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_wagon_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "45354e134b3dfb9c2e7b260b68ec5c8c2054f8e15b6e3bff852585d1229e147a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_waystone": [
+      {
+        "kind": "decoration",
+        "sha256": "11b69ae22eabaf5f33581e3d07f37c1bfd4aa0a40cd8999a7bd7b4aa50f58304",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_waystone_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "35e5cb3194a3e19c463bc7712ca4f3ca148c27d78a4b0c1728918baf4d1a1deb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_windmill": [
+      {
+        "kind": "decoration",
+        "sha256": "a89013e7e5b5d7a43259e563a50c89548a9ee9f5dc836ce78957a450c636a0f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/deco/clockwork_village_windmill_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "087301bcb89baab2bf1a9ff1157c80bda5b32d1a1520479c17558e04d5e45ff9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_airship_house1": [
+      {
+        "kind": "residence",
+        "sha256": "2bcdf95221445bdf6578406ccebdc1f52abff37315cbb1ada4f86e344d3c1533",
+        "beds": [
+          [
+            4,
+            5,
+            11
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            8,
+            16
+          ],
+          [
+            8,
+            16,
+            11
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_airship_house1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "1ed3b34e68c66dc957312d1c8cc358d18c5845790328f704fc89f2f300795832",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_airship_house2": [
+      {
+        "kind": "decoration",
+        "sha256": "522f13cb6667ba88dadfa3380788b21cb2826bd99c113c6cf53470e0677265a7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_airship_house2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "997a7c1d9373d60c4384641ae857512103b52b51c729f25b583cb05b73ee3124",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_basichouse1": [
+      {
+        "kind": "residence",
+        "sha256": "44b908bc0883ef583bd530bbcef09e669c3b0d43f72a2fbda7fc1fb934344319",
+        "beds": [
+          [
+            3,
+            5,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            0,
+            6
+          ],
+          [
+            3,
+            5,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_basichouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "6bb4cce857fce2732ce8016ce9fe85ae8f881d2aea3945f85baf8808ed1931aa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_basichouse2": [
+      {
+        "kind": "residence",
+        "sha256": "3bc9c2380e9c5cba1c48c10585c003b78de556fefda6239cbf781e4c3ee06ee4",
+        "beds": [
+          [
+            2,
+            0,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            5
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_basichouse2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "0b9a2fdf1174091412cf22b7b31473883229b98c337b071aab9b064490a546f6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_cartographer1": [
+      {
+        "kind": "decoration",
+        "sha256": "9f7b6b07acd10931c320cab6b95ad0458e6b5f5724d0df8835ff8d021cbe0fe6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_cartographer1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "5facad4e1b4ef6a4bbdcfb6ae404b94346d5809068e6e261269c183495b4bb9c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_cartographer2": [
+      {
+        "kind": "service",
+        "sha256": "04b1b72aba2f47c3effe1dc27008ce1caf9a171ee193a57f988ac0675c44afbf",
+        "beds": [],
+        "entrances": [
+          [
+            9,
+            5,
+            5
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_cartographer2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f161cd8966c9c6320dab8ff310534d56e7513ca1dbcba1c08ade04f2820a5444",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_clock": [
+      {
+        "kind": "residence",
+        "sha256": "1cf9d37cc61584cc775ffcf21b3db78e4f1b95e1254ade961619a839e4afb355",
+        "beds": [
+          [
+            6,
+            17,
+            11
+          ],
+          [
+            6,
+            19,
+            11
+          ],
+          [
+            11,
+            17,
+            15
+          ],
+          [
+            11,
+            19,
+            15
+          ],
+          [
+            12,
+            17,
+            6
+          ],
+          [
+            12,
+            19,
+            6
+          ],
+          [
+            13,
+            17,
+            15
+          ],
+          [
+            13,
+            19,
+            15
+          ],
+          [
+            15,
+            17,
+            15
+          ],
+          [
+            15,
+            19,
+            15
+          ],
+          [
+            17,
+            17,
+            15
+          ],
+          [
+            17,
+            19,
+            15
+          ],
+          [
+            18,
+            19,
+            6
+          ],
+          [
+            19,
+            17,
+            15
+          ],
+          [
+            19,
+            19,
+            15
+          ],
+          [
+            24,
+            17,
+            12
+          ],
+          [
+            24,
+            19,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            12,
+            5
+          ],
+          [
+            15,
+            2,
+            16
+          ],
+          [
+            15,
+            22,
+            5
+          ],
+          [
+            25,
+            12,
+            10
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_clock_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f194bfe8d775b13cef986a6dc92be96588b439063a3285b443922d5c2241457d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_fletcher": [
+      {
+        "kind": "residence",
+        "sha256": "754049aa5a2733d447642078ebd3d443f02e65b204a939b98435ccc48bcb0996",
+        "beds": [
+          [
+            13,
+            1,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            12,
+            0,
+            5
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_fletcher_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "02c5b13e78cc758136a8ec26fc4c92fe61e905c4718ac8d356c6cde40945c0d5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_greenhouse": [
+      {
+        "kind": "service",
+        "sha256": "b5abc269eb5c11523f13f012054bcbcf396e92442c260f4095f41188942b5576",
+        "beds": [],
+        "entrances": [
+          [
+            11,
+            0,
+            14
+          ],
+          [
+            17,
+            0,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_greenhouse_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "a134b0581df352b6be68e9816b32968fc2820c78ced5aaf02961029966113cb5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_leatherworker1": [
+      {
+        "kind": "residence",
+        "sha256": "fdd56e4b577a396c8bb31e8de46e615dcf046cfc6d6b7d851268bfaab95257c9",
+        "beds": [
+          [
+            20,
+            0,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            16,
+            0,
+            9
+          ],
+          [
+            17,
+            6,
+            6
+          ],
+          [
+            18,
+            21,
+            4
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_leatherworker1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "fa3e18abf3b966d47e3c217f0b26388a3f0932257f8a181e9bf6ee4a5b91773b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_leatherworker2": [
+      {
+        "kind": "decoration",
+        "sha256": "d5569857caef7acf5bac4a2e4ec9a97329090cf5123e404daf22aaa532093688",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_leatherworker2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "aedee12685c4c06a09fe35e33e2da062f98b74c899ead66854a22615e5d231b3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_leatherworker3": [
+      {
+        "kind": "decoration",
+        "sha256": "e9889aec9541cd9dbcebb6d8fa16ebf6086916b6fd40c6087855072c001704d1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_leatherworker3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "59e83cfad830b7b262aa2d5d697f3fe994ece958509315610c2cacceaf2ef60e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_library": [
+      {
+        "kind": "residence",
+        "sha256": "3a96392643ba2804477b981287660784193da0b8914414ef48000aadc516535f",
+        "beds": [
+          [
+            10,
+            7,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_library_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "93b9fb5ddb7b19b6a4f5e70e731addd47b942c7a156e54568ddec50fadc405e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_toolsmith": [
+      {
+        "kind": "residence",
+        "sha256": "ef7f8d7bd828e50ca1b2b5d23f39b3f7eb8ff1282c10639948f4c766d7def38c",
+        "beds": [
+          [
+            4,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            2
+          ],
+          [
+            6,
+            0,
+            6
+          ],
+          [
+            6,
+            4,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:clockwork_village/house/clockwork_village_toolsmith_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "57901b9a4e0e8c5cd6183581b7e0d85c2f7a5def719cc15b284a23d5f143b8c4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/mobs/clockwork_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "86f6c66e1ef76a75d0bd4d868b22be98eb99485e57de91ea45bf87a826a0bbb1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/mobs/clockwork_village_villager_baby": [
+      {
+        "kind": "decoration",
+        "sha256": "e5e073686596fb4025ce5570a829344984eca2214aaa34c9609469578bed7d6a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/mobs/clockwork_village_villager_guard": [
+      {
+        "kind": "decoration",
+        "sha256": "6ae6b4aa9e560baf9e832fcef70985539e22dfdda18ddb838ac498b87e4531fb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/mobs/clockwork_village_villager_nitwit": [
+      {
+        "kind": "decoration",
+        "sha256": "b597156daec300ee54d4f439cdc4a99fe47aee8095901fff2fc945a29e8d6723",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_bell": [
+      {
+        "kind": "road",
+        "sha256": "452b4e39150f1f64352f0f0780a817e5c003f132e5b2c97716d787ef3e2e7007",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_bell_bottom": [
+      {
+        "kind": "road",
+        "sha256": "7bd4e8321bd1fcff63607a90fc2d58e249584dbe17bcd46053b912659ec4e100",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_faucet": [
+      {
+        "kind": "road",
+        "sha256": "1251b8d187935de8cc17ce0601056e283bdfad99a3d8dc8195e131d354d239db",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_faucet_bottom": [
+      {
+        "kind": "road",
+        "sha256": "5e8b9e52b11fc5b558086654d6e1ab7349056af116e52daab6635a4e65af3aae",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_fountain": [
+      {
+        "kind": "road",
+        "sha256": "c499ce91f63ba6e79cfba990b1bef5d406dd3a5d6341585a0bd5a124ea63b0e3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_fountain_bottom": [
+      {
+        "kind": "road",
+        "sha256": "b0f06af551844c1b8b7cb75c2d7a257b73e38205815440bc181e6da782ab4d09",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path1": [
+      {
+        "kind": "road",
+        "sha256": "3828223f26f96f6454b72c97057c8cec2502ddce1117bdea40a1464bac608dff",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path2": [
+      {
+        "kind": "road",
+        "sha256": "2ba18a3c83a776ae2f225536bf0ee3d337abf3553ae5b3c7b073289062165d6f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path3": [
+      {
+        "kind": "road",
+        "sha256": "a1e470b85d0a61ef50e4c7f92826bb76ec8daa682dba9d79f53deea6047a8d0a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path4": [
+      {
+        "kind": "road",
+        "sha256": "788622a651b623a57cc6b53eeb2525417a855593cfeeaffb2490c8496ddf8503",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path5": [
+      {
+        "kind": "road",
+        "sha256": "cc954956183b39320b21d1cff392ef763d440bac80ddd24f2c8ef9b634f90c4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_clock": [
+      {
+        "kind": "road",
+        "sha256": "4b16ca14ab6f63339933ea966f8b4075b02a3812849ed339c539a2ec89d90735",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "297a263bc75de755fa2d6a03aaea428db31a462442cb262c9acd00a38af30220",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "141f86d1909ffdc33d200c7337631ef2f2120f46665fe8dcb5fd817b62ad8855",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "adee49578c3b49a42a8a785c3e768d2d831417c72e70b7fb0d337903953f0a28",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "aa93a4f582b956b2975909213aa1ff8439f5110ca43900f82d7eb9763f9d6769",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_large5": [
+      {
+        "kind": "road",
+        "sha256": "291ac4644f024b218eebf2472dd86214733d3f759f8161129aed926ba8cdd149",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_large6": [
+      {
+        "kind": "road",
+        "sha256": "aebd39899ac0df9f3396a7f2398a2fd31c82bdbae90fbb91aa729e3ca9d8a70b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_large7": [
+      {
+        "kind": "road",
+        "sha256": "eb7c91332407f8f7bf9c6b1feed031fda7140317a6f154fe8953367e7effe369",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_path_leather": [
+      {
+        "kind": "road",
+        "sha256": "4dd5e0d75fecb8f20691fddea5af2bd1f598d0d491cccd7eabb229f97e8a1320",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_tree_large": [
+      {
+        "kind": "road",
+        "sha256": "ce90581ab3d94e63ea4bed609e038429ae823456e68850564fd3e87991adc7da",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_tree_large_bottom": [
+      {
+        "kind": "road",
+        "sha256": "3b92493ea82df7a95e759259d773bd0a257f8d1f389792beef88bc2e6d72ad4b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_well": [
+      {
+        "kind": "road",
+        "sha256": "ca2916431e1e4cdd31d17208b6909a04e4251f3e5e072f09ecf5c13077db176b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:clockwork_village/path/clockwork_village_well_bottom": [
+      {
+        "kind": "road",
+        "sha256": "8ed8ab21a90de5031b71f9904c0e5f79548ab69f0bbcef59d9c46a45b1c1e7a7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [
+    "mechanisms"
+  ]
+}

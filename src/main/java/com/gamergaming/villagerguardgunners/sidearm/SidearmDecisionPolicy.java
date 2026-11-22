@@ -63,7 +63,7 @@ public final class SidearmDecisionPolicy {
 
     /**
      * Determines when the primary may be restored. Feature disablement,
-     * engagement completion, and target replacement bypass the minimum active
+     * engagement completion, and explosive-sidearm target replacement bypass the minimum active
      * time but still pass through the native-safety gate in
      * {@link #returnDecision}.
      */
@@ -86,7 +86,7 @@ public final class SidearmDecisionPolicy {
         if (!targetActive) {
             return SidearmReturnReason.ENGAGEMENT_ENDED;
         }
-        if (!sameTarget) {
+        if (!sameTarget && activationReason != SidearmActivationReason.PRIMARY_DRY) {
             return SidearmReturnReason.TARGET_CHANGED;
         }
         if (!sidearmUsable) {

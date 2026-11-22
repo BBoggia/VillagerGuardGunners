@@ -1,268 +1,81 @@
 # Villager Guard Gunners
 
-Give **Guard Villagers** guards native access to **Timeless and Classics Zero**
-firearms.
+> **New in the 1.12 beta** — Guards can now use guns from [MrCrayfish's Gun Mod \[Unofficial\]](https://www.curseforge.com/minecraft/mc-mods/mrcrayfishs-gun-mod-unofficial), [Vic's Point Blank](https://www.curseforge.com/minecraft/mc-mods/vics-point-blank), and [PointBlank: Jelly](https://www.curseforge.com/minecraft/mc-mods/pointblank-jelly) on Forge 1.20.1 and NeoForge 1.21.1. TaCZ is optional in the beta. If you use Point Blank, choose one of the two variants.
 
-Villager Guard Gunners lets guards equip and operate TaCZ weapons using TaCZ's
-own firearm system. Guards can aim, move, fire, reload, cycle manual actions,
-manage ammunition, protect allies, and adjust their tactics to the weapon they
-are carrying without replacing TaCZ's projectiles or weapon behavior.
+Villager Guard Gunners is an add-on for **Guard Villagers** that lets guards use guns from **Timeless and Classics Zero (TaCZ)** and other supported gun mods. It adds configurable combat behavior, squad commands, patrol routes, ammo resupply, Quartermaster services, and medical care.
 
-<br>
+Equip guards through their inventory, give them compatible ammo, and adjust their orders. Village Armories and Quartermasters provide supplies, while medic guards can treat injured allies. Optional generation settings and a companion datapack add defense buildings to newly generated villages.
 
-## How It Works
+**Available for Minecraft 1.20.1 with Forge and for Minecraft 1.21.1 with NeoForge.** Choose the file and dependencies for your Minecraft version. If you use TaCZ, choose the official file for your Minecraft version and loader.
 
-<ol>
-  <li>Create a guard through normal Guard Villagers gameplay, or allow an
-      eligible natural guard to receive a configured loadout.</li>
-  <li>Open the guard inventory and place a TaCZ gun in its main-hand slot. You
-      can also give it an optional eligible pistol in the sidearm slot.</li>
-  <li>Add compatible loose ammunition or ammo boxes to the three ammunition
-      slots.</li>
-  <li>Optionally specialize the guard with per-guard orders or assign it to a
-      squad with a Squad Command Ledger.</li>
-  <li>Give the guard a valid target through normal Guard Villagers behavior.</li>
-  <li>The guard uses TaCZ's native aiming, firing, reload, projectile, sound,
-      and synchronization systems during combat.</li>
-</ol>
-
-<br>
+I started developing this mod because powerful mobs in my modpack were wiping out villages. I wanted to give the guards a way to defend them without making the guards too powerful.
 
 ## Features
 
-<ul>
-  <li>
-    <strong>Native TaCZ weapon handling</strong><br>
-    Guards use TaCZ's firearm API for projectiles, damage, accuracy, recoil,
-    fire modes, reloads, bolt actions, heat, charge behavior, attachments,
-    sounds, and synchronization.<br><br>
-  </li>
-  <li>
-    <strong>Automatic sidearms</strong><br>
-    Give a guard an eligible non-explosive pistol in its dedicated sidearm
-    slot. The guard can draw it when its primary is confirmed dry, when orders
-    prohibit its explosive primary, or when a target is too close to use that
-    explosive weapon safely. Native-action gates and return hysteresis prevent
-    unsafe or rapid weapon swapping, while TaCZ remains responsible for every
-    shot and reload.<br><br>
-  </li>
-  <li>
-    <strong>Difficulty-scaled natural guard loadouts</strong><br>
-    Eligible naturally generated guards can replace their starting crossbow
-    with a loaded TaCZ gun and one complete stack of compatible ammunition.
-    Opt-in format-3 datapack entries can also issue an eligible pistol sidearm
-    with its own full ammunition stack.
-    The defaults progress from pistols on Easy, through pistols and SMGs on
-    Normal, to occasional rifles on Hard, with configurable source, chance,
-    replacement, and explosive-safety controls. Persistent local caps remain
-    accurate when nearby guard chunks are unloaded. Conditional datapack
-    entries can respond to dimension, biome, structure, difficulty, spawn
-    source, raid state, and guard scoreboard tags.<br><br>
-  </li>
-  <li>
-    <strong>Weapon-specific tactical profiles</strong><br>
-    Pistols, SMGs, rifles, shotguns, sniper rifles, machine guns, and launchers
-    can use different approach distances, retreat behavior, aim requirements,
-    firing ranges, and visibility timing. Exact gun overrides are also
-    supported.<br><br>
-  </li>
-  <li>
-    <strong>Guard ammunition inventory</strong><br>
-    Every guard receives three persistent slots for compatible TaCZ loose
-    ammunition and ammo boxes. Ammunition remains attached to the guard across
-    saves, chunk reloads, and normal guard lifecycle events.<br><br>
-  </li>
-  <li>
-    <strong>Ammunition quality-of-life</strong><br>
-    Authorized players can crouch-right-click a guard to deposit ammunition.
-    Guards can collect compatible nearby drops and request emergency loose
-    ammunition from nearby allied guards while preserving donor reserves.
-    These systems understand both the configured primary and sidearm.<br><br>
-  </li>
-  <li>
-    <strong>Village Armory storage</strong><br>
-    Store TaCZ loose ammunition and ammo boxes in a craftable nine-slot
-    ammunition-only container. Village Armories support hoppers, Forge item
-    pipes, comparator output, persistent contents, and optional Squad Command
-    Ledger association. Automatic guard travel and withdrawal are not part of
-    version 1.2.<br><br>
-  </li>
-  <li>
-    <strong>Reusable ammo-box preservation</strong><br>
-    Depleted finite TaCZ ammo boxes are dropped intact when a guard needs to
-    reload or receive new supplies, preventing empty boxes from permanently
-    blocking the ammunition slots.<br><br>
-  </li>
-  <li>
-    <strong>Friendly-fire and ally protection</strong><br>
-    Guards avoid firing through guards, villagers, iron golems, owners, tamed
-    or owned entities, scoreboard allies, and additional protected entity
-    types supplied by a modpack.<br><br>
-  </li>
-  <li>
-    <strong>Rules of engagement</strong><br>
-    Choose normal Guard Villagers targets, hostile mobs only, defensive
-    retaliation, or hold fire. Datapacks and configuration can add or exclude
-    exact entity types.<br><br>
-  </li>
-  <li>
-    <strong>Per-guard orders</strong><br>
-    Specialize individual guards with their own rules of engagement, tactical
-    profile, explosive permission, ammunition logistics, combat movement, and
-    maximum firing range while preserving server safety limits. Craft a
-    reusable Orders Ledger to copy those behavior settings between guards
-    without copying their equipment, ammunition, ownership, or patrol data.<br><br>
-  </li>
-  <li>
-    <strong>Squads and temporary field commands</strong><br>
-    Use a reusable Squad Command Ledger to organize guards into stable named
-    squads and issue Rally, Defend, Hold, Focus Target, Fall Back, or Resume
-    Orders commands. Dispatch is limited to nearby loaded members and remains
-    subordinate to every rule-of-engagement, ally, ammunition, and explosive
-    safety check.<br><br>
-  </li>
-  <li>
-    <strong>Explosive weapon safety</strong><br>
-    Launcher users maintain a blast-aware minimum distance, avoid unsafe shots,
-    and preserve blocks from guard-owned TaCZ explosions by default while
-    keeping TaCZ's native effects against hostile entities. Runtime gun scripts
-    that enable or alter explosions receive the same safety handling.<br><br>
-  </li>
-  <li>
-    <strong>Modpack customization</strong><br>
-    Fzzy Config controls combat, movement, tactical profiles, rules of
-    engagement, ally protection, explosive safety, ammunition logistics,
-    squad-command limits, and performance. Reloadable datapack weapon pools
-    with contextual entries,
-    entity tags, a copy-ready example datapack, migration guidance, and a
-    compatibility API provide additional integration points.<br><br>
-  </li>
-  <li>
-    <strong>Performance-conscious behavior</strong><br>
-    Visibility checks, path updates, gun-data refreshes, dropped-ammo pickup,
-    and sharing use bounded or staggered scheduling. Guards do not continuously
-    scan for supplies or pathfind toward dropped ammunition.<br><br>
-  </li>
-  <li>
-    <strong>Operator diagnostics</strong><br>
-    <code>/vgg inspect &lt;guard&gt;</code> reports the guard's target, tactical
-    profile, firing range, aiming state, safety decision, ammunition state, and
-    current TaCZ weapon state. Naturally issued equipment also reports its
-    selection result and authenticated provenance. Read-only
-    <code>/vgg loadouts validate</code>, <code>inspect</code>, and
-    <code>preview</code> commands validate compatibility and show contextual
-    pool behavior before rollout. Permission-gated squad registry commands
-    help operators inspect and remove abandoned squad records.<br><br>
-  </li>
-</ul>
+*   **Guns and combat.** Guards can use pistols, SMGs, rifles, shotguns, sniper rifles, machine guns, and supported launchers. With either Point Blank variant, guards use guns that hit their target directly and hold fire with launchers. They aim, fire, reload, and adjust their movement to their weapon. Guards avoid firing through protected allies and can withdraw when injured, overwhelmed, or unable to use their gun. Their explosions preserve blocks by default.
+*   **Configurable accuracy.** Adjust aim error and the point guards aim at. Optional settings let you reduce accuracy against players separately from accuracy against mobs.
+*   **Ammo and backup sidearms.** Each guard has three dedicated ammo slots for loose ammo and ammo boxes. Equip a backup pistol for situations where the primary gun is empty or unsafe to use. Guards can collect nearby dropped ammo and share spare loose ammo with other guards.
+*   **Guard Orders and squads.** Set rules of engagement, tactics, movement, firing range, and explosive permission. Copy behavior with an Orders Ledger, or use a Squad Command Ledger to organize squads, create patrol routes, and issue Rally, Defend, Hold, Focus Target, Fall Back, and Resume Orders commands.
+*   **Village Armories.** Store ammo in craftable Armories that guards can visit when supplies run low. Armories support hoppers, pipes, comparators, and access restrictions for squads.
+*   **Quartermasters.** Let an adult unemployed villager claim a stocked Quartermaster station. Enrolled guards can restock or maintain a selected equipment loadout during work hours. Review shortages, deliveries, and guard service settings through the overview, or manage several guards together. Quartermasters also sell supplies through villager trades. Gun sales are optional and start disabled. Deposit purchases into storage for guards to use them.
+*   **Medical care.** Supply a guard's medical pouch and enable Medic Duty to treat injured allies. Medical Retreat lets wounded guards seek help. With downed guards enabled, casualties can be stabilized and revived. Optional cot care and transport let supplied medics carry casualties to Recovery Cots.
+*   **Village defense.** Optional initial staffing scales guard counts with village size. Automatic patrols cover village areas and resume after combat. Standalone Village Watchtowers and optional village buildings provide guard positions and supplies. Initial staffing and building garrisons do not replace killed guards.
+*   **Natural gun loadouts.** Newly spawned guards can receive guns and matching ammo based on difficulty, including Peaceful. Server settings and datapacks control the available loadouts, spawn sources, chances, and nearby automatic-gunner limits. Guard counts and gun loadouts have separate settings.
 
-<br>
+## Getting Started
+
+1.  Install Villager Guard Gunners, Guard Villagers, Fzzy Config, and Kotlin for Forge on both client and server. Install your chosen gun mods and their dependencies on both sides. Earlier releases also require TaCZ.
+2.  Create a guard through normal Guard Villagers gameplay.
+3.  Open its inventory, equip a supported gun in its main hand, and add compatible ammo.
+4.  Adjust Guard Orders, add a sidearm, or assign the guard to a squad.
+5.  For automatic supplies, stock a Village Armory or opt the guard into Restock or Loadout service at a staffed Quartermaster station.
+
+Use Fzzy Config to change settings. The guard inventory shows ammo, combat, medical, and equipment-service status.
+
+## Optional Village Buildings Datapack
+
+The [companion Village Buildings datapack](https://www.curseforge.com/minecraft/data-packs/villager-guard-gunners-village-buildings) includes **Barracks, Village Armories, Sentry Posts, Village Watchtowers, and Training Yards** in one universal ZIP.
+
+It includes designs for vanilla villages and selected regions from **ChoiceTheorem's Overhauled Village (CTOV), Moog's Missing Villages, Tidal Towns, and Sky Villages**. Integrations for village mods you do not have remain inactive. Choose the Forge or NeoForge download for your Minecraft version.
+
+Place the ZIP in the world's `datapacks` folder, enable **Village Defense Building generation** in Fzzy Config, and restart the world or server. Explore newly generated villages to find the buildings. `/reload` alone is not enough, and existing villages are not rebuilt. On servers, joining players do not need a local copy of the datapack.
+
+The companion pack expands the base mod’s smaller built-in buildings. Large structures need space, and occasional awkward terrain placement is possible.
+
+## Infinite Ammo
+
+Both versions have four options under **Ammo Quality of Life → Infinite Ammo**:
+
+*   **Off (default):** normal ammo use.
+*   **Infinite Ammo with Reloading:** all guards have unlimited reserves and keep normal reload delays.
+*   **Infinite Ammo without Reloading:** all guards keep their magazines supplied. Firing delays, action cycling, heat, and friendly-fire checks still apply.
+*   **Infinite Ammo with Creative Ammo Box:** new TaCZ loadouts include a compatible creative ammo box. You can give a box to an existing TaCZ guard manually. Guards with MrCrayfish’s or Point Blank guns receive ordinary matching ammo.
+
+Virtual modes leave carried supplies untouched. Changing the setting does not remove boxes already issued. Boxes can be removed and transferred like other TaCZ items. This setting does not change the chance of a guard spawning with a gun.
 
 ## Requirements
 
-Villager Guard Gunners `1.2` requires:
+| Component        | Minecraft 1.20.1 — Forge                 | Minecraft 1.21.1 — NeoForge                     |
+| ---------------- | ---------------------------------------- | ----------------------------------------------- |
+| Loader           | Forge 47.4.10 or newer 47.x              | NeoForge 21.1.233 or newer 21.1.x               |
+| Java             | 17                                       | 21                                              |
+| Guard Villagers  | 1.20.1-1.6.19                            | 2.4.12                                          |
+| TaCZ (optional in the beta) | Official Forge release, 1.1.8 or newer for 1.20.1 | Official NeoForge release, 1.2.0 |
+| Fzzy Config      | 0.7.6 or newer 0.7.x for 1.20.1                | 0.7.7+1.21+neoforge or 0.7.7+fix1+1.21+neoforge |
+| Kotlin for Forge | 4.12.0 (tested)                          | 5.12.0                                          |
 
-<ul>
-  <li><strong>Minecraft 1.20.1</strong></li>
-  <li><strong>Forge 47.4.23</strong></li>
-  <li><a href="https://www.curseforge.com/minecraft/mc-mods/guard-villagers"><strong>Guard Villagers 1.20.1-1.6.19</strong></a></li>
-  <li><a href="https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero"><strong>Timeless and Classics Zero 1.1.8-hotfix</strong></a></li>
-  <li><a href="https://www.curseforge.com/minecraft/mc-mods/fzzy-config"><strong>Fzzy Config 0.7.6 for Minecraft 1.20.1</strong></a></li>
-  <li><a href="https://www.curseforge.com/minecraft/mc-mods/kotlin-for-forge"><strong>Kotlin for Forge 4.12.0</strong></a></li>
-</ul>
+Use the listed Guard Villagers and Kotlin for Forge versions on NeoForge. Either listed NeoForge build of Fzzy Config is supported.
 
-Install the mod and all required dependencies on both the client and server.
-This release is deliberately locked to this reviewed version set.
+*   **TaCZ.** Use the [official TaCZ project](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero) for both loaders. On NeoForge, replace the unofficial port with the official 1.2.0 file. Older custom gun packs can need conversion. TaCZ provides `/tacz convert universal` to generate Minecraft 1.21.1 overlays. Keep a world backup when changing dependencies.
+*   **MrCrayfish's Gun Mod \[Unofficial\].** Install Framework alongside it. On Minecraft 1.21.1, version 1.4.21 of the gun mod requires NeoForge 21.1.249 or newer and Framework 0.13.11 or newer.
+*   **Point Blank.** Install GeckoLib and either Vic's Point Blank or PointBlank: Jelly. Vic's Point Blank 2.2.0 and PointBlank: Jelly 2.1.0 were tested on both loaders.
 
-<br>
+## Servers, Modpacks, and Support
 
-## Configuration
+Downed guards, cot care and transport, size-based initial staffing, automatic village patrols, and Village Defense Building generation start disabled. Enable the features you want through Fzzy Config. Individual guards start with Medic Duty and Medical Retreat off.
 
-The server-authoritative Fzzy Config screen includes controls for:
+Datapacks can customize gun loadouts, guard roles, treatment supplies, Quartermaster equipment and trades, ally protection, and village buildings. Operators can use `/vgg` commands to inspect guards and village systems.
 
-<ul>
-  <li>Global guard gun behavior</li>
-  <li>Engagement and close-range distances</li>
-  <li>Guard movement speeds</li>
-  <li>Weapon tactical profiles and exact gun overrides</li>
-  <li>Rules of engagement and defensive memory</li>
-  <li>Ally and entity-type protection</li>
-  <li>Explosive standoff and block preservation</li>
-  <li>Dropped-ammunition pickup</li>
-  <li>Ammunition sharing, owner matching, and donor reserves</li>
-  <li>Bounded performance scheduling</li>
-  <li>Persistent per-guard combat and logistics orders</li>
-  <li>Squad-command range, duration, radius, and affected-guard limits</li>
-  <li>Natural-loadout spawn sources, difficulty chances, local caps, pool IDs,
-      unloaded-chunk accounting, crossbow replacement, and explosive
-      eligibility</li>
-</ul>
+Report issues with your Minecraft, loader, and mod versions, relevant logs, gun-pack list, and reproduction steps.
 
-The configuration file is stored at:
-
-`config/villagerguardgunners/guard_gunners.toml`
-
-Server configuration is synchronized to connected clients. Permission level 4
-is required to edit synchronized values through Fzzy Config.
-
-<br>
-
-## Operator Commands
-
-`/vgg inspect <guard>` and the read-only loadout diagnostics require permission
-level 2.
-
-The command displays the selected guard's current AI decision, movement state,
-rules-of-engagement result, tactical profile, firing window, aim state,
-friendly-fire safety result, ammunition reserves, reload state, and last TaCZ
-shooting result. For natural loadouts it also distinguishes no record, an
-authenticated issued gun, and a guard/gun provenance mismatch.
-
-`/vgg loadouts validate [pool]`, `/vgg loadouts inspect <pool> [page]`, and
-`/vgg loadouts preview <difficulty> <spawn_source> [pool]` validate and preview
-datapack pools without issuing equipment.
-
-`/vgg squads list [page]` and `/vgg squads unregister <squad>` provide
-permission-gated maintenance for the persistent squad registry.
-
-<br>
-
-## Installation
-
-<ol>
-  <li>Install Minecraft 1.20.1 with Forge 47.4.23.</li>
-  <li>Install Guard Villagers, TaCZ, Fzzy Config, and Kotlin for Forge using the
-      versions listed above.</li>
-  <li>Place Villager Guard Gunners in the <code>mods</code> folder on both the
-      client and server.</li>
-  <li>Add any desired TaCZ content packs normally.</li>
-  <li>Launch the game. Equip a guard manually, or allow an eligible natural
-      guard to receive a configured loadout, and let Guard Villagers select a
-      target.</li>
-  <li>Optionally equip a pistol sidearm, copy persistent behavior with an
-      Orders Ledger, or manage temporary group commands with a Squad Command
-      Ledger.</li>
-</ol>
-
-<br>
-
-## Documentation and Support
-
-Configuration, sidearms, squads, Village Armories, natural-loadout datapack
-pools, rules-of-engagement behavior, ammunition logistics, and operator
-guidance are documented with the project source.
-
-Please report reproducible problems through the CurseForge project page. Include
-the Minecraft, Forge, Guard Villagers, TaCZ, Fzzy Config, Kotlin for Forge, and
-Villager Guard Gunners versions, along with the relevant `latest.log` and TaCZ
-content-pack list.
-
-<br>
-
-## Disclaimer
-
-Villager Guard Gunners is an unofficial add-on for **Guard Villagers** and
-**Timeless and Classics Zero**. It is not affiliated with or endorsed by either
-development team. Minecraft, Minecraft Forge, Guard Villagers, TaCZ, Fzzy
-Config, Kotlin for Forge, and all third-party content remain the property of
-their respective owners.
+Villager Guard Gunners is an unofficial add-on and is not affiliated with or endorsed by the Guard Villagers or TaCZ development teams.

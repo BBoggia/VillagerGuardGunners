@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "entries": [
+    {
+      "gun": "tacz:ai_awp",
+      "weight": 2
+    },
+    {
+      "gun": "tacz:m700",
+      "weight": 1
+    },
+    {
+      "gun": "cgm:heavy_rifle",
+      "weight": 3
+    },
+    {
+      "gun": "pointblank:l96a1",
+      "weight": 2
+    },
+    {
+      "gun": "pointblank:uar10",
+      "weight": 1
+    }
+  ]
+}

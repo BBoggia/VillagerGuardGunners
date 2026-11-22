@@ -28,7 +28,8 @@ public record SquadCommand(
         }
         type = Objects.requireNonNull(type, "type");
         if (!type.isStoredCommand()) {
-            throw new IllegalArgumentException("Resume Orders is an action, not stored command data");
+            throw new IllegalArgumentException(
+                    "This ledger action is not stored command data");
         }
         issuedBy = requireNonNil(issuedBy, "issuedBy");
         dimension = Objects.requireNonNull(dimension, "dimension");

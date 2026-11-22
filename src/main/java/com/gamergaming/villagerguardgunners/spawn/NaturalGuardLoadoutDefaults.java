@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 /** Canonical conservative defaults shared by the synchronized config and policy tests. */
 public final class NaturalGuardLoadoutDefaults {
     public static final NaturalGuardSpawnRules SPAWN_RULES = new NaturalGuardSpawnRules(
-            Set.of(NaturalGuardSpawnSource.STRUCTURE),
+            Set.of(NaturalGuardSpawnSource.STRUCTURE, NaturalGuardSpawnSource.SPAWN_EGG),
             true,
             64.0D,
             false);
@@ -21,7 +21,7 @@ public final class NaturalGuardLoadoutDefaults {
     private static final Map<NaturalGuardDifficulty, NaturalGuardDifficultySettings> BY_DIFFICULTY =
             Map.of(
                     NaturalGuardDifficulty.PEACEFUL,
-                    new NaturalGuardDifficultySettings(0.0D, 0, null),
+                    new NaturalGuardDifficultySettings(0.35D, 1, EASY_POOL),
                     NaturalGuardDifficulty.EASY,
                     new NaturalGuardDifficultySettings(0.35D, 1, EASY_POOL),
                     NaturalGuardDifficulty.NORMAL,

@@ -11,6 +11,11 @@ import com.gamergaming.villagerguardgunners.squad.SquadCommandDispatcher.Dispatc
 import com.gamergaming.villagerguardgunners.squad.SquadCommandDispatcher.DispatchStatus;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandType;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerModeCodec;
+import com.gamergaming.villagerguardgunners.squad.SquadPatrolRoute;
+import com.gamergaming.villagerguardgunners.squad.SquadPatrolRouteEditor;
+import com.gamergaming.villagerguardgunners.squad.SquadPatrolRouteEditor.EditAction;
+import com.gamergaming.villagerguardgunners.squad.SquadPatrolRouteEditor.EditResult;
+import com.gamergaming.villagerguardgunners.squad.SquadPatrolRouteEditor.EditStatus;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
@@ -67,6 +72,13 @@ public final class SquadCommandLedgerItem extends Item {
         if (mode == null) {
             return InteractionResultHolder.consume(ledger);
         }
+        if (mode.isPatrolRouteEditor()) {
+            reportRouteEdit(
+                    player,
+                    SquadPatrolRouteEditor.edit(
+                            player, ledger, EditAction.INSPECT, null));
+            return InteractionResultHolder.consume(ledger);
+        }
         BlockPos position = mode.requiresPosition()
                 ? projectedPosition(player)
                 : null;
@@ -106,6 +118,20 @@ public final class SquadCommandLedgerItem extends Item {
         ItemStack ledger = context.getItemInHand();
         SquadCommandType mode = selectedMode(player, ledger);
         if (mode != null) {
+            if (mode.isPatrolRouteEditor()) {
+                boolean removing = player.isSecondaryUseActive();
+                BlockPos waypoint = removing
+                        ? null
+                        : context.getClickedPos().relative(context.getClickedFace());
+                reportRouteEdit(
+                        player,
+                        SquadPatrolRouteEditor.edit(
+                                player,
+                                ledger,
+                                removing ? EditAction.REMOVE_LAST : EditAction.ADD_WAYPOINT,
+                                waypoint));
+                return InteractionResult.CONSUME;
+            }
             BlockPos position = mode.requiresPosition()
                     ? BlockPos.containing(context.getClickLocation())
                     : null;
@@ -132,6 +158,13 @@ public final class SquadCommandLedgerItem extends Item {
         }
         SquadCommandType mode = selectedMode(player, ledger);
         if (mode != null) {
+            if (mode.isPatrolRouteEditor()) {
+                reportRouteEdit(
+                        player,
+                        SquadPatrolRouteEditor.edit(
+                                player, ledger, EditAction.INSPECT, null));
+                return InteractionResult.CONSUME;
+            }
             reportDispatch(
                     player,
                     SquadCommandDispatcher.dispatch(
@@ -316,6 +349,8 @@ public final class SquadCommandLedgerItem extends Item {
             case UNSUPPORTED_VERSION -> Component.translatable(
                     "message.villagerguardgunners.squad_command.unsupported",
                     result.storedVersion());
+            case REGISTRY_DISABLED -> Component.translatable(
+                    "message.villagerguardgunners.squad_command.registry_disabled");
             case SQUAD_NOT_REGISTERED -> Component.translatable(
                     "message.villagerguardgunners.squad_command.missing_squad");
             case POSITION_REQUIRED -> Component.translatable(
@@ -343,6 +378,86 @@ public final class SquadCommandLedgerItem extends Item {
                 success ? 1.1F : 0.8F);
     }
 
+    private static void reportRouteEdit(Player player, EditResult result) {
+        Component routeState = Component.translatable(result.executable()
+                ? "message.villagerguardgunners.patrol_route.state.ready"
+                : "message.villagerguardgunners.patrol_route.state.draft");
+        Component message = switch (result.status()) {
+            case WAYPOINT_ADDED -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.added",
+                    result.squadName(),
+                    result.waypointCount(),
+                    routeState);
+            case WAYPOINT_REMOVED -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.removed",
+                    result.squadName(),
+                    result.waypointCount(),
+                    routeState);
+            case ROUTE_CLEARED -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.cleared",
+                    result.squadName());
+            case ROUTE_DRAFT, ROUTE_READY -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.status",
+                    result.squadName(),
+                    result.dimensionId() == null ? "" : result.dimensionId().toString(),
+                    result.waypointCount(),
+                    result.revision(),
+                    routeState);
+            case NO_ROUTE -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.none",
+                    result.squadName());
+            case UNCHANGED -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.unchanged",
+                    result.squadName());
+            case BLANK_LEDGER -> Component.translatable(
+                    "message.villagerguardgunners.squad_command.blank");
+            case CORRUPT_LEDGER -> Component.translatable(
+                    "message.villagerguardgunners.squad_command.corrupt");
+            case UNSUPPORTED_VERSION -> Component.translatable(
+                    "message.villagerguardgunners.squad_command.unsupported",
+                    result.storedVersion());
+            case REGISTRY_DISABLED -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.registry_disabled");
+            case SQUAD_NOT_REGISTERED -> Component.translatable(
+                    "message.villagerguardgunners.squad_command.missing_squad");
+            case ROUTE_FULL -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.full",
+                    SquadPatrolRoute.MAXIMUM_WAYPOINTS);
+            case WRONG_DIMENSION -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.wrong_dimension",
+                    result.dimensionId() == null ? "" : result.dimensionId().toString());
+            case INVALID_WAYPOINT -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.invalid_waypoint",
+                    SquadPatrolRoute.MAXIMUM_SEGMENT_DISTANCE);
+            case INVALID_DESTINATION -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.invalid_destination");
+            case DESTINATION_UNLOADED -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.unloaded");
+            case OUTSIDE_WORLD -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.outside_world");
+            case OUT_OF_RANGE -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.out_of_range");
+            case REVISION_EXHAUSTED -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.revision_exhausted");
+            case INVALID_REQUEST -> Component.translatable(
+                    "message.villagerguardgunners.patrol_route.failed");
+        };
+        boolean positive = result.changed() || result.informational();
+        if (result.informational()) {
+            com.gamergaming.villagerguardgunners.command.VillageCoverageCommands.ledgerSummary(player);
+            com.gamergaming.villagerguardgunners.command.VillagePopulationCommands.ledgerSummary(player);
+        }
+        player.displayClientMessage(message.copy().withStyle(
+                        result.changed()
+                                ? ChatFormatting.GREEN
+                                : positive ? ChatFormatting.GOLD : ChatFormatting.RED),
+                true);
+        player.playSound(
+                positive ? SoundEvents.BOOK_PAGE_TURN : SoundEvents.VILLAGER_NO,
+                0.45F,
+                result.changed() ? 1.15F : positive ? 1.0F : 0.8F);
+    }
+
     private static void appendMode(
             List<Component> tooltip,
             @Nullable SquadCommandType mode) {
@@ -359,6 +474,18 @@ public final class SquadCommandLedgerItem extends Item {
         tooltip.add(Component.translatable(
                         "item.villagerguardgunners.squad_command_ledger.tooltip.cycle")
                 .withStyle(ChatFormatting.GRAY));
+        if (mode.isPatrolRouteEditor()) {
+            tooltip.add(Component.translatable(
+                            "item.villagerguardgunners.squad_command_ledger.tooltip.route_add")
+                    .withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.translatable(
+                            "item.villagerguardgunners.squad_command_ledger.tooltip.route_remove")
+                    .withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.translatable(
+                            "item.villagerguardgunners.squad_command_ledger.tooltip.route_inspect")
+                    .withStyle(ChatFormatting.DARK_GRAY));
+            return;
+        }
         tooltip.add(Component.translatable(
                         "item.villagerguardgunners.squad_command_ledger.tooltip.issue")
                 .withStyle(ChatFormatting.DARK_GRAY));

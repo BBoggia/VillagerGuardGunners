@@ -1,10 +1,13 @@
 package com.gamergaming.villagerguardgunners.spawn;
 
+import com.gamergaming.villagerguardgunners.ammunition.GuardInfiniteAmmo;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoTransactions;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
+import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.gamergaming.villagerguardgunners.sidearm.GuardSidearmTransactions;
+import com.gamergaming.villagerguardgunners.role.GuardRoles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +15,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import tallestegg.guardvillagers.entities.Guard;
 
 /** Resolves and atomically issues one selected natural guard loadout. */
@@ -53,6 +57,9 @@ public final class NaturalGuardLoadoutIssuance {
             Guard guard,
             NaturalGuardLoadoutCandidate candidate,
             boolean allowExplosiveWeapons) {
+        if (candidate.roleId() != null && GuardRoles.get(candidate.roleId()) == null) {
+            return Preparation.failed(IssuanceStatus.ROLE_DEFINITION_UNAVAILABLE);
+        }
         NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy primaryExplosivePolicy =
                 allowExplosiveWeapons
                         ? NaturalGuardLoadoutCompatibilityAnalyzer.ExplosivePolicy.IGNORE
@@ -67,7 +74,7 @@ public final class NaturalGuardLoadoutIssuance {
         }
 
         ItemStack primaryGun = primary.preparedGun();
-        ItemStack primaryAmmo = primary.preparedAmmunition();
+        ItemStack primaryAmmo = GuardInfiniteAmmo.spawnSupply(primaryGun, primary.preparedAmmunition());
         ItemStack sidearmGun = ItemStack.EMPTY;
         ItemStack sidearmAmmo = ItemStack.EMPTY;
         if (candidate.sidearmId() != null) {
@@ -83,7 +90,7 @@ public final class NaturalGuardLoadoutIssuance {
                 return Preparation.failed(IssuanceStatus.SIDEARM_INELIGIBLE);
             }
             sidearmGun = sidearm.weapon().preparedGun();
-            sidearmAmmo = sidearm.weapon().preparedAmmunition();
+            sidearmAmmo = GuardInfiniteAmmo.spawnSupply(sidearmGun, sidearm.weapon().preparedAmmunition());
         }
 
         final NaturalGuardLoadoutProvenance provenance;
@@ -106,7 +113,8 @@ public final class NaturalGuardLoadoutIssuance {
                 primaryAmmo,
                 sidearmGun,
                 sidearmAmmo,
-                provenance);
+                provenance,
+                candidate.roleId());
     }
 
     private static IssuanceStatus mapPrimaryFailure(
@@ -152,12 +160,14 @@ public final class NaturalGuardLoadoutIssuance {
         final GuardNaturalLoadoutAccess naturalAccess;
         final NaturalGuardLoadoutProvenance provenanceBefore;
         final NaturalGuardLoadoutCandidate candidateBefore;
+        final ResourceLocation roleBefore;
         try {
             ammoHandler = GuardAmmoAccess.getAmmoHandler(guard);
             ammoBefore = AmmoSnapshot.capture(ammoHandler);
             naturalAccess = (GuardNaturalLoadoutAccess) guard;
             provenanceBefore = naturalAccess.villagerGuardGunners$getNaturalLoadoutProvenance();
             candidateBefore = naturalAccess.villagerGuardGunners$getNaturalLoadoutCandidate();
+            roleBefore = GuardRoleAccess.getRoleId(guard);
         } catch (RuntimeException exception) {
             return Result.failed(IssuanceStatus.TRANSACTION_FAILED);
         }
@@ -185,7 +195,7 @@ public final class NaturalGuardLoadoutIssuance {
                     return rollback(
                             guard, mainHandBefore, ammoHandler, ammoBefore,
                             false, sidearmGun, naturalAccess,
-                            provenanceBefore, candidateBefore, false);
+                            provenanceBefore, candidateBefore, roleBefore, false);
                 }
             }
 
@@ -216,7 +226,7 @@ public final class NaturalGuardLoadoutIssuance {
                 return rollback(
                         guard, mainHandBefore, ammoHandler, ammoBefore,
                         sidearmConfigured, sidearmGun, naturalAccess,
-                        provenanceBefore, candidateBefore, false);
+                        provenanceBefore, candidateBefore, roleBefore, false);
             }
             mainHandMutationAttempted = true;
             guard.setItemSlot(EquipmentSlot.MAINHAND, preparation.primaryGun());
@@ -224,7 +234,7 @@ public final class NaturalGuardLoadoutIssuance {
                 return rollback(
                         guard, mainHandBefore, ammoHandler, ammoBefore,
                         sidearmConfigured, sidearmGun, naturalAccess,
-                        provenanceBefore, candidateBefore, true);
+                        provenanceBefore, candidateBefore, roleBefore, true);
             }
             naturalAccess.villagerGuardGunners$setNaturalLoadoutProvenance(
                     preparation.provenance());
@@ -236,7 +246,15 @@ public final class NaturalGuardLoadoutIssuance {
                 return rollback(
                         guard, mainHandBefore, ammoHandler, ammoBefore,
                         sidearmConfigured, sidearmGun, naturalAccess,
-                        provenanceBefore, candidateBefore, true);
+                        provenanceBefore, candidateBefore, roleBefore, true);
+            }
+            if (preparation.roleId() != null
+                    && (!GuardRoleAccess.setRoleId(guard, preparation.roleId())
+                            || !preparation.roleId().equals(GuardRoleAccess.getRoleId(guard)))) {
+                return rollback(
+                        guard, mainHandBefore, ammoHandler, ammoBefore,
+                        sidearmConfigured, sidearmGun, naturalAccess,
+                        provenanceBefore, candidateBefore, roleBefore, true);
             }
             return new Result(
                     IssuanceStatus.ISSUED,
@@ -247,7 +265,7 @@ public final class NaturalGuardLoadoutIssuance {
             return rollback(
                     guard, mainHandBefore, ammoHandler, ammoBefore,
                     sidearmConfigured, sidearmGun, naturalAccess,
-                    provenanceBefore, candidateBefore, mainHandMutationAttempted);
+                    provenanceBefore, candidateBefore, roleBefore, mainHandMutationAttempted);
         }
     }
 
@@ -280,6 +298,7 @@ public final class NaturalGuardLoadoutIssuance {
             GuardNaturalLoadoutAccess naturalAccess,
             @Nullable NaturalGuardLoadoutProvenance provenanceBefore,
             @Nullable NaturalGuardLoadoutCandidate candidateBefore,
+            @Nullable ResourceLocation roleBefore,
             boolean restoreMainHand) {
         boolean mainHandRestored = !restoreMainHand;
         if (restoreMainHand) {
@@ -297,10 +316,13 @@ public final class NaturalGuardLoadoutIssuance {
                 naturalAccess,
                 provenanceBefore,
                 candidateBefore);
+        boolean roleRestored = GuardRoleAccess.setRoleId(guard, roleBefore)
+                && Objects.equals(roleBefore, GuardRoleAccess.getRoleId(guard));
         return Result.failed(mainHandRestored
                         && sidearmRestored
                         && ammoRestored
                         && provenanceRestored
+                        && roleRestored
                 ? IssuanceStatus.TRANSACTION_ROLLED_BACK
                 : IssuanceStatus.TRANSACTION_ROLLBACK_FAILED);
     }
@@ -355,6 +377,7 @@ public final class NaturalGuardLoadoutIssuance {
         SIDEARM_INELIGIBLE,
         SIDEARM_SLOT_UNAVAILABLE,
         SIDEARM_STORAGE_UNREADABLE,
+        ROLE_DEFINITION_UNAVAILABLE,
         PROVENANCE_WRITE_FAILED,
         AMMO_CAPACITY_UNAVAILABLE,
         TRANSACTION_ROLLED_BACK,
@@ -402,6 +425,7 @@ public final class NaturalGuardLoadoutIssuance {
             @Nullable ItemStack sidearmGun,
             @Nullable ItemStack sidearmAmmo,
             @Nullable NaturalGuardLoadoutProvenance provenance,
+            @Nullable ResourceLocation roleId,
             @Nullable IssuanceStatus failure) {
         private boolean ready() {
             return primaryGun != null
@@ -449,18 +473,21 @@ public final class NaturalGuardLoadoutIssuance {
                 ItemStack primaryAmmo,
                 ItemStack sidearmGun,
                 ItemStack sidearmAmmo,
-                NaturalGuardLoadoutProvenance provenance) {
+                NaturalGuardLoadoutProvenance provenance,
+                @Nullable ResourceLocation roleId) {
             return new Preparation(
                     primaryGun.copy(),
                     primaryAmmo.copy(),
                     sidearmGun.copy(),
                     sidearmAmmo.copy(),
                     Objects.requireNonNull(provenance, "provenance"),
+                    roleId,
                     null);
         }
 
         private static Preparation failed(IssuanceStatus status) {
             return new Preparation(
+                    null,
                     null,
                     null,
                     null,

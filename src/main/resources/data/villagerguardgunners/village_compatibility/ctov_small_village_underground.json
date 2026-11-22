@@ -1,0 +1,451 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:small/village_underground"
+  ],
+  "templates": {
+    "ctov:village/underground/entrance": [
+      {
+        "kind": "decoration",
+        "sha256": "5192d58543dc65cdd1056c64fbce1087c9df71394d314a881cc6e5cfb961303d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/house/house_1": [
+      {
+        "kind": "residence",
+        "sha256": "890017c9f630fff7b5bacf809aeb55387fd3a71ae02ba2ed8fd34454dd996f50",
+        "beds": [
+          [
+            7,
+            1,
+            2
+          ],
+          [
+            7,
+            1,
+            3
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/house/house_2": [
+      {
+        "kind": "residence",
+        "sha256": "1632e6b04ea4446162ccf2afee06da1f40ab60e9613e000730962103aea054a7",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/house/house_3": [
+      {
+        "kind": "residence",
+        "sha256": "d0d171dcc08a675f9aea8cd99a8cb8db52ee05b5a2ca71b5ad4844ab2d6eb268",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "4b259c24c540d3bb4ae5791c33f6af026b626c31ec199f7530d6a59c65c2daec",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/underground/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "64bb4ed6dfcd452765e6d44adbe7dc67d6b27a91e43f6f0a4fae69aa4fdc9371",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/underground/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "d5a1de9ec0fd861589826eb115369d55e608399cdbc996eda0a883900b973900",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            7,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/underground/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "b6a6ff332210f7521f91de2b3d38bf8f2dc5a3d176bf464562d1dd9dde69869d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/underground/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "944c68bd0ec30dd43f54cc0dbedd354472c68dcff06b75999bc4a1bcf3aeb6b6",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/underground/jobsite/shepherd": [
+      {
+        "kind": "service",
+        "sha256": "04bf81feb1ca5a28af23512c521c3f9ab9290c17c5d538f4c05f3400f998e85c",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/underground/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "f1e31529154927b4d955789b1b1e78bf53e3e5932701647e613e97026bc54b1d",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/underground/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "d90d79498378684ae2f095080228a32841009df1f6bee38d36062b508b5f397d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "47dc147a0c4b6a7c581147c65dc973bf89ffd9a51a3221244b93cfae0a4ec395",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "183c28db6c450f9838b43d8ffc1d1f1cd2d7d012137c7db13adce2f8cbc2aec9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "ce08bde1218dfd663c40375ace9f063fbd905532322309313bae39511f57c032",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "8adfeb50e11c9953a1c14ba25e5b62680d1854386c7b0a49b4b27d9a9e52c299",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "89b6f4e8f613bfe10a68f0bc5b5276b1f3128222b9ffb2e8a162e8e7c33a0552",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "e49fc162460523cfbedc54f32791de42cfa7743a84b4c325f8bdc6637c2cf7f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "ce1dd02c144ca7f7b2a9db37f6c67193ba0046c5ea6af6402f13cf42274683e6",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/underground/wall/large_wall": [
+      {
+        "kind": "decoration",
+        "sha256": "0bb77add83e6e21128b0ec1dc5216579f13fd74ff3bd86d0016cccb745e0fe2b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/underground/wall/small_wall": [
+      {
+        "kind": "decoration",
+        "sha256": "cab7b6b00a3c41c3d0a2b66dcc2617945d63424efc4a2297ba23c945837f75fa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_1": [
+      {
+        "kind": "decoration",
+        "sha256": "645d5899334b45a1cee4c0a4bc2f8a171e8b25703f67db3ad96c1bcef3dbf877",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_2": [
+      {
+        "kind": "decoration",
+        "sha256": "2a956d2b921f3345b8eba187f328efd4c7c23c63ed1274790482d6a125efd556",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_3": [
+      {
+        "kind": "decoration",
+        "sha256": "20b86e80231a3291673cf59669c78bc894d545199c8a9c2c6e6958bfc6206b18",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_4": [
+      {
+        "kind": "decoration",
+        "sha256": "d5fc411b7bb2a1024eec98e9c90e057761c84a2e45123830281d0509445f45f5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/horses_5": [
+      {
+        "kind": "decoration",
+        "sha256": "869ec27336f412201ba40286b1e0bbaee5fdb40d1467b14fe7e207dac377ce01",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [
+    "underground"
+  ],
+  "size_family": "small"
+}

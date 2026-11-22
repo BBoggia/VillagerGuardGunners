@@ -40,7 +40,15 @@ public final class ArmoryMenu extends AbstractContainerMenu {
                         armory.getInventory(),
                         slot,
                         62 + column * 18,
-                        17 + row * 18));
+                        17 + row * 18) {
+                    @Override
+                    public void setChanged() {
+                        // Vanilla menu merges mutate the live stack without
+                        // calling a handler mutator. Notify persistence and
+                        // comparators for those changes too.
+                        armory.getInventory().onContentsChanged(slot);
+                    }
+                });
             }
         }
         for (int row = 0; row < 3; row++) {
@@ -67,7 +75,7 @@ public final class ArmoryMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        if (armory.isRemoved()) {
+        if (!armory.serviceInventoryAccessible()) {
             return false;
         }
         return levelAccess.evaluate((level, position) ->
@@ -80,9 +88,13 @@ public final class ArmoryMenu extends AbstractContainerMenu {
                 false);
     }
 
+    @Override public void clicked(int slot, int button, net.minecraft.world.inventory.ClickType type, Player player) {
+        if (armory.serviceInventoryAccessible()) super.clicked(slot, button, type, player);
+    }
+
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        if (index < 0 || index >= slots.size()) {
+        if (!armory.serviceInventoryAccessible() || index < 0 || index >= slots.size()) {
             return ItemStack.EMPTY;
         }
         Slot source = slots.get(index);

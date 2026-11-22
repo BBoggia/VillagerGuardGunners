@@ -1,0 +1,16 @@
+// Optional observer JAR for packaged-runtime provider measurements.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    def probe = p.sourceSets.create('providerProbe') {
+        java.srcDir p.file('tools/provider-qa-src')
+        resources.srcDir p.file('tools/provider-qa-resources')
+        compileClasspath += p.sourceSets.main.output + p.sourceSets.main.compileClasspath
+    }
+    p.tasks.register('providerProbeJar', Jar) {
+        dependsOn p.tasks.named('providerProbeClasses')
+        from probe.output
+        archiveFileName = 'vgg-provider-probe.jar'
+        destinationDirectory = p.layout.buildDirectory.dir('provider-qa')
+    }
+    p.reobf.create('providerProbeJar')
+}

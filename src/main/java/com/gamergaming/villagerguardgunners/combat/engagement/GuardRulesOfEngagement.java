@@ -2,21 +2,22 @@ package com.gamergaming.villagerguardgunners.combat.engagement;
 
 import com.gamergaming.villagerguardgunners.VillagerGuardGunners;
 import com.gamergaming.villagerguardgunners.api.GuardAllyProtection;
-import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
 import com.gamergaming.villagerguardgunners.config.VillagerGuardGunnersConfig;
 import com.gamergaming.villagerguardgunners.init.ModConfigs;
+import com.gamergaming.villagerguardgunners.role.GuardRoleResolver;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.registries.ForgeRegistries;
 import tallestegg.guardvillagers.entities.Guard;
 
 /**
  * Allocation-free, server-authoritative firing policy for a target already
- * selected by Guard Villagers. This class deliberately performs no entity or
+ * selected by Guard Villagers or the bounded tactical ranking policy. This class deliberately performs no entity or
  * world scans.
  */
 public final class GuardRulesOfEngagement {
@@ -38,6 +39,11 @@ public final class GuardRulesOfEngagement {
         return classify(shooter, target).mayEngage();
     }
 
+    /** Game-mode protection also applies when another mod assigns the target directly. */
+    public static boolean isNonCombatPlayer(LivingEntity target) {
+        return target instanceof Player player && (player.isCreative() || player.isSpectator());
+    }
+
     /**
      * Classifies the current target using deterministic precedence. Protected
      * allies and hold-fire cannot be bypassed by an allowlist entry.
@@ -49,13 +55,16 @@ public final class GuardRulesOfEngagement {
         if (!target.isAlive()) {
             return EngagementReason.TARGET_DEAD;
         }
+        if (isNonCombatPlayer(target)) {
+            return EngagementReason.NON_COMBAT_PLAYER;
+        }
         if (GuardAllyProtection.isProtected(shooter, target)) {
             return EngagementReason.PROTECTED_ALLY;
         }
 
         VillagerGuardGunnersConfig.EngagementSettings settings =
                 ModConfigs.GUARD_GUNNERS.engagement;
-        EngagementMode mode = GuardOrdersAccess.getOrders(shooter)
+        EngagementMode mode = GuardRoleResolver.effectiveOrders(shooter)
                 .resolveEngagementMode(settings.mode.get());
         ResourceLocation entityTypeId = ForgeRegistries.ENTITY_TYPES.getKey(target.getType());
         if (entityTypeId != null && settings.excludedEntities.get().contains(entityTypeId)) {
@@ -114,6 +123,7 @@ public final class GuardRulesOfEngagement {
     public enum EngagementReason {
         NO_TARGET(false, false),
         TARGET_DEAD(false, true),
+        NON_COMBAT_PLAYER(false, true),
         PROTECTED_ALLY(false, true),
         EXPLICIT_EXCLUSION(false, true),
         NEVER_ENGAGE_TAG(false, true),

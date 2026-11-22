@@ -5,15 +5,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplyLimits;
+import com.gamergaming.villagerguardgunners.armory.resupply.ArmoryResupplySettings;
 import com.gamergaming.villagerguardgunners.combat.tactics.ExplosiveStandoffPolicy;
 import com.gamergaming.villagerguardgunners.combat.engagement.EngagementMode;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfile;
 import com.gamergaming.villagerguardgunners.combat.tactics.TacticalProfileDefinition;
 import com.gamergaming.villagerguardgunners.combat.tactics.WeaponTacticalResolver;
+import com.gamergaming.villagerguardgunners.defense.VillageDefenseTimings;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficulty;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardDifficultySettings;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutDefaults;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
+import com.gamergaming.villagerguardgunners.squad.PatrolRouteExecutionSettings;
+import com.gamergaming.villagerguardgunners.worldgen.structure.WatchtowerGenerationPolicy;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingArmoryPolicy;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingGarrisonPolicy;
+import com.gamergaming.villagerguardgunners.worldgen.village.VillageBuildingType;
 
 import java.util.Map;
 import java.util.Set;
@@ -24,11 +32,102 @@ import org.junit.jupiter.api.Test;
 final class VillagerGuardGunnersConfigTest {
 
     @Test
+    void infiniteAmmoIsOptInAndAllModesAreSelectable() {
+        var config = new VillagerGuardGunnersConfig();
+        var modes = com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.values();
+        assertEquals(com.gamergaming.villagerguardgunners.ammunition.InfiniteAmmoMode.OFF,
+                config.ammunition.infiniteAmmoMode.get());
+        for (var mode : modes) {
+            config.ammunition.infiniteAmmoMode.accept(mode);
+            config.update(VillagerGuardGunnersConfig.CONFIG_VERSION);
+            assertEquals(mode, config.ammunition.infiniteAmmoMode.get());
+        }
+    }
+
+    @Test
+    void peacefulLoadoutsCanBeTunedAndDisabledIndependentlyOfEasy() {
+        var config = new VillagerGuardGunnersConfig();
+        var loadouts = config.naturalLoadouts;
+        var customPool = ResourceLocation.fromNamespaceAndPath("example", "peaceful");
+        loadouts.peaceful.upgradeChance.accept(0.8D);
+        loadouts.peaceful.maximumNearby.accept(3);
+        loadouts.peaceful.poolId.accept(customPool);
+        assertEquals(new NaturalGuardDifficultySettings(0.8D, 3, customPool),
+                loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL));
+        assertEquals(NaturalGuardLoadoutDefaults.settingsFor(NaturalGuardDifficulty.EASY),
+                loadouts.settingsFor(NaturalGuardDifficulty.EASY));
+
+        loadouts.peaceful.upgradeChance.accept(0.0D);
+        assertFalse(loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL).enabled());
+        loadouts.peaceful.upgradeChance.accept(0.8D);
+        loadouts.peaceful.maximumNearby.accept(0);
+        assertFalse(loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL).enabled());
+        assertTrue(loadouts.settingsFor(NaturalGuardDifficulty.EASY).enabled());
+    }
+
+    @Test
+    void versionTwentyThreeAddsOnlyPeacefulDefaultsAndPreservesCurrentChoices() {
+        var config = new VillagerGuardGunnersConfig();
+        var loadouts = config.naturalLoadouts;
+        config.enabled.accept(false);
+        loadouts.enabled.accept(false);
+        loadouts.enabledSpawnSources.accept(Set.of(NaturalGuardSpawnSource.STRUCTURE));
+        loadouts.replaceCrossbowsOnly.accept(false);
+        loadouts.nearbyCapRadius.accept(96.0D);
+        loadouts.allowExplosiveWeapons.accept(true);
+        loadouts.easy.upgradeChance.accept(0.8D);
+        loadouts.normal.maximumNearby.accept(9);
+        var customPool = ResourceLocation.fromNamespaceAndPath("example", "custom");
+        loadouts.hard.poolId.accept(customPool);
+        var previousRules = loadouts.spawnRules();
+        var previousEasy = loadouts.settingsFor(NaturalGuardDifficulty.EASY);
+        var previousNormal = loadouts.settingsFor(NaturalGuardDifficulty.NORMAL);
+        var previousHard = loadouts.settingsFor(NaturalGuardDifficulty.HARD);
+        loadouts.peaceful.upgradeChance.accept(0.0D);
+        loadouts.peaceful.maximumNearby.accept(0);
+        loadouts.peaceful.poolId.accept(customPool);
+
+        config.update(23);
+
+        assertAll(
+                () -> assertEquals(NaturalGuardLoadoutDefaults.settingsFor(NaturalGuardDifficulty.EASY),
+                        loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL)),
+                () -> assertFalse(config.enabled.get()),
+                () -> assertFalse(loadouts.enabled.get()),
+                () -> assertEquals(previousRules, loadouts.spawnRules()),
+                () -> assertEquals(previousEasy, loadouts.settingsFor(NaturalGuardDifficulty.EASY)),
+                () -> assertEquals(previousNormal, loadouts.settingsFor(NaturalGuardDifficulty.NORMAL)),
+                () -> assertEquals(previousHard, loadouts.settingsFor(NaturalGuardDifficulty.HARD)));
+
+        loadouts.peaceful.upgradeChance.accept(0.0D);
+        loadouts.peaceful.maximumNearby.accept(7);
+        loadouts.peaceful.poolId.accept(customPool);
+        var savedPeaceful = loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL);
+        config.update(24);
+        assertEquals(savedPeaceful, loadouts.settingsFor(NaturalGuardDifficulty.PEACEFUL));
+    }
+
+    @Test
+    void tradeMigrationPreservesUnrelatedSettingsAndCurrentTradeChoices() {
+        var config=new VillagerGuardGunnersConfig();config.enabled.accept(false);
+        config.quartermasterTrades.suppliesEnabled.accept(false);config.quartermasterTrades.gunSalesEnabled.accept(true);
+        config.update(22);assertFalse(config.enabled.get());assertTrue(config.quartermasterTrades.suppliesEnabled.get());assertFalse(config.quartermasterTrades.gunSalesEnabled.get());
+        config.quartermasterTrades.suppliesEnabled.accept(false);config.quartermasterTrades.gunSalesEnabled.accept(true);
+        config.update(23);assertFalse(config.quartermasterTrades.suppliesEnabled.get());assertTrue(config.quartermasterTrades.gunSalesEnabled.get());
+    }
+
+    @Test
     void defaultsMatchTheRecommendedGuardProfile() {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
 
         assertAll(
-                () -> assertEquals(8, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertEquals(24, VillagerGuardGunnersConfig.CONFIG_VERSION),
+                () -> assertFalse(config.medical.downed.get()),
+                () -> assertFalse(config.medical.transport.get()),
+                () -> assertEquals(40, config.medical.cotRevivalTicks.get()),
+                () -> assertEquals(160, config.medical.fieldRevivalTicks.get()),
+                () -> assertEquals(100, config.medical.cotRecoveryTicks.get()),
+                () -> assertEquals(400, config.medical.fieldRecoveryTicks.get()),
                 () -> assertTrue(config.enabled.get()),
                 () -> assertTrue(config.naturalLoadouts.enabled.get()),
                 () -> assertEquals(
@@ -44,6 +143,17 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(400, config.squads.focusCommandDurationTicks.get()),
                 () -> assertEquals(12.0D, config.squads.defendRadius.get()),
                 () -> assertEquals(32.0D, config.squads.airCommandRange.get()),
+                () -> assertEquals(
+                        PatrolRouteExecutionSettings.DEFAULT,
+                        config.squads.patrolRouteSettings(true)),
+                () -> assertEquals(
+                        PatrolRouteExecutionSettings.DISABLED,
+                        config.squads.patrolRouteSettings(false)),
+                () -> assertTrue(config.villageDefense.automaticDuties.get()),
+                () -> assertEquals(
+                        VillageDefenseTimings.DEFAULT,
+                        config.villageDefense.timings()),
+                () -> assertEquals(0.8D, config.villageDefense.dutyMovementSpeed.get()),
                 () -> assertEquals(5, config.combat.requiredVisibleTicks.get()),
                 () -> assertEquals(32.0D, config.combat.maximumEngagementRange.get()),
                 () -> assertEquals(4.0D, config.combat.closeRangeDistance.get()),
@@ -79,12 +189,92 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(8.0D, config.ammunition.ammoSharingRadius.get()),
                 () -> assertEquals(1, config.ammunition.donorReserveMagazines.get()),
                 () -> assertTrue(config.ammunition.requireMatchingOwnerForSharing.get()),
+                () -> assertEquals(
+                        new ArmoryResupplySettings(
+                                true,
+                                40,
+                                48.0D,
+                                8,
+                                1,
+                                3,
+                                0.8D,
+                                1200,
+                                400,
+                                100,
+                                200,
+                                200),
+                        config.armoryResupply.snapshot(true)),
+                () -> assertEquals(
+                        new WatchtowerGenerationPolicy(true, true, 4, true, true),
+                        config.watchtowers.snapshot()),
+                () -> assertEquals(1.5D, config.watchtowers.guardGunChanceMultiplier.get()),
+                () -> assertEquals(0.525D,
+                        config.watchtowers.guardGunUpgradeChance(0.35D),
+                        1.0E-12D),
+                () -> assertEquals(0.75D,
+                        config.watchtowers.guardGunUpgradeChance(0.5D),
+                        1.0E-12D),
+                () -> assertEquals(0.975D,
+                        config.watchtowers.guardGunUpgradeChance(0.65D),
+                        1.0E-12D),
+                () -> assertEquals(1.0D, config.watchtowers.guardGunUpgradeChance(1.0D)),
+                () -> assertFalse(config.villageBuildings.enabled.get()),
+                () -> assertTrue(config.villageBuildings.barracks.get()),
+                () -> assertTrue(config.villageBuildings.armories.get()),
+                () -> assertTrue(config.villageBuildings.sentryPosts.get()),
+                () -> assertTrue(config.villageBuildings.integratedWatchtowers.get()),
+                () -> assertTrue(config.villageBuildings.trainingYards.get()),
+                () -> assertTrue(config.villageBuildings.spawnGarrisons.get()),
+                () -> assertEquals(4,
+                        config.villageBuildings.maximumGuardsPerBuilding.get()),
+                () -> assertEquals(3.0D,
+                        config.villageBuildings.guardGunChanceMultiplier.get()),
+                () -> assertEquals(
+                        new VillageBuildingGarrisonPolicy(false, 4, 3.0D),
+                        config.villageBuildings.garrisonPolicy()),
+                () -> assertTrue(config.villageBuildings.placeArmoryBlocks.get()),
+                () -> assertTrue(config.villageBuildings.stockArmories.get()),
+                () -> assertEquals(
+                        new VillageBuildingArmoryPolicy(false, false),
+                        config.villageBuildings.armoryPolicy()),
+                () -> assertAll(java.util.Arrays.stream(VillageBuildingType.values())
+                        .map(type -> () -> assertTrue(config.villageBuildings.allows(type)))),
                 () -> assertEquals(2, config.performance.visibilitySampleIntervalTicks.get()),
                 () -> assertEquals(5, config.performance.movementDecisionIntervalTicks.get()),
                 () -> assertEquals(20, config.performance.pathRecalculationIntervalTicks.get()),
                 () -> assertEquals(20, config.performance.gunDataRefreshIntervalTicks.get()),
                 () -> assertEquals(2, config.performance.unsafeShotCacheTicks.get()),
                 () -> assertEquals(10, config.performance.repositionProgressCheckTicks.get()));
+    }
+
+    @Test
+    void versionFifteenUpdateAddsOnlyDefenseAndPatrolPolicyDefaults() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.squads.commandDispatchRadius.accept(96.0D);
+        config.squads.patrolRouteExecution.accept(false);
+        config.squads.patrolMovementSpeed.accept(1.5D);
+        config.squads.patrolWaypointDwellTicks.accept(200);
+        config.squads.patrolMaximumFailuresPerWaypoint.accept(7);
+        config.villageDefense.automaticDuties.accept(false);
+        config.villageDefense.watchDurationTicks.accept(2_000);
+        config.villageDefense.alertDurationTicks.accept(3_000);
+        config.villageDefense.recoveryDurationTicks.accept(4_000);
+        config.villageDefense.dutyMovementSpeed.accept(1.5D);
+
+        config.update(15);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertEquals(96.0D, config.squads.commandDispatchRadius.get()),
+                () -> assertEquals(
+                        PatrolRouteExecutionSettings.DEFAULT,
+                        config.squads.patrolRouteSettings(true)),
+                () -> assertTrue(config.villageDefense.automaticDuties.get()),
+                () -> assertEquals(
+                        VillageDefenseTimings.DEFAULT,
+                        config.villageDefense.timings()),
+                () -> assertEquals(0.8D, config.villageDefense.dutyMovementSpeed.get()));
     }
 
     @Test
@@ -98,7 +288,7 @@ final class VillagerGuardGunnersConfigTest {
     }
 
     @Test
-    void currentVersionUpdateRetainsExplicitChoices() {
+    void versionNineUpdateRetainsEveryExistingChoiceAndInitializesWatchtowers() {
         VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
         ResourceLocation protectedEntity = ResourceLocation.fromNamespaceAndPath(
                 "example", "protected_guard");
@@ -134,8 +324,26 @@ final class VillagerGuardGunnersConfigTest {
         config.squads.focusCommandDurationTicks.accept(800);
         config.squads.defendRadius.accept(24.0D);
         config.squads.airCommandRange.accept(48.0D);
+        config.armoryResupply.enabled.accept(false);
+        config.armoryResupply.checkIntervalTicks.accept(80);
+        config.armoryResupply.searchRadius.accept(32.0D);
+        config.armoryResupply.maximumCandidateArmories.accept(16);
+        config.armoryResupply.lowReserveMagazines.accept(2);
+        config.armoryResupply.targetReserveMagazines.accept(6);
+        config.armoryResupply.movementSpeed.accept(1.2D);
+        config.armoryResupply.requestLifetimeTicks.accept(1800);
+        config.armoryResupply.reservationLifetimeTicks.accept(800);
+        config.armoryResupply.successCooldownTicks.accept(300);
+        config.armoryResupply.noSupplyRetryTicks.accept(400);
+        config.armoryResupply.unreachableRetryTicks.accept(600);
+        config.watchtowers.enabled.accept(false);
+        config.watchtowers.spawnGuards.accept(false);
+        config.watchtowers.maximumGuardsPerPost.accept(2);
+        config.watchtowers.placeArmory.accept(false);
+        config.watchtowers.stockArmory.accept(false);
+        config.watchtowers.guardGunChanceMultiplier.accept(0.25D);
 
-        config.update(8);
+        config.update(9);
 
         assertAll(
                 () -> assertFalse(config.safety.preserveBlocksFromGuardExplosions.get()),
@@ -182,7 +390,223 @@ final class VillagerGuardGunnersConfigTest {
                 () -> assertEquals(2400, config.squads.positionalCommandDurationTicks.get()),
                 () -> assertEquals(800, config.squads.focusCommandDurationTicks.get()),
                 () -> assertEquals(24.0D, config.squads.defendRadius.get()),
-                () -> assertEquals(48.0D, config.squads.airCommandRange.get()));
+                () -> assertEquals(48.0D, config.squads.airCommandRange.get()),
+                () -> assertEquals(
+                        new ArmoryResupplySettings(
+                                false,
+                                80,
+                                32.0D,
+                                16,
+                                2,
+                                6,
+                                1.2D,
+                                1800,
+                                800,
+                                300,
+                                400,
+                                600),
+                        config.armoryResupply.snapshot(true)),
+                () -> assertEquals(
+                        new WatchtowerGenerationPolicy(true, true, 4, true, true),
+                        config.watchtowers.snapshot()),
+                () -> assertEquals(1.5D, config.watchtowers.guardGunChanceMultiplier.get()));
+    }
+
+    @Test
+    void versionElevenUpdateRetainsWatchtowersAndDisablesTheIntegrationProbe() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.watchtowers.enabled.accept(false);
+        config.watchtowers.spawnGuards.accept(false);
+        config.watchtowers.maximumGuardsPerPost.accept(2);
+        config.watchtowers.placeArmory.accept(false);
+        config.watchtowers.stockArmory.accept(false);
+        config.watchtowers.guardGunChanceMultiplier.accept(0.25D);
+        config.villageBuildings.enabled.accept(true);
+
+        config.update(11);
+
+        assertAll(
+                () -> assertEquals(
+                        new WatchtowerGenerationPolicy(false, false, 2, false, false),
+                        config.watchtowers.snapshot()),
+                () -> assertEquals(0.25D,
+                        config.watchtowers.guardGunChanceMultiplier.get()),
+                () -> assertFalse(config.villageBuildings.enabled.get()),
+                () -> assertAll(java.util.Arrays.stream(VillageBuildingType.values())
+                        .map(type -> () -> assertTrue(config.villageBuildings.allows(type)))));
+    }
+
+    @Test
+    void versionTwelveUpdatePreservesMasterAndInitializesOnlyTypeSuppressors() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.villageBuildings.enabled.accept(true);
+        config.villageBuildings.barracks.accept(false);
+        config.villageBuildings.armories.accept(false);
+        config.villageBuildings.sentryPosts.accept(false);
+        config.villageBuildings.integratedWatchtowers.accept(false);
+        config.villageBuildings.trainingYards.accept(false);
+
+        config.update(12);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertTrue(config.villageBuildings.enabled.get()),
+                () -> assertAll(java.util.Arrays.stream(VillageBuildingType.values())
+                        .map(type -> () -> assertTrue(config.villageBuildings.allows(type)))));
+    }
+
+    @Test
+    void versionThirteenUpdatePreservesBuildingsAndInitializesGarrisonBounds() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.villageBuildings.enabled.accept(true);
+        config.villageBuildings.barracks.accept(false);
+        config.villageBuildings.armories.accept(false);
+        config.villageBuildings.sentryPosts.accept(true);
+        config.villageBuildings.integratedWatchtowers.accept(false);
+        config.villageBuildings.trainingYards.accept(true);
+        config.villageBuildings.spawnGarrisons.accept(false);
+        config.villageBuildings.maximumGuardsPerBuilding.accept(1);
+        config.villageBuildings.guardGunChanceMultiplier.accept(0.25D);
+
+        config.update(13);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertTrue(config.villageBuildings.enabled.get()),
+                () -> assertFalse(config.villageBuildings.barracks.get()),
+                () -> assertFalse(config.villageBuildings.armories.get()),
+                () -> assertTrue(config.villageBuildings.sentryPosts.get()),
+                () -> assertFalse(config.villageBuildings.integratedWatchtowers.get()),
+                () -> assertTrue(config.villageBuildings.trainingYards.get()),
+                () -> assertTrue(config.villageBuildings.spawnGarrisons.get()),
+                () -> assertEquals(4,
+                        config.villageBuildings.maximumGuardsPerBuilding.get()),
+                () -> assertEquals(3.0D,
+                        config.villageBuildings.guardGunChanceMultiplier.get()),
+                () -> assertTrue(config.villageBuildings.placeArmoryBlocks.get()),
+                () -> assertTrue(config.villageBuildings.stockArmories.get()));
+    }
+
+    @Test
+    void versionFourteenUpdatePreservesGarrisonsAndInitializesArmoryControls() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.villageBuildings.enabled.accept(true);
+        config.villageBuildings.spawnGarrisons.accept(false);
+        config.villageBuildings.maximumGuardsPerBuilding.accept(2);
+        config.villageBuildings.guardGunChanceMultiplier.accept(0.5D);
+        config.villageBuildings.placeArmoryBlocks.accept(false);
+        config.villageBuildings.stockArmories.accept(false);
+
+        config.update(14);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertTrue(config.villageBuildings.enabled.get()),
+                () -> assertFalse(config.villageBuildings.spawnGarrisons.get()),
+                () -> assertEquals(2,
+                        config.villageBuildings.maximumGuardsPerBuilding.get()),
+                () -> assertEquals(0.5D,
+                        config.villageBuildings.guardGunChanceMultiplier.get()),
+                () -> assertTrue(config.villageBuildings.placeArmoryBlocks.get()),
+                () -> assertTrue(config.villageBuildings.stockArmories.get()),
+                () -> assertEquals(
+                        new VillageBuildingArmoryPolicy(true, true),
+                        config.villageBuildings.armoryPolicy()));
+    }
+
+    @Test
+    void versionTenUpdateAddsOnlyTheTowerGunChanceDefault() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.naturalLoadouts.normal.upgradeChance.accept(0.2D);
+        config.watchtowers.enabled.accept(false);
+        config.watchtowers.spawnGuards.accept(false);
+        config.watchtowers.maximumGuardsPerPost.accept(2);
+        config.watchtowers.placeArmory.accept(false);
+        config.watchtowers.stockArmory.accept(false);
+        config.watchtowers.guardGunChanceMultiplier.accept(0.25D);
+
+        config.update(10);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertEquals(0.2D,
+                        config.naturalLoadouts.normal.upgradeChance.get()),
+                () -> assertEquals(
+                        new WatchtowerGenerationPolicy(false, false, 2, false, false),
+                        config.watchtowers.snapshot()),
+                () -> assertEquals(1.5D,
+                        config.watchtowers.guardGunChanceMultiplier.get()));
+    }
+
+    @Test
+    void versionNineConfigAddsBoundedWatchtowerDefaultsWithoutChangingExistingSettings() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.armoryResupply.searchRadius.accept(32.0D);
+        config.watchtowers.enabled.accept(false);
+        config.watchtowers.spawnGuards.accept(false);
+        config.watchtowers.maximumGuardsPerPost.accept(1);
+        config.watchtowers.placeArmory.accept(false);
+        config.watchtowers.stockArmory.accept(false);
+        config.watchtowers.guardGunChanceMultiplier.accept(0.25D);
+
+        config.update(9);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertEquals(32.0D, config.armoryResupply.searchRadius.get()),
+                () -> assertEquals(
+                        new WatchtowerGenerationPolicy(true, true, 4, true, true),
+                        config.watchtowers.snapshot()),
+                () -> assertEquals(1.5D,
+                        config.watchtowers.guardGunChanceMultiplier.get()));
+    }
+
+
+    @Test
+    void versionEightConfigAddsBoundedArmoryDefaultsWithoutChangingExistingSettings() {
+        VillagerGuardGunnersConfig config = new VillagerGuardGunnersConfig();
+        config.combat.requiredVisibleTicks.accept(17);
+        config.ammunition.shareAmmoBetweenGuards.accept(false);
+        config.squads.commandDispatchRadius.accept(96.0D);
+        config.armoryResupply.enabled.accept(false);
+        config.armoryResupply.checkIntervalTicks.accept(200);
+        config.armoryResupply.searchRadius.accept(64.0D);
+        config.armoryResupply.maximumCandidateArmories.accept(32);
+        config.armoryResupply.lowReserveMagazines.accept(12);
+        config.armoryResupply.targetReserveMagazines.accept(24);
+        config.armoryResupply.movementSpeed.accept(2.0D);
+        config.armoryResupply.requestLifetimeTicks.accept(2400);
+        config.armoryResupply.reservationLifetimeTicks.accept(1200);
+        config.armoryResupply.successCooldownTicks.accept(2400);
+        config.armoryResupply.noSupplyRetryTicks.accept(2400);
+        config.armoryResupply.unreachableRetryTicks.accept(2400);
+
+        config.update(8);
+
+        assertAll(
+                () -> assertEquals(17, config.combat.requiredVisibleTicks.get()),
+                () -> assertFalse(config.ammunition.shareAmmoBetweenGuards.get()),
+                () -> assertEquals(96.0D, config.squads.commandDispatchRadius.get()),
+                () -> assertEquals(
+                        new ArmoryResupplySettings(
+                                true,
+                                40,
+                                48.0D,
+                                8,
+                                1,
+                                3,
+                                0.8D,
+                                1200,
+                                400,
+                                100,
+                                200,
+                                200),
+                        config.armoryResupply.snapshot(true)));
     }
 
     @Test
@@ -388,6 +812,57 @@ final class VillagerGuardGunnersConfigTest {
                         .correctEntry(-1, ValidationType.STRONG).get()),
                 () -> assertEquals(4, config.ammunition.donorReserveMagazines
                         .correctEntry(5, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.armoryResupply.checkIntervalTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(200, config.armoryResupply.checkIntervalTicks
+                        .correctEntry(201, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.MIN_SEARCH_RADIUS,
+                        config.armoryResupply.searchRadius
+                                .correctEntry(7.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_SEARCH_RADIUS,
+                        config.armoryResupply.searchRadius
+                                .correctEntry(65.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(1, config.armoryResupply.maximumCandidateArmories
+                        .correctEntry(0, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_CANDIDATE_ARMORIES,
+                        config.armoryResupply.maximumCandidateArmories
+                                .correctEntry(33, ValidationType.STRONG).get()),
+                () -> assertEquals(0, config.armoryResupply.lowReserveMagazines
+                        .correctEntry(-1, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RESERVE_MAGAZINES,
+                        config.armoryResupply.targetReserveMagazines
+                                .correctEntry(65, ValidationType.STRONG).get()),
+                () -> assertEquals(0.1D, config.armoryResupply.movementSpeed
+                        .correctEntry(0.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RESUPPLY_MOVEMENT_SPEED,
+                        config.armoryResupply.movementSpeed
+                                .correctEntry(3.0D, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.armoryResupply.requestLifetimeTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_REQUEST_LIFETIME_TICKS,
+                        config.armoryResupply.requestLifetimeTicks
+                                .correctEntry(2401, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.armoryResupply.reservationLifetimeTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RESERVATION_LIFETIME_TICKS,
+                        config.armoryResupply.reservationLifetimeTicks
+                                .correctEntry(1201, ValidationType.STRONG).get()),
+                () -> assertEquals(20, config.armoryResupply.successCooldownTicks
+                        .correctEntry(19, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RETRY_TICKS,
+                        config.armoryResupply.noSupplyRetryTicks
+                                .correctEntry(2401, ValidationType.STRONG).get()),
+                () -> assertEquals(ArmoryResupplyLimits.HARD_MAX_RETRY_TICKS,
+                        config.armoryResupply.unreachableRetryTicks
+                                .correctEntry(2401, ValidationType.STRONG).get()),
+                () -> assertEquals(0, config.watchtowers.maximumGuardsPerPost
+                        .correctEntry(-1, ValidationType.STRONG).get()),
+                () -> assertEquals(4, config.watchtowers.maximumGuardsPerPost
+                        .correctEntry(5, ValidationType.STRONG).get()),
+                () -> assertEquals(0.0D, config.watchtowers.guardGunChanceMultiplier
+                        .correctEntry(-0.1D, ValidationType.STRONG).get()),
+                () -> assertEquals(3.0D, config.watchtowers.guardGunChanceMultiplier
+                        .correctEntry(3.1D, ValidationType.STRONG).get()),
                 () -> assertEquals(8.0D, config.naturalLoadouts.nearbyCapRadius
                         .correctEntry(7.0D, ValidationType.STRONG).get()),
                 () -> assertEquals(256.0D, config.naturalLoadouts.nearbyCapRadius

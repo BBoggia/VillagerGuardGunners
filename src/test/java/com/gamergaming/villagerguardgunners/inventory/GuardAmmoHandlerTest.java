@@ -22,9 +22,9 @@ final class GuardAmmoHandlerTest {
 
     @Test
     void acceptsLooseAmmoAndAmmoBoxesButRejectsUnrelatedItems() {
-        assertTrue(GuardAmmoHandler.isAmmoType(TestAmmoItem.class));
-        assertTrue(GuardAmmoHandler.isAmmoType(TestAmmoBoxItem.class));
-        assertFalse(GuardAmmoHandler.isAmmoType(Item.class));
+        assertTrue(com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczGunProvider.isAmmoType(TestAmmoItem.class));
+        assertTrue(com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczGunProvider.isAmmoType(TestAmmoBoxItem.class));
+        assertFalse(com.gamergaming.villagerguardgunners.compat.tacz.provider.TaczGunProvider.isAmmoType(Item.class));
     }
 
     private static final class TestAmmoItem extends Item implements IAmmo {

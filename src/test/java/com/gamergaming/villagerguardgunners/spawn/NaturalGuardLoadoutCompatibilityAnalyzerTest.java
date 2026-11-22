@@ -31,17 +31,35 @@ final class NaturalGuardLoadoutCompatibilityAnalyzerTest {
     }
 
     @Test
-    void analyzerOwnsTheNativeCompatibilityPipeline() {
+    void eachGunModOwnsItsCompatibilityPipeline() throws IOException {
+        String tacz = readMain("compat/tacz/provider/TaczLoadoutAnalysis.java");
+        String shared = readMain("spawn/ProviderLoadoutAnalysis.java");
         assertAll(
-                () -> assertTrue(analyzer.contains("TimelessAPI.getCommonGunIndex")),
-                () -> assertTrue(analyzer.contains("GunItemBuilder.create()")),
-                () -> assertTrue(analyzer.contains("TimelessAPI.getCommonAmmoIndex")),
-                () -> assertTrue(analyzer.contains("AmmoItemBuilder.create()")),
-                () -> assertTrue(analyzer.contains(
+                () -> assertTrue(analyzer.contains("GunProviders.forGunId(gunId)")),
+                () -> assertTrue(analyzer.contains("provider.get().analyzeLoadout(context, gunId, explosivePolicy)")),
+                () -> assertFalse(analyzer.contains("com.tacz")),
+                () -> assertFalse(shared.contains("com.tacz")),
+                () -> assertTrue(tacz.contains("TimelessAPI.getCommonGunIndex")),
+                () -> assertTrue(tacz.contains("GunItemBuilder.create()")),
+                () -> assertTrue(tacz.contains("TimelessAPI.getCommonAmmoIndex")),
+                () -> assertTrue(tacz.contains("AmmoItemBuilder.create()")),
+                () -> assertTrue(tacz.contains(
                         "GuardAmmoSummary.ReserveSource.PHYSICAL")),
-                () -> assertTrue(analyzer.contains("AmmoCompatibility.assess")),
-                () -> assertTrue(analyzer.contains("AttachmentCacheProperty")),
-                () -> assertTrue(analyzer.contains("TaCZExplosionResolver.resolve(")));
+                () -> assertTrue(tacz.contains("AmmoCompatibility.assess")),
+                () -> assertTrue(tacz.contains("AttachmentCacheProperty")),
+                () -> assertTrue(tacz.contains("TaCZExplosionResolver.resolve(")),
+                // Other gun mods go through the provider's own methods and are never issued unusable guns.
+                () -> assertTrue(shared.contains("provider.createGun(gunId,")),
+                () -> assertTrue(shared.contains("!descriptor.firingDataPresent()")),
+                () -> assertTrue(shared.contains("AmmoCompatibility.assess(gun, ammo)")),
+                () -> assertTrue(shared.contains("provider.isExplosive(")));
+    }
+
+    private static String readMain(String relative) throws IOException {
+        return Files.readString(
+                Path.of(System.getProperty("villagerguardgunners.projectDir"))
+                        .resolve("src/main/java/com/gamergaming/villagerguardgunners/" + relative),
+                StandardCharsets.UTF_8);
     }
 
     @Test
@@ -64,7 +82,9 @@ final class NaturalGuardLoadoutCompatibilityAnalyzerTest {
     }
 
     @Test
-    void explosivePoliciesPreserveTheFrozenThreeModeContract() {
+    void explosivePoliciesPreserveTheFrozenThreeModeContract() throws IOException {
+        String tacz = readMain("compat/tacz/provider/TaczLoadoutAnalysis.java");
+        String shared = readMain("spawn/ProviderLoadoutAnalysis.java");
         int enumStart = analyzer.indexOf("public enum ExplosivePolicy");
         int enumEnd = analyzer.indexOf("public enum ExplosionState", enumStart);
         String policies = analyzer.substring(enumStart, enumEnd);
@@ -76,9 +96,11 @@ final class NaturalGuardLoadoutCompatibilityAnalyzerTest {
                 () -> assertTrue(ignore >= 0),
                 () -> assertTrue(report > ignore),
                 () -> assertTrue(reject > report),
-                () -> assertTrue(analyzer.contains(
+                () -> assertTrue(tacz.contains(
                         "CompatibilityStatus.EXPLOSIVE_CONTEXT_REQUIRED")),
-                () -> assertTrue(analyzer.contains(
+                () -> assertTrue(tacz.contains(
+                        "CompatibilityStatus.EXPLOSIVE_DISALLOWED")),
+                () -> assertTrue(shared.contains(
                         "CompatibilityStatus.EXPLOSIVE_DISALLOWED")));
     }
 }

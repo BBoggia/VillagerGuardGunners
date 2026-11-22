@@ -59,7 +59,7 @@ final class ArmoryFoundationContractTest {
                 () -> assertTrue(entity.contains("private void inventoryChanged()")),
                 () -> assertTrue(menu.contains(
                         "level.getBlockEntity(position) == armory")),
-                () -> assertTrue(menu.contains("armory.isRemoved()")),
+                () -> assertTrue(menu.contains("armory.serviceInventoryAccessible()")),
                 () -> assertTrue(block.contains("armory.dropContents()")),
                 () -> assertTrue(block.contains("hasAnalogOutputSignal")),
                 () -> assertTrue(block.contains("return null;")),

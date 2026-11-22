@@ -20,6 +20,7 @@ import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutPools;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardLoadoutReloadSnapshot;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnRules;
 import com.gamergaming.villagerguardgunners.spawn.NaturalGuardSpawnSource;
+import com.gamergaming.villagerguardgunners.role.GuardRoles;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -109,6 +110,7 @@ final class NaturalGuardLoadoutCommands {
         } catch (IllegalArgumentException exception) {
             return fail(source, exception.getMessage());
         }
+        List<String> missingRoles = missingRoles(snapshot, requestedPool);
 
         send(source, Component.literal("[VGG Loadouts] Validation generation ")
                 .withStyle(ChatFormatting.AQUA)
@@ -121,9 +123,9 @@ final class NaturalGuardLoadoutCommands {
                         + ", compatible=" + report.compatible()
                         + ", contextDependent=" + report.contextDependent()
                         + ", warnings=" + report.warnings()
-                        + ", errors=" + report.errors()
+                        + ", errors=" + (report.errors() + missingRoles.size())
                         + ", rejectedDocuments=" + report.rejectedDocuments(),
-                report.errors() > 0 ? ChatFormatting.RED
+                report.errors() > 0 || !missingRoles.isEmpty() ? ChatFormatting.RED
                         : report.warnings() > 0 ? ChatFormatting.YELLOW : ChatFormatting.GREEN));
         for (ValidationIssue issue : report.displayedIssues()) {
             send(source, line(
@@ -138,6 +140,19 @@ final class NaturalGuardLoadoutCommands {
                                     : " eligibility=" + issue.sidearmEligibility()),
                     severityColor(issue.severity())));
         }
+        int displayedMissingRoles = Math.min(
+                missingRoles.size(),
+                NaturalGuardLoadoutCommandContract.MAX_VALIDATION_ISSUES_IN_SUMMARY);
+        for (int index = 0; index < displayedMissingRoles; index++) {
+            send(source, line("ERROR", missingRoles.get(index), ChatFormatting.RED));
+        }
+        if (missingRoles.size() > displayedMissingRoles) {
+            send(source, line(
+                    "More",
+                    (missingRoles.size() - displayedMissingRoles)
+                            + " additional missing-role issue(s) omitted",
+                    ChatFormatting.YELLOW));
+        }
         if (report.omittedIssues() > 0) {
             send(source, line(
                     "More",
@@ -151,6 +166,30 @@ final class NaturalGuardLoadoutCommands {
                     ChatFormatting.GRAY));
         }
         return 1;
+    }
+
+    private static List<String> missingRoles(
+            NaturalGuardLoadoutReloadSnapshot snapshot,
+            @Nullable ResourceLocation requestedPool) {
+        Set<ResourceLocation> loadedRoles = GuardRoles.snapshot().keySet();
+        Stream<NaturalGuardLoadoutPool> pools = requestedPool == null
+                ? snapshot.pools().values().stream()
+                : Stream.ofNullable(snapshot.get(requestedPool));
+        return pools.sorted(Comparator.comparing(pool -> pool.id().toString()))
+                .flatMap(pool -> java.util.stream.IntStream.range(0, pool.entries().size())
+                        .mapToObj(index -> new Object[] {pool, index, pool.entries().get(index)}))
+                .filter(parts -> ((NaturalGuardLoadoutPool.Entry) parts[2]).roleId() != null)
+                .filter(parts -> !loadedRoles.contains(
+                        ((NaturalGuardLoadoutPool.Entry) parts[2]).roleId()))
+                .map(parts -> {
+                    NaturalGuardLoadoutPool pool = (NaturalGuardLoadoutPool) parts[0];
+                    int index = (Integer) parts[1];
+                    NaturalGuardLoadoutPool.Entry entry =
+                            (NaturalGuardLoadoutPool.Entry) parts[2];
+                    return pool.id() + " entry " + (index + 1)
+                            + " references missing guard role " + entry.roleId();
+                })
+                .toList();
     }
 
     private static int inspect(
@@ -185,6 +224,7 @@ final class NaturalGuardLoadoutCommands {
                     "Entry " + inspected.entryNumber(),
                     bounded("gun=" + inspected.entry().gunId()
                             + ", sidearm=" + value(inspected.entry().sidearmId())
+                            + ", role=" + value(inspected.entry().roleId())
                             + ", weight=" + inspected.entry().weight()
                             + ", conditions=" + conditions(inspected.entry().conditions())
                             + ", compatibility=" + inspected.analysis().status()
@@ -287,6 +327,7 @@ final class NaturalGuardLoadoutCommands {
                     "Entry " + entry.entryNumber(),
                     bounded("gun=" + entry.entry().gunId()
                             + ", sidearm=" + value(entry.entry().sidearmId())
+                            + ", role=" + value(entry.entry().roleId())
                             + ", weight=" + entry.entry().weight()
                             + ", "
                             + (report.contextRequiredEntries() > 0

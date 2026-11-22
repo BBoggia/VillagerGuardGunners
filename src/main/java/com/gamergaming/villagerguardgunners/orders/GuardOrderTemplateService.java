@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners.orders;
 
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.init.ModItems;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplate.DecodeResult;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplate.DecodeStatus;
@@ -57,7 +58,8 @@ public final class GuardOrderTemplateService {
 
         GuardOrderTemplate.writeTo(
                 ledger.getOrCreateTag(),
-                GuardOrdersAccess.getOrders(guard));
+                GuardOrdersAccess.getOrders(guard),
+                GuardRoleAccess.getRoleId(guard));
         player.getInventory().setChanged();
         return OperationResult.of(replacingExisting
                 ? OperationStatus.OVERWRITTEN
@@ -101,10 +103,22 @@ public final class GuardOrderTemplateService {
         }
 
         GuardOrders currentOrders = GuardOrdersAccess.getOrders(guard);
-        if (templateOrders.equals(currentOrders)) {
+        var currentRole = GuardRoleAccess.getRoleId(guard);
+        var templateRole = decoded.includesRoleAssignment()
+                ? decoded.roleId()
+                : currentRole;
+        if (templateOrders.equals(currentOrders)
+                && Objects.equals(templateRole, currentRole)) {
             return OperationResult.of(OperationStatus.ALREADY_MATCHES);
         }
         if (!GuardOrdersAccess.setOrders(guard, templateOrders)) {
+            return OperationResult.of(OperationStatus.INVALID_GUARD);
+        }
+        if (decoded.includesRoleAssignment()
+                && (!GuardRoleAccess.setRoleId(guard, templateRole)
+                        || !Objects.equals(templateRole, GuardRoleAccess.getRoleId(guard)))) {
+            GuardOrdersAccess.setOrders(guard, currentOrders);
+            GuardRoleAccess.setRoleId(guard, currentRole);
             return OperationResult.of(OperationStatus.INVALID_GUARD);
         }
         return OperationResult.of(OperationStatus.APPLIED);

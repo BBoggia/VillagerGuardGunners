@@ -1,0 +1,43 @@
+{
+  "format": 1,
+  "variants": [
+    {
+      "name": "easy_observer",
+      "weight": 1,
+      "difficulties": ["easy"],
+      "loadout_pool": "villagerguardgunners:easy",
+      "members": [
+        { "role": "villagerguardgunners:rifleman" }
+      ]
+    },
+    {
+      "name": "normal_overwatch",
+      "weight": 1,
+      "difficulties": ["normal"],
+      "loadout_pool": "villagerguardgunners:normal",
+      "members": [
+        {
+          "loadout_pool": "villagerguardgunners:watchtower_marksman",
+          "role": "villagerguardgunners:marksman"
+        },
+        { "role": "villagerguardgunners:rifleman", "chance": 50 }
+      ]
+    },
+    {
+      "name": "hard_overwatch",
+      "weight": 1,
+      "difficulties": ["hard"],
+      "loadout_pool": "villagerguardgunners:hard",
+      "members": [
+        {
+          "loadout_pool": "villagerguardgunners:watchtower_marksman",
+          "role": "villagerguardgunners:marksman"
+        },
+        {
+          "loadout_pool": "villagerguardgunners:watchtower_support",
+          "role": "villagerguardgunners:support"
+        }
+      ]
+    }
+  ]
+}

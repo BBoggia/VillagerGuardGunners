@@ -54,13 +54,19 @@ public final class OrdersLedgerItem extends Item {
                             "item.villagerguardgunners.orders_ledger.tooltip.unsupported",
                             decoded.storedVersion())
                     .withStyle(ChatFormatting.RED));
-            case VALID -> appendStoredOrders(tooltip, decoded.orders());
+            case VALID -> appendStoredOrders(
+                    tooltip,
+                    decoded.orders(),
+                    decoded.roleId(),
+                    decoded.includesRoleAssignment());
         }
     }
 
     private static void appendStoredOrders(
             List<Component> tooltip,
-            @Nullable GuardOrders orders) {
+            @Nullable GuardOrders orders,
+            @Nullable net.minecraft.resources.ResourceLocation roleId,
+            boolean includesRoleAssignment) {
         if (orders == null) {
             tooltip.add(Component.translatable(
                             "item.villagerguardgunners.orders_ledger.tooltip.corrupt")
@@ -78,6 +84,13 @@ public final class OrdersLedgerItem extends Item {
                             GuardOrderText.value(field, orders))
                     .withStyle(ChatFormatting.GRAY));
         }
+        net.minecraft.network.chat.MutableComponent roleLine = includesRoleAssignment
+                ? Component.translatable(
+                        "item.villagerguardgunners.orders_ledger.tooltip.role",
+                        roleId == null ? "none" : roleId.toString())
+                : Component.translatable(
+                        "item.villagerguardgunners.orders_ledger.tooltip.legacy_role");
+        tooltip.add(roleLine.withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable(
                         "item.villagerguardgunners.orders_ledger.tooltip.apply")
                 .withStyle(ChatFormatting.DARK_GRAY));

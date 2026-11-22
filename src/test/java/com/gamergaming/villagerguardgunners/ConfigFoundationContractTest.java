@@ -1,6 +1,7 @@
 package com.gamergaming.villagerguardgunners;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -33,11 +34,14 @@ final class ConfigFoundationContractTest {
         assertAll(
                 () -> assertTrue(config.contains(
                         "@Version(version = VillagerGuardGunnersConfig.CONFIG_VERSION)")),
-                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 8;")),
+                () -> assertTrue(config.contains("public static final int CONFIG_VERSION = 24;")),
                 () -> assertTrue(config.contains("public void update(int previousVersion)")),
                 () -> assertTrue(config.contains("previousVersion < 2")),
                 () -> assertTrue(config.contains("previousVersion < 3")),
                 () -> assertTrue(config.contains("previousVersion < 8")),
+                () -> assertTrue(config.contains("previousVersion < 9")),
+                () -> assertTrue(config.contains("previousVersion < 10")),
+                () -> assertTrue(config.contains("previousVersion < 11")),
                 () -> assertTrue(config.contains("previousVersion < 4")),
                 () -> assertTrue(config.contains("previousVersion < 5")),
                 () -> assertTrue(config.contains("previousVersion < 6")),
@@ -74,11 +78,13 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(config.contains("public EngagementSettings engagement")),
                 () -> assertTrue(config.contains("public SafetySettings safety")),
                 () -> assertTrue(config.contains("public AmmunitionSettings ammunition")),
+                () -> assertTrue(config.contains("public ArmorySettings armoryResupply")),
+                () -> assertTrue(config.contains("public WatchtowerSettings watchtowers")),
                 () -> assertTrue(config.contains("public PerformanceSettings performance")),
-                () -> assertTrue(!config.contains("damage")),
+                () -> assertTrue(!config.matches("(?s).*public Validated\\w+ damage\\w*.*")),
                 () -> assertTrue(!config.contains("infiniteGuardAmmo")),
                 () -> assertTrue(!config.contains("reloadTimeMultiplier")),
-                () -> assertTrue(!config.contains("accuracy")));
+                () -> assertTrue(config.contains("public AimingSettings aiming")));
     }
 
     @Test
@@ -170,6 +176,24 @@ final class ConfigFoundationContractTest {
                 "ammunition.ammoSharingRadius",
                 "ammunition.donorReserveMagazines",
                 "ammunition.requireMatchingOwnerForSharing",
+                "armoryResupply.enabled",
+                "armoryResupply.checkIntervalTicks",
+                "armoryResupply.searchRadius",
+                "armoryResupply.maximumCandidateArmories",
+                "armoryResupply.lowReserveMagazines",
+                "armoryResupply.targetReserveMagazines",
+                "armoryResupply.movementSpeed",
+                "armoryResupply.requestLifetimeTicks",
+                "armoryResupply.reservationLifetimeTicks",
+                "armoryResupply.successCooldownTicks",
+                "armoryResupply.noSupplyRetryTicks",
+                "armoryResupply.unreachableRetryTicks",
+                "watchtowers.enabled",
+                "watchtowers.spawnGuards",
+                "watchtowers.maximumGuardsPerPost",
+                "watchtowers.placeArmory",
+                "watchtowers.stockArmory",
+                "watchtowers.guardGunChanceMultiplier",
                 "performance.visibilitySampleIntervalTicks",
                 "performance.movementDecisionIntervalTicks",
                 "performance.pathRecalculationIntervalTicks",
@@ -179,6 +203,8 @@ final class ConfigFoundationContractTest {
         };
 
         assertAll(java.util.Arrays.stream(entries)
+                .map(entry -> entry.replaceAll("naturalLoadouts\\.(easy|normal|hard)\\.", "naturalLoadouts.difficulty.")
+                        .replaceAll("tactics\\.(generalist|skirmisher|breacher|marksman|support|demolitions)\\.", "tactics.profile."))
                 .map(entry -> (Executable) () -> assertTrue(
                         translations.contains("config.villagerguardgunners.guard_gunners." + entry + "\""),
                         () -> "Missing translation for " + entry)));
@@ -243,6 +269,8 @@ final class ConfigFoundationContractTest {
                 "src/main/java/com/gamergaming/villagerguardgunners/api/GuardAllyProtection.java");
         String engagement = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/combat/engagement/GuardRulesOfEngagement.java");
+        String diagnostics = read(
+                "src/main/java/com/gamergaming/villagerguardgunners/command/GuardGunnerCommands.java");
 
         assertAll(
                 () -> assertTrue(goal.contains("config.enabled.get()")),
@@ -254,15 +282,15 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(goal.contains("config.movement.repositionSpeed.get()")),
                 () -> assertTrue(goal.contains("config.movement.friendlyRepositionTicks.get()")),
                 () -> assertTrue(goal.contains("config.performance.visibilitySampleIntervalTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.movementDecisionIntervalTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.pathRecalculationIntervalTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.unsafeShotCacheTicks.get()")),
-                () -> assertTrue(goal.contains("config.performance.repositionProgressCheckTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/GuardTacticalController.java").contains(".performance.movementDecisionIntervalTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/SquadCommandMovementController.java").contains("config.performance.pathRecalculationIntervalTicks.get()")),
+                () -> assertFalse(goal.contains("config.performance.unsafeShotCacheTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/ai/tactics/TacticalNavigationController.java").contains("performance.repositionProgressCheckTicks.get()")),
                 () -> assertTrue(movement.contains("double retreatRangeSquared")),
-                () -> assertTrue(controller.contains("config.combat.requiredVisibleTicks.get()")),
-                () -> assertTrue(controller.contains("config.combat.closeRangeDistance.get()")),
-                () -> assertTrue(controller.contains("config.combat.maximumEngagementRange.get()")),
-                () -> assertTrue(controller.contains("config.combat.aimToleranceDegrees.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/combat/tactics/WeaponTacticsState.java").contains("config.combat.requiredVisibleTicks.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/combat/tactics/WeaponTacticsState.java").contains("config.combat.closeRangeDistance.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/combat/tactics/WeaponTacticsState.java").contains("config.combat.maximumEngagementRange.get()")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/combat/tactics/WeaponTacticsState.java").contains("config.combat.aimToleranceDegrees.get()")),
                 () -> assertTrue(controller.contains("config.safety.baseClearance.get()")),
                 () -> assertTrue(controller.contains("config.performance.gunDataRefreshIntervalTicks.get()")),
                 () -> assertTrue(safetyEvents.contains(
@@ -275,7 +303,9 @@ final class ConfigFoundationContractTest {
                 () -> assertTrue(engagement.contains("settings.mode.get()")),
                 () -> assertTrue(engagement.contains("settings.defensiveMemoryTicks.get()")),
                 () -> assertTrue(engagement.contains("settings.additionalTargets.get()")),
-                () -> assertTrue(engagement.contains("settings.excludedEntities.get()")));
+                () -> assertTrue(engagement.contains("settings.excludedEntities.get()")),
+                () -> assertTrue(diagnostics.contains("armoryResupply.snapshot(")),
+                () -> assertTrue(diagnostics.contains("ArmoryResupplyDiagnostics.capture(")));
     }
 
     private static String read(String relativePath) throws IOException {

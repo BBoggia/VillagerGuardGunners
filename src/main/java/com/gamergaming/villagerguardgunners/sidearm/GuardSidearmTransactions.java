@@ -1,6 +1,6 @@
 package com.gamergaming.villagerguardgunners.sidearm;
 
-import com.tacz.guns.api.item.IGun;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -276,6 +276,7 @@ public final class GuardSidearmTransactions {
     private static boolean canMutate(Guard guard, boolean nativeSwapSafe) {
         return nativeSwapSafe
                 && guard.isAlive()
+                && !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked(guard)
                 && !guard.isRemoved()
                 && !guard.level().isClientSide
                 && guard.getServer() != null
@@ -364,7 +365,7 @@ public final class GuardSidearmTransactions {
         return stack != null
                 && !stack.isEmpty()
                 && stack.getCount() == 1
-                && stack.getItem() instanceof IGun;
+                && GunProviders.isGun(stack);
     }
 
     private static boolean stacksMatch(ItemStack first, ItemStack second) {

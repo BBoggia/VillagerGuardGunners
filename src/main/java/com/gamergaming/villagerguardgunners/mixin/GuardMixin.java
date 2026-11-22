@@ -14,16 +14,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.gamergaming.villagerguardgunners.ai.GuardGunCombatGoal;
+import com.gamergaming.villagerguardgunners.ai.GuardArmoryResupplyGoal;
+import com.gamergaming.villagerguardgunners.ai.GuardAutomaticDutyMovementGoal;
 import com.gamergaming.villagerguardgunners.ai.SquadCommandMovementGoal;
 import com.gamergaming.villagerguardgunners.ammunition.GuardAmmoDeposits;
 import com.gamergaming.villagerguardgunners.api.GuardAmmoAccess;
+import com.gamergaming.villagerguardgunners.api.GuardArmoryResupplyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardBurstSafetyAccess;
 import com.gamergaming.villagerguardgunners.api.GuardNaturalLoadoutAccess;
 import com.gamergaming.villagerguardgunners.api.GuardOrdersAccess;
+import com.gamergaming.villagerguardgunners.api.GuardPostAccess;
+import com.gamergaming.villagerguardgunners.api.GuardPostAssignmentAccess;
+import com.gamergaming.villagerguardgunners.api.GuardRoleAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSidearmAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadAccess;
 import com.gamergaming.villagerguardgunners.api.GuardSquadCommandAccess;
 import com.gamergaming.villagerguardgunners.entity.GuardGunnerContainer;
+import com.gamergaming.villagerguardgunners.defense.duty.VillageDefenseStaffingRuntime;
+import com.gamergaming.villagerguardgunners.armory.resupply.GuardArmoryResupplyController;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoHandler;
 import com.gamergaming.villagerguardgunners.inventory.GuardAmmoMigration;
 import com.gamergaming.villagerguardgunners.orders.GuardOrderTemplateInteractions;
@@ -44,13 +52,17 @@ import com.gamergaming.villagerguardgunners.squad.SquadMembershipCodec;
 import com.gamergaming.villagerguardgunners.squad.SquadLedgerInteractions;
 import com.gamergaming.villagerguardgunners.squad.SquadCommand;
 import com.gamergaming.villagerguardgunners.squad.SquadCommandCodec;
-import com.tacz.guns.api.entity.IGunOperator;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentity;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostIdentityCodec;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignment;
+import com.gamergaming.villagerguardgunners.worldgen.post.GuardPostAssignmentCodec;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -79,9 +91,52 @@ import tallestegg.guardvillagers.configuration.GuardConfig;
 import tallestegg.guardvillagers.entities.Guard;
 
 @Mixin(Guard.class)
-public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBurstSafetyAccess,
-        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardSidearmAccess, GuardSquadAccess,
+public abstract class GuardMixin extends Mob implements GuardAmmoAccess, com.gamergaming.villagerguardgunners.api.GuardMedicAccess, com.gamergaming.villagerguardgunners.api.GuardEquipmentServiceAccess, com.gamergaming.villagerguardgunners.api.GuardMedicalAccess, com.gamergaming.villagerguardgunners.api.GuardCoverageAccess, GuardArmoryResupplyAccess,
+        GuardBurstSafetyAccess, com.gamergaming.villagerguardgunners.api.GuardShotControllerHolder,
+        com.gamergaming.villagerguardgunners.guns.GuardWeaponControlAccess,
+        GuardNaturalLoadoutAccess, GuardOrdersAccess, GuardPostAccess, GuardPostAssignmentAccess,
+        GuardRoleAccess, GuardSidearmAccess, GuardSquadAccess,
         GuardSquadCommandAccess {
+    @Unique
+    private Object villagerGuardGunners$shotController;
+    @Unique
+    private com.gamergaming.villagerguardgunners.guns.GuardWeaponControl villagerGuardGunners$weaponControl;
+
+    @Override
+    public com.gamergaming.villagerguardgunners.guns.GuardWeaponControl villagerGuardGunners$getWeaponControl() {
+        return villagerGuardGunners$weaponControl;
+    }
+
+    @Override
+    public void villagerGuardGunners$setWeaponControl(com.gamergaming.villagerguardgunners.guns.GuardWeaponControl control) {
+        villagerGuardGunners$weaponControl = control;
+    }
+
+    @Override
+    public Object villagerGuardGunners$getShotController() {
+        return villagerGuardGunners$shotController;
+    }
+
+    @Override
+    public void villagerGuardGunners$setShotController(Object controller) {
+        villagerGuardGunners$shotController = controller;
+    }
+
+    @org.spongepowered.asm.mixin.Shadow(remap = false)
+    @org.spongepowered.asm.mixin.Final
+    private static net.minecraft.network.syncher.EntityDataAccessor<Boolean> FOLLOWING;
+
+    @Unique
+    private GuardGunCombatGoal villagerGuardGunners$coverageGunGoal;
+
+    @Override
+    public boolean villagerGuardGunners$hasFollowOrder() { return getEntityData().get(FOLLOWING); }
+
+    @Override
+    public boolean villagerGuardGunners$nativeCoverageMovementSafe() {
+        return !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked((Guard)(Object)this) && !com.gamergaming.villagerguardgunners.medical.TransportRuntime.busy((Guard)(Object)this) && villagerGuardGunners$coverageGunGoal != null && villagerGuardGunners$coverageGunGoal.coverageMovementSafe();
+    }
+
     @Unique
     private static final String VILLAGER_GUARD_GUNNERS_AMMO_TAG = "villagerguardgunners:ammo_inventory";
 
@@ -92,14 +147,46 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     private static final String VILLAGER_GUARD_GUNNERS_ORDERS_TAG = "villagerguardgunners:orders";
 
     @Unique
+    private static final String VILLAGER_GUARD_GUNNERS_ROLE_TAG = "villagerguardgunners:guard_role";
+
+    @Unique
     private static final String VILLAGER_GUARD_GUNNERS_PENDING_NATURAL_SPAWN_TAG =
             "villagerguardgunners:pending_natural_loadout_spawn";
+
+    @Override public boolean villagerGuardGunners$nativeEquipmentServiceSafe() {
+        return !com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked((Guard)(Object)this) && !com.gamergaming.villagerguardgunners.medical.TransportRuntime.busy((Guard)(Object)this) && villagerGuardGunners$coverageGunGoal != null && villagerGuardGunners$coverageGunGoal.equipmentServiceSafe();
+    }
+
+    @Unique private final com.gamergaming.villagerguardgunners.medical.MedicState villagerGuardGunners$medicState = new com.gamergaming.villagerguardgunners.medical.MedicState();
+    @Override public com.gamergaming.villagerguardgunners.medical.MedicState villagerGuardGunners$getMedicState() { return villagerGuardGunners$medicState; }
+    @Unique private com.gamergaming.villagerguardgunners.quartermaster.service.GuardServiceState villagerGuardGunners$equipmentService;
+    @Override public com.gamergaming.villagerguardgunners.quartermaster.service.GuardServiceState villagerGuardGunners$getEquipmentService() {
+        if (villagerGuardGunners$equipmentService == null) villagerGuardGunners$equipmentService = new com.gamergaming.villagerguardgunners.quartermaster.service.GuardServiceState((Guard) (Object) this);
+        return villagerGuardGunners$equipmentService;
+    }
+
+    @Unique
+    private com.gamergaming.villagerguardgunners.medical.MedicalStorage villagerGuardGunners$medicalStorage;
+    @Unique
+    private LazyOptional<com.gamergaming.villagerguardgunners.medical.MedicalSupplies> villagerGuardGunners$medicalCapability;
+
+    @Override
+    public com.gamergaming.villagerguardgunners.medical.MedicalStorage villagerGuardGunners$getMedicalStorage() {
+        if (villagerGuardGunners$medicalStorage == null) {
+            villagerGuardGunners$medicalStorage = new com.gamergaming.villagerguardgunners.medical.MedicalStorage((Guard) (Object) this);
+        }
+        return villagerGuardGunners$medicalStorage;
+    }
 
     @Unique
     private GuardAmmoHandler villagerGuardGunners$ammoHandler;
 
     @Unique
     private GuardSidearmStorage villagerGuardGunners$sidearmStorage;
+
+    @Unique
+    @Nullable
+    private GuardArmoryResupplyController villagerGuardGunners$armoryResupplyController;
 
     @Unique
     private LazyOptional<IItemHandler> villagerGuardGunners$combinedItemHandler;
@@ -125,6 +212,25 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Unique
     @Nullable
+    private ResourceLocation villagerGuardGunners$roleId;
+
+    @Unique
+    private int villagerGuardGunners$roleRevision;
+
+    @Unique
+    private GuardOrders villagerGuardGunners$cachedEffectiveOrders = GuardOrders.DEFAULT;
+
+    @Unique
+    private int villagerGuardGunners$cachedEffectiveOrdersRevision = Integer.MIN_VALUE;
+
+    @Unique
+    private int villagerGuardGunners$cachedEffectiveRoleRevision = Integer.MIN_VALUE;
+
+    @Unique
+    private long villagerGuardGunners$cachedEffectiveRoleGeneration = Long.MIN_VALUE;
+
+    @Unique
+    @Nullable
     private SquadMembership villagerGuardGunners$squadMembership;
 
     @Unique
@@ -136,6 +242,22 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Unique
     private int villagerGuardGunners$squadCommandRevision;
+
+    @Unique
+    @Nullable
+    private GuardPostIdentity villagerGuardGunners$guardPostIdentity;
+
+    @Unique
+    @Nullable
+    private Tag villagerGuardGunners$unreadableGuardPostIdentity;
+
+    @Unique
+    @Nullable
+    private GuardPostAssignment villagerGuardGunners$guardPostAssignment;
+
+    @Unique
+    @Nullable
+    private Tag villagerGuardGunners$unreadableGuardPostAssignment;
 
     @Unique
     @Nullable
@@ -171,7 +293,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
         villagerGuardGunners$ensureAmmoStorage();
         villagerGuardGunners$ensureSidearmStorage();
         if (!level.isClientSide) {
-            IGunOperator.fromLivingEntity((Guard) (Object) this).initialData();
+            com.gamergaming.villagerguardgunners.guns.GuardWeapons.onGuardCreated((Guard) (Object) this);
         }
     }
 
@@ -184,6 +306,9 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
             @Nullable CompoundTag spawnTag,
             CallbackInfoReturnable<SpawnGroupData> cir) {
         NaturalGuardSpawnIntegration.markInitialSpawn((Guard) (Object) this, spawnType);
+        if (spawnType == MobSpawnType.STRUCTURE) {
+            com.gamergaming.villagerguardgunners.village.population.VillagePopulationPlacement.finalized((Guard) (Object) this);
+        }
     }
 
     /*
@@ -210,6 +335,11 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
         if (!level().isClientSide && !villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             villagerGuardGunners$dropPendingMigrationItems();
         }
+        if (!level().isClientSide && ((tickCount + getId()) & 31) == 0) {
+            VillageDefenseStaffingRuntime.synchronizeGuard((Guard) (Object) this);
+            com.gamergaming.villagerguardgunners.village.population.VillagePopulationRuntime.synchronizeGuard((Guard) (Object) this);
+            com.gamergaming.villagerguardgunners.village.coverage.live.VillageCoverageRuntime.synchronizeGuard((Guard) (Object) this);
+        }
     }
 
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
@@ -217,6 +347,10 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
             Player player,
             InteractionHand hand,
             CallbackInfoReturnable<InteractionResult> cir) {
+        if (com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked((Guard)(Object)this)) {
+            InteractionResult treatment = com.gamergaming.villagerguardgunners.medical.MedicalTreatment.interact(player, (Guard)(Object)this, hand);
+            cir.setReturnValue(treatment == null ? InteractionResult.CONSUME : treatment); return;
+        }
         InteractionHand squadLedgerHand =
                 SquadLedgerInteractions.findLedgerHand(player, hand);
         if (squadLedgerHand != null) {
@@ -237,6 +371,8 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
             return;
         }
 
+        InteractionResult medical = com.gamergaming.villagerguardgunners.medical.MedicalTreatment.interact(player, (Guard) (Object) this, hand);
+        if (medical != null) { cir.setReturnValue(medical); return; }
         ItemStack heldStack = player.getItemInHand(hand);
         if (!player.isSecondaryUseActive() || !GuardAmmoHandler.isAmmo(heldStack)) {
             return;
@@ -297,11 +433,34 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     @Inject(method = "registerGoals", at = @At("RETURN"))
     private void addNativeGunGoal(CallbackInfo ci) {
         goalSelector.addGoal(1, new SquadCommandMovementGoal((Guard) (Object) this));
-        goalSelector.addGoal(2, new GuardGunCombatGoal((Guard) (Object) this));
+        villagerGuardGunners$coverageGunGoal = new GuardGunCombatGoal((Guard) (Object) this);
+        goalSelector.addGoal(2, villagerGuardGunners$coverageGunGoal);
+        villagerGuardGunners$armoryResupplyController =
+                new GuardArmoryResupplyController((Guard) (Object) this);
+        goalSelector.addGoal(
+                3,
+                new GuardArmoryResupplyGoal(villagerGuardGunners$armoryResupplyController));
+        // Guard Villagers' melee/crossbow goals remain priority 3 and its
+        // following/avoidance goals remain priority 4. This lower-priority
+        // owner replaces only patrol or ordinary village wandering at 5+.
+        goalSelector.addGoal(4, new com.gamergaming.villagerguardgunners.quartermaster.service.QuartermasterServiceGoal((Guard) (Object) this));
+        goalSelector.addGoal(0, new com.gamergaming.villagerguardgunners.medical.TransportMovementGoal((Guard) (Object) this));
+        goalSelector.addGoal(0, new com.gamergaming.villagerguardgunners.medical.MedicMovementGoal((Guard) (Object) this));
+        goalSelector.addGoal(5, new GuardAutomaticDutyMovementGoal((Guard) (Object) this));
+    }
+
+    @Override
+    @Nullable
+    public GuardArmoryResupplyController
+            villagerGuardGunners$getArmoryResupplyController() {
+        return villagerGuardGunners$armoryResupplyController;
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("HEAD"))
     private void readAmmoStorage(CompoundTag compound, CallbackInfo ci) {
+        villagerGuardGunners$getMedicalStorage().load(compound);
+        villagerGuardGunners$medicState.load(compound);
+        villagerGuardGunners$getEquipmentService().load(compound);
         villagerGuardGunners$ensureAmmoStorage();
         villagerGuardGunners$ensureSidearmStorage();
         villagerGuardGunners$sidearmStorage.loadFrom(compound);
@@ -311,10 +470,24 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
                 Tag.TAG_COMPOUND)
                 ? GuardOrders.load(compound.getCompound(VILLAGER_GUARD_GUNNERS_ORDERS_TAG))
                 : GuardOrders.DEFAULT);
+        villagerGuardGunners$setRoleId(villagerGuardGunners$readRoleId(compound));
         villagerGuardGunners$setSquadMembership(
                 SquadMembershipCodec.readGuardRecord(compound));
         villagerGuardGunners$setSquadCommand(
                 SquadCommandCodec.readGuardRecord(compound));
+        GuardPostIdentity decodedPostIdentity =
+                GuardPostIdentityCodec.readGuardRecord(compound);
+        villagerGuardGunners$guardPostIdentity = decodedPostIdentity;
+        villagerGuardGunners$unreadableGuardPostIdentity = decodedPostIdentity == null
+                ? GuardPostIdentityCodec.copyEncodedRecord(compound)
+                : null;
+        GuardPostAssignment decodedPostAssignment = decodedPostIdentity == null
+                ? null
+                : GuardPostAssignmentCodec.readGuardRecord(compound);
+        villagerGuardGunners$guardPostAssignment = decodedPostAssignment;
+        villagerGuardGunners$unreadableGuardPostAssignment = decodedPostAssignment == null
+                ? GuardPostAssignmentCodec.copyEncodedRecord(compound)
+                : null;
         villagerGuardGunners$pendingMigrationDrops.clear();
 
         List<CompoundTag> legacyAmmo = GuardAmmoMigration.extractLegacyAmmoSlots(compound);
@@ -368,6 +541,9 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void saveAmmoStorage(CompoundTag compound, CallbackInfo ci) {
+        compound.merge(villagerGuardGunners$getMedicalStorage().save());
+        villagerGuardGunners$medicState.save(compound);
+        villagerGuardGunners$getEquipmentService().save(compound);
         villagerGuardGunners$ensureAmmoStorage();
         villagerGuardGunners$ensureSidearmStorage();
         compound.put(VILLAGER_GUARD_GUNNERS_AMMO_TAG, villagerGuardGunners$ammoHandler.serializeNBT());
@@ -398,12 +574,26 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
         } else {
             compound.put(VILLAGER_GUARD_GUNNERS_ORDERS_TAG, orders.save());
         }
+        ResourceLocation roleId = villagerGuardGunners$getRoleId();
+        if (roleId == null) {
+            compound.remove(VILLAGER_GUARD_GUNNERS_ROLE_TAG);
+        } else {
+            compound.putString(VILLAGER_GUARD_GUNNERS_ROLE_TAG, roleId.toString());
+        }
         SquadMembershipCodec.writeGuardRecord(
                 compound,
                 villagerGuardGunners$getSquadMembership());
         SquadCommandCodec.writeGuardRecord(
                 compound,
                 villagerGuardGunners$getSquadCommand());
+        GuardPostIdentityCodec.writeGuardRecordPreservingUnreadable(
+                compound,
+                villagerGuardGunners$getGuardPostIdentity(),
+                villagerGuardGunners$unreadableGuardPostIdentity);
+        GuardPostAssignmentCodec.writeGuardRecordPreservingUnreadable(
+                compound,
+                villagerGuardGunners$getGuardPostAssignment(),
+                villagerGuardGunners$unreadableGuardPostAssignment);
 
         if (villagerGuardGunners$pendingMigrationDrops.isEmpty()) {
             compound.remove(VILLAGER_GUARD_GUNNERS_OVERFLOW_TAG);
@@ -420,6 +610,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Inject(method = "openGui", at = @At("HEAD"), cancellable = true, remap = false)
     private void openGunnerMenu(ServerPlayer player, CallbackInfo ci) {
+        if (com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked((Guard)(Object)this)) { ci.cancel(); return; }
         villagerGuardGunners$ensureAmmoStorage();
         Guard guard = (Guard) (Object) this;
 
@@ -445,6 +636,14 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
             Capability<T> capability,
             @Nullable Direction facing,
             CallbackInfoReturnable<LazyOptional<T>> cir) {
+        if (capability == com.gamergaming.villagerguardgunners.medical.MedicalCapabilities.SUPPLIES
+                && isAlive() && villagerGuardGunners$itemCapabilityValid) {
+            if (villagerGuardGunners$medicalCapability == null) {
+                villagerGuardGunners$medicalCapability = LazyOptional.of(() -> villagerGuardGunners$getMedicalStorage().transport());
+            }
+            cir.setReturnValue(villagerGuardGunners$medicalCapability.cast());
+            return;
+        }
         if (capability == ForgeCapabilities.ITEM_HANDLER
                 && isAlive()
                 && villagerGuardGunners$itemCapabilityValid) {
@@ -455,7 +654,15 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Inject(method = "invalidateCaps", at = @At("TAIL"), remap = false)
     private void invalidateCombinedItemHandler(CallbackInfo ci) {
+        if (villagerGuardGunners$coverageGunGoal != null) {
+            villagerGuardGunners$coverageGunGoal.interrupt("capabilities invalidated");
+        }
         villagerGuardGunners$itemCapabilityValid = false;
+        villagerGuardGunners$getMedicalStorage().invalidateTransport();
+        if (villagerGuardGunners$medicalCapability != null) {
+            villagerGuardGunners$medicalCapability.invalidate();
+            villagerGuardGunners$medicalCapability = null;
+        }
         if (villagerGuardGunners$combinedItemHandler != null) {
             villagerGuardGunners$combinedItemHandler.invalidate();
             villagerGuardGunners$combinedItemHandler = null;
@@ -578,6 +785,62 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Override
     @Nullable
+    public ResourceLocation villagerGuardGunners$getRoleId() {
+        return villagerGuardGunners$roleId;
+    }
+
+    @Override
+    public void villagerGuardGunners$setRoleId(@Nullable ResourceLocation roleId) {
+        if (!java.util.Objects.equals(roleId, villagerGuardGunners$roleId)) {
+            villagerGuardGunners$roleId = roleId;
+            villagerGuardGunners$roleRevision++;
+        }
+    }
+
+    @Override
+    public int villagerGuardGunners$getRoleRevision() {
+        return villagerGuardGunners$roleRevision;
+    }
+
+    @Override
+    public GuardOrders villagerGuardGunners$resolveEffectiveOrders(
+            GuardOrders roleDefaults,
+            long roleGeneration) {
+        GuardOrders normalizedDefaults = roleDefaults == null
+                ? GuardOrders.DEFAULT
+                : roleDefaults;
+        if (villagerGuardGunners$cachedEffectiveOrdersRevision
+                        != villagerGuardGunners$ordersRevision
+                || villagerGuardGunners$cachedEffectiveRoleRevision
+                        != villagerGuardGunners$roleRevision
+                || villagerGuardGunners$cachedEffectiveRoleGeneration != roleGeneration) {
+            GuardOrders explicit = villagerGuardGunners$getOrders();
+            villagerGuardGunners$cachedEffectiveOrders = normalizedDefaults.equals(
+                    GuardOrders.DEFAULT)
+                    ? explicit
+                    : explicit.withFallback(normalizedDefaults);
+            villagerGuardGunners$cachedEffectiveOrdersRevision =
+                    villagerGuardGunners$ordersRevision;
+            villagerGuardGunners$cachedEffectiveRoleRevision =
+                    villagerGuardGunners$roleRevision;
+            villagerGuardGunners$cachedEffectiveRoleGeneration = roleGeneration;
+        }
+        return villagerGuardGunners$cachedEffectiveOrders;
+    }
+
+    @Unique
+    @Nullable
+    private static ResourceLocation villagerGuardGunners$readRoleId(CompoundTag compound) {
+        if (!compound.contains(VILLAGER_GUARD_GUNNERS_ROLE_TAG, Tag.TAG_STRING)) {
+            return null;
+        }
+        String encoded = compound.getString(VILLAGER_GUARD_GUNNERS_ROLE_TAG);
+        ResourceLocation roleId = ResourceLocation.tryParse(encoded);
+        return roleId != null && roleId.toString().equals(encoded) ? roleId : null;
+    }
+
+    @Override
+    @Nullable
     public SquadMembership villagerGuardGunners$getSquadMembership() {
         return villagerGuardGunners$squadMembership;
     }
@@ -618,6 +881,50 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
     @Override
     public int villagerGuardGunners$getSquadCommandRevision() {
         return villagerGuardGunners$squadCommandRevision;
+    }
+
+    @Override
+    @Nullable
+    public GuardPostIdentity villagerGuardGunners$getGuardPostIdentity() {
+        return villagerGuardGunners$guardPostIdentity;
+    }
+
+    @Override
+    public void villagerGuardGunners$setGuardPostIdentity(
+            @Nullable GuardPostIdentity identity) {
+        villagerGuardGunners$guardPostIdentity = identity;
+        villagerGuardGunners$unreadableGuardPostIdentity = null;
+    }
+
+    @Override
+    public boolean villagerGuardGunners$hasUnreadableGuardPostIdentity() {
+        return villagerGuardGunners$unreadableGuardPostIdentity != null;
+    }
+
+    @Override
+    @Nullable
+    public synchronized GuardPostAssignment villagerGuardGunners$getGuardPostAssignment() {
+        return villagerGuardGunners$guardPostAssignment;
+    }
+
+    @Override
+    public synchronized void villagerGuardGunners$setGuardPostAssignment(
+            @Nullable GuardPostAssignment assignment) {
+        villagerGuardGunners$guardPostAssignment = assignment;
+        villagerGuardGunners$unreadableGuardPostAssignment = null;
+    }
+
+    @Override
+    @Nullable
+    public synchronized GuardPostAssignment villagerGuardGunners$claimGuardPostAssignment() {
+        GuardPostAssignment assignment = villagerGuardGunners$guardPostAssignment;
+        villagerGuardGunners$guardPostAssignment = null;
+        return assignment;
+    }
+
+    @Override
+    public synchronized boolean villagerGuardGunners$hasUnreadableGuardPostAssignment() {
+        return villagerGuardGunners$unreadableGuardPostAssignment != null;
     }
 
     @Override
@@ -751,7 +1058,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Override
     public boolean villagerGuardGunners$isNativeBurstSuppressed() {
-        return villagerGuardGunners$nativeBurstSuppressed;
+        return com.gamergaming.villagerguardgunners.medical.TransportRuntime.busy((Guard)(Object)this) || com.gamergaming.villagerguardgunners.medical.GuardLifeRuntime.blocked((Guard)(Object)this) || villagerGuardGunners$nativeBurstSuppressed || com.gamergaming.villagerguardgunners.medical.MedicRuntime.channeling((Guard)(Object)this) || com.gamergaming.villagerguardgunners.medical.MedicRuntime.retreating((Guard)(Object)this) || !villagerGuardGunners$getEquipmentService().readable();
     }
 
     @Override
@@ -789,7 +1096,10 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
             IItemHandler combined = new CombinedInvWrapper(
                     new InvWrapper(guard.guardInventory),
                     villagerGuardGunners$ammoHandler);
-            villagerGuardGunners$combinedItemHandler = LazyOptional.of(() -> combined);
+            villagerGuardGunners$combinedItemHandler = LazyOptional.of(() -> new com.gamergaming.villagerguardgunners.quartermaster.service.ServiceInventoryView(combined,
+                    () -> guard.isAlive() && !guard.isRemoved() && villagerGuardGunners$itemCapabilityValid
+                            && villagerGuardGunners$getEquipmentService().readable()
+                            && !com.gamergaming.villagerguardgunners.quartermaster.service.ServiceTransactions.mutating(guard)));
         }
     }
 
@@ -824,6 +1134,7 @@ public abstract class GuardMixin extends Mob implements GuardAmmoAccess, GuardBu
 
     @Unique
     private void villagerGuardGunners$dropConversionItems() {
+        villagerGuardGunners$getMedicalStorage().release();
         if (level().isClientSide) {
             return;
         }

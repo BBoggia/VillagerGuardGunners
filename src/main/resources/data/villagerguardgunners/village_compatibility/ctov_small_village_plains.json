@@ -1,0 +1,1643 @@
+{
+  "format": 2,
+  "mods": {
+    "ctov": "[3.4.14]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "ctov:small/village_plains"
+  ],
+  "templates": {
+    "ctov:village/common/chicken": [
+      {
+        "kind": "decoration",
+        "sha256": "28eabea8631f7c102b4f62118019f9dc3263402bfb3b10843747b87167b93842",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/cow": [
+      {
+        "kind": "decoration",
+        "sha256": "a8cf975491c6dba81d8fce4cbfa3dc8bcbea757eeb493d35327fc2d89ecde32d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/pig": [
+      {
+        "kind": "decoration",
+        "sha256": "000d6fd979198e4fadb12d0afe054cc21c1cb31c7877eab5c4059adfbbd9f45c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/common/sheep": [
+      {
+        "kind": "decoration",
+        "sha256": "5888896a7b7b1dc01d378fbc6aa733b032c9bbf29249ac75768199c66eded368",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/deco/bard_house": [
+      {
+        "kind": "decoration",
+        "sha256": "e1bd9a4d2835b8bc42b3c50c43c76d7d5930076bf47a9878488d62ebfafd43ad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/deco/beekeeper": [
+      {
+        "kind": "decoration",
+        "sha256": "b677b76cb41f607973b5bf2f3ed83f46f14d061c3bdd1ef50fc1f7e382527622",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/deco/copper_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "1c98dce2cd717d8ae6daf5a2ed89869026c8c0e60aff656802008e8d409fa8b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/deco/garbage_heaps": [
+      {
+        "kind": "decoration",
+        "sha256": "3d620e83e66fe62d9b8eacd8a79e59c01265d90d64d9f80ae8439b2c2db33cb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/deco/goddess_statue": [
+      {
+        "kind": "decoration",
+        "sha256": "8d0912f67070ca3f40410f8399744225caf48779db9b0317d4b8707791d198c4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/deco/picnic_mat": [
+      {
+        "kind": "decoration",
+        "sha256": "c479a237fdc839db0e90e7f539b13b7091d14e01aefc09f1cbc94de7b91b326f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/deco/vm": [
+      {
+        "kind": "decoration",
+        "sha256": "7b7e7544b771913edbd1f722d05c78f0e0fe43b3cbba0917db8bfafec4e28726",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/decos/hay_bale": [
+      {
+        "kind": "decoration",
+        "sha256": "97bbddd22126d438fc4cc9624ff7537f4b6a428894c54667ff3c796cec9bc854",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/decos/lamp_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1d85a525653ddac620bb5d46db61488c8aefccbfb98e70a0db0d9bea98f6340f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/decos/lamp_2": [
+      {
+        "kind": "decoration",
+        "sha256": "df0fbc6738328f30368975b05ed103b1635a9bb57e606b9e206ef62aa8c09ce4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/decos/lamp_3": [
+      {
+        "kind": "decoration",
+        "sha256": "4bcf0c1f41e3d1331a4d20b4ab2dd0ddae14cbc7f931602b82a044bc2c8297e4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/decos/lamp_4": [
+      {
+        "kind": "decoration",
+        "sha256": "13d92b75993a915bf83f1968d59afc93a79f04afbee45eca7e62a23db423a3ad",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/decos/wagon": [
+      {
+        "kind": "decoration",
+        "sha256": "32ad3dd02b4a04b65ff9ea567e6fb2cc1966ce1c2aaeeef4f237d1d11ae3f95c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/decos/well": [
+      {
+        "kind": "decoration",
+        "sha256": "282a1bd44ba563f5754d37a0634e888b599939c8fa6b9cadb606d556a72463b1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/house/big_1": [
+      {
+        "kind": "residence",
+        "sha256": "0f34c6d68c53bed9df11bb185e9156b6b619a77a818c1d9a34d9f7c0da2c30cc",
+        "beds": [
+          [
+            4,
+            6,
+            8
+          ],
+          [
+            6,
+            6,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            7,
+            0,
+            0
+          ],
+          [
+            9,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/house/big_2": [
+      {
+        "kind": "residence",
+        "sha256": "ab1bf5427e7686928c03dc865b3251e66c6b01fae4f6b25b08360044509570df",
+        "beds": [
+          [
+            7,
+            6,
+            4
+          ],
+          [
+            7,
+            6,
+            6
+          ],
+          [
+            7,
+            6,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            6,
+            9
+          ],
+          [
+            4,
+            0,
+            14
+          ],
+          [
+            4,
+            1,
+            13
+          ],
+          [
+            5,
+            1,
+            13
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/house/med_1": [
+      {
+        "kind": "residence",
+        "sha256": "eb20b56ec80b12b5aec8dc8f8c30ed676619b80c2eb76959e183da7cb7c56343",
+        "beds": [
+          [
+            6,
+            1,
+            12
+          ],
+          [
+            8,
+            1,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            0,
+            7
+          ],
+          [
+            1,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/house/med_2": [
+      {
+        "kind": "residence",
+        "sha256": "a32cf05941ad849fa2c5056eec9d414378df8e0cb280cab85000c5191047fff1",
+        "beds": [
+          [
+            3,
+            6,
+            14
+          ],
+          [
+            5,
+            6,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            2,
+            1,
+            13
+          ],
+          [
+            4,
+            0,
+            16
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/house/small_1": [
+      {
+        "kind": "residence",
+        "sha256": "db344a2e60a933e35d3a4357204a3d525338d556ce39b24f4ae24cc815451efa",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            7
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/house/small_2": [
+      {
+        "kind": "residence",
+        "sha256": "6f341960d0a0d0dcdc5db91d353a56495067bb11a5781a10b0b9967741900691",
+        "beds": [
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            6,
+            1,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/house/small_3": [
+      {
+        "kind": "residence",
+        "sha256": "ed6d2c05327038419687b6f16a21cd3ca51f33f7fc6d6fe00b6ac9cb26466407",
+        "beds": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/house/small_4": [
+      {
+        "kind": "residence",
+        "sha256": "04e97f7557f03800066d3debb9155cc0e21aefe14f9e7376ced46528ce06294f",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/house/small_5": [
+      {
+        "kind": "residence",
+        "sha256": "248d421ed9c3aea339271f4345137be3d0d8cdca0fb76cf5f3cc7eac1bff6f1a",
+        "beds": [
+          [
+            5,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            4
+          ],
+          [
+            3,
+            0,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/alchemist": [
+      {
+        "kind": "service",
+        "sha256": "1580e54bb56c6c3caacd7106a224ce033a00a75176c51fc0381f17950c3974b6",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/aquarium": [
+      {
+        "kind": "service",
+        "sha256": "fa304883abda8083ba7ee4a436add8dd0d947b56622082b1361f909ceb7e142b",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            5,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/archery_range": [
+      {
+        "kind": "defense",
+        "sha256": "e774b8509db903c4dbcd88ac46dc7f062027bb8fa618bb794b30254be75ab8ba",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            5,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/artist_studio": [
+      {
+        "kind": "residence",
+        "sha256": "9f8161a107f6e68a3ab1dea8eac07d63666f403773e929719ef4b0a78f5ec38e",
+        "beds": [
+          [
+            7,
+            1,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            6
+          ],
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/bakery": [
+      {
+        "kind": "service",
+        "sha256": "e43f540384a778cd6ae9f4b3e51bb1ccda2d25d77134b896d7518ec692b8ac92",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/balloon_stand": [
+      {
+        "kind": "service",
+        "sha256": "e70be4b194cb743b1c9d510e0f96f78aa3b47f7c9aad72a8750fc9620eee8448",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/barracks": [
+      {
+        "kind": "defense",
+        "sha256": "a799bd0e09321b6280235f401dae7131300ebeb44d813028f65de625ae9061a0",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            6
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/botanist": [
+      {
+        "kind": "service",
+        "sha256": "1272109d8b46ca0820555c74e2eea372e50fc3ceab37f66b00912229772cc326",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/butcher": [
+      {
+        "kind": "service",
+        "sha256": "2a330613a70c44b992cd2a3b6b4f41eef88b49db0ecf3076e578d15f702588db",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            0,
+            4
+          ],
+          [
+            1,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/cartography": [
+      {
+        "kind": "service",
+        "sha256": "c95393095819154370da2ae20212f6d8336b8c6a589c791d5504b0fcb98a85dc",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/chemist": [
+      {
+        "kind": "service",
+        "sha256": "ce969ce0748172f9de3763ba5ae80c55086ac793c7f520361e8e91c2fc23add9",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            8
+          ],
+          [
+            3,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/chicken_coop": [
+      {
+        "kind": "service",
+        "sha256": "fa45127df65a35b0ddfa924733ffd07c51c6853bea5254f2bfb5d75d9556cf44",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            9
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/computer_lab": [
+      {
+        "kind": "unsupported",
+        "sha256": "7d2efe141ba5bc2146754799acb612c21fd9ad81690749c8da9b241f4a368af7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/jobsite/engineer": [
+      {
+        "kind": "service",
+        "sha256": "8197392c551f18b98c8e7024ab93e1a73e8ec5023932eff342835f9f4ca04cfb",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            9
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/factory": [
+      {
+        "kind": "service",
+        "sha256": "d988351d96be417ca1f8a0c954ed9bf76f9721641c334d7500f87b56b330abf0",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            12
+          ],
+          [
+            6,
+            1,
+            14
+          ],
+          [
+            6,
+            2,
+            12
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/farm": [
+      {
+        "kind": "service",
+        "sha256": "fe5c6c43f7e734051617c7b67fe76c6dfbc0c94b802a02338aafe97a6c898b60",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/fd_farm": [
+      {
+        "kind": "service",
+        "sha256": "c9f68415d192cc014622e2cd2fd36251ee04189f6df42083fbc3a47f789aea96",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/fishing_hut": [
+      {
+        "kind": "service",
+        "sha256": "9e897ba81a1ab7ab98ad211644d2cfc8bcac10a7c00609c901b60209adb10add",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            3,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/flower_farm": [
+      {
+        "kind": "service",
+        "sha256": "0e5fe9e2f8f5fb7dd1f5c75c437a39d416206b8279cdbedce2b3506e266411a7",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/forager": [
+      {
+        "kind": "service",
+        "sha256": "e641b377cc454b9d3c049dd10e85daacfdd3919f03857aa95802f414242138ba",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            9,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/garden": [
+      {
+        "kind": "service",
+        "sha256": "172b36bc5cff331f7c73903454223914f252879adf7eb3d4ded10266027fc8d2",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/gazebo": [
+      {
+        "kind": "service",
+        "sha256": "d77cf9088dfdd67429088453b5c5d23600f1571e5a748f6bce1c3f4328951458",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/gunsmith": [
+      {
+        "kind": "service",
+        "sha256": "77c1c577d2bbed5ab4f582fc24941bbac5a63c6398125443503cf8fecdd1f965",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ],
+          [
+            7,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/horticulturist": [
+      {
+        "kind": "service",
+        "sha256": "c45177b824a44499df013b40f01de3d88a99b65533522c80fd12c57c10951239",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/hunter": [
+      {
+        "kind": "service",
+        "sha256": "056ead5def33c3b8c2c8ef3f3adf336841fd4617b3d28bc725b7787b9d4b80d3",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            0,
+            7
+          ],
+          [
+            3,
+            1,
+            6
+          ],
+          [
+            4,
+            1,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/hunter_trainer": [
+      {
+        "kind": "service",
+        "sha256": "29c6687afbe8927ea4c32b8edc16f8b31e7d2da9970f24c9e70c5a427f44d1b3",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            12
+          ],
+          [
+            5,
+            1,
+            11
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/imengineer": [
+      {
+        "kind": "service",
+        "sha256": "01c5fdc77194acd05b71f346e1e50a2257820d683e4826c18b98196f9801d91d",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            7,
+            1,
+            1
+          ],
+          [
+            8,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/irons_jewelry": [
+      {
+        "kind": "service",
+        "sha256": "529ccd94ed5b4319974beb4174375726ff339b8f452eb0a43a826fedd01d382a",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/jewelry_shop": [
+      {
+        "kind": "service",
+        "sha256": "50ec7d3c261986237279ccbd7993a74b8eee5cd1bbec3af5bbce557c52767576",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ],
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/krusty_krab": [
+      {
+        "kind": "service",
+        "sha256": "77a2006191ae781521603836ee51e7043039ecbeae0abf1ef72e04ac907eb678",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/library": [
+      {
+        "kind": "service",
+        "sha256": "760d1d815243f24bd50d27b9e9eff474c89406a8b4926b7d4de7a4cd065ee477",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            12
+          ],
+          [
+            5,
+            1,
+            11
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/mason": [
+      {
+        "kind": "service",
+        "sha256": "800a3ca19c240bc851ac61f628aba41c03086b3c8b57100476d1245aa5a7faf4",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/mechanic": [
+      {
+        "kind": "service",
+        "sha256": "6da05d6d67d109d2391498c84942ae3f106a682cebf9f1334bdfa8e5a7a9d6cb",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/occultist": [
+      {
+        "kind": "service",
+        "sha256": "cfd0574db7bcc798530e1b931a7ee80abac1af98767cd08d93ab5b9de1426ad1",
+        "beds": [],
+        "entrances": [
+          [
+            8,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/oceanographer": [
+      {
+        "kind": "service",
+        "sha256": "3c5e77fc925afaef4116872e25f8a068168af185103935d56a88141f353bc678",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            9
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/orchard": [
+      {
+        "kind": "service",
+        "sha256": "231ec432cefc858bc490aafd5783a29b7884543f52321895a6a3407731aaa159",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/pen": [
+      {
+        "kind": "service",
+        "sha256": "53011de75762d80c9230277750ea7a03e17bab0ccd75dd9866cffc0c91386b8d",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/petshop": [
+      {
+        "kind": "service",
+        "sha256": "b8280555001af90c7f892121b69ca20591c90d6f39fc58a65ca3ad70dd155ad3",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            8,
+            6
+          ],
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            6,
+            3,
+            6
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/pokecenter": [
+      {
+        "kind": "residence",
+        "sha256": "113191fcf19339710e9c69a4dc452a1263d23442eef72df23ab0c7ba3f04aee3",
+        "beds": [
+          [
+            2,
+            7,
+            6
+          ],
+          [
+            2,
+            7,
+            8
+          ],
+          [
+            2,
+            9,
+            6
+          ],
+          [
+            2,
+            9,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            9
+          ],
+          [
+            6,
+            1,
+            10
+          ],
+          [
+            6,
+            7,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/priest_tower": [
+      {
+        "kind": "service",
+        "sha256": "c85513b5775bc94b6fd6dcebcc3e662b888b97b7fa88cc98af2c207ed6883a67",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/restaurant": [
+      {
+        "kind": "service",
+        "sha256": "68f143486d30ebf122821ba2ecad400279b32e7b3565ebdebae9125b78ddd3e5",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/sanctuary": [
+      {
+        "kind": "residence",
+        "sha256": "2191dd174ff8f6e27ace72f3c6dc3f4aaf95e874c33f3785de5f2f1253b5e52a",
+        "beds": [
+          [
+            9,
+            1,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/sawmill": [
+      {
+        "kind": "service",
+        "sha256": "7d73d52f1b00a09cf5752bee67c6227ed5590ec7aa48b261e673f8073a2079e7",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/scriber": [
+      {
+        "kind": "service",
+        "sha256": "86268f2ed7bffcc738360aa34933f755b1caedd74d6944aa5e4c8de553a83df3",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/shepherd": [
+      {
+        "kind": "service",
+        "sha256": "d99e8ff41cc37c01cc40a33d3745504a9698f13d60c6f22865151765fb796343",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            8
+          ],
+          [
+            4,
+            1,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/smith": [
+      {
+        "kind": "service",
+        "sha256": "d0fa18b4986784778dcd362f5cd3f97f9615a14ed6108e2ea263379772c18bcd",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            0,
+            0
+          ],
+          [
+            7,
+            1,
+            1
+          ],
+          [
+            8,
+            1,
+            1
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/vault": [
+      {
+        "kind": "service",
+        "sha256": "4200c2c9fc0c05ce828eb436e12d519b01b11113d757b91ffe1b057544e11474",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            6,
+            7
+          ],
+          [
+            4,
+            5,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/vineyard": [
+      {
+        "kind": "service",
+        "sha256": "cbbc86115b9ac606d83396b51408fcf8ccb443d71ad21f578053f799fb06cd63",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            1,
+            5
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/warehouse": [
+      {
+        "kind": "service",
+        "sha256": "1f83fd11d92e666c0ff35eaf0247d3d52fec911a615f474742cf25adbbe7316f",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/windmill": [
+      {
+        "kind": "service",
+        "sha256": "e16e508543d1f7b80455401a38275df8bcea6f714499c5ab86040a8c82ed65c9",
+        "beds": [],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/wizard_tower": [
+      {
+        "kind": "residence",
+        "sha256": "12a8a16d40ae97baf39312a7ae9211002a8f68eb433fb1e9c3faaa2cf0840fc8",
+        "beds": [
+          [
+            2,
+            11,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/jobsite/woodworker": [
+      {
+        "kind": "service",
+        "sha256": "98aa40a1f3bbd3ac07a45311962448ec3475d1bace57fb4cab0350c6c03d5a81",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            0,
+            0
+          ],
+          [
+            5,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "ctov:village/plains/roads/bent_1": [
+      {
+        "kind": "road",
+        "sha256": "db61f1b2e9e41d1ecabf11d229517488b2b46aaac53b9003408f191175478041",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/roads/bent_2": [
+      {
+        "kind": "road",
+        "sha256": "4eb747496b87844786d041528f3aee111f8ba8e4b6ece22d19aed8475063e79d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/roads/inter": [
+      {
+        "kind": "road",
+        "sha256": "00fcd404e0b6839013b6c204a2c9eb069a8992f694a365f501cb334ee1e0ff08",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/roads/respawn_obelisk": [
+      {
+        "kind": "road",
+        "sha256": "b515705971581fb0bcf05a6c3ea4e0be75ca94719bf083600852e07001989f31",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/roads/straight": [
+      {
+        "kind": "road",
+        "sha256": "7d924f75bfb47474c789c8838c00a9a44e12344c2074eb247cc67591436e3d5a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/roads/t_1": [
+      {
+        "kind": "road",
+        "sha256": "d1987f2eeb4d23fc5b33a4c858a1a1ebc167756bfe50889e4c35bfa20535d682",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/roads/t_2": [
+      {
+        "kind": "road",
+        "sha256": "c13bc2e0c619dbcd955858c7f566a024d52c4b04359831b2066239f315a53d6e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/roads/t_3": [
+      {
+        "kind": "road",
+        "sha256": "c72e12af032f962344aeef0b57865db1cc291d946aea0956cc643c3395f61da8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/roads/terminator": [
+      {
+        "kind": "road",
+        "sha256": "4a9df8529e5b44ca5bd0cb3cfd0441800ca596f61b0d68d879ee35213f6f8733",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "ctov:village/plains/town_center": [
+      {
+        "kind": "gathering",
+        "sha256": "3878b4598c4640c01fa7aac024297021a28a2e087a85519fe235e30ac68fdd56",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "3dd5c62d238d9c2c37b021f88401946647a8c6c0cf44ff9a46de61a3bb344a99",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "a83e7bb51293010615c3d68843e83e1838d9d502a3200f6e859d4c8a07495ca2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/plains/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "439d0d84774434f955ebc88436bf9e4e464a0658774ec3a2211205392919b5c6",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "size_family": "small"
+}

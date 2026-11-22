@@ -10,7 +10,8 @@ import net.minecraft.nbt.Tag;
 public final class SquadLedgerModeCodec {
     public static final String MODE_TAG =
             "villagerguardgunners:squad_command_mode";
-    public static final int DATA_VERSION = 1;
+    public static final int LEGACY_DATA_VERSION = 1;
+    public static final int DATA_VERSION = 2;
     public static final SquadCommandType DEFAULT_MODE = SquadCommandType.RALLY;
 
     private static final String VERSION_TAG = "Version";
@@ -41,7 +42,7 @@ public final class SquadLedgerModeCodec {
             return DecodeResult.corrupt();
         }
         int version = encoded.getInt(VERSION_TAG);
-        if (version != DATA_VERSION) {
+        if (version != LEGACY_DATA_VERSION && version != DATA_VERSION) {
             return DecodeResult.unsupported(version);
         }
         if (!encoded.getAllKeys().equals(RECORD_KEYS)
@@ -49,8 +50,11 @@ public final class SquadLedgerModeCodec {
             return DecodeResult.corrupt();
         }
         try {
-            return DecodeResult.valid(SquadCommandType.valueOf(
-                    encoded.getString(MODE_VALUE_TAG)));
+            SquadCommandType mode = SquadCommandType.valueOf(
+                    encoded.getString(MODE_VALUE_TAG));
+            return version == LEGACY_DATA_VERSION && mode.isPatrolRouteEditor()
+                    ? DecodeResult.corrupt()
+                    : DecodeResult.valid(mode);
         } catch (IllegalArgumentException exception) {
             return DecodeResult.corrupt();
         }

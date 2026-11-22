@@ -1,9 +1,9 @@
 # Village Armories
 
 The Village Armory is a physical, persistent ammunition store for the bounded
-guard-resupply system. Step 5 establishes the block and its inventory; the
-guard search, travel, claim, and withdrawal controller is implemented
-separately in Step 6.
+guard-resupply system. Version 1.2 establishes the block and its inventory.
+The 1.3 Village Defense Logistics phases add the request, loaded-chunk index,
+reservation, travel, and withdrawal layers separately.
 
 ## Crafting and storage
 
@@ -59,11 +59,24 @@ bound ledger. The unreadable record is preserved through subsequent inventory
 changes and saves, so it cannot silently turn into a public armory after a
 restart.
 
-## Current Step 5 boundary
+## Current development boundary
 
-At this stage the armory is a complete player- and automation-facing storage
-block, but guards do not search for or withdraw from it yet. Step 6 adds that
-behavior using a loaded-chunk runtime index, event-driven requests, staggered
-checks, path and claim limits, unreachable-target backoff, and transactional
-ammunition transfer. Keeping those concerns separate makes it possible to test
-storage and item safety without introducing background AI work prematurely.
+Village Defense Logistics Step 6 activates the previously separated contracts.
+Armories register and unregister from a transient, dimension-local section index
+as their block entities load and unload. An otherwise-idle guard assesses its
+bounded ammunition summary only on a stable staggered tick, then inspects at
+most the configured number of indexed records and nine slots per returned
+Armory. The query has no block/entity scan, persistent data, chunk ticket, or
+`getChunk` path.
+
+A successful selection owns one expiring reservation and the low-priority MOVE
+goal only while travelling. Combat, squad commands, follow, Hold, patrol,
+sidearm recovery, lifecycle changes, and unreadable native TaCZ actions retain
+the established precedence. A completely dry guard can make an emergency trip
+under combat-goal ownership when threats leave enough space. Player orders and
+native gun actions still take priority; see the
+[emergency resupply contract](armory-resupply-contracts.md#emergency-combat-resupply). Final withdrawal revalidates the live weapon,
+need, lock, source fingerprint, destination, distance, and feature switches
+before the existing transactional transfer. `/vgg inspect` now reports
+`runtime=REGISTERED` with the authoritative state, outcome, selected slot,
+bounded work counts, transfer evidence, and retry time.

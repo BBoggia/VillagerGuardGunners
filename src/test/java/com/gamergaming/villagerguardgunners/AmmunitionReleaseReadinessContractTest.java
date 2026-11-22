@@ -89,6 +89,7 @@ final class AmmunitionReleaseReadinessContractTest {
                     .filter(path -> path.toString().endsWith(".java"))
                     .filter(path -> !path.startsWith(productionRoot.resolve("client")))
                     .filter(path -> !path.startsWith(productionRoot.resolve("mixin/client")))
+                    .filter(path -> !path.startsWith(productionRoot.resolve("compat/pointblank/mixin/client")))
                     .filter(path -> contains(path, "net.minecraft.client"))
                     .toList();
         }
@@ -119,8 +120,8 @@ final class AmmunitionReleaseReadinessContractTest {
         assertAll(
                 () -> assertTrue(gate.contains("runGameTestServer")),
                 () -> assertTrue(gate.contains("assembleReleaseCandidateEvidence")),
-                () -> assertTrue(gate.contains("performanceJsonReports != 17")),
-                () -> assertTrue(gate.contains("performanceJfrProfiles != 17")),
+                () -> assertTrue(gate.contains("performanceJsonReports != 20")),
+                () -> assertTrue(gate.contains("performanceJfrProfiles != 20")),
                 () -> assertTrue(gate.contains("sha256OfFile(archive)")),
                 () -> assertTrue(gate.contains("docs/release-checklist.md")),
                 () -> assertTrue(gate.contains("docs/ammunition-quality-of-life.md")),

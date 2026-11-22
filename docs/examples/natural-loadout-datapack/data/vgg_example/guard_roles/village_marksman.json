@@ -1,0 +1,10 @@
+{
+  "format": 1,
+  "orders": {
+    "tactics": "marksman",
+    "ammo_pickup": "enabled",
+    "ammo_sharing": "enabled",
+    "movement": "hold_position",
+    "maximum_range": "blocks_48"
+  }
+}

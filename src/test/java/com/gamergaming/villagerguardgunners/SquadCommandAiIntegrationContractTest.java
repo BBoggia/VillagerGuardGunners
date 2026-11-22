@@ -52,7 +52,7 @@ final class SquadCommandAiIntegrationContractTest {
                 () -> assertTrue(goal.contains("target == null || !target.isAlive()")),
                 () -> assertTrue(goal.contains("synchronizeSharedFocusTarget()")),
                 () -> assertTrue(controller.contains(
-                        "NativeGunController.isGun(guard.getMainHandItem())")),
+                        "GunProviders.isGun(guard.getMainHandItem())")),
                 () -> assertTrue(controller.contains("case RALLY")),
                 () -> assertTrue(controller.contains("case DEFEND")),
                 () -> assertTrue(controller.contains("case HOLD")),
@@ -79,11 +79,13 @@ final class SquadCommandAiIntegrationContractTest {
                 () -> assertTrue(combatGoal.contains("moveTowardCombatTarget(")),
                 () -> assertTrue(combatGoal.contains("defendOverride")),
                 () -> assertTrue(combatGoal.contains("gunController.tick(")),
-                () -> assertTrue(combatGoal.contains("GuardFriendlyFireSafety")),
+                () -> assertTrue(combatGoal.contains("hasClearScheduledBurstShot(target)")),
+                () -> assertTrue(read("src/main/java/com/gamergaming/villagerguardgunners/combat/NativeGunController.java")
+                        .contains("GuardFriendlyFireSafety.diagnoseShot(guard, session.target, proposal.get()")),
                 () -> assertTrue(mixin.contains(
                         "addGoal(1, new SquadCommandMovementGoal")),
                 () -> assertTrue(mixin.contains(
-                        "addGoal(2, new GuardGunCombatGoal")),
+                        "addGoal(2, villagerGuardGunners$coverageGunGoal")),
                 () -> assertFalse(combatGoal.contains("setPatrolling(")),
                 () -> assertFalse(combatGoal.contains("setFollowing(")));
     }

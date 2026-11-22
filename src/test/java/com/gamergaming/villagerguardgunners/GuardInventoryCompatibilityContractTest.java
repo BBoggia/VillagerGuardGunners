@@ -37,7 +37,7 @@ final class GuardInventoryCompatibilityContractTest {
                 () -> assertTrue(screen.contains("textures/gui/icons.png")),
                 () -> assertTrue(screen.contains("armorPoint < armor ? 34")),
                 () -> assertTrue(screen.contains("int buttonY = this.topPos + 1")),
-                () -> assertTrue(screen.contains("GuardAmmoSummary.capture(")),
+                () -> assertTrue(screen.contains("GuardAmmoSummary.captureForGuard(")),
                 () -> assertTrue(screen.contains("GuardAmmoAccess.getTaCZInventoryHandler")),
                 () -> assertTrue(screen.contains("AMMO_STATUS_REFRESH_TICKS = 20")),
                 () -> assertTrue(screen.contains("lastAmmoFingerprintTick")),

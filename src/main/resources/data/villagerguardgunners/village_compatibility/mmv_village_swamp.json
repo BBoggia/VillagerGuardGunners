@@ -1,0 +1,1013 @@
+{
+  "format": 2,
+  "mods": {
+    "mmv": "[2.1.1]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "mmv:village_swamp"
+  ],
+  "templates": {
+    "mmv:common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "2b67ef813c5754c734c12660679a9bd2a0415298cfac2ed0acf1fa9418121aa3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_british_shorthair": [
+      {
+        "kind": "decoration",
+        "sha256": "edc57fe903d772115f13e5b7b1416ba7f939bdd904cc80817f55e51b8cd53ebb",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "d3b9061cdfd2f016299bf981e47ea64b99a4ec738bcc24f7ca7bbdf9f13c800e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "dd5f44d91c800fa0ccb56b59460ab5c3300219b1ca53a5e009683710f47eba88",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "9a51003610d5200253840df2c0f1668b7eefe22cd26fe5ed6e815cadf5c0539e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "97b9b2735f1cce3445797dfc0e0b8640946c8be663b1a46370c138b158ce7b13",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "c39066400903855835c120dd372092e0fa77bea0894688fcabf281cbc9c2296c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "278009bc5adbad8fa403fb5f71010bee156fb7daa64e5426995519ce85039a23",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "c5ad1cf9ab4b81fd17cad4e94864bbf66832a9cd21c7913bc4531ed11ee30230",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_tuxedo": [
+      {
+        "kind": "decoration",
+        "sha256": "4f38250b25dccd18aee99c5ba1f1c35c8e68192ab3219d5411393db34f8cd0df",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "a078842dfb8985490e955a8e24fc48f6928d03c42dd29a70a1469552fcce940b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5e87b339faee9f07e654e666e0d4db23e2f08d016ac67ce65fb5fb759bdd21ac",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_1": [
+      {
+        "kind": "decoration",
+        "sha256": "37600b736c5da4957d424c89be32cd133a1926138d585fc59d6bc39a65881904",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_2": [
+      {
+        "kind": "decoration",
+        "sha256": "8600d78e079e55a98ebf26f549b20a98652a23f30a3ff0369a975f315e96cdf2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_3": [
+      {
+        "kind": "decoration",
+        "sha256": "1f65b5f9b0f532d5ae045c503715e430d6104ede4ca71e32b78f6526ac05db42",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_4": [
+      {
+        "kind": "decoration",
+        "sha256": "370f147a6d3d1620d4f9494a4eddcfb3a5c114015260d610109eff3d4fc10efa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/horses_5": [
+      {
+        "kind": "decoration",
+        "sha256": "a2b6842a5912c205e45074bd044451cdfdb3e8b4eacc4ff4dec95a8d544b2f5e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "f22fa7c897a15a27085fd3ae277a2af4ef59d584eab3a5184caec1cda86ec7cf",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "02814d2a8aca68cbae5918e86649b8b4b6de4cc22fde95a3b9dc79ce8c618709",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "4920da7a951d80b836a71b5ee46ca24ec6145c3550e2f8bd18b85b8dcc79f22c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/armor_stand/armor_stand_1": [
+      {
+        "kind": "decoration",
+        "sha256": "6800ef40abc89b1419fda98d44a03c1514708e236a52c41e4e403451c192ac80",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/armor_stand/armor_stand_2": [
+      {
+        "kind": "decoration",
+        "sha256": "be533e888aa3ba7f166e20a41391386fc254defc12179e64b07f14d23caecc12",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/armor_stand/armor_stand_3": [
+      {
+        "kind": "decoration",
+        "sha256": "1ff59f326d11aa47a3efc0ca2bbb56d33455bd0aac55422465c65882bcab049f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/armor_stand/armor_stand_4": [
+      {
+        "kind": "decoration",
+        "sha256": "d65845fb4715521e91b50acca187fe0cae12bd85869f69dfe79a9cc1349aa3ed",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:common/oak_tree": [
+      {
+        "kind": "decoration",
+        "sha256": "42dc29b7896870b4fa49aede3aedbdb3bae909384b7cbdf5920c1f769d0ef9a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/cartographer_1": [
+      {
+        "kind": "service",
+        "sha256": "04021905f7b75f6bc9252b48415b4e1341e2be75cf229231322f0cd61623cc32",
+        "beds": [],
+        "entrances": [
+          [
+            10,
+            2,
+            3
+          ],
+          [
+            11,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/farm_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5e58a995031dc1570b1e585084909a048f009466a5a58da2ff3282603071c6f8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/farm_pillar_1": [
+      {
+        "kind": "decoration",
+        "sha256": "81d1caa7d765d57066eafce5d3225b9d49f8473e1f35709d1d188e52cd6e0e22",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/farm_pillar_2": [
+      {
+        "kind": "decoration",
+        "sha256": "76b082598c7949563679e26216ba38c9e4e95f3cbe376b7a6755ae2d05719917",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/farm_pillar_3": [
+      {
+        "kind": "decoration",
+        "sha256": "37f49fe88b91f93e5744fdde8431c81db19af5a3ffe0cb36addd984d32dad573",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/farm_pillar_4": [
+      {
+        "kind": "decoration",
+        "sha256": "ccd9d00281eae6386a42aadda604eaf689f5310ecb0eee1e3e54b657289a5bd7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/farm_pillar_rare": [
+      {
+        "kind": "decoration",
+        "sha256": "36ec440dc287c0e28ebb768ac82867b02e51fd63e3c41ec3c0f2608868e0c01e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/large_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "445b5bc9f8fb4981d9622975aa81f534c609142b4d8250b6cf1c244c15c2fc17",
+        "beds": [
+          [
+            5,
+            6,
+            14
+          ],
+          [
+            6,
+            6,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            11,
+            2,
+            4
+          ],
+          [
+            13,
+            1,
+            4
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/large_house_2": [
+      {
+        "kind": "decoration",
+        "sha256": "905dd559a3466e9e1b069f5bc00d2446ecfdde26b4a7889b1c070633a7431dc8",
+        "beds": [],
+        "entrances": [
+          [
+            7,
+            7,
+            8
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/large_house_3": [
+      {
+        "kind": "service",
+        "sha256": "7b9eb816940324324ffa39b1952cb0347f870999a3b5d9b76d81a02e9e39d44d",
+        "beds": [],
+        "entrances": [
+          [
+            5,
+            2,
+            12
+          ],
+          [
+            13,
+            2,
+            15
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/large_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "c3aea146fe6054c521eeadeb2d0c5c317884645ba4e3815dd19565d63d404fa4",
+        "beds": [
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            9,
+            2,
+            6
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            2,
+            11
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/large_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "6e81a741b1524612231b3e26529a72ac44f0c4b7339153a7c32a04c7ccee8d16",
+        "beds": [
+          [
+            11,
+            2,
+            4
+          ],
+          [
+            11,
+            2,
+            8
+          ],
+          [
+            11,
+            4,
+            8
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            1,
+            2,
+            5
+          ],
+          [
+            7,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/medium_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "7fbc619c6757e81029346e96c22d3cd6aa893d652dd6477b0460dced46ed160c",
+        "beds": [
+          [
+            3,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/medium_house_2": [
+      {
+        "kind": "residence",
+        "sha256": "9836c0121d441efd05ee203ed9f4c34404205ae6efcdb81e2df4611dfa3b7831",
+        "beds": [
+          [
+            5,
+            2,
+            4
+          ]
+        ],
+        "entrances": [
+          [
+            10,
+            2,
+            3
+          ],
+          [
+            11,
+            1,
+            3
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/medium_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "c8401fef59f153163c1d05ff56f4bc7349357950bac5d526adcc0c43b91dd228",
+        "beds": [
+          [
+            4,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            9
+          ],
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            11,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/meeting_point_1": [
+      {
+        "kind": "decoration",
+        "sha256": "57ce1b7fa3418372c3ce2e17c14f21ed309555569a062cd209f283a5ab0ce855",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/meeting_point_2": [
+      {
+        "kind": "decoration",
+        "sha256": "ac724555ec8d8d91e9d64601e08fc75c93dc131b0ec0a0384d7b80f4ad126404",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/meeting_point_3": [
+      {
+        "kind": "decoration",
+        "sha256": "f7eecfd091c6a470ff8b8683ef2a7e690060bff773241b5842db8b4a26bac1a7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/shepherd_1": [
+      {
+        "kind": "residence",
+        "sha256": "432cfb3ab49c8de494fd164be1565c7e99b2d130130776345caac38b186c0713",
+        "beds": [
+          [
+            9,
+            2,
+            12
+          ],
+          [
+            12,
+            2,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/small_house_1": [
+      {
+        "kind": "residence",
+        "sha256": "b07ed3478e8946fdf91a16ce617f996b8b753249572cc2838b5f90e74ac80c6c",
+        "beds": [
+          [
+            5,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            4,
+            1,
+            1
+          ],
+          [
+            4,
+            2,
+            2
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/small_house_2": [
+      {
+        "kind": "decoration",
+        "sha256": "da7ff9d0116086628dd8c3eed80327fa56cf6b4f1a85f21623bb6ee44d3216ed",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            5
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/small_house_3": [
+      {
+        "kind": "residence",
+        "sha256": "1a6422d6fd947c0472d0a62d59f9413ca79b14d1fefcc70b1afb7068d9acd29d",
+        "beds": [
+          [
+            4,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            5
+          ],
+          [
+            3,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/small_house_4": [
+      {
+        "kind": "residence",
+        "sha256": "ef61ac0c00e1c6841c7e770a6a5682fe21c3d59d898f5506fbe5f2726bf21298",
+        "beds": [
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            4,
+            2,
+            2
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            1,
+            8
+          ],
+          [
+            3,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/small_house_5": [
+      {
+        "kind": "residence",
+        "sha256": "a3f5b9acd92de8eb64e990eeca4288a00b247f07bfa5682409b9d95aceff2eb5",
+        "beds": [
+          [
+            4,
+            2,
+            5
+          ],
+          [
+            5,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            2,
+            1
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/small_house_6": [
+      {
+        "kind": "service",
+        "sha256": "63fe5320ebe4210bbcd97916db0fc482e3aef1eb951fef09e0f3a25d0aa3d62e",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            1,
+            8
+          ],
+          [
+            4,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/small_house_7": [
+      {
+        "kind": "service",
+        "sha256": "0793a3a6ef015ac89ce93c2f6a6215016493ef895aa0d2623b5f27211455d424",
+        "beds": [],
+        "entrances": [
+          [
+            3,
+            1,
+            10
+          ],
+          [
+            3,
+            2,
+            9
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/small_house_8": [
+      {
+        "kind": "decoration",
+        "sha256": "cdbe6c795aab48f85eb874639b8ed55f450294bd18cd71c3a84c97c56b18ebea",
+        "beds": [],
+        "entrances": [
+          [
+            2,
+            2,
+            7
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/temple_1": [
+      {
+        "kind": "service",
+        "sha256": "ccd9be3d2cfc4617909830b920eaa768e8af760c2fa522a000e837aa3a57d0f2",
+        "beds": [],
+        "entrances": [
+          [
+            4,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/weapon_smith_1": [
+      {
+        "kind": "decoration",
+        "sha256": "b999eb88475862b08b7c3ff880290f32e7b155c5c368f584aa70bca9ea2d50a3",
+        "beds": [],
+        "entrances": [
+          [
+            6,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "mmv:swamp/houses/well_1": [
+      {
+        "kind": "decoration",
+        "sha256": "02da6a06e566079ac7c5aab694bfc7232f195cd6a99eeceff33bf4f157324867",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/wheat_1": [
+      {
+        "kind": "decoration",
+        "sha256": "778cd9b64b29156d97f118f768c45b2443f7b09f823caa2f9f3c92702f143084",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/houses/wheat_2": [
+      {
+        "kind": "decoration",
+        "sha256": "3bd5dd89227802816485063004acd22f88fb36e5051ccf8e2351b7130113583c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/corner_01": [
+      {
+        "kind": "road",
+        "sha256": "844212fa338dd435b909093adf49993f71e1f13adb56580b3f129f0c31755850",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/corner_02": [
+      {
+        "kind": "road",
+        "sha256": "c25e164d748acf53a73538a1ad0e260cd4f39cdfd2bc5e4969a9647fa1119a1b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/corner_03": [
+      {
+        "kind": "road",
+        "sha256": "8dd3bd3b250da34f5686ae564e85e9eb1bd1bf199ba16fcfadc30308d13edd17",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/crossroad_01": [
+      {
+        "kind": "road",
+        "sha256": "e535b56372d5a64fcfa65bd42cc7a0bd9e0e911438424fceefcad1d53b7dd1cd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/crossroad_02": [
+      {
+        "kind": "road",
+        "sha256": "f09b4f4d9a38076db5691a570e50bc1775ad9b022f51a2bdcfc7484b5d0dddd3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/crossroad_03": [
+      {
+        "kind": "road",
+        "sha256": "eede19e4bffbc955fe9162f3a4ac7ade508ad0806db87a13927759b3d425b463",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/crossroad_04": [
+      {
+        "kind": "road",
+        "sha256": "6bf521fcf0da6428b1083137aa9d976bd091a35ddd7e29802d35727c4d98cd7e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/crossroad_05": [
+      {
+        "kind": "road",
+        "sha256": "454113ac8954aebaa12c07924950c4a16a13cf16763dfba9197d75fdc02ef239",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/crossroad_06": [
+      {
+        "kind": "road",
+        "sha256": "1ac8af3fdc97c502075c364dea0cf93012814e3aa1be4c1fa8a8049adaa1c9e2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/straight_01": [
+      {
+        "kind": "road",
+        "sha256": "07a5ad7863b85c13e41e73abc430a1dd92d276e527286cf8e644b069abee93f4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/straight_02": [
+      {
+        "kind": "road",
+        "sha256": "73ad1e60d901b0ff4781e2abefa3e996f4a3d3e16892672bbbc48f299d24efd5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/straight_03": [
+      {
+        "kind": "road",
+        "sha256": "6d69220bc0bf652c7a4d4b1cd9e15e5e435fe6e320d6c4b1ca483ff51807c6f3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/straight_04": [
+      {
+        "kind": "road",
+        "sha256": "b165742a24ac6bcc6a6ec80aa5c2b5367fe662a0c4d80a8ac3095ed78bbe0afd",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/straight_05": [
+      {
+        "kind": "road",
+        "sha256": "737b5038fed57dacb14394e0d6f06e56e5d82e8f70b74fc3df72a4f441fedf6c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/straight_06": [
+      {
+        "kind": "road",
+        "sha256": "c6f87529f03d9a9c552c6f40db5713330888798d549446056527cfa551631e58",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/streets/turn_01": [
+      {
+        "kind": "road",
+        "sha256": "4ca3ed26c25c4c37ce60562920907301d96332aa8cb0caa2b206cafb14099a6f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/terminators/terminator_01": [
+      {
+        "kind": "decoration",
+        "sha256": "5ca11ccd9b678e71fc2a54aa200ee5fbf8ac3f1a070ba4b5e7c56eb12902ebf0",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/terminators/terminator_02": [
+      {
+        "kind": "decoration",
+        "sha256": "dea707440f5ad5e976c8336445acb64ee5d5ceeb341193ec22a0c27cc11ca20a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/terminators/terminator_03": [
+      {
+        "kind": "decoration",
+        "sha256": "96bf8452595601aff1767d243c3c07ea562736edf72967b04b882aa852d7c631",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/terminators/terminator_04": [
+      {
+        "kind": "decoration",
+        "sha256": "0e586ab82670a090181ee44a215946d345e59d7c60f39b5511059a327fa094aa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/town_centers/bell_tower": [
+      {
+        "kind": "gathering",
+        "sha256": "8387d08b9bc4269240f9dd3267e4db7999c4502c74d0629c9e1eccf238f9b93c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/town_centers/fountain_1": [
+      {
+        "kind": "gathering",
+        "sha256": "ee5576151df36e67826bf940196c8beb266c64ffbb68a85b60098c015a9138d3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/town_centers/meeting_point_4": [
+      {
+        "kind": "gathering",
+        "sha256": "60ab4415f99c31f46288533c9ff1228cb7471b6719664a4799752723c6f54a93",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/villagers/baby": [
+      {
+        "kind": "service",
+        "sha256": "4f227e600c3df69367922459d50acd56ead66ae3e07bcdaff9d6f32cdb592a7f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "447a8f6d869de1861bb5d58c4215237a96cdfc4a735019550512e18916e55094",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "1f33d37c70a71de2b30d311a4b1f6de0e2289d43483c68504db29b816e0b095e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/zombie/villagers/nitwit": [
+      {
+        "kind": "service",
+        "sha256": "ed93c383096419c16303c081cdaf0de408ce6b29a899af11f3b52c99d98093d6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "mmv:swamp/zombie/villagers/unemployed": [
+      {
+        "kind": "service",
+        "sha256": "909b2e82775c2344aca9a219731b3fd274e85680186e115319f344312b9735b1",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [
+    "water"
+  ]
+}

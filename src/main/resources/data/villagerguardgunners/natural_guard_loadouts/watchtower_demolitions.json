@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "entries": [
+    {
+      "gun": "tacz:aa12",
+      "weight": 2
+    },
+    {
+      "gun": "tacz:m870",
+      "weight": 1
+    },
+    {
+      "gun": "cgm:shotgun",
+      "weight": 3
+    },
+    {
+      "gun": "pointblank:aa12",
+      "weight": 2
+    },
+    {
+      "gun": "pointblank:m870",
+      "weight": 1
+    }
+  ]
+}

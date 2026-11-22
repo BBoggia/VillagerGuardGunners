@@ -1,0 +1,325 @@
+{
+  "format": 2,
+  "mods": {
+    "villagesandpillages": "[1.0.2]"
+  },
+  "priority": 20,
+  "intent": "hostile",
+  "reader": "villagerguardgunners:native",
+  "structures": [
+    "villagesandpillages:village_witch"
+  ],
+  "templates": {
+    "villagesandpillages:village_witch/center/center_01": [
+      {
+        "kind": "decoration",
+        "sha256": "016926aa4f257e8a030fd97846933652447ba6ecb2640e8e3e43de116a19ebc5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/center/center_waystones_01": [
+      {
+        "kind": "decoration",
+        "sha256": "9c93b3f85577ed9a29379542ddc12ed7e3b0eb1c3b71f528430a3e25783eb503",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/decoration/dead_tree_01": [
+      {
+        "kind": "decoration",
+        "sha256": "571a66ba9f1a606bdc22b40cf5f77025265aca71064c43e27576dbdd77232e24",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/decoration/dead_tree_02": [
+      {
+        "kind": "decoration",
+        "sha256": "a271cac40849db0b224b99c189bcbdffdf3037e0f1831e4f54354fdef5568a29",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/decoration/dead_tree_03": [
+      {
+        "kind": "decoration",
+        "sha256": "1bdf244038ddf2487548c9e309a766825a1b99165727efecb63463fcd529bcfa",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/decoration/villager_cage_01": [
+      {
+        "kind": "decoration",
+        "sha256": "c6b9fe4bb4dc5e8a2887eb8f028394e92f084ae989314df5fbbeef1eac57966c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/decoration/villager_cage_02": [
+      {
+        "kind": "decoration",
+        "sha256": "cbfe1c8fc45716e7d12454e00bea255b947cd08a7a4888753ce2cbc112e2ba28",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/entity/cat": [
+      {
+        "kind": "decoration",
+        "sha256": "653407c775479db6d8bb225814ffdf26f53355b5fe4708c724d96b25b9a6bc64",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/entity/witch": [
+      {
+        "kind": "decoration",
+        "sha256": "d3aef817018780b5ae7d01644cc5d6bde3ffadc0a90c11098905abf11bdef213",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/house/medium/medium_house_01": [
+      {
+        "kind": "residence",
+        "sha256": "58d09ac8ad92cfd943d28a6b93061c8947b8ed7ed7f355fa8ffce09a621f12fd",
+        "beds": [
+          [
+            8,
+            2,
+            13
+          ],
+          [
+            8,
+            2,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            9
+          ],
+          [
+            9,
+            6,
+            10
+          ],
+          [
+            10,
+            6,
+            10
+          ]
+        ]
+      }
+    ],
+    "villagesandpillages:village_witch/house/medium/medium_house_02": [
+      {
+        "kind": "residence",
+        "sha256": "7b6a9129120c90af37803fd3b1d3ffb1e4a74cc08c590696091aaa0d44384b31",
+        "beds": [
+          [
+            7,
+            6,
+            3
+          ],
+          [
+            8,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            2,
+            8
+          ]
+        ]
+      }
+    ],
+    "villagesandpillages:village_witch/house/small/small_house_01": [
+      {
+        "kind": "residence",
+        "sha256": "73aa6e1c2d81415054ea49e6ae5de977aa0c06a3cf492bcce61a409a332299b5",
+        "beds": [
+          [
+            8,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "villagesandpillages:village_witch/house/small/small_house_02": [
+      {
+        "kind": "residence",
+        "sha256": "43672d5da040f044f092dc60f540cbbaa37158a1f14f34b98e155cdf8d8ba0a6",
+        "beds": [
+          [
+            10,
+            2,
+            5
+          ]
+        ],
+        "entrances": [
+          [
+            6,
+            2,
+            4
+          ],
+          [
+            9,
+            6,
+            7
+          ]
+        ]
+      }
+    ],
+    "villagesandpillages:village_witch/house/small/small_house_03": [
+      {
+        "kind": "residence",
+        "sha256": "06e22bd066bb82fb75aa2f165270c6b7a6bba75d1e994d990583add05530ed92",
+        "beds": [
+          [
+            8,
+            2,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            2,
+            4
+          ]
+        ]
+      }
+    ],
+    "villagesandpillages:village_witch/road/crossroad/crossroad_four_way": [
+      {
+        "kind": "road",
+        "sha256": "7fd140ebc8bb19395c95ea140eb8afb30a0e8abfe26f876b43f1464f16ecafa6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/crossroad/crossroad_one_way": [
+      {
+        "kind": "road",
+        "sha256": "22425087894d44a7fbe604d996145b858b9478b3164881d430a2aaf3a135766c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/crossroad/crossroad_one_way_broken": [
+      {
+        "kind": "road",
+        "sha256": "a6010266d6ab36821232ace0fa2760f147cc824dcbf060317a06f0746bc319c9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/crossroad/crossroad_one_way_damaged": [
+      {
+        "kind": "road",
+        "sha256": "857f5ee8daadbad6e01f76ec13ecdf676084f5363f5f0b4c61720898d10419be",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/crossroad/crossroad_three_way": [
+      {
+        "kind": "road",
+        "sha256": "dc4527ec5ed51f037cb262eb159d730434f22f582ca785e09405635ba72a5a69",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/crossroad/crossroad_two_way": [
+      {
+        "kind": "road",
+        "sha256": "b566033d7212f323392f20dcf41169c33082a0637efe80102f71910ea17c9a92",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/end/road_end_dead": [
+      {
+        "kind": "road",
+        "sha256": "f39787ffa17ec82cbc0edfadac51c8380a1a5ef457bde7847d2930bf2d8e5ed4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/end/road_end_long": [
+      {
+        "kind": "road",
+        "sha256": "6d7429e62e758a5ac415ce8ce5e5eb229815e8562df3939af41fd9c655fc7b3f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/end/road_end_medium": [
+      {
+        "kind": "road",
+        "sha256": "121d7c1d200961efc39cde498a57f670aec44f2ece357e936a5621db5c1532c7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/end/road_end_short": [
+      {
+        "kind": "road",
+        "sha256": "e102db85c80dfe468e648fb7015d1e8bb8cabedf5a585fb26801b188f2f80c59",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/road_long": [
+      {
+        "kind": "road",
+        "sha256": "7d940c7a8178b172a4d9580b4cb260d6da8ae14125b1ac0d151d2ef7572d8645",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/road_medium": [
+      {
+        "kind": "road",
+        "sha256": "a0d945362c58ab4fa6250f1bef36bac48e62a7b4b9f8ebb325e8e2008606d5b6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "villagesandpillages:village_witch/road/road_short": [
+      {
+        "kind": "road",
+        "sha256": "ad51ee178d159c5a8e4bdfe64dd5b08fda86ce86aa15a2226e1dd2e53c8dc1fc",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [],
+  "target_pools": [
+    "villagesandpillages:village_witch/center",
+    "villagesandpillages:village_witch/decoration",
+    "villagesandpillages:village_witch/entity/cat",
+    "villagesandpillages:village_witch/entity/villager",
+    "villagesandpillages:village_witch/entity/witch",
+    "villagesandpillages:village_witch/road_and_house",
+    "villagesandpillages:village_witch/terminators"
+  ]
+}

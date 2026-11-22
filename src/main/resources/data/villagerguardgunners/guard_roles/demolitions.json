@@ -1,0 +1,11 @@
+{
+  "format": 1,
+  "inherits": [
+    "villagerguardgunners:rifleman"
+  ],
+  "orders": {
+    "tactics": "demolitions",
+    "explosives": "enabled",
+    "maximum_range": "blocks_32"
+  }
+}

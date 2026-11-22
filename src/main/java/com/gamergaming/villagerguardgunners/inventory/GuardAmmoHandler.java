@@ -1,7 +1,6 @@
 package com.gamergaming.villagerguardgunners.inventory;
 
-import com.tacz.guns.api.item.IAmmo;
-import com.tacz.guns.api.item.IAmmoBox;
+import com.gamergaming.villagerguardgunners.guns.GunProviders;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
@@ -24,15 +23,7 @@ public final class GuardAmmoHandler extends ItemStackHandler {
     }
 
     public static boolean isAmmo(ItemStack stack) {
-        return !stack.isEmpty() && isAmmoItem(stack.getItem());
-    }
-
-    public static boolean isAmmoItem(Item item) {
-        return isAmmoType(item.getClass());
-    }
-
-    public static boolean isAmmoType(Class<?> itemType) {
-        return IAmmo.class.isAssignableFrom(itemType) || IAmmoBox.class.isAssignableFrom(itemType);
+        return !stack.isEmpty() && GunProviders.isAmmo(stack);
     }
 
     public ItemStack insert(ItemStack stack) {

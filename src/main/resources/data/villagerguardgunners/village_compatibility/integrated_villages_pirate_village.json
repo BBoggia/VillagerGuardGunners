@@ -1,0 +1,851 @@
+{
+  "format": 2,
+  "mods": {
+    "integrated_villages": "[1.3.2+1.20.1-forge]",
+    "integrated_api": "[1.8.0]"
+  },
+  "priority": 20,
+  "intent": "friendly",
+  "reader": "integrated_api:single",
+  "structures": [
+    "integrated_villages:pirate_village"
+  ],
+  "templates": {
+    "integrated_villages:integration/mobs/irons_priest": [
+      {
+        "kind": "decoration",
+        "sha256": "212ae3a9fbd6eafdcf7dbcd8696d18e3f65e3ada28634d13ad1af060a4db1cd2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/docks/pirate_village_docks1": [
+      {
+        "kind": "road",
+        "sha256": "1ccde15e462d6e3a78725ac25b8dedef9866fdb9a22f34612c7c5a93ba5f6991",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_basichouse1": [
+      {
+        "kind": "residence",
+        "sha256": "cd3843d67d1a9f3d308bc78de29c390da18bf4ae241e9aabc6c376c703497aa8",
+        "beds": [
+          [
+            3,
+            4,
+            9
+          ],
+          [
+            3,
+            6,
+            9
+          ],
+          [
+            8,
+            4,
+            3
+          ],
+          [
+            9,
+            6,
+            3
+          ]
+        ],
+        "entrances": [
+          [
+            3,
+            0,
+            9
+          ],
+          [
+            4,
+            0,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_basichouse1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "a498d63ee8748023a38087f65d0bdedb501e162fc35ae79f424a6f7cc77dd222",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_basichouse2": [
+      {
+        "kind": "residence",
+        "sha256": "1c2fdbfbc64abc658f0de20c4101b574fed2064709d5749ff6c9f4e103e9b904",
+        "beds": [
+          [
+            3,
+            4,
+            4
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            9,
+            4,
+            9
+          ],
+          [
+            9,
+            6,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            9,
+            0,
+            8
+          ],
+          [
+            9,
+            0,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_basichouse2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "c78b5a41a32c31ec99d7f42a7941ba429ec773f86caaa4e11bb68bd3c35b1d93",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_blacksmith": [
+      {
+        "kind": "residence",
+        "sha256": "8ddf70af5c0582e28bfcd1048844f962965d4794374aa0e29dd398b714b1c4cf",
+        "beds": [
+          [
+            13,
+            8,
+            8
+          ],
+          [
+            14,
+            8,
+            8
+          ],
+          [
+            18,
+            8,
+            8
+          ],
+          [
+            19,
+            8,
+            8
+          ],
+          [
+            30,
+            6,
+            15
+          ],
+          [
+            31,
+            4,
+            15
+          ],
+          [
+            36,
+            4,
+            9
+          ],
+          [
+            36,
+            6,
+            9
+          ]
+        ],
+        "entrances": [
+          [
+            16,
+            0,
+            5
+          ],
+          [
+            17,
+            0,
+            5
+          ],
+          [
+            22,
+            8,
+            11
+          ],
+          [
+            22,
+            8,
+            12
+          ],
+          [
+            35,
+            0,
+            9
+          ],
+          [
+            36,
+            0,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_blacksmith_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "8c9c0a2df225205273f14a720c854c9e570d50d7112f683567baacb479be1f63",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_farmhouse": [
+      {
+        "kind": "residence",
+        "sha256": "24459d97fbf0377971ef164032ae9eccda018f1423da807bb0f3caba6275f510",
+        "beds": [
+          [
+            7,
+            8,
+            14
+          ],
+          [
+            7,
+            8,
+            18
+          ],
+          [
+            7,
+            10,
+            18
+          ],
+          [
+            8,
+            6,
+            14
+          ]
+        ],
+        "entrances": [
+          [
+            5,
+            0,
+            21
+          ],
+          [
+            6,
+            0,
+            21
+          ],
+          [
+            8,
+            0,
+            12
+          ],
+          [
+            9,
+            0,
+            12
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_farmhouse_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b122c718e003ac485eb5e58b3d087df04abfb7e297185b49144633898323c73a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_leatherworker": [
+      {
+        "kind": "residence",
+        "sha256": "1f868ca76140ee6754498c1749c24810942c4911130f721bc468b552f4008d59",
+        "beds": [
+          [
+            10,
+            7,
+            16
+          ],
+          [
+            11,
+            9,
+            16
+          ]
+        ],
+        "entrances": [
+          [
+            19,
+            0,
+            15
+          ],
+          [
+            19,
+            0,
+            16
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_leatherworker_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b81e5989031f1d64437ad759970f478e9664f9ec2684fe6acf82cf21c78d08e3",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_observatory": [
+      {
+        "kind": "residence",
+        "sha256": "95ede843e28204d30b8f144d193d53cf5d7e65d4d0893679e801ab0777abade4",
+        "beds": [
+          [
+            8,
+            10,
+            12
+          ],
+          [
+            9,
+            10,
+            12
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            10,
+            3
+          ],
+          [
+            9,
+            10,
+            3
+          ],
+          [
+            15,
+            0,
+            8
+          ],
+          [
+            15,
+            0,
+            9
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_observatory_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "b12bc63d9fad6e9294cfcab4745cb616591c57384d4d7a84aa1bef4a2e34ece6",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_tavern": [
+      {
+        "kind": "residence",
+        "sha256": "f29cfde8d50678f92205b4a155b7df570cc7beaa4fa1d35a4f4e1f7fbeaab4f8",
+        "beds": [
+          [
+            8,
+            9,
+            9
+          ],
+          [
+            8,
+            9,
+            12
+          ],
+          [
+            8,
+            11,
+            6
+          ],
+          [
+            8,
+            16,
+            15
+          ],
+          [
+            9,
+            9,
+            6
+          ],
+          [
+            9,
+            11,
+            9
+          ],
+          [
+            9,
+            11,
+            15
+          ]
+        ],
+        "entrances": [
+          [
+            17,
+            0,
+            15
+          ],
+          [
+            17,
+            0,
+            16
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:pirate_village/house/pirate_village_tavern_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "ca9103ffcf8bf51f2c1f74b8362c159163a040bc3cac97391e1bf29276dbd234",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/intersection/pirate_village_intersection1": [
+      {
+        "kind": "decoration",
+        "sha256": "f1e3dccfc0bfebd772efe6f67b2b7e619f49608720cf731a2e6748de0b69fe8e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/intersection/pirate_village_intersection2": [
+      {
+        "kind": "decoration",
+        "sha256": "23b07e41cbe2b282f25a342d58eb3fd788ad1679bf39263cb98ba5d6378a3a11",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall1": [
+      {
+        "kind": "decoration",
+        "sha256": "93544ebe3d3441e771b67dde5947d6e8d24694e076b6030cc61b77e31d3b974a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall1_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "7200bf54afb52268e83f9c819a5e2fe2f87dbd6685983fe86f940a240e3f99fe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall2": [
+      {
+        "kind": "service",
+        "sha256": "bc5584bfdc98865f88d163da565f072a26dcc6b3c4e74d20f27554c3c98763ac",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall2_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "4cda575849396bc98037dc8db9c72213723158b14ccad020b275a7fccc087328",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall3": [
+      {
+        "kind": "decoration",
+        "sha256": "550d8b9782cbadf0445e7fc931a756132690b2bddd5f323f26a0263f950a2601",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall3_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "f32e72859c435165f504575198b35edf70e6d91997713fb0196a1cab85f0d3a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall4": [
+      {
+        "kind": "decoration",
+        "sha256": "ea6e1f90a32767ef50d2606dab7ebad50a1aa167c473df1499a8bd3e9285535e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall4_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "67712e5f00016ad56a7a99005fe5fc899bf346a71f5f37e4e37b11348143aa23",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall5": [
+      {
+        "kind": "service",
+        "sha256": "fc1f3e0be47464566c9aad23f289a35106e10f96f41d59822ea9d7d9fa9f033a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall5_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "6c8be6783b3b5172bf0e33e7527b38594a3b7627517f3aabc35604258b5fc2fe",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall6": [
+      {
+        "kind": "decoration",
+        "sha256": "6bc8c05d5ea09a54fa7c28052fd70ffb4c8b74b5f59cbc6cc7e74aafc8870981",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall6_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "46df95957e853a2edeb38c8d7c896ff85044f079a3a19ace69031ca23f0a6fa1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall7": [
+      {
+        "kind": "service",
+        "sha256": "72d6dce07805831dd00604ec29bdb4de14de9bc145432c5b72f998af41399f9c",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/market/pirate_village_market_stall7_bottom": [
+      {
+        "kind": "decoration",
+        "sha256": "bf35aaf8ce05e58df88a2fc26d71ad6fd4c0e921c54d41c10fef9a7324148272",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/mobs/pirate_village_villager": [
+      {
+        "kind": "decoration",
+        "sha256": "4fa04126615421d048323810f23cf5bb803e1386c31fba510dff2f93acec6f1f",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/mobs/pirate_village_villager_guard": [
+      {
+        "kind": "decoration",
+        "sha256": "294285b30dedd052fb4a646b4f5ff847cf7047041203affca394f5efa7c71f58",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_light_left": [
+      {
+        "kind": "road",
+        "sha256": "ac0af4b453af56c25c98266f038348566517adb6979ed14f8e4bac8153746360",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_light_right": [
+      {
+        "kind": "road",
+        "sha256": "d4ba8c49aade2add77414dab8f2736d6840bbe2cab68c6b984e87179d287adb2",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path1": [
+      {
+        "kind": "road",
+        "sha256": "53e03cae1e465db35758c10b1777552ddace9a9d8fe63a57cb92040093c97640",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path2": [
+      {
+        "kind": "road",
+        "sha256": "d5a9aa610961827056704b992144dd0a1ce492ebf67da9a53bd97f25b497159d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_docks": [
+      {
+        "kind": "road",
+        "sha256": "47b797d74ed7af6d20432e3ac4c61842d09d224c3acc9b54e7780985e573992b",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_large1": [
+      {
+        "kind": "road",
+        "sha256": "82dc65b1bb92e28df02be75a89dbfa224a19066b2e04ecc5e7328cbb317798ba",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_large1_bottom": [
+      {
+        "kind": "road",
+        "sha256": "0eaeb695d82023bf3c579c7f2d4def2eb9f464ee41e933352eef925933ce8e3a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_large2": [
+      {
+        "kind": "road",
+        "sha256": "84fd57930f43bc4c657a966b7c1c0482342ed1084ac2e13eca1d7e4ed9031188",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_large2_bottom": [
+      {
+        "kind": "road",
+        "sha256": "ab9d91663ef4dce9c9f0b2e25c645d574a295808a2a841ea21248f116441e6d9",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_large3": [
+      {
+        "kind": "road",
+        "sha256": "af713c93919a3247001729fa1ecd309fe8b23629efedd8d29422ded2a6ac3d12",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_large3_bottom": [
+      {
+        "kind": "road",
+        "sha256": "bd9c0b704c463c0200d6d08835999f87db5d329169c8704c21e7131682650632",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_large4": [
+      {
+        "kind": "road",
+        "sha256": "d35aba92e8ae20eef9a80afa1a2032ef84de8e934dbf2378a5ab1b1d4e74fe25",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/path/pirate_village_path_large4_bottom": [
+      {
+        "kind": "road",
+        "sha256": "7f21d63ac703f9196b0e527389bf27a1d6eb85707951450e80bd59e63d4fc0e5",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "integrated_villages:pirate_village/ship/pirate_village_large_ship": [
+      {
+        "kind": "residence",
+        "sha256": "8e0f72bdad69bfbe062705c803edbab5dbd860a1231d2561a30366d766f2939e",
+        "beds": [
+          [
+            7,
+            7,
+            10
+          ],
+          [
+            12,
+            2,
+            5
+          ],
+          [
+            12,
+            2,
+            7
+          ],
+          [
+            17,
+            2,
+            5
+          ],
+          [
+            17,
+            2,
+            7
+          ],
+          [
+            22,
+            2,
+            5
+          ],
+          [
+            22,
+            2,
+            7
+          ]
+        ],
+        "entrances": [
+          [
+            8,
+            8,
+            6
+          ]
+        ]
+      }
+    ],
+    "integrated_villages:pirate_village/ship/pirate_village_small_ship": [
+      {
+        "kind": "service",
+        "sha256": "4cceacbb64af580905f1e212911c5b781055f25909923bc3d02914436ac2149d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_black": [
+      {
+        "kind": "decoration",
+        "sha256": "e84ef239c25813b8e1dec013e44df6b86d8fee4c4731ec848cc552c2b83f0eb4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_british": [
+      {
+        "kind": "decoration",
+        "sha256": "85f06bbc044aaa81b0c42c87df7cf69e56c3d0740220f4143834738662efc5b8",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_calico": [
+      {
+        "kind": "decoration",
+        "sha256": "23ade115f544580a7f863df2cdace2296a432160f82558be3dad84ed4d0d1a4e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_jellie": [
+      {
+        "kind": "decoration",
+        "sha256": "a10cf9113bc022c5808d667595501a8f15ea415420cb91ac07bd2fb3c561703e",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_persian": [
+      {
+        "kind": "decoration",
+        "sha256": "79b017e740051ec17e16a6bc712c8c7d86e6cee32d8bcd30c9058ad60c02819d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_ragdoll": [
+      {
+        "kind": "decoration",
+        "sha256": "7186daa1bec7067490b313294dd33e56c17a1b476295c231a93bf9360bbccc27",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_red": [
+      {
+        "kind": "decoration",
+        "sha256": "5d5909235dc6690f37bbc04f78ff9fc4b7add4eba48eefc90afc9c9e6385f729",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_siamese": [
+      {
+        "kind": "decoration",
+        "sha256": "46f02ba3f36893a0cd2af54e8213fb94aed2720bf0f012dc706d65080b3e34a4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_tabby": [
+      {
+        "kind": "decoration",
+        "sha256": "074ed90a3c7e4fa6730d2363b78e52e2a8f8e1fc927ad11ad14135d1c914428d",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cat_white": [
+      {
+        "kind": "decoration",
+        "sha256": "ddf863ce0e51b58df596523b942ab9f7eca7c40bf5810a7caebb5b5779de00c1",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/cows_1": [
+      {
+        "kind": "decoration",
+        "sha256": "bdd0a90ddf4b84060775f0dca0f8d7696900b6567db5bc21b4ab7df07f3e10f7",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/pigs_1": [
+      {
+        "kind": "decoration",
+        "sha256": "5334cc43310ed43e7711eaeffb9ef87ede7497c353d1085a70bd36662bc7abe4",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_1": [
+      {
+        "kind": "decoration",
+        "sha256": "1a0ec36f0e5dff2f7bfd18249fbeed3d2ff3de8ae8190da2f241ca8ccd25b940",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/animals/sheep_2": [
+      {
+        "kind": "decoration",
+        "sha256": "9ba3a0dac01d992d385cc45b3472fcec5089e93f661fa38ca50d1cd307d8940a",
+        "beds": [],
+        "entrances": []
+      }
+    ],
+    "minecraft:village/common/iron_golem": [
+      {
+        "kind": "decoration",
+        "sha256": "9e41467ff04effe10e26a5f20edca4579c4f3b99d608da5290dc1400e5296708",
+        "beds": [],
+        "entrances": []
+      }
+    ]
+  },
+  "traversal_limits": [
+    "water"
+  ]
+}

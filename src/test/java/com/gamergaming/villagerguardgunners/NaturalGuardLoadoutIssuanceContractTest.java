@@ -24,9 +24,10 @@ final class NaturalGuardLoadoutIssuanceContractTest {
         String issuance = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/spawn/"
                         + "NaturalGuardLoadoutIssuance.java");
+        // The TaCZ half of the analyzer; other gun mods use spawn/ProviderLoadoutAnalysis.
         String analyzer = read(
-                "src/main/java/com/gamergaming/villagerguardgunners/spawn/"
-                        + "NaturalGuardLoadoutCompatibilityAnalyzer.java");
+                "src/main/java/com/gamergaming/villagerguardgunners/compat/tacz/provider/"
+                        + "TaczLoadoutAnalysis.java");
         String integration = read(
                 "src/main/java/com/gamergaming/villagerguardgunners/spawn/"
                         + "NaturalGuardSpawnIntegration.java");

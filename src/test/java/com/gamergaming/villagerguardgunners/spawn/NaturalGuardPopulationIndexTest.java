@@ -33,6 +33,20 @@ final class NaturalGuardPopulationIndexTest {
                         0.0D,
                         24.0D,
                         Set.of(SECOND_GUARD)::contains)),
+                () -> assertEquals(1, index.countWithin(
+                        0.0D,
+                        64.0D,
+                        0.0D,
+                        24.0D,
+                        ignored -> false,
+                        1)),
+                () -> assertEquals(0, index.countWithin(
+                        0.0D,
+                        64.0D,
+                        0.0D,
+                        24.0D,
+                        ignored -> false,
+                        0)),
                 () -> assertEquals(0, index.countWithin(
                         0.0D, 64.0D, 0.0D, Double.NaN, ignored -> false)));
     }

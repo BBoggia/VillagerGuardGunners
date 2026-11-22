@@ -162,9 +162,10 @@ final class GunProviderSeamContractTest {
                 () -> assertFalse(server.contains("GunItemRendererMixin")),
                 () -> assertTrue(config.contains("\"VpbGunItemRendererMixin\"")),
                 () -> assertTrue(config.contains("\"PbjGunItemRendererMixin\"")),
-                () -> assertTrue(context.contains("value = Dist.CLIENT")),
-                // Only a guard with no holder found is redirected; players and other mobs are untouched.
-                () -> assertTrue(context.contains("return found == null && renderingGuard ? Minecraft.getInstance().player : found;")));
+                () -> assertTrue(config.contains("\"client.HeldItemRendererMixin\"")),
+                () -> assertFalse(server.contains("HeldItemRendererMixin")),
+                () -> assertTrue(context.contains("held && holder instanceof Guard")),
+                () -> assertTrue(vpb.contains("result.getReturnValue() == null")));
     }
 
     /** A driver method the switch forgot to forward would silently run an interface default. */

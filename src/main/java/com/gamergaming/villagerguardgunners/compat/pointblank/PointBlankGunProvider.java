@@ -67,7 +67,7 @@ public final class PointBlankGunProvider implements GunProvider {
             String type = facts.launcher()
                     ? "rpg"
                     : PointBlankTraits.inferType(facts.pellets(), facts.capacity(), facts.rpm(),
-                            facts.automatic(), facts.singleOnly(), facts.damage());
+                            facts.hasAutomaticMode(), facts.singleOnly(), facts.damage());
             return Optional.of(new GunDescriptor(
                     new GunRef(ID, itemId(gunStack)), type, access.firstAmmoId(gunStack), !facts.launcher()));
         } catch (RuntimeException exception) {

@@ -1,0 +1,10 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "package": "com.gamergaming.villagerguardgunners.compat.cgm.mixin",
+  "plugin": "com.gamergaming.villagerguardgunners.guns.InstalledTargetMixinPlugin",
+  "mixins": [
+    "GunModFactoriesMixin"
+  ]
+}

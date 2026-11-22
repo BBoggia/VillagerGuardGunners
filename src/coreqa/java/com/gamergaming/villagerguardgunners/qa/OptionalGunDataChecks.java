@@ -32,6 +32,7 @@ final class OptionalGunDataChecks {
 
     /** @return a summary for the pass line; throws with a reason on the first failure */
     static String run(ServerLevel level, String mod) {
+        checkArmoryLoot(level);
         int loadoutGuns = 0;
         ResourceLocation issuedPool = null;
         ResourceLocation issuedGun = null;
@@ -133,6 +134,31 @@ final class OptionalGunDataChecks {
         }
         require(trades > 0, "No bundled trades were found for " + mod);
         return "loadoutGuns=" + loadoutGuns + " issued=" + issuedGun + " trades=" + trades;
+    }
+
+    static void checkArmoryLoot(ServerLevel level) {
+        Set<String> expected = new java.util.HashSet<>();
+        for (String id : Set.of("tacz", "cgm", "pointblank")) if (GunProviders.byId(id).isPresent()) expected.add(id);
+        for (String table : Set.of("village_armory", "watchtower_armory")) {
+            var armory = new com.gamergaming.villagerguardgunners.armory.ArmoryBlockEntity(
+                    net.minecraft.core.BlockPos.ZERO,
+                    com.gamergaming.villagerguardgunners.init.ModBlocks.ARMORY.get().defaultBlockState());
+            require(armory.prepareGenerated(java.util.UUID.randomUUID(),
+                    ResourceLocation.fromNamespaceAndPath("villagerguardgunners", "chests/" + table), 37L, null),
+                    "Could not prepare " + table);
+            com.gamergaming.villagerguardgunners.worldgen.post.GuardPostArmoryLoot.completePending(level, armory);
+            Set<String> owners = new java.util.HashSet<>();
+            int rounds = 0;
+            var inventory = armory.getInventory();
+            for (int slot = 0; slot < inventory.getSlots(); slot++) {
+                ItemStack stack = inventory.getStackInSlot(slot);
+                if (stack.isEmpty()) continue;
+                owners.add(GunProviders.findAmmoOwner(stack).orElseThrow().id());
+                rounds += stack.getCount();
+            }
+            require(!armory.getGeneratedIdentity().pending() && owners.equals(expected)
+                    && rounds == (expected.isEmpty() ? 0 : 224), table + " generated " + rounds + " rounds for " + owners + ", expected " + expected);
+        }
     }
 
     private static void require(boolean condition, String message) {

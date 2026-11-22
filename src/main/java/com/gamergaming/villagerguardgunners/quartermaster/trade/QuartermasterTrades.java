@@ -24,7 +24,7 @@ public final class QuartermasterTrades {
         if(WARNED.add(id))LogUtils.getLogger().warn("Quartermaster trade {} omitted: {}",id,reason);
     }
     /** A trade for a supported gun mod that is not installed is expected, not a mistake to warn about. */
-    private static boolean forAbsentGunMod(TradeDefinition definition) {
+    static boolean forAbsentGunMod(TradeDefinition definition) {
         if(OptionalGunMods.isAbsent(definition.output().id().getNamespace()))return true;
         for(var input:definition.inputs())if(OptionalGunMods.isAbsent(input.id().getNamespace()))return true;
         return false;

@@ -102,8 +102,8 @@ final class VillageWatchtowerStepFourteenContractTest {
         String build = PackagedArtifact.entries() + read("gradle/neoforge-resources.gradle");
 
         assertAll(
-                () -> assertTrue(serialized.contains("tacz:ammo")),
-                () -> assertTrue(serialized.contains("AmmoId")),
+                () -> assertTrue(serialized.contains("villagerguardgunners:guard_ammo")),
+                () -> assertTrue(serialized.contains("tacz:9mm")),
                 () -> assertFalse(serialized.contains("tacz:modern_kinetic_gun")),
                 () -> assertTrue(build.contains(
                         "data/villagerguardgunners/loot_table/chests/watchtower_armory.json")),

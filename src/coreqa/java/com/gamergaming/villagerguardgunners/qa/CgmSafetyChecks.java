@@ -60,6 +60,7 @@ final class CgmSafetyChecks {
             ItemStack launcher = provider.createGun(ResourceLocation.parse("cgm:grenade_launcher"),
                     level.registryAccess(), true).orElseThrow();
             guard.setItemSlot(EquipmentSlot.MAINHAND, launcher);
+            checkFactoryChanges(level, guard, backend);
             assertRadius(level, guard, launcher, backend);
             var tag = GunItemData.getTag(launcher);
             tag.putFloat("AdditionalDamage", 15);
@@ -105,6 +106,33 @@ final class CgmSafetyChecks {
             fixtures.forEach(Entity::discard);
             level.setBlock(glass, previousBlock, 3);
             ModConfigs.GUARD_GUNNERS.safety.preserveBlocksFromGuardExplosions.accept(preserve);
+        }
+    }
+
+    private static void checkFactoryChanges(ServerLevel level, Guard guard, ManagedGunBackend backend) {
+        var provider = GunProviders.byId("cgm").orElseThrow();
+        var pistol = provider.createGun(ResourceLocation.parse("cgm:pistol"), level.registryAccess(), true).orElseThrow();
+        var ammo = com.mrcrayfish.guns.init.ModItems.BASIC_BULLET;
+        var manager = ProjectileManager.getInstance();
+        var original = manager.getFactory(ammo.getId());
+        try {
+            require(!backend.stats(pistol).orElseThrow().explosive(), "Native pistol unexpectedly explosive");
+            var origin = guard.getEyePosition();
+            var direction = new net.minecraft.world.phys.Vec3(1, 0, 0);
+            var aim = new com.gamergaming.villagerguardgunners.combat.aim.GuardShotAim(level.getGameTime(), 0,
+                    origin, origin, origin.add(direction), direction, 0, 0);
+            manager.registerFactory(ammo.get(), manager.getFactory(com.mrcrayfish.guns.init.ModItems.GRENADE.getId()));
+            require(backend.fire(guard, pistol, aim, entity -> true) == ManagedGunBackend.Outcome.FAILED,
+                    "Fired after the projectile factory changed since the last safety check");
+            require(provider.isExplosive(guard, pistol).orElseThrow()
+                    && backend.stats(pistol).orElseThrow().explosionRadius() > 0, "Missed native grenade factory");
+            manager.registerFactory(ammo.get(), (world, shooter, stack, item, gun) -> {
+                throw new AssertionError("Unknown projectile factory executed");
+            });
+            require(provider.isExplosive(guard, pistol).isEmpty() && backend.stats(pistol).isEmpty(),
+                    "Unrecognized projectile marked safe");
+        } finally {
+            manager.registerFactory(ammo.get(), original);
         }
     }
 

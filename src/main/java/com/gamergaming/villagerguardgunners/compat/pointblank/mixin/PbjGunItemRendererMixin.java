@@ -1,8 +1,10 @@
 package com.gamergaming.villagerguardgunners.compat.pointblank.mixin;
 
 import com.gamergaming.villagerguardgunners.client.GuardRenderContext;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,8 +13,11 @@ import org.spongepowered.asm.mixin.injection.At;
 @Pseudo
 @Mixin(targets = "mod.pbj.client.render.GunItemRenderer", remap = false)
 public abstract class PbjGunItemRendererMixin {
-    @ModifyReturnValue(method = "getPlayer", at = @At("RETURN"), require = 0)
-    private Player villagerGuardGunners$drawForGuard(Player found) {
-        return GuardRenderContext.holderFor(found);
+    @Inject(method = "getPlayer", at = @At("RETURN"), cancellable = true, require = 0)
+    private void villagerGuardGunners$drawForGuard(ItemDisplayContext context, CallbackInfoReturnable<Player> result) {
+        if (result.getReturnValue() == null) {
+            Player holder = GuardRenderContext.guardPlayer(context);
+            if (holder != null) result.setReturnValue(holder);
+        }
     }
 }

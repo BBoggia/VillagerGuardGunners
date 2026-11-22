@@ -6,18 +6,17 @@ in local development notes.
 
 ## Unreleased
 
-### Fixed
+## 1.12-neoforge - 2026-11-21
 
-- Restore ammo handoffs, pickup, sharing, Armory resupply, and Quartermaster ammo
-  requests for CGM and Point Blank guns with empty reserves.
-- Recognize CGM guns configured with native infinite ammo when planning supplies.
-- Protect allies from CGM guard explosions and honor the guard block-preservation setting.
-- Include CGM grenade damage modifiers in pre-fire blast safety checks.
-- Respect canceled CGM projectile spawns and account for partially accepted shotgun shots.
-- Release managed reloads when combat ends or a guard switches gun mods, while
-  allowing reloads to continue during tactical movement.
-- Keep ordinary ammo in creative-box loadouts for gun mods without compatible boxes.
-- Report the held gun's controller in guard diagnostics without changing combat state.
+- Added support for MrCrayfish’s Gun Mod (Unofficial), Vic’s Point Blank, and Point Blank: Jelly. TaCZ is optional. Guard Orders, squads, patrols, and village services work without a gun mod.
+- Added CGM and Point Blank choices to natural guard loadouts, Rifleman and Medic equipment, and Quartermaster gun and ammo trades. Added a held-gun pose for guards using these mods.
+- Restored ammo handoffs, dropped ammo pickup, sharing, Armory resupply, and Quartermaster requests for CGM and Point Blank guns with empty reserves. CGM guns with native infinite ammo skip resupply.
+- CGM guard explosions protect allies and respect block protection. Safety checks include grenade damage modifiers. Canceled projectiles preserve ammo, and a partially fired shotgun blast costs one shell.
+- Guards can reload while moving tactically. Ending combat or switching gun mods clears interrupted reloads. Inspecting a guard reports its current gun without interrupting its aim.
+- Creative-box mode supplies ordinary matching ammo to CGM and Point Blank loadouts.
+- Newly generated Village Armories and Watchtowers stock ammo for the installed gun mods. Quartermasters ignore absent gun mods when counting offers and recover after a corrected initial catalog reload.
+- Guards recognize CGM grenade and missile projectiles assigned to different ammo and hold fire for unknown or changed projectile types.
+- Point Blank guards respect the selected fire mode and spend ammo after a shot even if impact or sound effects fail. Guards skip incompatible Point Blank builds. Nested and canceled renders restore the correct held item.
 
 ## 1.11-neoforge - 2026-11-10
 

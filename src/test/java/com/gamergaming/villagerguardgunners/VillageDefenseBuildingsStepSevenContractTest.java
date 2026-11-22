@@ -61,10 +61,9 @@ final class VillageDefenseBuildingsStepSevenContractTest {
             assertEquals(1, pool.get("rolls").getAsInt());
             JsonArray entries = pool.getAsJsonArray("entries");
             assertEquals(1, entries.size());
-            assertEquals("minecraft:item",
+            assertEquals("villagerguardgunners:guard_ammo",
                     entries.get(0).getAsJsonObject().get("type").getAsString());
-            assertEquals("tacz:ammo",
-                    entries.get(0).getAsJsonObject().get("name").getAsString());
+            assertEquals(3, entries.get(0).getAsJsonObject().getAsJsonArray("choices").size());
         }
     }
 

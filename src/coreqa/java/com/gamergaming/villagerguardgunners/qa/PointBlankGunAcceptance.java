@@ -86,9 +86,37 @@ final class PointBlankGunAcceptance {
                 level.setBlockAndUpdate(origin.offset(x, -1, z), Blocks.STONE.defaultBlockState());
                 for (int y = 0; y < 5; y++) level.setBlockAndUpdate(origin.offset(x, y, z), Blocks.AIR.defaultBlockState());
             }
+            checkSelectedMode();
             LogUtils.getLogger().info("VGG_PB_QA_CASE_PASS case=shipped_data {}", OptionalGunDataChecks.run(level, PROVIDER));
             next();
         } catch (Exception failure) { fail(failure); }
+    }
+
+    private void checkSelectedMode() throws ReflectiveOperationException {
+        var provider = GunProviders.byId(PROVIDER).orElseThrow();
+        ItemStack stack = provider.createGun(ResourceLocation.parse("pointblank:glock18"), level.registryAccess(), true).orElseThrow();
+        String adapterPackage = "com.gamergaming.villagerguardgunners.compat.pointblank.";
+        String adapterName = com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankApi.INSTALLED
+                == com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankApi.VPB ? "vpb.VpbAccess" : "pbj.PbjAccess";
+        var adapter = Class.forName(adapterPackage + adapterName).getConstructor().newInstance();
+        var ctor = Class.forName(adapterPackage + "PointBlankGunBackend")
+                .getDeclaredConstructor(com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankAccess.class);
+        ctor.setAccessible(true);
+        var backend = (com.gamergaming.villagerguardgunners.guns.managed.ManagedGunBackend) ctor.newInstance(adapter);
+        String category = provider.describe(stack).orElseThrow().type();
+        var observed = new java.util.HashSet<Boolean>();
+        for (Object mode : (java.util.List<?>) stack.getItem().getClass().getMethod("getMainFireModes").invoke(stack.getItem())) {
+            var setter = Class.forName(mode.getClass().getPackageName() + ".GunItem")
+                    .getDeclaredMethod("setFireModeInstance", ItemStack.class, mode.getClass());
+            setter.setAccessible(true);
+            setter.invoke(null, stack, mode);
+            boolean automatic = ((Enum<?>) mode.getClass().getMethod("getType").invoke(mode)).name().equals("AUTOMATIC");
+            require(backend.stats(stack).orElseThrow().automatic() == automatic, "Wrong cadence for selected fire mode");
+            require(java.util.Objects.equals(category, provider.describe(stack).orElseThrow().type()),
+                    "Gun category changed when switching modes");
+            observed.add(automatic);
+        }
+        require(observed.size() == 2, "Fixture must provide both single and automatic fire");
     }
 
     private void forceChunks() {

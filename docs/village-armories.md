@@ -15,8 +15,7 @@ CBC
 III
 ```
 
-The armory contains nine fixed slots. Every slot accepts only TaCZ loose
-ammunition or a TaCZ ammunition box. Guns, attachments, magazines represented
+The armory contains nine fixed slots. Slots accept compatible loose ammo from the installed gun mods and TaCZ ammo boxes. Guns, attachments, magazines represented
 as unrelated items, and ordinary Minecraft items are rejected.
 
 Breaking the block drops its stored ammunition and the armory block. Inventory

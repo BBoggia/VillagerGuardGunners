@@ -1,18 +1,6 @@
 # Villager Guard Gunners
 
-This branch contains the **Minecraft 1.21.1 NeoForge**.
-Core guard gun use, combat behavior, guard commands, supply, medical workflows,
-and resource/worldgen migration have installed dedicated-server checks.
-Two connected clients also cover inventories, Quartermasters, trading,
-permissions, ledgers, reconnects, gun synchronization, and both guard models.
-The port remains experimental; wider terrain/provider testing and release
-validation are still pending. The feature descriptions below describe the 1.9
-baseline being ported. Use the `v1.9` branch for the Minecraft 1.20.1 Forge build.
-See [NeoForge development](docs/neoforge-development.md) for build commands and
-the current validation scope.
-
-Villager Guard Gunners lets you equip Guard Villagers with Timeless and
-Classics Zero (TaCZ) guns, ammo, and sidearms.
+This branch builds Villager Guard Gunners for Minecraft 1.21.1 and NeoForge. Guards can use guns from Timeless and Classics Zero (TaCZ), MrCrayfish’s Gun Mod (Unofficial), Vic’s Point Blank, or Point Blank: Jelly. You can also use Guard Orders and village services without a gun mod. See [NeoForge development](docs/neoforge-development.md) for build commands and verification.
 
 Guards can aim, move, fire, reload, use backup pistols, follow individual
 orders, join squads, restock from Village Armories, and protect their allies.
@@ -74,25 +62,21 @@ chance remains controlled by Natural Gun Loadouts.
 
 ## Requirements
 
-The NeoForge requires Minecraft 1.21.1 and the following dependencies:
+Install the NeoForge build and its required dependencies on the server and each client.
 
 | Component | Version |
 | --- | --- |
 | Minecraft | 1.21.1 |
 | NeoForge | 21.1.233 or newer 21.1.x |
 | Guard Villagers | 2.4.12 |
-| Timeless and Classics Zero (official NeoForge) | 1.2.0 |
+| Timeless and Classics Zero (optional, official NeoForge) | 1.2.0 |
 | Fzzy Config | 0.7.7+1.21+neoforge or 0.7.7+fix1+1.21+neoforge |
 | Kotlin for Forge | 5.12.0 |
 | Java | 21 |
 
-Use the listed Guard Villagers, TaCZ, and Kotlin versions. Fzzy Config accepts either of the two listed builds.
-Use the official [TaCZ project](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero)
-for this release and remove the unofficial TaCZ JAR instead of installing both.
-Earlier `1.10-neoforge` JARs still require the unofficial port. Preserve a backup
-when updating an existing world. TaCZ's gun-pack converter does not establish
-compatibility for moving a whole world from Minecraft 1.20.1.
-See the [1.11 release notes](docs/releases/1.11-neoforge.md) and
+Use Framework with CGM and GeckoLib with either Point Blank variant. CGM 1.4.21 requires NeoForge 21.1.249 or newer and Framework 0.13.11 or newer. If you install TaCZ, use the official NeoForge 1.2.0 build.
+
+See the [1.12 NeoForge release notes](docs/releases/1.12-neoforge.md) and
 [validation status](docs/neoforge-development.md#official-tacz-migration).
 
 See [Quartermaster service](docs/quartermaster-service.md) for automatic
@@ -105,7 +89,7 @@ inactive. Provider-specific and individual building packs remain alternatives.
 ## Getting Started
 
 1. Create a guard through normal Guard Villagers gameplay.
-2. Open the guard inventory and place a TaCZ gun in its main-hand slot.
+2. Open the guard inventory and place a supported gun in its main-hand slot.
 3. Add compatible loose ammo or ammo boxes to the dedicated ammo slots.
 4. You can also equip a valid pistol in the sidearm slot.
 5. Once the guard finds a valid target, it handles aiming, firing, reloading,
@@ -218,7 +202,7 @@ See [ammo quality of life](docs/ammunition-quality-of-life.md),
 
 ## Natural Loadouts and Village Structures
 
-Newly generated guards can receive a difficulty-scaled TaCZ gun and matching
+Newly generated guards can receive a difficulty-scaled gun and matching
 ammo. The defaults favor pistols on Easy, add SMGs on Normal,
 and allow occasional rifles on Hard. Server settings and datapacks control
 which spawn sources can receive loadouts, weapon pools, local population

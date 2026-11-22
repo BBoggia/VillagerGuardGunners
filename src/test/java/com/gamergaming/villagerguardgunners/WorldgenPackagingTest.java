@@ -19,7 +19,7 @@ final class WorldgenPackagingTest {
             assertFalse(entries.stream().anyMatch(n->n.contains("/qa/")||n.contains("vggpreview")));
         }
     }
-    @Test void ammoLootUsesTheTaczCustomDataComponent() throws Exception {
+    @Test void armoryLootIncludesFallbackCalibersForAllProviders() throws Exception {
         try(var jar=new ZipFile(System.getProperty("villagerguardgunners.artifact"))) {
             for(String name:List.of("watchtower_armory","village_armory")) {
                 var file=jar.getEntry("data/villagerguardgunners/loot_table/chests/"+name+".json");
@@ -28,10 +28,16 @@ final class WorldgenPackagingTest {
                     var pools=JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("pools");
                     assertEquals(7,pools.size());
                     for(var pool:pools) {
-                        var functions=pool.getAsJsonObject().getAsJsonArray("entries").get(0).getAsJsonObject().getAsJsonArray("functions");
-                        assertEquals("minecraft:set_custom_data",functions.get(0).getAsJsonObject().get("function").getAsString());
-                        assertTrue(functions.get(0).getAsJsonObject().get("tag").getAsString().contains("AmmoId"));
-                        assertEquals(32,functions.get(1).getAsJsonObject().get("count").getAsInt());
+                        var entry = pool.getAsJsonObject().getAsJsonArray("entries").get(0).getAsJsonObject();
+                        assertEquals("villagerguardgunners:guard_ammo", entry.get("type").getAsString());
+                        var choices = entry.getAsJsonArray("choices");
+                        assertEquals(3, choices.size());
+                        var mods = new java.util.HashSet<String>();
+                        choices.forEach(id -> mods.add(id.getAsString().split(":")[0]));
+                        assertEquals(java.util.Set.of("tacz", "cgm", "pointblank"), mods);
+                        var count = entry.getAsJsonArray("functions").get(0).getAsJsonObject();
+                        assertEquals("minecraft:set_count", count.get("function").getAsString());
+                        assertEquals(32, count.get("count").getAsInt());
                     }
                 }
             }

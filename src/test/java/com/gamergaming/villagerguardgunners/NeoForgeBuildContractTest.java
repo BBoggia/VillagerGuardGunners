@@ -36,9 +36,9 @@ final class NeoForgeBuildContractTest {
             var pointBlankMixins = JsonParser.parseString(new String(jar.getInputStream(jar.getEntry("mixins.villagerguardgunners.pointblank.json")).readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();
             assertFalse(pointBlankMixins.get("required").getAsBoolean());
             assertEquals(0, pointBlankMixins.getAsJsonObject("injectors").get("defaultRequire").getAsInt());
-            assertEquals(2, pointBlankMixins.getAsJsonArray("client").size());
+            assertEquals(3, pointBlankMixins.getAsJsonArray("client").size());
             for (String side : new String[]{"mixins", "client"}) for (var mixin : pointBlankMixins.getAsJsonArray(side))
-                assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/compat/pointblank/mixin/" + mixin.getAsString() + ".class"), mixin.toString());
+                assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/compat/pointblank/mixin/" + mixin.getAsString().replace('.', '/') + ".class"), mixin.toString());
             for (String adapter : new String[]{"vpb/VpbAccess", "pbj/PbjAccess"})
                 assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/compat/pointblank/" + adapter + ".class"), adapter);
             // No gun mod is required: Guard Villagers, Fzzy Config, Kotlin for Forge, NeoForge and Minecraft are.
@@ -49,7 +49,7 @@ final class NeoForgeBuildContractTest {
             assertEquals("com.gamergaming.villagerguardgunners.guns.InstalledTargetMixinPlugin", taczMixins.get("plugin").getAsString());
             assertEquals(4, taczMixins.getAsJsonArray("mixins").size());
             for (var mixin : taczMixins.getAsJsonArray("mixins"))
-                assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/mixin/" + mixin.getAsString() + ".class"), mixin.toString());
+                assertNotNull(jar.getEntry("com/gamergaming/villagerguardgunners/mixin/" + mixin.getAsString().replace('.', '/') + ".class"), mixin.toString());
             assertTrue(metadata.contains("modId=\"cgm\"\ntype=\"optional\""));
             assertNull(jar.getEntry("META-INF/mods.toml"));
             var mixins = JsonParser.parseString(new String(jar.getInputStream(jar.getEntry("mixins.villagerguardgunners.json")).readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();

@@ -257,7 +257,11 @@ final class PhaseSevenCleanupContractTest {
         assertTrue(cgmBootstrap.contains("if (!warnedDischargeFailure) {"));
         assertTrue(cgmBootstrap.contains("warnedDischargeFailure = true;"));
         assertTrue(cgmBootstrap.contains("if (!warnedImprovedHitboxes) {"));
+        String pbBootstrap = read("src/main/java/com/gamergaming/villagerguardgunners/compat/pointblank/PointBlankBootstrap.java");
+        assertTrue(pbBootstrap.contains("if (!warnedAfterShot)"));
+        assertEquals(2, countOccurrences(pbBootstrap, "LOGGER.warn("));
         String performanceSensitiveSource = productionSource
+                .replace(pbBootstrap, "")
                 .replace(cgmBootstrap, "")
                 .replace(tradeRuntime, "")
                 .replace(read("src/main/java/com/gamergaming/villagerguardgunners/quartermaster/trade/TradeDefinitions.java"), "")

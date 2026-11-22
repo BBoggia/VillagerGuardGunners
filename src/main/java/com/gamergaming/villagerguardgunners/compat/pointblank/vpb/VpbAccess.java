@@ -1,8 +1,8 @@
 package com.gamergaming.villagerguardgunners.compat.pointblank.vpb;
 
 import com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankAccess;
+import com.gamergaming.villagerguardgunners.compat.pointblank.PointBlankBootstrap;
 import com.vicmatskiv.pointblank.feature.AccuracyFeature;
-import com.vicmatskiv.pointblank.feature.FireModeFeature;
 import com.vicmatskiv.pointblank.feature.SoundFeature;
 import com.vicmatskiv.pointblank.item.AmmoItem;
 import com.vicmatskiv.pointblank.item.FireMode;
@@ -86,6 +86,7 @@ public final class VpbAccess implements PointBlankAccess {
         }
         return Optional.of(new Facts(
                 rpm,
+                mode.getType() == FireMode.AUTOMATIC,
                 automatic,
                 singleOnly,
                 item.getMaxAmmoCapacity(gun, mode),
@@ -163,12 +164,18 @@ public final class VpbAccess implements PointBlankAccess {
         List<HitResult> hits = HitScan.getObjectsInCrosshair(guard, origin, direction, 0.0F, range, pellets,
                 inaccuracy, seed, block -> false,
                 block -> block instanceof BushBlock || block instanceof LeavesBlock, brokenBlocks);
-        for (HitResult hit : hits) {
-            if (hit instanceof EntityHitResult entityHit && mayHit.test(entityHit.getEntity())) {
-                item.hurtEntity(guard, entityHit, null, gun);
+        // The trace completed. Damage listeners and presentation run after discharge
+        // and may throw even after changing the target's health.
+        try {
+            for (HitResult hit : hits) {
+                if (hit instanceof EntityHitResult entityHit && mayHit.test(entityHit.getEntity())) {
+                    item.hurtEntity(guard, entityHit, null, gun);
+                }
             }
+            playFireSound(guard, item, gun);
+        } catch (RuntimeException failure) {
+            PointBlankBootstrap.warnAfterShotOnce(failure);
         }
-        playFireSound(guard, item, gun);
         return true;
     }
 

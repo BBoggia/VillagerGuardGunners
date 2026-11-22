@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
  * mixin configs of the optional gun mods, which must stay silent when their
  * mod is absent.
  */
-public final class InstalledTargetMixinPlugin implements IMixinConfigPlugin {
+public class InstalledTargetMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         return getClass().getClassLoader().getResource(targetClassName.replace('.', '/') + ".class") != null;

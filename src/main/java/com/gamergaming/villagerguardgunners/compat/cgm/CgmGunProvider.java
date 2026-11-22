@@ -63,11 +63,12 @@ public final class CgmGunProvider implements GunProvider {
             if (gun == null) {
                 return Optional.empty();
             }
+            CgmProjectileKind kind = CgmProjectileKind.forAmmo(gun.getProjectile().getItem());
             return Optional.of(new GunDescriptor(
                     new GunRef(ID, CgmGunBackend.itemId(gunStack)),
-                    CgmGunBackend.gunType(gun),
+                    CgmGunBackend.gunType(gun, kind),
                     gun.getProjectile().getItem(),
-                    true));
+                    kind != CgmProjectileKind.UNKNOWN));
         } catch (RuntimeException exception) {
             return Optional.empty();
         }
@@ -77,9 +78,9 @@ public final class CgmGunProvider implements GunProvider {
     public Optional<Boolean> isExplosive(Guard guard, ItemStack gunStack) {
         try {
             Gun gun = isGun(gunStack) ? CgmGunBackend.modifiedGun(gunStack) : null;
-            return gun == null
-                    ? Optional.empty()
-                    : Optional.of(CgmGunBackend.isExplosiveAmmo(gun.getProjectile().getItem()));
+            CgmProjectileKind kind = gun == null ? CgmProjectileKind.UNKNOWN
+                    : CgmProjectileKind.forAmmo(gun.getProjectile().getItem());
+            return kind == CgmProjectileKind.UNKNOWN ? Optional.empty() : Optional.of(kind.explosive());
         } catch (RuntimeException exception) {
             return Optional.empty();
         }
@@ -206,7 +207,7 @@ public final class CgmGunProvider implements GunProvider {
 
     @Override
     public WeaponDriver createDriver(Guard guard) {
-        return new ManagedWeaponDriver(guard, this, backend);
+        return new ManagedWeaponDriver(guard, this, new CgmGunBackend());
     }
 
     @Override

@@ -114,7 +114,8 @@ public final class GuardPostArmoryLoot {
                 return false;
             }
             for (LootPoolEntryContainer entry : entries) {
-                if (!(entry instanceof LootItem) && !(entry instanceof EmptyLootItem)) {
+                if (!(entry instanceof LootItem) && !(entry instanceof EmptyLootItem)
+                        && !(entry instanceof GuardAmmoLootEntry)) {
                     return false;
                 }
                 components += ((LootPoolEntryAccessor) entry)

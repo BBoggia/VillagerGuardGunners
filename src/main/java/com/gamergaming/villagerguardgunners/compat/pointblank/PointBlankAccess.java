@@ -54,7 +54,7 @@ public interface PointBlankAccess {
      * @param launcher true for guns that fire a projectile entity or explode on impact.
      *        The mod's code for those assumes a player and guards cannot use them.
      */
-    record Facts(int rpm, boolean automatic, boolean singleOnly, int capacity, int pellets,
+    record Facts(int rpm, boolean automatic, boolean hasAutomaticMode, boolean singleOnly, int capacity, int pellets,
             double inaccuracy, int range, float damage, long reloadMillis, boolean launcher) {
     }
 }

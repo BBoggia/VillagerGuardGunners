@@ -9,7 +9,6 @@ import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
-import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.interfaces.IProjectileFactory;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -53,12 +52,11 @@ final class CgmGunBackend implements ManagedGunBackend {
         return stack.getItem() instanceof GunItem item ? item.getModifiedGun(stack) : null;
     }
 
-    static boolean isExplosiveAmmo(ResourceLocation ammoId) {
-        return ammoId != null
-                && (ammoId.equals(ModItems.MISSILE.getId()) || ammoId.equals(ModItems.GRENADE.getId()));
-    }
+    // Each guard driver has its own backend. Recheck the factory immediately before
+    // firing in case another mod changed it since the shot envelope was prepared.
+    private IProjectileFactory checkedFactory;
 
-    static String gunType(Gun gun) {
+    static String gunType(Gun gun, CgmProjectileKind kind) {
         Gun.General general = gun.getGeneral();
         ResourceLocation grip = general.getGripType() == null ? null : general.getGripType().getId();
         return CgmGunTraits.inferType(
@@ -66,11 +64,12 @@ final class CgmGunBackend implements ManagedGunBackend {
                 general.isAuto(),
                 general.getRate(),
                 Math.max(1, general.getProjectileAmount()),
-                isExplosiveAmmo(gun.getProjectile().getItem()));
+                kind.explosive());
     }
 
     @Override
     public Optional<ManagedGunStats> stats(ItemStack stack) {
+        checkedFactory = null;
         Gun gun = modifiedGun(stack);
         if (gun == null) {
             return Optional.empty();
@@ -97,9 +96,12 @@ final class CgmGunBackend implements ManagedGunBackend {
         float spread = GunModifierHelper.getModifiedSpread(stack, general.getSpread());
 
         ResourceLocation ammoId = projectile.getItem();
-        boolean explosive = isExplosiveAmmo(ammoId);
+        IProjectileFactory factory = ProjectileManager.getInstance().getFactory(ammoId);
+        CgmProjectileKind kind = CgmProjectileKind.classify(factory);
+        if (kind == CgmProjectileKind.UNKNOWN || ammoId == null) return Optional.empty();
+        boolean explosive = kind.explosive();
         double explosionRadius = !explosive ? 0.0D
-                : ammoId.equals(ModItems.MISSILE.getId())
+                : kind == CgmProjectileKind.MISSILE
                         ? Config.COMMON.missiles.explosionRadius.get()
                         // A grenade's blast grows with its damage; see the mod's GrenadeEntity.
                         : grenadeRadius(stack, gun, life);
@@ -114,6 +116,7 @@ final class CgmGunBackend implements ManagedGunBackend {
                 // A vanilla-style explosion damages out to twice its radius.
                 explosionRadius * 2.0D,
                 Integer.MAX_VALUE);
+        checkedFactory = factory;
         return Optional.of(new ManagedGunStats(
                 CgmGunTraits.fireIntervalMillis(rateTicks),
                 general.isAuto(),
@@ -190,6 +193,7 @@ final class CgmGunBackend implements ManagedGunBackend {
         guard.setXRot(aim.pitch());
         try {
             IProjectileFactory factory = ProjectileManager.getInstance().getFactory(projectile.getItem());
+            if (factory == null || factory != checkedFactory) return Outcome.FAILED;
             spawned = CgmDischarge.fire(count, index -> {
                 ProjectileEntity entity = factory.create(level, guard, stack, item, gun);
                 entity.setWeapon(stack);

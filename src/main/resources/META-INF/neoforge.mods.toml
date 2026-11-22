@@ -16,6 +16,9 @@ config="mixins.${mod_id}.json"
 [[mixins]]
 config="mixins.${mod_id}.tacz.json"
 
+[[mixins]]
+config="mixins.${mod_id}.cgm.json"
+
 # Applies only when a Point Blank build is installed.
 [[mixins]]
 config="mixins.${mod_id}.pointblank.json"
